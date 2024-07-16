@@ -1,0 +1,1213 @@
+﻿@page "/ProfilePage/{userID:int}"
+@using BlazorGoogleLogin.Shared.Models.present.toShow
+@using BlazorGoogleLogin.Shared.Models.present.toAdd
+@using BlazorGoogleLogin.Shared.Models.present.toEdit
+@using BlazorGoogleLogin.Client.Components
+@using Microsoft.AspNetCore.Components.Web
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject DateService DateService
+@inject IJSRuntime JSRuntime
+
+@if (onInitializedOver)
+{
+    <div id="topOptBar">
+        <div class="megaOuterTopSection">
+            <div class="outerTopSection">
+                <div>
+
+                    <button class="backArrow" @onclick="goToFormerPage"><img src="./css/images/back-repeated.svg" /></button>
+                </div>
+                @if (goingBackDisabled)
+                {
+                    <GeneralPopUpComponent popupTypeTitle="יציאה מהעמוד ללא שמירה" middleText="במידה והזנת פרטים חדשים, הם לא יישמרו." action="אישור" makeAction="LeavingWithoutSave" closePopUp="closingLeavingPopUp"></GeneralPopUpComponent>
+                }
+                <h3 class="myProfileText">הפרופיל של @currentUser.firstName @currentUser.lastName</h3>
+                <div class="outerDotsAndOptions">
+                    <div>
+                        <button class="options" @onclick="()=>OptionsBtnProfileClicked=!OptionsBtnProfileClicked"><img src="./css/images/option menu.svg" /></button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        @if (OptionsBtnProfileClicked)
+        {
+            <div class="outerOptions">
+                <button class="optionButton editButton" @onclick="editProfile">
+                    <img src="./css/images/edit_pencil.svg" class="icon" />
+                    עריכה
+                </button>
+            </div>
+
+
+        }
+
+
+
+        <div id="mainUserInfo">
+            @if (editBtnClicked)
+            {
+                <div class="outerSecondSection">
+
+                    <div class="profileAndStreak">
+                        <div class="outerEmojiAndBtn">
+
+                            <button class="profilePic">@currentUser.profilePicOrIcon</button>
+                            <div class="keyBoardAndBtn">
+                                <div class="outerCancleAndEmoji">
+                                    <button @onclick="ToggleKeyboard" id="emoji-trigger">
+                                        <img style="vertical-align: middle;
+    background-color: #F9F9F9;
+    border-radius: 26%;" src="./css/images/add emoji (1).svg" />
+                                    </button>
+
+                                    @if (noEmojiBtn || currentUser.profilePicOrIcon.Length > 0)
+                                    {
+
+                                        <div class="outerCancleAndEmoji">
+                                            <button @onclick="deleteSelectedEmoji" class="cancleEmoji">ביטול בחירה</button>
+                                        </div>
+
+                                    }
+                                    <div class="emoji-keyboard @visibilityClass">
+                                        <div class="emoji-categories">
+                                            @foreach (var category in emojiCategories.Keys)
+                                            {
+                                                <button class="category-button @(selectedCategory == category ? "active" : "")"
+                                            @onclick="() => SelectCategory(category)">
+                                                    @category
+                                                </button>
+                                            }
+                                        </div>
+                                        <div class="emoji-section">
+
+                                            @foreach (var emoji in emojiCategories[selectedCategory])
+                                            {
+                                                <span @onclick="() => SelectEmoji(emoji)" class="emoji">@emoji</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="outerTitleAndCounter">
+                            <div class="input-container">
+                                <div>שם פרטי:</div>
+                                <input class="titleBox" type="text" maxlength="15" @oninput="firstNameLengthCheck" value="@currentUser.firstName" />
+                                <div class="counter">
+                                    @if (newFirstNameLength > 0)
+                                    {
+                                        <span>@newFirstNameLength/15</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@newFirstNameLength/15</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="outerTitleAndCounter">
+                            <div class="input-container">
+                                <div>שם משפחה:</div>
+                                <input class="titleBox" value="@currentUser.lastName" type="text" maxlength="15" @oninput="lastNameLengthCheck">
+                                <div class="counter">
+                                    @if (newLastNameLength > 0)
+                                    {
+                                        <span>@newLastNameLength/15</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@newLastNameLength/15</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="outerSecondSection">
+
+                    <div class="profileAndStreak">
+
+                        <button class="profilePic">@currentUser.profilePicOrIcon</button>
+                        <div class="myProfileText">@currentUser.firstName @currentUser.lastName</div>
+
+                        
+                        <div>@user.Mail</div>
+                            
+                    </div>
+                </div>
+
+
+
+                <button class="progressBtn" @onclick="goToStreakPage">צפייה בהתקדמות שלי</button>
+
+
+            }
+
+        </div>
+    </div>
+    <div class="outerThirdSection">
+
+        <div class="outerTitleAndStartDay">
+            <div class="outerText">
+
+                <span class="titleName">יום תחילת תזרים:</span>
+
+            </div>
+        </div>
+        <div class="outerDaysOptions">
+
+            <div class="outerDay">
+                <div class="dayBox">
+                    <div>
+                        @if (!editBtnClicked)
+                        {
+
+                            @if (startMonthDate > 0)
+                            {
+                                <span> ה - @startMonthDate לחודש</span>
+                            }
+                            else
+                            {
+                                <span> ה - @currentUser.monthStartDate לחודש</span>
+                            }
+                        }
+                        else
+                        {
+                            <div class="outerDropAndPoly" @onclick="()=> openStartOptions =!openStartOptions">
+                                <div>
+                                    @if (startMonthDate > 0)
+                                    {
+                                        <span> ה - @startMonthDate לחודש</span>
+                                    }
+                                    else
+                                    {
+                                        <span> ה - @currentUser.monthStartDate לחודש</span>
+                                    }
+                                </div>
+                                <img src="./css/images/arrow3.svg" />
+                            </div>
+                        }
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="outerDays">
+
+                @if (editBtnClicked)
+                {
+                    @if (openStartOptions)
+                    {
+                        <div>
+                            <div class="startDays">
+                                <button class="dropDownOptionDaysBtn" @onclick="(()=>startDaysOptions(1))">ה-1 לחודש</button>
+                                <div class="divider"></div>
+                                <button class="dropDownOptionDaysBtn" @onclick="(()=>startDaysOptions(2))">ה-2 לחודש</button>
+                                <div class="divider"></div>
+                                <button class="dropDownOptionDaysBtn" @onclick="(()=>startDaysOptions(10))">ה-10 לחודש</button>
+                                <div class="divider"></div>
+                                <button class="dropDownOptionDaysBtn" @onclick="(()=>startDaysOptions(15))">ה-15 לחודש</button>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+    <div>
+
+        <div class="outerTitleAndStartDay">
+
+            <div class="outerText">
+                <span class="titleName">תאריך הרשמה:</span>
+
+            </div>
+
+
+        </div>
+        <div class="outerDay">
+            <div class="dayBox" style="color:#727272;">
+                <div>
+                    <span>@currentUser.signUpDate.ToString("dd/MM/yyyy")</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div>
+
+        <div class="outerTitleAndStartDay">
+            <div class="outerText">
+                <span class="titleName">התגיות שלי</span>
+            </div>
+        </div>
+
+
+        <div class="outerDay">
+            <div class="outerTagsProfile">
+                @if(currentUser.userTags.Count == 0)
+                {
+                <div>
+                     
+                      <button class="addTagBtn" @onclick="addNewTag">
+                            <div class="addTagText">
+                                הוספת תגית
+                            </div>
+                            <img class="addTagImg" src="./css/images/add-new-tag (1).svg" />
+                        </button>
+                
+                
+                </div>
+                }
+                else
+                {
+                    <div>
+                    @if (editBtnClicked)
+                    {
+                        <button class="addTagBtn" @onclick="addNewTag">
+                            <div class="addTagText">
+                                הוספת תגית
+                            </div>
+                            <img class="addTagImg" src="./css/images/add-new-tag (1).svg" />
+                        </button>
+
+                    }
+                </div>
+                <div class="outerGalleryAndNav">
+                    <div class="outerGallery">
+
+                        @if (currentUser.userTags.Count > 0)
+                        {
+                            if (editBtnClicked)
+                            {
+                                foreach (TagsToShow tag in GetCurrentPageTags())
+                                {
+
+                                    if (!editBtnClicked)
+                                    {
+                                        var fontWeight = (chosenTag == tag) ? "font-weight: 600;" : "";
+                                        <button class="tag"
+                            @onclick="(() => ChooseTagForTrans(tag))"
+                            style="background-color:@tag.tagColor; @fontWeight">
+                                            @tag.tagTitle
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        var fontWeight = (chosenTag == tag) ? "font-weight: 400;" : "";
+                                        <div class="outerEditTags" @onclick="()=>chosenTagFunc(tag)">
+                                            <button class="Editedtag"
+                                style="background-color:@tag.tagColor; @fontWeight">
+                                                @tag.tagTitle
+
+                                                <div class="options-container">
+                                                    <button class="options"><img style="height:1rem;" src="./css/images/option menu.svg" /></button>
+                                                </div>
+
+                                            </button>
+                                        </div>
+                                    }
+                                }
+                               @* @if (OptionsBtnClicked)
+                                {
+                                    <div class="outerOptions">
+                                         <OptionsMenuComponent editBtnClicked="openEditOrAddTagOverlay" deleteBtnClicked="callDeleteWarning" closeOverlay="()=>openDeleteTagWarning(true)"></OptionsMenuComponent>
+
+                                        <div class="outerOptions">
+                                            <button class="optionButton editButton" @onclick="(() => iseditBtnClicked = !iseditBtnClicked)">
+                                                <img src="../css/images/edit_pencil.svg" class="icon" />
+                                                עריכה
+                                            </button>
+                                            <div class="lineBetween"> </div>
+                                            <button class="optionButton deleteButton" @onclick="(() => isdeleteBtnClicked = !isdeleteBtnClicked)">
+                                                <img src="../css/images/trash.svg" class="icon" />
+                                                מחיקה
+                                            </button>
+                                        </div>
+                                    </div>
+                                }*@
+
+                                @if (iseditBtnClicked)
+                                {
+                                   openEditOrAddTagOverlay();
+                                    iseditBtnClicked = !iseditBtnClicked;
+                                }
+
+                                @if (isdeleteBtnClicked)
+                                {
+                                    callDeleteWarning();
+                                    isdeleteBtnClicked = !isdeleteBtnClicked;
+                                }
+
+                            }
+                            else
+                            {
+                                foreach (TagsToShow tag in GetCurrentPageTags())
+                                {
+                                    var fontWeight = (chosenTag == tag) ? "font-weight: 600;" : "";
+                                    <button class="tag" style="background-color:@tag.tagColor; @fontWeight">
+                                        @tag.tagTitle
+                                    </button>
+
+                                }
+                            }
+
+
+                        }
+                    </div>
+                    @if (OptionsBtnClicked)
+                    {
+                        <div class="megaTagsOuterOptions">
+                            @* <OptionsMenuComponent editBtnClicked="openEditOrAddTagOverlay" deleteBtnClicked="callDeleteWarning" closeOverlay="()=>openDeleteTagWarning(true)"></OptionsMenuComponent>*@
+
+                            <div class="tagsOuterOptions">
+                                <button class="optionButton editButton" @onclick="(() => iseditBtnClicked = !iseditBtnClicked)">
+                                    <img src="./css/images/edit_pencil.svg" class="icon" />
+                                    עריכה
+                                </button>
+                                <div class="lineBetween"> </div>
+                                <button class="optionButton deleteButton" @onclick="(() => isdeleteBtnClicked = !isdeleteBtnClicked)">
+                                    <img src="./css/images/trash.svg" class="icon" />
+                                    מחיקה
+                                </button>
+                            </div>
+                        </div>
+                    }
+                    <div class="outerBtnAndDots">
+                        <button class="galleryArrow @disBtnStyle" @onclick="PreviousPage"><img src="./css/images/arrow-back.svg" /></button>
+                        <div class="pageDots">
+                            @for (int i = 0; i < totalPages; i++)
+                            {
+                                <span class="dot @(i == currentPage ? "active" : "")"></span>
+                            }
+                        </div>
+                        <button class="galleryArrow @disNextBtnStyle" @onclick="NextPage"><img src="./css/images/arrow-next.svg" /></button>
+
+                    </div>
+                   
+                </div>
+                }
+               
+              
+                
+            </div>
+        </div>
+    </div>
+}
+
+
+<div class="megaOuterOn">
+    @if (editBtnClicked)
+    {
+        <div class="outerSaveBtns">
+            <button class="primery-button" @onclick="(()=>saveEditedProfile(currentUser))">שמירה וחזרה</button>
+        </div>
+
+    }
+    else
+    {
+        <div class="outerOn">
+            <div class="outerOnbaordings">
+                <div class="outerDropAndPoly" @onclick="()=> openOnboardings =! openOnboardings">
+                    <div>מעבר מחדש על ההדרכה</div>
+                    <img src="./css/images/arrow3.svg" />
+                </div>
+            </div>
+            @if (openOnboardings)
+            {
+                <div class="onBoardings">
+                    <button class="dropDownOptionBtn" @onclick="(() => chosenOnboarding = firstOn)">סביבת ‘מבט אל העבר’</button>
+                    <div class="divider"></div>
+                    <button class="dropDownOptionBtn" @onclick="(() => chosenOnboarding = secondOn)">סביבת ‘מבט אל ההווה’</button>
+                    <div class="divider"></div>
+                    <button class="dropDownOptionBtn" @onclick="(() => chosenOnboarding = thirdOn)">סביבת ‘מבט אל העתיד’</button>
+                </div>
+            }
+
+
+        </div>
+    }
+
+</div>
+@if (!editBtnClicked)
+{
+
+    <div class="outerBtn">
+        <button class="secondery-button" @onclick="BeginSignOut">התנתקות מהמערכת</button>
+    </div>
+}
+
+@if (editTag)
+{
+
+    OptionsBtnClicked = false;
+    <div>
+        <div class="megaOuterLay">
+            <div class="outerLay">
+                <div class="BgOverlay"> </div>
+                <div class="overlay">
+                    <div class="paddingDiv">
+                        @if (isEdit)
+                        {
+                            ogTagColor = chosenTag.tagColor;
+
+
+                            if (isTagColor)
+                            {
+
+                                convertTagColors(chosenTag.tagColor);
+                                Console.WriteLine("אני בפונקציה הראשונה");
+
+
+                            }
+
+                            <div class="outerTitleAndIcon">
+                                <button class="closeOverlay" @onclick="closeTagsOverlay"><img src="./css/images/close x.svg" /></button>
+                                <h3 class="titleName" style="font-size: 1.2rem;">עריכת תגית</h3>
+                            </div>
+
+                            <div class="outerTitleAndCounter">
+                                <div class="input-container">
+                                    <div>שם התגית:</div>
+                                    <input type="text" class="catTitle" value="@tagToEdit.tagTitle" @oninput="tagTitleLengthCheck" maxlength="8" />
+                                    <div class="counter">
+
+
+                                     @*   <span>@tagTitleInputLength/8</span>*@
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+                        else
+                        {
+
+                            <div class="outerTitleAndIcon">
+                                <button class="closeOverlay" @onclick="closeTagsOverlay"><img src="./css/images/close x.svg" /></button>
+                                <h3 class="titleName" style="font-size: 1.2rem;">הוספת תגית</h3>
+                            </div>
+
+
+                            <div class="outerTitleAndCounter">
+                                <div class="input-container">
+                                    <div>שם התגית:</div>
+                                    <input type="text" class="catTitle" @oninput="tagTitleLengthCheck" maxlength="8" />
+                                    <div class="counter">
+
+
+                                        @*<span>@tagTitleInputLength/8</span>*@
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="outerNameAndColor">
+                            <div>צבע התגית:</div>
+                            <div class="outerColors">
+
+                                <div class="colorsContainer">
+                                    <div class="colorsRow">
+
+                                        @foreach (var color in new[] { "#F4B367", "#AEA2F9", "#F467AB", "#F47867", "#6775F4", "#8DE4BF" })
+                                        {
+
+                                            <div id="@(color)" class="@(selectedClass == color ? "color-selected" : "")">
+                                                <input style="opacity:0;" type="radio" name="categoryColors" value="@color"
+                                               @onclick="() => UpdateColor(color)" />
+
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="colorsRow">
+                                        @foreach (var color in new[] { "#67CAF4", "#FCE884", "#F9D3C2", "#09AE73", "#8C8B8B", "#DADADA" })
+                                        {
+                                            <div id="@(color)" class="@(selectedClass == color ? "color-selected" : "")">
+                                                <input style="opacity:0;" type="radio" name="categoryColors" value="@color"
+                                               @onclick="() => UpdateColor(color)" />
+
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+
+                        @if (isEdit)
+                        {
+                            <div class="outerSaveBtns">
+                                @if (tagToEdit.tagTitle != "")
+                                {
+                                    <button class="primery-button" @onclick="updateTag">שמירה וסיום</button>
+                                }
+                                else
+                                {
+                                    <button class="primery-button" style="opacity:60%" @onclick="updateTag" disabled>שמירה וסיום</button>
+                                }
+                            </div>
+
+
+                        }
+                        else
+                        {
+
+                            <div class="outerSaveBtns">
+                                @if ((tagToEdit.tagTitle != "" || tagToEdit.tagTitle != null))
+                                {
+                                    <button class="primery-button" @onclick="addTag">שמירה וסיום</button>
+                                }
+                                else
+                                {
+                                    <button class="primery-button" style="opacity:60%" @onclick="addTag" disabled>שמירה וסיום</button>
+                                }
+                            </div>
+
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+}
+
+
+@if (deleteTagWarning)
+{
+
+    string msg = "התגית " + @chosenTag.tagTitle + " עומדת להמחק.";
+
+    <GeneralPopUpComponent popupTypeTitle="מחיקת תגית" middleText="@msg" action="מחיקה" makeAction="deleteTag" closePopUp="closeDeleteWarning"></GeneralPopUpComponent>
+}
+
+
+@code {
+    [Parameter]
+    public int userID { get; set; }
+
+    [Inject]
+    public IAuthenticationService _Auth { get; set; }
+
+    [CascadingParameter]
+    private UserDTO user { get; set; }
+
+    bool onInitializedOver = false;
+    userProfileDataToShow currentUser = new userProfileDataToShow();
+
+
+    public bool editBtnClicked = false;
+    public bool closeOverlay = false;
+
+    public int startMonthDate = 0;
+    string newFirstName = "";
+    string newLastName = "";
+    string chosenOnboarding = "";
+    string ogTagColor = "";
+    string firstOn = "סביבת מבט אל העבר";
+    string secondOn = "סביבת מבט אל ההווה";
+    string thirdOn = "סביבת מבט אל העתיד";
+
+
+    //Tag gallery variables:
+    TagsToShow chosenTag = new TagsToShow();
+    bool disBtn = false;
+    bool openOnboardings = false;
+    bool disNextBtn = false;
+    bool isTagChosen = false;
+    bool openStartOptions = false;
+    bool isTagColor = true;
+    bool isEdit = false;
+    bool isColorClicked = false;
+    string OgColor = "";
+    string disBtnStyle => disBtn ? "disBtn" : "";
+    string disNextBtnStyle => disNextBtn ? "disBtn" : "";
+    string chosenTagStyle => isTagChosen ? "chosenTag" : "";
+    int editedTag = 0;
+
+    private int currentPage = 0;
+    private int pageSize = 6;
+
+
+    //Emoji keyboard:
+    private bool isVisible = false;
+    bool isCancleBtnClicked = false;
+    string hideBtn = "";
+    string currentTagColor = "";
+    string currentTagName = "";
+    bool noEmojiBtn = false;
+    private Dictionary<string, List<string>> emojiCategories = new Dictionary<string, List<string>>
+    {
+    {"כללי", new List<string> {
+    "🏠", "🛏️", "🚿", "💡", "📞", "🖥️", "🚗", "🚌", "🛒", "🍲",
+    "🏥", "💊", "👕", "🧹", "🧺", "🍼", "🐶", "🧑‍🔧", "📚", "🧾",
+    "🕶️", "🌂", "🔑", "📦"
+    }},
+    {"כיף", new List<string> {
+    "🎭", "🎟️", "🎮", "🎨", "📸", "🍽️", "🏋️‍♂️", "🧘", "🎸", "✈️",
+    "🏕️", "🛍️", "🍷", "🎁", "🎈", "📖", "🍰", "🌐", "🕹️", "🚤",
+    "🚵", "🛀", "🎷", "🎙️"
+    }},
+    {"פיננסי", new List<string> {
+    "💳",
+    "🏦", "💰", "🪙", "💸", "💹",
+    "📈", "📉", "📊", "💲", "🏧",
+    "🧾", "💱", "💲", "💹", "🏦",
+    "🖋️", "💎", "📜", "🏧",
+    "📅", "🖥️", "🖨️", "🔍"
+    }}
+    };
+
+    private string visibilityClass => isVisible ? "visible" : "";
+    private string selectedCategory = "כללי";
+
+    private int totalPages => (int)Math.Ceiling(currentUser.userTags.Count / (double)pageSize);
+    private List<TagsToShow> GetTags()
+    {
+        // Fetch or generate your list of tags
+        return new List<TagsToShow>
+    {
+    new TagsToShow { id = 1, tagTitle = "Tag1", tagColor = "#ff0000" },
+    new TagsToShow { id = 2, tagTitle = "Tag2", tagColor = "#00ff00" },
+    // Add more tags as needed
+    };
+    }
+
+    public bool editTag = false;
+    TagsToShow tagToEdit = new TagsToShow();
+    string selectedClass = "";
+    bool deleteTagWarning = false;
+    bool OptionsBtnClicked = false;
+    bool OptionsBtnProfileClicked = false;
+
+    int tagTitleInputLength = 0;
+
+    bool goingBackDisabled = false;
+
+
+    //------
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userRes = await Http.GetAsync("api/Present/userProfileData/" + userID);
+        if (userRes.IsSuccessStatusCode)
+        {
+            currentUser = await userRes.Content.ReadFromJsonAsync<userProfileDataToShow>();
+            if (currentUser.monthStartDate.HasValue)
+            {
+                switch (currentUser.monthStartDate)
+                {
+                    case 1:
+                        startMonthDate = 1;
+                        break;
+                    case 2:
+                        startMonthDate = 2;
+                        break;
+                    case 10:
+                        startMonthDate = 10;
+                        break;
+                    case 15:
+                        startMonthDate = 15;
+                        break;
+                    default:
+                        startMonthDate = 1;
+                        break;
+                }
+            }
+            else
+            {
+                startMonthDate = 1;
+            }
+
+            newFirstNameLength = currentUser.firstName.Length;
+            newLastNameLength = currentUser.lastName.Length;
+
+
+            onInitializedOver = true;
+        }
+    }
+
+
+    public async Task goToFormerPage()
+    {
+
+        if (!editBtnClicked)
+        {
+            goingBackDisabled = false;
+            await JSRuntime.InvokeVoidAsync("navigateBack");
+        }
+        else
+        {
+            goingBackDisabled = true;
+            Console.WriteLine("הוספת פופאפ ולידציה של חזרה ללא שמירה");
+        }
+    }
+
+    public void LeavingWithoutSave()
+    {
+        goingBackDisabled = false;
+
+        if (currentUser.monthStartDate.HasValue && currentUser.monthStartDate.Value > 0)
+        {
+            startMonthDate = currentUser.monthStartDate.Value;
+        }
+        else
+        {
+            startMonthDate = 1;
+        }
+
+        editBtnClicked = false;
+    }
+
+    public void closingLeavingPopUp()
+    {
+        goingBackDisabled = false;
+    }
+
+    public void ChooseTagForTrans(TagsToShow tag) //selection of a tag pre edit
+    {
+        isTagChosen = !isTagChosen;
+
+        if (chosenTag == tag)
+        {
+            chosenTag = new TagsToShow(); // Unselect the tag
+
+        }
+        else
+        {
+            chosenTag = tag; // Set the new selected tag
+        }
+
+    }
+
+    private void PreviousPage()
+    {
+        if (currentPage > 0)
+        {
+            currentPage--;
+            disBtn = currentPage == 0;
+            disNextBtn = false;
+        }
+    }
+
+    private void NextPage()
+    {
+        if (currentPage < totalPages - 1)
+        {
+            currentPage++;
+            disNextBtn = currentPage == totalPages - 1;
+            disBtn = false;
+        }
+    }
+    private async Task BeginSignOut(MouseEventArgs args)
+    {
+        //await SignOutManager.SetSignOutState();
+        //Nav.NavigateTo($"authentication/logout");
+        await _Auth.Logout();
+        Nav.NavigateTo("./LogoutPage");
+    }
+
+    private IEnumerable<TagsToShow> GetCurrentPageTags()
+    {
+        return currentUser.userTags
+        .Skip(currentPage * pageSize)
+        .Take(pageSize);
+    }
+
+    public void editProfile()
+    {
+        editBtnClicked = !editBtnClicked;
+        OptionsBtnProfileClicked = !OptionsBtnProfileClicked;
+
+    }
+    private void ToggleKeyboard()
+    {
+        isVisible = !isVisible;
+    }
+
+    private void deleteSelectedEmoji()
+    {
+        isCancleBtnClicked = true;
+        noEmojiBtn = false;
+        currentUser.profilePicOrIcon = "🌟";
+        hideBtn = "";
+        isVisible = false;
+    }
+
+    private void SelectEmoji(string emoji)
+    {
+        noEmojiBtn = true;
+        isCancleBtnClicked = false;
+        hideBtn = "hideDefaultEmojiBtn";
+        currentUser.profilePicOrIcon = emoji;
+    }
+
+    private void SelectCategory(string category)
+    {
+        selectedCategory = category;
+    }
+
+    public async Task saveEditedProfile(userProfileDataToShow updatedUser)
+    {
+        if (startMonthDate > 0)
+        {
+            updatedUser.monthStartDate = startMonthDate;
+        }
+        if (newFirstName != "" && newFirstName != currentUser.firstName)
+        {
+            currentUser.firstName = newFirstName;
+        }
+        if (newLastName != "" && newLastName != currentUser.lastName)
+        {
+            currentUser.lastName = newLastName;
+        }
+        var updateUserRec = await Http.PostAsJsonAsync("api/Present/updateUser", updatedUser);
+        if (updateUserRec.IsSuccessStatusCode)
+        {
+            Console.WriteLine("updated user data");
+            var tagsToDeleteRes = updateUserRec.Content.ReadFromJsonAsync<List<int>>().Result;
+
+            int deletedTagsCounter = 0;
+            foreach (int tagIDtoDelete in tagsToDeleteRes)
+            {
+                Console.WriteLine(tagIDtoDelete + "אידי");
+
+                var deleteTagsRec = await Http.DeleteAsync("api/Present/deleteTags/" + tagIDtoDelete);
+                if (deleteTagsRec.IsSuccessStatusCode)
+                {
+                    deletedTagsCounter++;
+                     Console.WriteLine("הצלחתי");
+                }
+            }
+            if (deletedTagsCounter == tagsToDeleteRes.Count)
+            {
+                editBtnClicked = false;
+            }
+            else
+            {
+                Console.WriteLine("not all tags were successfully deleted");
+                Console.WriteLine(deletedTagsCounter + "קאונטר תגיות");
+                Console.WriteLine(tagsToDeleteRes.Count + "כמות");
+            }
+        }
+    }
+
+    public void openEditOrAddTagOverlay()
+    {
+        editTag = !editTag;
+        if (!isEdit)
+        {
+            OgColor = chosenTag.tagColor;
+        }
+        isEdit = true;
+        tagToEdit = chosenTag;
+        Console.WriteLine(chosenTag.tagColor + "!!!!!!!!!!!");
+    }
+
+
+    void addNewTag()
+    {
+        editTag = !editTag;
+        tagToEdit = new TagsToShow();
+        chosenTag = new TagsToShow();
+
+        tagToEdit.id = 0;
+        tagTitleInputLength = 0;
+        ogTagColor = "";
+        currentTagColor = "";
+        selectedClass = "";
+    }
+
+    private void UpdateColor(string color)
+    {
+        isColorClicked = true;
+
+        if (selectedClass == color)
+        {
+            // If the color is already selected, unselect it
+            selectedClass = ""; // Reset the selected color
+            tagToEdit.tagColor = ""; // Assuming you want to clear the selected color
+
+        }
+        else
+        {
+            Console.WriteLine(color + "color");
+            // Otherwise, update to the new selected color
+            currentTagColor = color;
+            selectedClass = color;
+            chosenTag.tagColor = color;
+            convertTagColors(color);
+        }
+    }
+
+    public void updateTag()
+    {
+        if (currentTagColor == "")
+        {
+            currentTagColor = "#AEA2F9";
+        }
+
+        tagToEdit.tagColor = currentTagColor;
+        if (currentTagName == "")
+        {
+            tagToEdit.tagTitle = chosenTag.tagTitle;
+        }
+        else
+        {
+            tagToEdit.tagTitle = currentTagName;
+        }
+
+        editedTag = currentUser.userTags.IndexOf(chosenTag);
+        currentUser.userTags[editedTag].id = tagToEdit.id;
+        currentUser.userTags[editedTag].tagTitle = tagToEdit.tagTitle;
+        currentUser.userTags[editedTag].tagColor = tagToEdit.tagColor;
+        chosenTag = new TagsToShow();
+        selectedClass = "";
+        currentTagColor = "";
+        currentTagName = "";
+        editTag = false;
+        isEdit = false;
+    }
+
+    public void addTag()
+    {
+        if (currentTagColor == "")
+        {
+            currentTagColor = "#AEA2F9";
+        }
+
+        tagToEdit.tagColor = currentTagColor;
+        if (currentTagName == "")
+        {
+            tagToEdit.tagTitle = chosenTag.tagTitle;
+        }
+        else
+        {
+            tagToEdit.tagTitle = currentTagName;
+        }
+        currentUser.userTags.Add(tagToEdit);
+        tagToEdit = new TagsToShow();
+        tagToEdit.tagTitle = "";
+        currentTagColor = "";
+        currentTagName = "";
+        tagToEdit.tagColor = "";
+        tagTitleInputLength = 0;
+        chosenTag = new TagsToShow();
+        editTag = false;
+    }
+
+    public void openDeleteTagWarning(bool optStatus)
+    {
+        deleteTagWarning = !optStatus;
+    }
+
+    public void closeDeleteWarning()
+    {
+        openDeleteTagWarning(true);
+    }
+
+    public void callDeleteWarning()
+    {
+        deleteTagWarning = true;
+    }
+
+    public void deleteTag()
+    {
+        Console.WriteLine("delete clicked, tag title- " + chosenTag.tagTitle);
+        for (int i = currentUser.userTags.Count - 1; i > -1; i--)
+        {
+            if (currentUser.userTags[i] == chosenTag)
+            {
+                currentUser.userTags.Remove(currentUser.userTags[i]);
+            }
+        }
+        openDeleteTagWarning(true);
+        OptionsBtnClicked = !OptionsBtnClicked;
+    }
+
+    private void tagTitleLengthCheck(ChangeEventArgs e)
+    {
+        currentTagName = e.Value.ToString();
+        //tagTitleInputLength = tagToEdit.tagTitle.Length;
+
+    }
+
+    int newFirstNameLength = 0;
+    int newLastNameLength = 0;
+    private void firstNameLengthCheck(ChangeEventArgs e)
+    {
+        newFirstName = e.Value.ToString();
+        newFirstNameLength = newFirstName.Length;
+    }
+
+    private void lastNameLengthCheck(ChangeEventArgs e)
+    {
+        newLastName = e.Value.ToString();
+        newLastNameLength = newLastName.Length;
+    }
+
+    public void goToStreakPage()
+    {
+        Nav.NavigateTo("./StreakProgressPage/" + userID);
+    }
+
+    public void startDaysOptions(int chosenDay)
+    {
+        startMonthDate = chosenDay;
+        openStartOptions = false;
+    }
+
+    public void chosenTagFunc(TagsToShow chosenTagToEdit)
+    {
+        OptionsBtnClicked = !OptionsBtnClicked;
+        chosenTag = chosenTagToEdit;
+    }
+
+    public void convertTagColors(string tagColor)
+    {
+        Console.WriteLine(tagColor + "tagColor");
+        string convertedColor = "";
+        string outlineColor = "";
+        if (tagColor.Contains('#'))
+        {
+            selectedClass = tagColor;
+        }
+        else
+        {
+
+            switch (tagColor)
+            {
+                case "rgba(244, 179, 103, 0.4)": //mustard
+                    convertedColor = "rgba(244, 179, 103, 0.13)";
+                    outlineColor = "#F4B367";
+                    Console.WriteLine("cat color is mustard");
+                    break;
+                case "rgba(174, 162, 249, 0.4)": //purple
+                    convertedColor = "rgba(174, 162, 249, 0.13)";
+                    outlineColor = "#AEA2F9";
+                    Console.WriteLine("cat color is dark purple");
+                    break;
+                case "rgba(244, 103, 171, 0.4)": //dark pink
+                    convertedColor = "rgba(244, 103, 171, 0.13)";
+                    outlineColor = "#F467AB";
+                    Console.WriteLine("cat color is dark pink");
+                    break;
+                case "rgba(244, 120, 103, 0.4)": //salmon pink
+                    convertedColor = "rgba(244, 120, 103, 0.13)";
+                    outlineColor = "#F47867";
+                    Console.WriteLine("cat color is salmon pink");
+                    break;
+                case "rgba(103, 142, 244, 0.4)": //defualt
+                    convertedColor = "rgba(103, 142, 244, 0.13)";
+                    outlineColor = "#678EF4";
+                    Console.WriteLine("cat color is default");
+                    break;
+                case "rgba(141, 228, 191, 0.4)": //light green
+                    convertedColor = "rgba(141, 228, 191, 0.13)";
+                    outlineColor = "#8DE4BF";
+                    Console.WriteLine("cat color is light green");
+                    break;
+                case "rgba(103, 202, 244, 0.4)": //light blue
+                    convertedColor = "rgba(103, 202, 244, 0.13)";
+                    outlineColor = "#67CAF4";
+                    Console.WriteLine("cat color is light blue");
+                    break;
+                case "rgba(255, 239, 157, 0.4)": //banana
+                    convertedColor = "rgba(255, 239, 157, 0.13)";
+                    outlineColor = "#FCE884";
+                    Console.WriteLine("cat color is banana");
+                    break;
+                case "rgba(249, 211, 194, 0.4)": //cream
+                    convertedColor = "rgba(249, 211, 194, 0.13)";
+                    outlineColor = "#F9D3C2";
+                    Console.WriteLine("cat color is cream");
+                    break;
+                case "rgba(9, 174, 115, 0.4)": //dark green
+                    convertedColor = "rgba(9, 174, 115, 0.13)";
+                    outlineColor = "#09AE73";
+                    Console.WriteLine("cat color is dark green");
+                    break;
+                case "rgba(140, 139, 139, 0.4)": //dark gray
+                    convertedColor = "rgba(140, 139, 139, 0.25)";
+                    outlineColor = "#8C8B8B";
+                    Console.WriteLine("cat color is dark gray");
+                    break;
+                case "rgba(218, 218, 218, 0.4)": //gray
+                    convertedColor = "rgba(218, 218, 218, 0.13)";
+                    outlineColor = "#DADADA";
+                    Console.WriteLine("cat color is light gray");
+                    break;
+                default:
+                    convertedColor = "rgba(103, 142, 244, 0.13)";
+                    outlineColor = "#AEA2F9";
+                    Console.WriteLine("cat color is default");
+                    break;
+            };
+
+            selectedClass = outlineColor;
+
+
+        }
+
+
+        Console.WriteLine(selectedClass + "צבע תגית");
+        //isTagColor = false;
+    }
+
+    void closeTagsOverlay()
+    {
+        editTag = !editTag;
+
+        if (selectedClass == null || selectedClass == "")
+        {
+            selectedClass = ogTagColor;
+        }
+        else
+        {
+            editedTag = currentUser.userTags.IndexOf(chosenTag);
+            currentUser.userTags[editedTag].tagColor = OgColor;
+
+        }
+
+        isEdit = false;
+
+
+        //if (tagToEdit.id == 0)
+        //{
+        //    tagToEdit.tagTitle = "";
+        //    tagToEdit.tagColor = "";
+        //}
+
+
+    }
+
+
+    bool deleteBtnClicked;
+
+   
+    public bool iseditBtnClicked;
+    public bool isdeleteBtnClicked;
+
+    void closeDeleteOverLay()
+    {
+        openDeleteTagWarning(true);
+    }
+
+}
+
+

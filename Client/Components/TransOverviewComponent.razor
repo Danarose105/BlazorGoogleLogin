@@ -1,0 +1,460 @@
+﻿@using BlazorGoogleLogin.Shared.Models.present.toShow
+@using BlazorGoogleLogin.Shared.Models.present.toAdd
+@using BlazorGoogleLogin.Shared.Models.present.toEdit
+@using Microsoft.AspNetCore.Components.Web
+@inject HttpClient Http
+@inject DateService DateService
+
+
+<div class="outerMegaTrans">
+
+    <div class="outerTrans">
+        <div class="outerTransDeatils">
+
+            <div class="outerTitleDateAndTag">
+                <div class="outerTextAndDes">
+
+                    <h4 class="transTitle">@transaction.transTitle</h4>
+                    @if (transaction.description != null)
+                    {
+
+                        <button class="desBtn" @onclick="()=> openDes = !openDes"><img src="./css/images/info.svg" /></button>
+
+                    }
+                </div>
+
+                <div class="outerDes">
+                    @if (openDes)
+                    {
+
+                        <span class="transDes">@transaction.description</span>
+                    }
+                </div>
+                <div class="outerDateAndTag">
+
+                    <span style="color:#727272">@transaction.transDate</span>
+                    @if (transaction.tagID != null)
+                    {
+                        <span class="tag" style="background-color:@transaction.tagColor">@transaction.tagTitle</span>
+                    }
+                    else
+                    {
+                        <span class="fakeTag"></span>
+                    }
+                </div>
+            </div>
+
+            <div class="outerDotsAmountAndProp">
+                <div class="outerDotsAndAmount">
+
+                    <span class="tagsValue">@Math.Round(transaction.transValue,2) ₪</span>
+                    <div class="outerDotsAndOptionsTrans">
+                        <button class="optionsMenu" @onclick="OpetionsBtnClicked"><img src="./css/images/option menu.svg" /></button>
+                       
+                        @if (isOpetionsBtnClicked)
+                        {
+                             <div id="options">
+
+                            <OptionsMenuComponent deleteBtnClicked="deleteTransPopUp" editBtnClicked="editTransPopUp"></OptionsMenuComponent>
+                        </div>
+                        }
+                    </div>
+
+                </div>
+                <div class="outerProp">
+
+                    @if (transaction.valueType == "מזומן")
+                    {
+                        <div class="paymentMethod">
+                            <span><img src="./css/images/cash icon.svg" /></span>
+
+                        </div>
+                    }
+                    else if (transaction.valueType == "אשראי")
+                    {
+                        <div class="paymentMethod">
+                            <span><img src="./css/images/credit card.svg" /></span>
+                        </div>
+                    }
+                    else if (transaction.valueType == "ביט/פייבוקס")
+                    {
+                        <div class="paymentMethod">
+                            <span><img src="./css/images/bit-and-paybox.svg" /></span>
+                        </div>
+                    }
+                    else if (transaction.valueType == "אחר")
+                    {
+                        <div class="paymentMethod">
+                            <span><img src="./css/images/wallet2.svg" /></span>
+                        </div>
+                    }
+
+                    @if (transaction.fixedMonthly == true)
+                    {
+                        <div class="paymentMethod">
+
+                            <span><img src="./css/images/repeat iconrestart.svg" /></span>
+                        </div>
+                    }
+                    else if (transaction.splitPayment == true || childOfSplit == true)
+                    {
+                        <div class="paymentMethod">
+                            <span><img src="./css/images/payments.svg" /></span>
+                        </div>
+                        <span>תשלום @transIndexInPayments/@totalPayments </span>
+                    }
+                </div>
+
+            </div>
+
+        </div>
+
+        @if (deleteBtnClicked)
+        {
+            <GeneralPopUpComponent popupTypeTitle="@popupTitle" middleText="@popupBodyText" action="מחיקה" makeAction="deleteTrans" closePopUp="closeDeletePopUp"></GeneralPopUpComponent>
+        }
+
+        @if (editBtnClicked)
+        {
+            if (transaction.splitPayment == true || childOfSplit == true)
+            {
+                if (transaction.splitPayment)
+                {
+                    <AddTransactionComponent subCategoryTitle="@subCategoryTitle" subCategoryIDTOGet="@subCatID" userID="@userID" gapsToUpdateBudgets="gapsToUpdateTheBudget" addTransactionAfterEdit="updateTranPostEdit" transIDtoEdit="@transIDtoEdit" isTransactionOverlayOpen="closeEditTransWindow" overdraftNotTreated="showOverdraftingTrans" SplitPaymentWithIndex="paymentsDisplay" categoryTypeIndicator="@typeByCat"></AddTransactionComponent>
+                }
+                else if (childOfSplit)
+                {
+                    if (transaction.parentTransID.HasValue)
+                    {
+                        if (transaction.parentTransID.Value > 0)
+                        {
+                            Console.WriteLine("split parent was sent to edit");
+                            <AddTransactionComponent subCategoryTitle="@subCategoryTitle" subCategoryIDTOGet="@subCatID" userID="@userID" gapsToUpdateBudgets="gapsToUpdateTheBudget" addTransactionAfterEdit="updateTranPostEdit" transIDtoEdit="@transIDtoEdit" isTransactionOverlayOpen="closeEditTransWindow" overdraftNotTreated="showOverdraftingTrans" SplitPaymentWithIndex="paymentsDisplay" categoryTypeIndicator="@typeByCat"></AddTransactionComponent>
+                        }
+                    }
+                }
+
+            }
+            else
+            {
+                <AddTransactionComponent subCategoryTitle="@subCategoryTitle" subCategoryIDTOGet="@subCatID" userID="@userID" gapsToUpdateBudgets="gapsToUpdateTheBudget" addTransactionAfterEdit="updateTranPostEdit" transIDtoEdit="@transIDtoEdit" isTransactionOverlayOpen="closeEditTransWindow" overdraftNotTreated="showOverdraftingTrans" SplitPaymentWithIndex="paymentsDisplay" categoryTypeIndicator="@typeByCat"></AddTransactionComponent>
+            }
+        }
+
+
+
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public TransactionOverviewToShow transaction { get; set; }
+
+    [Parameter]
+    public EventCallback<int> removeTransaction { get; set; }
+
+    [Parameter]
+    public int subCatID { get; set; }
+
+    [Parameter]
+    public int userID { get; set; }
+
+    [Parameter]
+    public EventCallback<List<OverDraftBudgetToEdit>> gapsToUpdateBudgets { get; set; }
+
+    [Parameter]
+
+    public EventCallback<List<OverDraftBudgetToEdit>> subCatTakenBudget { get; set; }
+
+    [Parameter]
+    public bool overdraftStatus { get; set; }
+
+    [Parameter]
+    public bool typeByCat { get; set; } //false- expense, true- income
+
+    bool deleteBtnClicked = false;
+    bool editBtnClicked = false;
+    bool isOpetionsBtnClicked = false;
+    string popupTitle;
+    string popupBodyText;
+
+    string subCategoryTitle;
+    List<OverDraftBudgetToEdit> budgetToUpdate = new List<OverDraftBudgetToEdit>();
+    List<OverBudgetToShow> closeOverdraftOpts = new List<OverBudgetToShow>();
+    double currentGap;
+    OverBudgetToShow chosenSubCategory = new OverBudgetToShow();
+    OverBudgetToShow overDraftSubCategory = new OverBudgetToShow();
+    OverDraftBudgetToEdit subCategoryBudgetToUpdate = new OverDraftBudgetToEdit();
+
+    bool overdraftDetected = false;
+    bool openDes = false;
+
+    int transIndexInPayments = 0;
+    int totalPayments = 0;
+    List<RepeatedTransToShow> reapeatedTransValuesList = new List<RepeatedTransToShow>();
+    bool childOfSplit = false;
+    TransactionToEdit splitParentTrans = new TransactionToEdit();
+    int transIDtoEdit = 0;
+    DateTime date;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Console.WriteLine("transaction- "+transaction.transTitle+", id- "+transaction.id+", transIDtoEdit- "+transIDtoEdit);
+        if (transaction.parentTransID.HasValue) //checking if the transaction is part of a repeated/split payment
+        {
+            if (transaction.parentTransID.Value > 0)
+            {
+                var findParentRes = await Http.GetAsync("api/Transactions/identifyParent/" + transaction.parentTransID.Value);
+                if (findParentRes.IsSuccessStatusCode) //means the trans is a child of splitParent
+                {
+                    //Console.WriteLine("transaction: " + transaction.transTitle + " is a part of a split payment");
+                    transIDtoEdit = transaction.parentTransID.Value;
+
+
+
+                }
+                else
+                {
+                    Console.WriteLine("couldn't find parent that has this ID and is split, this transaction is part of a fixed monthly");
+                }
+            }
+            else
+            {
+                Console.WriteLine("error in parentTransID- value is 0");
+            }
+        }
+        else
+        {
+            Console.WriteLine("transaction isn't a child");
+
+            transIDtoEdit = transaction.id;
+
+            if (transaction.splitPayment==true)
+            {
+                var repeatedTransValuesRes = await Http.GetAsync("api/Transactions/getPaymentTransToEdit/" + transIDtoEdit);
+                if (repeatedTransValuesRes.IsSuccessStatusCode)
+                {
+                    reapeatedTransValuesList = repeatedTransValuesRes.Content.ReadFromJsonAsync<List<RepeatedTransToShow>>().Result;
+                    foreach (RepeatedTransToShow repeatedT in reapeatedTransValuesList)
+                    {
+                        if (repeatedT.id == transaction.id)
+                        {
+                            transIndexInPayments = reapeatedTransValuesList.IndexOf(repeatedT) + 1;
+                        }
+                    }
+
+                    totalPayments = reapeatedTransValuesList.Count;
+                    Console.WriteLine(totalPayments);
+                    //childOfSplit = true;
+
+                }
+                else
+                {
+                    Console.WriteLine("finding split trans values failed");
+                }
+            }
+        }
+
+        //if (typeByCat)
+        //{
+            Console.WriteLine("trans date pre switch- " + transaction.transDate);
+            bool convertingDate = DateTime.TryParse(transaction.transDate, out date);
+            string convertedDate = "";
+            if (convertingDate)
+            {
+                convertedDate = date.ToString("dd/MM/yyyy");
+                transaction.transDate = convertedDate;
+                Console.WriteLine("trans date format- " + date + " , trans date as string- " + convertedDate);
+            }
+        //}
+
+
+    }
+    public void OpetionsBtnClicked()
+    {
+        isOpetionsBtnClicked = !isOpetionsBtnClicked;
+
+    }
+
+
+    public void deleteTransPopUp()
+    {
+        deleteBtnClicked = !deleteBtnClicked;
+        isOpetionsBtnClicked = !isOpetionsBtnClicked;
+        popupTitle = "מחיקת הוצאה";
+        popupBodyText = "ההוצאה '" + transaction.transTitle + "' עומדת להמחק";
+    }
+
+    public async Task deleteTrans()
+    {
+        if (transaction.splitPayment == true) //deleting a split payment parent
+        {
+            var deleteRes = await Http.DeleteAsync("api/Transactions/deleteSplittedTransChildren/" + transaction.id);
+            if (deleteRes.IsSuccessStatusCode)
+            {
+                removeTransaction.InvokeAsync(transaction.id);
+                deleteBtnClicked = !deleteBtnClicked;
+            }
+            else
+            {
+                Console.WriteLine("בעיה במחיקת הזנה");
+            }
+        }
+        else if (transaction.parentTransID > 0) //deleting a split payment parent and his children
+        {
+            var findParentRes = await Http.GetAsync("api/Transactions/identifyParent/" + transaction.parentTransID);
+            if (findParentRes.IsSuccessStatusCode)
+            {
+                var parentIDtoCheck = await findParentRes.Content.ReadFromJsonAsync<int>();
+                if (parentIDtoCheck > 0)
+                {
+                    var deleteRes = await Http.DeleteAsync("api/Transactions/deleteSplittedTransChildren/" + transaction.parentTransID);
+                    if (deleteRes.IsSuccessStatusCode)
+                    {
+                        removeTransaction.InvokeAsync(transaction.id);
+                        deleteBtnClicked = !deleteBtnClicked;
+                    }
+                    else
+                    {
+                        Console.WriteLine("בעיה במחיקת הזנה");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("בעיה במחיקת הזנה");
+            }
+        }
+        else //deleting a parent-less transaction
+        {
+            var deleteRes = await Http.DeleteAsync("api/Transactions/deleteTransaction/" + transaction.id);
+            if (deleteRes.IsSuccessStatusCode)
+            {
+                removeTransaction.InvokeAsync(transaction.id);
+                deleteBtnClicked = !deleteBtnClicked;
+            }
+            else
+            {
+                Console.WriteLine("בעיה במחיקת הזנה");
+            }
+        }
+
+    }
+
+    public void closeDeletePopUp()
+    {
+        deleteBtnClicked = !deleteBtnClicked;
+    }
+
+    public void editTransPopUp()
+    {
+        editBtnClicked = !editBtnClicked;
+        isOpetionsBtnClicked = !isOpetionsBtnClicked;
+        Console.WriteLine("transIDtoEdit- " + transIDtoEdit);
+    }
+
+    public async Task getSubCatTitle()
+    {
+        //get subcategory title:
+        var subCatTitle = await Http.GetAsync("api/Present/getSubCategoryTitle/" + subCatID);
+        if (subCatTitle.IsSuccessStatusCode)
+        {
+            var subTitle = await subCatTitle.Content.ReadAsStringAsync();  // Read the response as plain text
+            subCategoryTitle = subTitle;
+        }
+        else
+        {
+            var subCatErrorContent = await subCatTitle.Content.ReadAsStringAsync();
+            Console.WriteLine("Failed to find subcategory title. Error: " + subCatErrorContent);
+        }
+    }
+
+    public void showOverdraftingTrans(bool overdraftNotTreated)
+    {
+        overdraftDetected = overdraftNotTreated;
+    }
+
+    private void HandleChange(ChangeEventArgs e)
+    {
+        var selectedTitle = e.Value.ToString();
+        chosenSubCategory = closeOverdraftOpts.FirstOrDefault(opt => opt.subCategoryTitle == selectedTitle);
+    }
+    public async Task manageBudgetsToTranfer()
+    {
+        budgetToUpdate = new List<OverDraftBudgetToEdit>();
+
+        budgetToUpdate.Add(new OverDraftBudgetToEdit
+            {
+                id = chosenSubCategory.id,  // ID of chosen subcategory
+                monthlyPlannedBudget = chosenSubCategory.monthlyPlannedBudget - currentGap // Updated budget
+
+            });
+
+
+        budgetToUpdate.Add(new OverDraftBudgetToEdit
+            {
+                id = overDraftSubCategory.id, // ID of the overdraft subcategory
+                monthlyPlannedBudget = overDraftSubCategory.monthlyPlannedBudget + currentGap // Updated budget
+            });
+
+        Console.WriteLine(budgetToUpdate[1].monthlyPlannedBudget);
+        Console.WriteLine(budgetToUpdate[1].id);
+        Console.WriteLine(overDraftSubCategory.id);
+        Console.WriteLine(overDraftSubCategory.monthlyPlannedBudget);
+
+        await updateSubCategoryBudget(budgetToUpdate);
+
+    }
+
+    public async Task updateSubCategoryBudget(List<OverDraftBudgetToEdit> budgetsToUpdate)
+    {
+
+        var budgetToSaveRes = await Http.PostAsJsonAsync("api/Transactions/EditSubCategoriesNewBudgets", budgetsToUpdate);
+        if (budgetToSaveRes.IsSuccessStatusCode)
+        {
+            Console.WriteLine("התקציבים עודכנו בהצלחה :)");
+
+            overdraftDetected = false;
+            //isTransactionOverlayOpen.InvokeAsync(false);
+            gapsToUpdateBudgets.InvokeAsync(budgetsToUpdate);
+        }
+        else
+        {
+            Console.WriteLine("עדכון התקציבים נכשל");
+        }
+    }
+
+    public void gapsToUpdateTheBudget(List<OverDraftBudgetToEdit> gaps)
+    {
+        overdraftDetected = false;
+        subCatTakenBudget.InvokeAsync(gaps);
+
+    }
+
+    public void updateTranPostEdit(TransactionOverviewToShow editedTransaction)
+    {
+        bool convertingDate = DateTime.TryParse(editedTransaction.transDate, out date);
+        string convertedDate = "";
+        if (convertingDate)
+        {
+            convertedDate = date.ToString("dd/MM/yyyy");
+            editedTransaction.transDate = convertedDate;
+            Console.WriteLine("trans date format- " + date + " , trans date as string- " + convertedDate);
+        }
+
+        transaction = editedTransaction;
+    }
+
+    public void closeEditTransWindow()
+    {
+        editBtnClicked = false;
+    }
+
+    public void paymentsDisplay(List<int> transPayment)
+    {
+        transIndexInPayments = transPayment[0];
+        totalPayments = transPayment[1];
+        Console.WriteLine("total payments- " + totalPayments + ", transIndexInPayments- " + transIndexInPayments);
+    }
+}

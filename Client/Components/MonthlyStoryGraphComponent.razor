@@ -1,0 +1,253 @@
+﻿@using BlazorGoogleLogin.Shared.Models.present.toAdd
+@using BlazorGoogleLogin.Shared.Models.present.toShow
+@using BlazorGoogleLogin.Shared.Models.present.toEdit
+@using System;
+@using System.Globalization;
+@using System.Net.Http;
+@using System.Net.Http.Json;
+@using System.Threading.Tasks;
+@using Blazorise;
+@using Blazorise.Charts;
+@inject IJSRuntime JSRuntime
+@inject HttpClient Http
+
+
+<div class="chart-container">
+
+    <div class="chart">
+
+        <BarChart @ref="barChart" TItem="int" Options="@options" Class="my-custom-chart"></BarChart>
+    </div>
+</div>
+
+<style>
+    .chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.chart {
+    width: 95%;
+    height: 100%;
+    
+}
+
+    .my-custom-chart canvas {
+        color: transparent !important;
+        background-color: transparent !important;
+    }
+
+    /* Alternatively, if the above does not work, try more specific targeting */
+    .my-custom-chart .chartjs-render-monitor {
+        color: transparent !important;
+        background-color: transparent !important;
+    }
+</style>
+
+
+@code {
+
+    [Parameter]
+    public int userID { get; set; }
+
+    [Parameter]
+    public List<CategoryToShow> allUserCategories { get; set; }
+
+    [Parameter]
+    public EventCallback<double> incomeSumValue { get; set; }
+
+
+    List<CategoriesOverviewToShow> allCatDetails = new List<CategoriesOverviewToShow>();
+
+    List<int> catSums = new List<int>();
+
+    BarChart<int> barChart;
+    BarChartOptions options = new BarChartOptions()
+        {
+            IndexAxis = "y",
+            Elements = new ChartElements
+            {
+                Bar = new()
+                {
+                    BorderWidth = 1.5,
+                }
+            },
+            Responsive = true,
+            MaintainAspectRatio = false, // Allow resizing without maintaining aspect ratio
+            Layout = new()
+            {
+                Padding = new()
+                {
+                    Left = 1,
+                    Right = 1,
+                    Top = 1,
+                    Bottom = 1
+                },
+
+
+            },
+
+            Scales = new ChartScales
+            {
+                X = new ChartAxis
+                {
+                    Ticks = new ChartAxisTicks
+                    {
+                        Font = new ChartFont
+                        {
+                            Size = 11,
+                            Family = "Heebo"
+                        }
+                    }
+                },
+                Y = new ChartAxis
+                {
+                    Ticks = new ChartAxisTicks
+                    {
+                        Font = new ChartFont
+                        {
+                            Size = 11,
+                            Family = "Heebo"
+                        }
+                    }
+                }
+            },
+            Plugins = new ChartPlugins
+            {
+                Legend = new ChartLegend
+                {
+                    Display = false  // This will hide the legend
+                }
+            }
+        };
+
+    public async Task getData()
+    {
+        var getCatDetails = await Http.GetAsync("api/Present/GetCategoriesOverview/" + userID);
+        if (getCatDetails.IsSuccessStatusCode)
+        {
+            allCatDetails = getCatDetails.Content.ReadFromJsonAsync<List<CategoriesOverviewToShow>>().Result;
+            if (allCatDetails.Count > 0)
+            {
+                for (int i = 0; i < allCatDetails.Count; i++)
+                {
+                    allCatDetails[i].currentCategorySum = Math.Round(allCatDetails[i].currentCategorySum, 2);
+
+                    if (allCatDetails[i].categroyTitle == "הכנסות")
+                    {
+                        //incomeCatDetails = allCatDetails[i];
+                        //Console.WriteLine("incomeCatDetails- " + incomeCatDetails.categroyTitle + ", sum- " + incomeCatDetails.currentCategorySum);
+                        incomeSumValue.InvokeAsync(allCatDetails[i].currentCategorySum);
+                    }
+                    else
+                    {
+                        Labels.Add(allCatDetails[i].categroyTitle);
+                        catSums.Add(Convert.ToInt32(allCatDetails[i].currentCategorySum));
+                    }
+
+                    foreach (CategoryToShow cat in allUserCategories)
+                    {
+                        if (allCatDetails[i].categroyTitle == cat.categroyTitle)
+                        {
+                            string catColor = "";
+                            if (cat.color == null || cat.color == "")
+                            {
+                                catColor = convertCatColors("#6775F4"); //cornflower blue
+                            }
+                            else
+                            {
+                                catColor = convertCatColors(cat.color);
+                            }
+                            backgroundColors.Add(catColor);
+                            borderColors.Add(catColor);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public string convertCatColors(string catColor)
+    {
+        string convertedColor = "";
+        switch (catColor)
+        {
+            case "#F4B367": //mustard
+                convertedColor = ChartColor.FromRgba(244, 179, 103, 1);
+                break;
+            case "#AEA2F9": //purple
+                convertedColor = ChartColor.FromRgba(174, 162, 249, 1);
+                break;
+            case "#F467AB": //dark pink
+                convertedColor = ChartColor.FromRgba(244, 103, 171, 1);
+                break;
+            case "#F47867": //salmon pink
+                convertedColor = ChartColor.FromRgba(244, 120, 103, 1);
+                break;
+            case "#6775F4": //defualt
+                convertedColor = ChartColor.FromRgba(103, 117, 244, 1);
+                break;
+            case "#8DE4BF": //light green
+                convertedColor = ChartColor.FromRgba(141, 228, 191, 1);
+                break;
+            case "#67CAF4": //light blue
+                convertedColor = ChartColor.FromRgba(103, 202, 244, 1);
+                break;
+            case "#FCE884": //banana
+                convertedColor = ChartColor.FromRgba(252, 232, 132, 1);
+                break;
+            case "#F9D3C2": //cream
+                convertedColor = ChartColor.FromRgba(249, 211, 194, 1);
+                break;
+            case "#16A78D": //dark green
+                convertedColor = ChartColor.FromRgba(22, 167, 141, 1);
+                break;
+            case "#696969": //dark gray
+                convertedColor = ChartColor.FromRgba(105, 105, 105, 1);
+                break;
+            case "#DADADA": //gray
+                convertedColor = ChartColor.FromRgba(218, 218, 218, 1);
+                break;
+        };
+        return convertedColor;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await getData();
+        if (firstRender)
+        {
+            await HandleRedraw();
+        }
+    }
+
+    async Task HandleRedraw()
+    {
+        await barChart.Clear();
+
+        await barChart.AddLabelsDatasetsAndUpdate(Labels,
+            GetBarChartDataset(""));
+    }
+
+    BarChartDataset<int> GetBarChartDataset(string label)
+    {
+        return new BarChartDataset<int>
+            {
+                Label = label,
+                Data = catSums,
+                BackgroundColor = backgroundColors,
+                BorderColor = borderColors,
+            };
+    }
+
+    List<string> Labels = new List<string>();
+    List<string> backgroundColors = new List<string>();
+    List<string> borderColors = new List<string>();
+    //Random random = new Random(DateTime.Now.Millisecond);
+
+
+
+}

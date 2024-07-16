@@ -1,0 +1,287 @@
+﻿@page "/StreakProgressPage/{userID:int}"
+@using BlazorGoogleLogin.Shared.Models.present.toShow
+@using BlazorGoogleLogin.Shared.Models.present.toAdd
+@using BlazorGoogleLogin.Shared.Models.present.toEdit
+@using BlazorGoogleLogin.Client.Components
+@using Microsoft.AspNetCore.Components.Web
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject DateService DateService
+@inject IJSRuntime JSRuntime
+@*@implements IDisposable*@
+
+
+<div class="TopProfileAndBack">
+    <div class="profileAndBack">
+        <button class="backbtn" @onclick="goBack"><img src="./css/images/back-repeated.svg"></button>
+        <button class="profilePic" @onclick="goToSProfilePage">@userIcon</button>
+    </div>
+</div>
+<div class="wrapperContent">
+    <div class="textContent">
+        <div style="font-weight:700; font-size:1rem;">ההתקדמות שלי | </div>
+        <div style="font-weight:400">כל הצעדים בדרך לחסכון</div>
+        <div id="transAmountForNextRank">
+        </div>
+    </div>
+</div>
+<div class="topRanksAndBanner">
+    @if (neededTransAmount < 96)
+    {
+        <div>
+            <div class="centringTop">
+                <div class="topNextRank">עוד <span style="color:#6775F4">@neededTransAmount</span> הזנות עד לדרגה הבאה</div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <p>הגעת לדרגה הגבוהה ביותר! אליפות!</p>
+    }
+
+    <div class="wrapperContent">
+        
+        <div class="content">
+            <div id="ranks">
+                @for (int i = 0; i < streakStatusOpt.Count; i++)
+                {
+                    if (i <= currentUserStreakIndex)
+                    {
+                        <div class="outerRank" id="rank_@i">
+                            <div class="allRank">
+                                <img style="width:25%" src="@rankPicSrc[i]"><img />
+                                <div class="rankTxt">
+                                    <h3 class="rankInnerText">@streakStatusOpt[i]</h3>
+                                    <p class="rankInnerText2">נפתח אחרי <b>@weekAmountForRank[i]</b></p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        @*add css that will make this look locked- for now I painted the text purple so we'll see the difference*@
+                        <div class="outerRank" id="rank_@i">
+                            <div class="lockRank">
+                                <img class="lockImg" src="./css/images/lock.svg" />
+                                <div class="allRankLock">
+                                    <img style="width:21%" src="@rankPicSrc[i]" alt="Rank Image">
+                                    <div class="rankTxt">
+                                        <h3 class="rankInnerText">@streakStatusOpt[i]</h3>
+                                        <p class="rankInnerText2">נפתח אחרי <b>@weekAmountForRank[i]</b></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                }
+            </div>
+        </div>
+    </div>
+    <div id="@hideNav" class="bottom-nav" @ref="navBar">
+        <button class="navBtn">מבט לעבר<img src="./css/images/past.svg" /></button>
+        <div class="NavLines"> </div>
+        <button class="navBtn" style="font-weight:600">מבט להווה<img src="./css/images/present.svg" /></button>
+        <div class="NavLines"> </div>
+        <button class="navBtn">מבט לעתיד<img src="./css/images/future.svg" /></button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int userID { get; set; }
+
+    UserStreakData currentStreak = new UserStreakData();
+
+    int currentUserStreakIndex = -1;
+    int neededTransAmount = 0;
+    bool isScrollingDown = false;
+    string hideNav => isScrollingDown ? "nav-hidden" : "bottomNav";
+
+    string userIcon = "";
+
+
+    List<string> streakStatusOpt = new List<string>()
+{
+         "מטבע ארד", "מטבע כסף", "מטבע זהב", "שטר", "שטרות","גביע","יהלום"
+    };
+
+    List<string> weekAmountForRank = new List<string>()
+{
+       "שבוע","שבועיים","חודשיים","3 חודשים","5 חודשים","חצי שנה","8 חודשים"
+    };
+    List<string> rankPicSrc = new List<string>()
+{
+       "../css/images/bronzeCoin.svg","../css/images/silverCoin.svg","../css/images/goldCoin.svg","../css/images/singleCashNote.svg","../css/images/cashNotes.svg","../css/images/goblet.svg","../css/images/diamond.svg"
+    };
+
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (userID > 0)
+        {
+            var getUserIconRes = await Http.GetAsync("api/Present/getUserIcon/" + userID);
+            if (getUserIconRes.IsSuccessStatusCode)
+            {
+                userIcon = await getUserIconRes.Content.ReadAsStringAsync();
+            }
+            else
+            {
+                userIcon = "🌟";
+            }
+
+            var streakDataRes = await Http.GetAsync("api/Present/checkStreak/" + userID);
+            if (streakDataRes.IsSuccessStatusCode)
+            {
+                currentStreak = await streakDataRes.Content.ReadFromJsonAsync<UserStreakData>();
+                //Console.WriteLine("streak status is -" + currentStreak.AllWeeksValid);
+
+                string streakStatus = streakStatusCheck(currentStreak.streak_length);
+                if (currentStreak.streak_length != null && currentStreak.streak_length > 0 && currentStreak.current_streak_group == true)
+                {
+
+                    var getCurrentStatRes = await Http.GetAsync("api/Present/getUserStreakStatus/" + userID);
+                    if (getCurrentStatRes.IsSuccessStatusCode)
+                    {
+                        string getCurrentStat = await getCurrentStatRes.Content.ReadAsStringAsync();
+                        if (streakStatusOpt.Contains(getCurrentStat) && streakStatusOpt.Contains(streakStatus))
+                        {
+
+                            int streakStatInDB = streakStatusOpt.IndexOf(getCurrentStat);
+                            int streakStatInpage = streakStatusOpt.IndexOf(streakStatus);
+                            if (streakStatInpage >= streakStatInDB)
+                            {
+                                var updateStreak = await Http.GetAsync("api/Present/updateStreakStat/" + userID + "/" + streakStatus);
+                                if (updateStreak.IsSuccessStatusCode)
+                                {
+                                    //open new status pop up
+                                    Console.WriteLine("streak status updated, new status is: " + streakStatus);
+                                    currentUserStreakIndex = streakStatInpage;
+                                }
+                            }
+                            else
+                            {
+                                var updateStreak = await Http.GetAsync("api/Present/updateStreakStat/" + userID + "/" + streakStatus);
+                                if (updateStreak.IsSuccessStatusCode)
+                                {
+                                    //open new status pop up
+                                    Console.WriteLine("streak status updated, new status is: " + streakStatus);
+                                    currentUserStreakIndex = streakStatInDB;
+                                }
+
+                            }
+
+                        }
+
+                    }
+                }
+                else
+                {
+                    streakStatus = null;
+
+                    var updateStreak = await Http.GetAsync("api/Present/updateStreakStat/" + userID + "/" + streakStatus);
+                    if (updateStreak.IsSuccessStatusCode)
+                    {
+                        //open new status pop up
+                        Console.WriteLine("streak status updated, new status is: " + streakStatus);
+                        currentUserStreakIndex = 0;
+                        neededTransAmount = 3;
+                    }
+                }
+
+                Console.WriteLine("streak status- " + streakStatus + ", week amount- " + currentStreak.streak_length);
+
+            }
+            else
+            {
+
+                Console.WriteLine("failed to get streak status");
+            }
+        }
+    }
+
+    public string streakStatusCheck(int weekAmount)
+    {
+        int rankMinTransCount = 3;
+        if (weekAmount <= 1 && weekAmount < 2)
+        {
+            if (weekAmount < 1)
+            {
+                rankMinTransCount = 3;
+            }
+            else if (weekAmount == 1)
+            {
+                rankMinTransCount = 6;
+            }
+            //rankMinTransCount = 6;
+            neededTransAmount = rankMinTransCount - (3 * weekAmount);
+            return "מטבע ארד";
+        }
+        else if (weekAmount > 2 && weekAmount <= 9)
+        {
+            rankMinTransCount = 9 * 3;
+            neededTransAmount = rankMinTransCount - (3 * weekAmount);
+            return "מטבע כסף";
+        }
+        else if (weekAmount > 9 && weekAmount <= 12)
+        {
+            rankMinTransCount = 12 * 3;
+            neededTransAmount = rankMinTransCount - (3 * weekAmount);
+            return "מטבע זהב";
+        }
+        else if (weekAmount > 12 && weekAmount <= 20)
+        {
+            rankMinTransCount = 20 * 3;
+            neededTransAmount = rankMinTransCount - (3 * weekAmount);
+            return "שטר";
+        }
+        else if (weekAmount > 20 && weekAmount <= 24)
+        {
+            rankMinTransCount = 24 * 3;
+            neededTransAmount = rankMinTransCount - (3 * weekAmount);
+            return "שטרות";
+        }
+        else if (weekAmount >= 32)
+        {
+            rankMinTransCount = 32 * 3;
+            neededTransAmount = rankMinTransCount - (3 * weekAmount);
+            return "גביע";
+        }
+        else if (weekAmount > 32)
+        {
+            //rankMinTransCount = 32 * 3;
+            neededTransAmount = 33 * 3;
+            return "יהלום";
+        }
+        else
+        {
+            rankMinTransCount = 0;
+            return "";
+        }
+    }
+
+    public async Task goBack()
+    {
+        await JSRuntime.InvokeVoidAsync("navigateBack");
+    }
+    private ElementReference navBar;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("navScroll.init", navBar);
+        }
+    }
+
+    public void Dispose()
+    {
+        JSRuntime.InvokeVoidAsync("navScroll.dispose");
+    }
+
+    public void goToSProfilePage()
+    {
+        Nav.NavigateTo("./ProfilePage/" + userID);
+    }
+}

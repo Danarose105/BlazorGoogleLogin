@@ -1,0 +1,57 @@
+﻿@inherits LayoutComponentBase
+@inject IJSRuntime JSRuntime
+
+@inject NavigationManager Nav
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+<div>
+    @*<div class="sidebar">
+    <NavMenu />
+    </div>
+    *@
+
+    <main>
+        <article>
+            @Body
+        </article>
+       
+             @*<div id="@hideNav" class="bottom-nav" @ref="navBar">
+                    <button class="navBtn" style="opacity:60%">מבט לעבר<img src="./css/images/past.svg" /></button>
+                    <div class="NavLines"> </div>
+                    <button class="navBtn" style="font-weight:600; color:#6775F4" @onclick="goToPresentHomePage">מבט להווה<img src="./css/images/present.svg" /></button>
+                    <div class="NavLines"> </div>
+                    <button class="navBtn" style="opacity:60%">מבט לעתיד<img src="./css/images/future.svg" /></button>
+             </div>*@
+
+    </main>
+</div>
+
+@code {
+
+    //[CascadingParameter]
+    //private UserDTO user { get; set; }
+
+    bool isScrollingDown = false;
+    string hideNav => isScrollingDown ? "nav-hidden" : "bottomNav";
+
+    private ElementReference navBar;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("navScroll.init", navBar);
+        }
+    }
+
+    public void Dispose()
+    {
+        JSRuntime.InvokeVoidAsync("navScroll.dispose");
+    }
+
+    public void goToPresentHomePage()
+    {
+        Nav.NavigateTo("./HomePage");
+    }
+}

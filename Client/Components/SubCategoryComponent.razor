@@ -1,0 +1,743 @@
+﻿@using BlazorGoogleLogin.Shared.Models.present.toShow
+@using BlazorGoogleLogin.Shared.Models.present.toAdd
+@using BlazorGoogleLogin.Shared.Models.present.toEdit
+@using Microsoft.AspNetCore.Components.Web
+@inject HttpClient Http
+@inject NavigationManager nav
+
+
+@if (deleteBtnClicked)
+{
+    isOptBtnClicked = false;
+    <GeneralPopUpComponent popupTypeTitle="מחיקת תת קטגוריה" middleText="@popupBodyText" action="מחיקה" makeAction="deleteSubCat" closePopUp="deleteSubCatPopUp"></GeneralPopUpComponent>
+}
+
+
+
+
+<div class="budget-card" style="background-color:@subCatColor;border:1px solid @catOutlineColor">
+    <div class="optionsMenu">
+        @if (isOptBtnClicked)
+        {
+            <OptionsMenuComponent editBtnClicked="getUserCategories" deleteBtnClicked="deleteSubCatPopUp"></OptionsMenuComponent>
+        }
+    </div>
+
+    <div class="budget-header">
+        <div class="textAndLine">
+            <div class="outerTitleAndOverdraft">
+                <div class="subCatTitle">
+
+
+                    @subCategoryTitle
+
+
+                </div>
+                @if (totalSpendings > budget && categoryTypeIndicator == false)
+                {
+                    isOverdraft = true;
+                    <span class="overdraftBtn"><img src="./css/images/overdtaft.svg" /></span>
+                }
+            </div>
+
+            <div class="subCatLine">
+            </div>
+        </div>
+
+
+
+        <div class="closedAndOpenMenu">
+            <button class="options-button" @onclick="toggleOptionsMenu"><img src="./css/images/option menu.svg" /></button>
+
+        </div>
+
+
+    </div>
+    <div class="outerBudgetInfo">
+        <div class="budget-info">
+            @if (!categoryTypeIndicator)
+            {
+
+                <button class="budget-progress" @onclick="goToTransactionsPage">
+                    @budget /  @totalSpendings ₪
+                </button>
+
+
+            }
+            else
+            {
+                <button class="budget-progress" @onclick="goToTransactionsPage">
+                    @totalSpendings ₪ 
+                </button>
+
+            }
+        </div>
+    </div>
+
+    <button class="add-transaction-button" @onclick="openAddTransOverlay"><img src="./css/images/+2.svg" /></button>
+</div>
+
+
+
+
+
+
+
+@if (openTransOverlay)
+{
+    <AddTransactionComponent subCategoryTitle="@subCategoryTitle" subCategoryIDTOGet="@subCategoryIDToGet" isTransactionOverlayOpen="@openAddTransOverlay" userID="@userID" gapsToUpdateBudgets="gapsToUpdateTheBudget" addTransactionToTotal="addNewTransToTotalSpendings" categoryTypeIndicator="@categoryTypeIndicator" updatedStreak="updateStreak" closeAddTransAfterOverdraft="closeAddTrans" transValueToAdd="updateTotalsIndexTable"></AddTransactionComponent>
+
+}
+
+
+@if (editSubCatBtnClicked)
+{
+    isOptBtnClicked = false;
+    <div class="overlay">
+        <div class="outerSubCatOverlay">
+
+            <div class="innerSubCatOverlay">
+                <button class="modal-close-btn" @onclick="closeEditSubCatOverlay"><img src="./css/images/close x.svg" /></button>
+                <h2 class="subCatTitle">עריכת תת קטגוריה</h2>
+
+                @if (!categoryTypeIndicator)
+                {
+                    <div class="editAndAddSubCat">
+                        @if (userCategories.Count > 0)
+                        {
+                            <span>העברת תת קטגוריה ל</span>
+                            @if (subCatToEdit.categroyTitle == null)
+                            {
+                                subCatToEdit.categroyTitle = categoryTitle;
+                            }
+                            <select class="catsDropDown" @bind="subCatToEdit.categroyTitle">
+
+
+                                @foreach (AllUserCategories userCategory in userCategories)
+                                {
+
+                                    <option class="catsOptions" value=@userCategory.categroyTitle> @userCategory.categroyTitle</option>
+
+                                }
+                            </select>
+                        }
+                    </div>
+
+                    <div class="outerTitleAndCounter">
+                        <div class="input-container">
+                            <label class="titleName" for="amount">שם תת קטגוריה</label>
+                            <input class="titleBox" type="text" id="amount" placeholder="שם תת הקטגוריה" @bind="titleInput" @oninput="SubCatTitleLengthCounter" maxlength="18" minlength="2" />
+                            
+                        </div>
+                    </div>
+
+                    <label class="titleName" for="description">מה התקציב החודשי שלך עבור "@subCatToEdit.subCategoryTitle"?</label>
+                    <div class="outerBudget">
+                        <input class="budgetBox" type="number" id="description" placeholder="0" @bind="subCatToEdit.monthlyPlannedBudget" />
+                        <span class="currency-symbol">₪</span>
+                        <br />
+                        @if (ogBudget < 0)
+                        {
+                            <span>הקטנת את התקציב ב- @(Math.Round((ogBudget * -1), 2))%.</span>
+                            <br />
+                        }
+                        else if (ogBudget > 0)
+                        {
+                            <span>הגדלת את התקציב ב- @(Math.Round(ogBudget, 2))%.</span>
+                            <br />
+                        }
+
+
+                        <div class="lineBetween"></div>
+                    </div>
+
+                    <div class="outerImportance">
+                        <label class="titleName" for="importance">עדיפות תת הקטגוריה</label>
+                        <div class="outerBtns">
+                            <div class="importanceBtns">
+                                @if (subCatToEdit.importance == 0)
+                                {
+                                    <input type="radio" id="wants" name="importance" @onchange="@(() => subCatToEdit.importance = 0)" checked />
+                                    <label class="" for="wants">רצון</label>
+                                }
+                                else
+                                {
+                                    <input type="radio" id="wants" name="importance" @onchange="@(() => subCatToEdit.importance = 0)" />
+                                    <label for="wants">רצון</label>
+                                }
+                                @if (subCatToEdit.importance == 1)
+                                {
+                                    <input type="radio" id="needs" name="importance" @onchange="@(() => subCatToEdit.importance = 1)" checked />
+                                    <label for="needs">צורך</label>
+                                }
+                                else
+                                {
+                                    <input type="radio" id="needs" name="importance" @onchange="@(() => subCatToEdit.importance = 1)" />
+                                    <label for="needs">צורך</label>
+                                }
+                                @if (subCatToEdit.importance == 2)
+                                {
+                                    <input type="radio" id="must" name="importance" @onchange="@(() => subCatToEdit.importance = 2)" checked />
+                                    <label for="must">חובה</label>
+                                }
+                                else
+                                {
+                                    <input type="radio" id="must" name="importance" @onchange="@(() => subCatToEdit.importance = 2)" />
+                                    <label for="must">חובה</label>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="outerExample">
+                        <div>
+                            <span class="example">לדוגמה:</span>
+                            לק - רצון, דלק - צורך, שכ״ד- חובה. העדיפות משפיעה על הטיפים לייעול התקציב.
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="outerTitleName">
+                        <label class="titleName" for="amount">שם תת קטגוריה</label>
+                        <input class="titleBox" type="text" id="amount" placeholder="שם תת הקטגוריה" maxlength="18" minlength="2" @oninput="SubCatTitleLengthCounter" @bind="@titleInput" />
+                        <div class="counter">
+                            @if (titleInput == null || titleInput == "")
+                            {
+                                <span>0/18</span>
+                            }
+                            else
+                            {
+
+
+                                <span>@titleInputLength/18</span>
+
+                            }
+                        </div>
+                    </div>
+                }
+
+
+                <div class="outerSaveBtns">
+                    @if (!categoryTypeIndicator)
+                    {
+                        if (titleInput == null || titleInput == "" || titleInput.Length <= 0 || subCatToEdit.subCategoryTitle.Length <= 0)
+                        {
+                          
+                                <button class="primery-button" @onclick="EditSubCategoryAndTransaction" disabled>שמירה ויצירת הזנה</button>
+                                <button class="secondery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
+                                <br />
+                                <span>לא ניתן לשמור תת קטגוריה ללא שם.</span>
+                            
+                            
+                        }
+                        else if (subCatToEdit.monthlyPlannedBudget <= 0 || subCatToEdit.monthlyPlannedBudget == null)
+                        {
+                            <button class="primery-button" @onclick="EditSubCategoryAndTransaction" disabled>שמירה ויצירת הזנה</button>
+                            <button class="secondery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
+                            <br />
+                            <span>לא ניתן לשמור תת קטגוריה ללא תקציב .</span>
+                        }
+                        else if (subCatToEdit.importance > 2 || subCatToEdit.importance < 0)
+                        {
+                            <button class="primery-button" @onclick="EditSubCategoryAndTransaction" disabled>שמירה ויצירת הזנה</button>
+                            <button class="secondery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
+                            <br />
+                            <span>לא ניתן לשמור תת קטגוריה ללא הגדרת עדיפות .</span>
+                        }
+                        else
+                        {
+                            <button class="primery-button" @onclick="EditSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
+                            <button class="secondery-button" @onclick="saveUpdatedSubCat">שמירה וסיום</button>
+
+                        }
+                    }
+                    else
+                    {
+                        if (titleInput == null || titleInput == "" || titleInput.Length <= 0 || subCatToEdit.subCategoryTitle.Length <= 0)
+                        {
+                            <button class="primery-button" @onclick="EditSubCategoryAndTransaction" disabled>שמירה ויצירת הזנה</button>
+                            <button class="secondery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
+                            <br />
+                            <span>לא ניתן לשמור תת קטגוריה ללא שם.</span>
+                        }
+                        else
+                        {
+                            <button class="primery-button" @onclick="EditSubCategoryAndTransaction" >שמירה ויצירת הזנה</button>
+                            <button class="secondery-button" @onclick="saveUpdatedSubCat" >שמירה וסיום</button>
+
+
+                        }
+
+                            
+                        
+                    }
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+}
+
+
+@code {
+
+    [Parameter]
+    public int userID { get; set; }
+
+    [Parameter]
+    public string subCategoryTitle { get; set; }
+
+    [Parameter]
+    public string categoryTitle { get; set; }
+
+    [Parameter]
+    public int subCategoryIDToGet { get; set; }
+
+    [Parameter]
+    public double totalSpendings { get; set; }
+
+
+
+    [Parameter]
+
+    public EventCallback<List<OverDraftBudgetToEdit>> subCatTakenBudget { get; set; }
+
+    [Parameter]
+
+    public EventCallback refreshSubCats { get; set; }
+
+    [Parameter]
+    public double? budget { get; set; }
+
+    [Parameter]
+    public EventCallback<SubCategoryToEdit> updateEditedSubCat { get; set; }
+
+    [Parameter]
+    public int categoryID { get; set; }
+
+    [Parameter]
+    public EventCallback<int> subCatDeleted { get; set; }
+
+    [Parameter]
+    public bool categoryTypeIndicator { get; set; } //will indicate if this is an expense or income subcategory
+
+    [Parameter]
+    public EventCallback<string?> updatedStreakStat { get; set; }
+
+    [Parameter]
+    public string? subCatColor { get; set; }
+
+    [Parameter]
+    public bool overdraftNotTreated { get; set; }
+
+    [Parameter]
+    public EventCallback<int> openOverdraftOverlay { get; set; }
+
+    [Parameter]
+    public EventCallback<double> updateTransactionSum { get; set; }
+
+    //[Parameter]
+    //public EventCallback<Dictionary<int,double>> subCatIDtoUpdate { get; set; }
+
+    SubCategoryToEdit subCatToEdit = new SubCategoryToEdit();
+    //SubCategoryToEdit ogSubCat = new SubCategoryToEdit();
+    SubCategoryToUpdate subCategoryToUpdate = new SubCategoryToUpdate();
+
+    List<AllUserCategories> userCategories = new List<AllUserCategories>();
+
+    bool isOptBtnClicked = false; //the options button
+    bool editSubCatBtnClicked = false;
+    bool deleteBtnClicked = false;
+    bool isOverdraft = false;
+    string popupBodyText = "";
+    string titleInput = "";
+    string convertedColor = "";
+    string outlineColor = "";
+    string OgsubCatTitle = "";
+    int titleInputLength = 0;
+    public bool openTransOverlay = false;
+    string? catOutlineColor = "";
+
+    double ogBudget = 0;
+
+    private string _previousColor = "##INITIAL##";
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (_previousColor != subCatColor)
+        {
+            convertCatColors(subCatColor);
+            _previousColor = subCatColor;
+        }
+    }
+
+    //SubCategoryToShow currentSubCat = new SubCategoryToShow();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (subCategoryIDToGet > 0)
+        {
+            titleInput = subCategoryTitle;
+        }
+
+        if (budget.HasValue && subCatToEdit.monthlyPlannedBudget.HasValue)
+        {
+            if (budget.Value == subCatToEdit.monthlyPlannedBudget.Value)
+            {
+                ogBudget = 0;
+            }
+            else if (budget.Value > 0 && subCatToEdit.monthlyPlannedBudget.Value > 0)
+            {
+                ogBudget = budget.Value;
+            }
+        }
+
+        if (subCatColor == null || subCatColor == "")
+        {
+            convertCatColors("#678EF4");
+        }
+        else
+        {
+            //convertCatColors(subCatColor);
+            base.OnInitialized();
+            convertCatColors(subCatColor);  // Force initial color setup
+            StateHasChanged();
+
+
+            Console.WriteLine("צבע של סאב קטגוריה" + subCatColor);
+        }
+        Console.WriteLine("subcat on initialized- " + subCatColor);
+    }
+
+    public void convertCatColors(string? catColor)
+    {
+
+        switch (catColor)
+        {
+            case "#F4B367": //mustard
+                convertedColor = "#f4b36721";
+                outlineColor = "rgba(244, 179, 103, 1)";
+                Console.WriteLine("cat color is mustard");
+                break;
+            case "#AEA2F9": //purple
+                convertedColor = "#aea2f921";
+                outlineColor = "rgba(174, 162, 249, 1)";
+                Console.WriteLine("cat color is dark purple");
+                break;
+            case "#F467AB": //dark pink
+                convertedColor = "#f467ab21";
+                outlineColor = "rgba(244, 103, 171, 1)";
+                Console.WriteLine("cat color is dark pink");
+                break;
+            case "#F47867": //salmon pink
+                convertedColor = "#f4786721";
+                outlineColor = "rgba(244, 120, 103, 1)";
+                Console.WriteLine("cat color is salmon pink");
+                break;
+            case "#678EF4": //defualt
+                convertedColor = "#678ef421";
+                outlineColor = "rgba(103, 142, 244, 1)";
+                Console.WriteLine("cat color is default");
+                break;
+            case "#8DE4BF": //light green
+                convertedColor = "#8de4bf21";
+                //convertedColor = "rgba(141, 228, 191, 0.13)";
+                outlineColor = "rgba(141, 228, 191, 1)";
+                Console.WriteLine("cat color is light green");
+                break;
+            case "#67CAF4": //light blue
+                convertedColor = "#67caf421";
+                outlineColor = "rgba(103, 202, 244, 1)";
+                Console.WriteLine("cat color is light blue");
+                break;
+            case "#FCE884": //banana
+                convertedColor = "#ffef9d21";
+                outlineColor = "rgba(255, 239, 157, 1)";
+                Console.WriteLine("cat color is banana");
+                break;
+            case "#F9D3C2": //cream
+                convertedColor = "#f9d3c221";
+                outlineColor = "rgba(249, 211, 194, 1)";
+                Console.WriteLine("cat color is cream");
+                break;
+            case "#09AE73": //dark green
+                convertedColor = "#09ae7321";
+                outlineColor = "rgba(9, 174, 115, 1)";
+                Console.WriteLine("cat color is dark green");
+                break;
+            case "#8C8B8B": //dark gray
+                convertedColor = "#8c8b8b40";
+                outlineColor = "rgba(140, 139, 139, 1)";
+                Console.WriteLine("cat color is dark gray");
+                break;
+            case "#DADADA": //gray
+                convertedColor = "#dadada21";
+                outlineColor = "rgba(218, 218, 218, 1)";
+                Console.WriteLine("cat color is light gray");
+                break;
+            case null: //defualt
+                convertedColor = "#678ef421";
+                outlineColor = "rgba(103, 142, 244, 1)";
+                Console.WriteLine("cat color is default");
+                break;
+            case "": //defualt
+                convertedColor = "#678ef421";
+                outlineColor = "rgba(103, 142, 244, 1)";
+                Console.WriteLine("cat color is default");
+                break;
+        };
+
+        catOutlineColor = outlineColor;
+        subCatColor = convertedColor;
+
+        Console.WriteLine(catOutlineColor + " catOutlineColorזה ה");
+        Console.WriteLine(subCatColor + "subCatColorזה ה");
+
+        //subCatColor = "";
+        //catOutlineColor = "";
+        //for (int i = 0; i < convertedColor.Length; i++)
+        //{
+        //    subCatColor += convertedColor[i];
+        //}
+
+        //for (int i = 0; i < outlineColor.Length; i++)
+        //{
+        //    catOutlineColor += outlineColor[i];
+        //}
+
+
+
+    }
+
+    public void openAddTransOverlay()
+    {
+        openTransOverlay = !openTransOverlay;
+    }
+
+    public void gapsToUpdateTheBudget(List<OverDraftBudgetToEdit> gaps)
+    {
+        subCatTakenBudget.InvokeAsync(gaps);
+
+    }
+
+    //public void triggerOverdraftOverlay()
+    //{
+    //    openOverdraftOverlay.InvokeAsync(subCategoryIDToGet);
+    //}
+
+    public async Task getUserCategories()
+    {
+        //editSubCatBtnClicked = true;
+
+        subCatToEdit.categroyTitle = categoryTitle;
+        subCatToEdit.monthlyPlannedBudget = budget;
+        subCatToEdit.subCategoryTitle = titleInput;
+        subCatToEdit.id = subCategoryIDToGet;
+        subCatToEdit.categoryID = categoryID;
+        var getSubCatImportance = await Http.GetAsync("api/Present/GetSubCatImportance/" + subCatToEdit.id);
+        if (getSubCatImportance.IsSuccessStatusCode)
+        {
+            subCatToEdit.importance = await getSubCatImportance.Content.ReadFromJsonAsync<int>();
+        }
+        else
+        {
+            Console.WriteLine("couldn't find this sub cat's importance");
+        }
+
+        if (!categoryTypeIndicator)
+        {
+            var getAllUserCategories = await Http.GetAsync("api/Present/GetUserCategories/" + userID);
+            if (getAllUserCategories.IsSuccessStatusCode)
+            {
+                userCategories = await getAllUserCategories.Content.ReadFromJsonAsync<List<AllUserCategories>>().ConfigureAwait(false);
+
+                //arranges the category dropdown so the current category will be the one initially displayed
+                List<AllUserCategories> tempUserCategories = new List<AllUserCategories>();
+                foreach (AllUserCategories category in userCategories)
+                {
+                    if (category.id == categoryID)
+                    {
+                        tempUserCategories.Insert(0, category);
+                    }
+                    else
+                    {
+                        tempUserCategories.Add(category);
+                    }
+
+                }
+                userCategories = tempUserCategories;
+
+            }
+            else
+            {
+                Console.WriteLine("no Categories found");
+            }
+        }
+        else
+        {
+            var getIncomeCat = await Http.GetAsync("api/Present/GetCategoryToEdit/" + subCatToEdit.categoryID);
+            if (getIncomeCat.IsSuccessStatusCode)
+            {
+                CategoryToShow returnedCat = await getIncomeCat.Content.ReadFromJsonAsync<CategoryToShow>();
+                AllUserCategories incomeCat = new AllUserCategories();
+                incomeCat.id = returnedCat.id;
+                incomeCat.categroyTitle = returnedCat.categroyTitle;
+                userCategories = new List<AllUserCategories>();
+                userCategories.Add(incomeCat);
+            }
+        }
+        titleInputLength = subCatToEdit.subCategoryTitle.Length;
+        editSubCatBtnClicked = !editSubCatBtnClicked;
+
+        toggleOptionsMenu();
+    }
+
+    public async Task saveUpdatedSubCat()
+    {
+        subCategoryToUpdate.subCategoryTitle = titleInput;
+        subCategoryToUpdate.importance = subCatToEdit.importance;
+        foreach (AllUserCategories category in userCategories)
+        {
+            if (category.categroyTitle == titleInput)
+            {
+                subCatToEdit.categoryID = category.id;
+            }
+        }
+        subCategoryToUpdate.categoryID = subCatToEdit.categoryID;
+        subCategoryToUpdate.id = subCatToEdit.id;
+        subCategoryToUpdate.monthlyPlannedBudget = subCatToEdit.monthlyPlannedBudget;
+
+        var updateCatRes = await Http.PostAsJsonAsync("api/Present/EditSubCategory/", subCategoryToUpdate);
+        if (updateCatRes.IsSuccessStatusCode)
+        {
+            SubCategoryToUpdate updatedSubCat = await updateCatRes.Content.ReadFromJsonAsync<SubCategoryToUpdate>();
+            subCatToEdit.subCategoryTitle = updatedSubCat.subCategoryTitle;
+            titleInput = updatedSubCat.subCategoryTitle;
+            subCatToEdit.importance = updatedSubCat.importance;
+            subCatToEdit.monthlyPlannedBudget = updatedSubCat.monthlyPlannedBudget;
+
+            updateEditedSubCat.InvokeAsync(subCatToEdit);
+
+            editSubCatBtnClicked = false; //closeing the edit overlay
+
+
+            Console.WriteLine("sub category updated");
+
+        }
+        else
+        {
+            Console.WriteLine("failed to update category");
+        }
+    }
+
+
+    public void deleteSubCatPopUp()
+    {
+        deleteBtnClicked = !deleteBtnClicked;
+        popupBodyText = "תת הקטגוריה '" + subCategoryTitle + "' עומדת להמחק";
+        toggleOptionsMenu();
+        isOptBtnClicked = false;
+    }
+    public async Task deleteSubCat()
+    {
+        var deleteRes = await Http.DeleteAsync("api/Present/deleteSubCategory/" + subCategoryIDToGet);
+        if (deleteRes.IsSuccessStatusCode)
+        {
+            subCatDeleted.InvokeAsync(subCategoryIDToGet);
+        }
+        else
+        {
+            Console.WriteLine(" בעיה במחיקת תת- קטגוריה");
+        }
+    }
+
+    public async Task addNewTransToTotalSpendings(double transactionValue)
+    {
+
+        totalSpendings += transactionValue;
+        totalSpendings = Math.Round(totalSpendings, 2);
+
+        //await updateTotalsIndexTable(transactionValue);
+
+        Console.WriteLine(subCategoryTitle + ": " + totalSpendings + ", latest trans value- " + transactionValue);
+
+
+
+    }
+
+    public void updateTotalsIndexTable(double transValue)
+    {
+        updateTransactionSum.InvokeAsync(transValue);
+    }
+
+
+    public void goToTransactionsPage()
+    {
+
+        nav.NavigateTo("./TransactionsOverview/" + subCategoryIDToGet + "/" + categoryID + "/" + budget + "/" + userID + "/" + isOverdraft);
+    }
+
+    public async Task EditSubCategoryAndTransaction()
+    {
+        await saveUpdatedSubCat();
+        openTransOverlay = true;
+
+    }
+
+
+    public void updateStreak(string? newStreakStat)
+    {
+        updatedStreakStat.InvokeAsync(newStreakStat);
+    }
+
+    void closeAddTrans()
+    {
+        openTransOverlay = false;
+    }
+
+    public void calculateBudgetChange()
+    {
+        if (budget != null)
+        {
+            if (budget.HasValue && budget.Value > 0 && subCatToEdit.monthlyPlannedBudget.HasValue)
+            {
+                double budgetGap = subCatToEdit.monthlyPlannedBudget.Value - budget.Value;
+                ogBudget = ((budgetGap / budget.Value) * 100);
+            }
+            else if (budget.Value <= 0 || subCatToEdit.monthlyPlannedBudget.Value <= 0)
+            {
+                ogBudget = 100;
+            }
+            else if (budget.Value == subCatToEdit.monthlyPlannedBudget.Value)
+            {
+                ogBudget = 0;
+            }
+            Console.WriteLine("ogBudget- " + ogBudget + ", budget- " + budget);
+        }
+    }
+
+    void toggleOptionsMenu()
+    {
+        isOptBtnClicked = !isOptBtnClicked;
+    }
+
+    private void SubCatTitleLengthCounter(ChangeEventArgs e)
+    {
+        titleInput = e.Value.ToString();
+        titleInputLength = titleInput.Length;
+    }
+
+    void closeEditSubCatOverlay()
+    {
+        Console.WriteLine("לחצו על האיקס");
+        Console.WriteLine(OgsubCatTitle + "OgsubCatTitle");
+        editSubCatBtnClicked = !editSubCatBtnClicked;
+        titleInput = subCategoryTitle;
+
+    }
+}
