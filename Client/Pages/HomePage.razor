@@ -75,7 +75,7 @@ else
             <div class="outerTopSection">
 
                 <div class="profileAndStreak">
-                   
+
                     @if (streakStatTitle != null && streakStatTitle != "")
                     {
                         @if (streakImgIcon != "")
@@ -115,10 +115,10 @@ else
                 </thead>
                 <tbody>
                     <tr>
-                        <td>@Math.Round(currentUser.spendingValueFullList) ₪</td>
-                        <td id="middleTableRow">@Math.Round(currentUser.incomeValueFullList) ₪</td>
+                        <td>@Math.Round(currentUser.spendingValueFullList,2) ₪</td>
+                        <td id="middleTableRow">@Math.Round(currentUser.incomeValueFullList,2) ₪</td>
                         <td id="leftTableRow">
-                            @Math.Round(currentUser.budgetFullValue)%
+                            @Math.Round(currentUser.budgetFullValue,2)%
                             <br />
                             <span id="fromBudget">מהתקציב</span>
                         </td>
@@ -126,17 +126,17 @@ else
                     </tr>
                 </tbody>
             </table>
-@*            @if(tagsSpendingsList.Count == 0 && subCatsTotalsStory.Count == 0)
-            {
-                
-                <button class="primery-button" style="opacity:0.6">מצב החודש כרגע</button>
-            }
-            else
-            {*@
-                <button class="primery-button" @onclick="getSubCatTotalsForStory">מצב החודש כרגע</button>
-           @* }*@
+            @*            @if(tagsSpendingsList.Count == 0 && subCatsTotalsStory.Count == 0)
+        {
 
-            
+        <button class="primery-button" style="opacity:0.6">מצב החודש כרגע</button>
+        }
+        else
+        {*@
+            <button class="primery-button" @onclick="getSubCatTotalsForStory">מצב החודש כרגע</button>
+            @* }*@
+
+
 
             @if (storyPopUpWindow)
             {
@@ -166,7 +166,7 @@ else
 
                             </div>
 
-                          
+
                             @if (storyNav == 1 && subCatsTotalsStory.Count > 0)
                             {
                                 <div class="outerText">
@@ -336,7 +336,7 @@ else
 
         @if (userIncomeCat != null && isChecked)
         {
-            <CategoryComponent Category="@userIncomeCat" categoryTitle="userIncomeCat.categroyTitle" icon="userIncomeCat.icon" categoryColor="@userIncomeCat.color" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryTypeIndicator="true" updateBudget="refreshBudgetsOfSubCats"updateTransSum="refreshTransSumTotals"></CategoryComponent>
+            <CategoryComponent Category="@userIncomeCat" categoryTitle="userIncomeCat.categroyTitle" icon="userIncomeCat.icon" categoryColor="@userIncomeCat.color" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryTypeIndicator="true" updateBudget="refreshBudgetsOfSubCats" updateTransSum="refreshTransSumTotals"></CategoryComponent>
         }
         @if (!isChecked) // עובר להוצאות
         {
@@ -399,7 +399,7 @@ else
                     {
                         if (c.id == category.id && c.monthlyPlannedBudget < c.totalTransSum)
                         {
-                           <span>חריגה⚠️</span>
+                            <span>חריגה⚠️</span>
                         }
                     }
                     <div class="fullCategory">
@@ -631,72 +631,72 @@ else
 
         var userRes = await Http.GetAsync("api/Present/userToShowByDate/" + userID);
 
-            if (userRes.IsSuccessStatusCode)
+        if (userRes.IsSuccessStatusCode)
+        {
+            currentUser = userRes.Content.ReadFromJsonAsync<userToShow>().Result;
+            userID = currentUser.id;
+            searchCats = currentUser.categoriesFullList;
+            getCurrentStreak();
+            Console.WriteLine("current streak status- " + currentUser.streakStatus);
+
+            var getCatDetails = await Http.GetAsync("api/Present/checkOverdraftCats/" + userID);
+            if (getCatDetails.IsSuccessStatusCode)
             {
-                currentUser = userRes.Content.ReadFromJsonAsync<userToShow>().Result;
-                userID = currentUser.id;
-                searchCats = currentUser.categoriesFullList;
-                getCurrentStreak();
-                Console.WriteLine("current streak status- " + currentUser.streakStatus);
+                checkOverdraftingCats = getCatDetails.Content.ReadFromJsonAsync<List<CategoryOverDraftCheckToShow>>().Result;
+            }
 
-                var getCatDetails = await Http.GetAsync("api/Present/checkOverdraftCats/" + userID);
-                if (getCatDetails.IsSuccessStatusCode)
+            var subCatToSearch = await Http.GetAsync("api/Present/getSubCategoryTitle/" + userID);
+
+            if (subCatToSearch.IsSuccessStatusCode)
+            {
+                List<SubCategoryToAdd> subCatId = subCatToSearch.Content.ReadFromJsonAsync<List<SubCategoryToAdd>>().Result;
+                searchSubCats = subCatId;
+
+            }
+            else
+            {
+                Console.WriteLine("couldn't find any sub categories");
+            }
+
+            var getIncomeCatID = await Http.GetAsync("api/Present/incomeCatId/" + userID);
+            if (getIncomeCatID.IsSuccessStatusCode)
+            {
+                int incomeID = await getIncomeCatID.Content.ReadFromJsonAsync<int>();
+                if (incomeID > 0)
                 {
-                    checkOverdraftingCats = getCatDetails.Content.ReadFromJsonAsync<List<CategoryOverDraftCheckToShow>>().Result;
-                }
-
-                var subCatToSearch = await Http.GetAsync("api/Present/getSubCategoryTitle/" + userID);
-
-                if (subCatToSearch.IsSuccessStatusCode)
-                {
-                    List<SubCategoryToAdd> subCatId = subCatToSearch.Content.ReadFromJsonAsync<List<SubCategoryToAdd>>().Result;
-                    searchSubCats = subCatId;
-
-                }
-                else
-                {
-                    Console.WriteLine("couldn't find any sub categories");
-                }
-
-                var getIncomeCatID = await Http.GetAsync("api/Present/incomeCatId/" + userID);
-                if (getIncomeCatID.IsSuccessStatusCode)
-                {
-                    int incomeID = await getIncomeCatID.Content.ReadFromJsonAsync<int>();
-                    if (incomeID > 0)
+                    for (int i = 0; i < currentUser.categoriesFullList.Count; i++)
                     {
-                        for (int i = 0; i < currentUser.categoriesFullList.Count; i++)
+                        if (currentUser.categoriesFullList[i].id == incomeID)
                         {
-                            if (currentUser.categoriesFullList[i].id == incomeID)
-                            {
-                                userIncomeCat = currentUser.categoriesFullList[i];
-                                currentUser.categoriesFullList.RemoveAt(i);
-                            }
-
+                            userIncomeCat = currentUser.categoriesFullList[i];
+                            currentUser.categoriesFullList.RemoveAt(i);
                         }
-                    }
-                    else
-                    {
-                        Console.WriteLine("insufficient income id- it's not larger than 0");
-                    }
 
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("couldn't find income category that belongs to this user");
+                    Console.WriteLine("insufficient income id- it's not larger than 0");
                 }
 
             }
             else
             {
-                string error = userRes.Content.ReadAsStringAsync().Result;
-                switch (error)
-                {
-                    case "User Not Found":
-                        msg = "User not found ";
-                        break;
-                }
-
+                Console.WriteLine("couldn't find income category that belongs to this user");
             }
+
+        }
+        else
+        {
+            string error = userRes.Content.ReadAsStringAsync().Result;
+            switch (error)
+            {
+                case "User Not Found":
+                    msg = "User not found ";
+                    break;
+            }
+
+        }
 
     }
 
@@ -804,39 +804,53 @@ else
         if (refreshBudget.HasValue)
         {
             double budgetPercentage = 0;
-            budgetPercentage = currentUser.budgetFullValue;
+            double? ogBudget = 0;
+            if (currentUser.budgetFullValue > 0)
+            {
+                budgetPercentage = currentUser.budgetFullValue;
 
-            double? ogBudget = currentUser.spendingValueFullList / (budgetPercentage / 100);
+                ogBudget = currentUser.spendingValueFullList / (budgetPercentage / 100);
+            }
 
             ogBudget += refreshBudget.Value;
 
-            currentUser.budgetFullValue = (currentUser.spendingValueFullList / ogBudget.Value) * 100;
+            if (currentUser.spendingValueFullList > 0)
+            {
+                currentUser.budgetFullValue = (currentUser.spendingValueFullList / ogBudget.Value) * 100;
+            }
+
         }
     }
 
     public void refreshTransSumTotals(double transValue)
     {
-
-        if (!isChecked)
+        Console.WriteLine("currentUser.budgetFullValue- " + currentUser.budgetFullValue);
+        double budgetPercentage = 0;
+        if (currentUser.budgetFullValue > 0)
         {
-            currentUser.spendingValueFullList += transValue;
-            //Console.WriteLine("isChecked- " + isChecked + ", transValue- " + transValue);
-
-            //refreshing the budget accordingly:
-            double budgetPercentage = 0;
             budgetPercentage = currentUser.budgetFullValue;
-
             double? ogBudget = currentUser.spendingValueFullList / (budgetPercentage / 100);
+            if (!isChecked)
+            {
+                currentUser.spendingValueFullList += transValue;
+                //Console.WriteLine("isChecked- " + isChecked + ", transValue- " + transValue);
 
-            currentUser.budgetFullValue = (currentUser.spendingValueFullList / ogBudget.Value) * 100;
-        }
-        else
-        {
-            currentUser.incomeValueFullList += transValue;
-            //Console.WriteLine("isChecked- " + isChecked + ", transValue- " + transValue);
-        }
-        Console.WriteLine("isChecked- " + isChecked + ", transValue- " + transValue);
+                //refreshing the budget accordingly:
 
+                currentUser.budgetFullValue = (currentUser.spendingValueFullList / ogBudget.Value) * 100;
+
+
+            }
+            else
+            {
+                currentUser.incomeValueFullList += transValue;
+                //Console.WriteLine("isChecked- " + isChecked + ", transValue- " + transValue);
+            }
+            Console.WriteLine("isChecked- " + isChecked + ", transValue- " + transValue + ", currentUser.budgetFullValue- " + currentUser.budgetFullValue);
+
+
+        }
+        
     }
 
 
@@ -844,7 +858,7 @@ else
     {
         catToDelete = catallToDelete;
         currentUser.categoriesFullList.Remove(catallToDelete);
-       
+
         Console.WriteLine(catToDelete);
     }
 

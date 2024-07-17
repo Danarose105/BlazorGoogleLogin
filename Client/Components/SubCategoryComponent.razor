@@ -33,7 +33,7 @@
 
 
                 </div>
-                @if (totalSpendings > budget && categoryTypeIndicator == false)
+                @if (categoryTypeIndicator == false && (totalSpendings > budget || subCatTransTotal> budget))
                 {
                     isOverdraft = true;
                     <span class="overdraftBtn"><img src="./css/images/overdtaft.svg" /></span>
@@ -59,7 +59,7 @@
             {
 
                 <button class="budget-progress" @onclick="goToTransactionsPage">
-                    @budget /  @totalSpendings ₪
+                    @budget /  @subCatTransTotal ₪
                 </button>
 
 
@@ -67,7 +67,7 @@
             else
             {
                 <button class="budget-progress" @onclick="goToTransactionsPage">
-                    @totalSpendings ₪ 
+                    @subCatTransTotal ₪
                 </button>
 
             }
@@ -85,7 +85,7 @@
 
 @if (openTransOverlay)
 {
-    <AddTransactionComponent subCategoryTitle="@subCategoryTitle" subCategoryIDTOGet="@subCategoryIDToGet" isTransactionOverlayOpen="@openAddTransOverlay" userID="@userID" gapsToUpdateBudgets="gapsToUpdateTheBudget" addTransactionToTotal="addNewTransToTotalSpendings" categoryTypeIndicator="@categoryTypeIndicator" updatedStreak="updateStreak" closeAddTransAfterOverdraft="closeAddTrans" transValueToAdd="updateTotalsIndexTable"></AddTransactionComponent>
+    <AddTransactionComponent subCategoryTitle="@subCategoryTitle" subCategoryIDTOGet="@subCategoryIDToGet" isTransactionOverlayOpen="openAddTransOverlay" userID="@userID" gapsToUpdateBudgets="gapsToUpdateTheBudget" addTransactionToTotal="addNewTransToTotalSpendings" categoryTypeIndicator="@categoryTypeIndicator" updatedStreak="updateStreak" closeAddTransAfterOverdraft="closeAddTrans" transValueToAdd="updateTotalsIndexTable"></AddTransactionComponent>
 
 }
 
@@ -363,6 +363,7 @@
     string? catOutlineColor = "";
 
     double ogBudget = 0;
+    double? subCatTransTotal = 0;
 
     private string _previousColor = "##INITIAL##";
 
@@ -383,6 +384,7 @@
         if (subCategoryIDToGet > 0)
         {
             titleInput = subCategoryTitle;
+
         }
 
         if (budget.HasValue && subCatToEdit.monthlyPlannedBudget.HasValue)
@@ -412,6 +414,8 @@
             Console.WriteLine("צבע של סאב קטגוריה" + subCatColor);
         }
         Console.WriteLine("subcat on initialized- " + subCatColor);
+
+        subCatTransTotal = totalSpendings;
     }
 
     public void convertCatColors(string? catColor)
@@ -494,23 +498,6 @@
 
         catOutlineColor = outlineColor;
         subCatColor = convertedColor;
-
-        Console.WriteLine(catOutlineColor + " catOutlineColorזה ה");
-        Console.WriteLine(subCatColor + "subCatColorזה ה");
-
-        //subCatColor = "";
-        //catOutlineColor = "";
-        //for (int i = 0; i < convertedColor.Length; i++)
-        //{
-        //    subCatColor += convertedColor[i];
-        //}
-
-        //for (int i = 0; i < outlineColor.Length; i++)
-        //{
-        //    catOutlineColor += outlineColor[i];
-        //}
-
-
 
     }
 
@@ -656,11 +643,11 @@
         }
     }
 
-    public async Task addNewTransToTotalSpendings(double transactionValue)
+    public void addNewTransToTotalSpendings(double transactionValue)
     {
 
-        totalSpendings += transactionValue;
-        totalSpendings = Math.Round(totalSpendings, 2);
+        subCatTransTotal += transactionValue;
+        subCatTransTotal = Math.Round(subCatTransTotal.Value, 2);
 
         //await updateTotalsIndexTable(transactionValue);
 
