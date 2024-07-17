@@ -848,9 +848,7 @@
     List<OverDraftBudgetToEdit> budgetToUpdate = new List<OverDraftBudgetToEdit>();
     List<TagsToShow> allUserTags = new List<TagsToShow>();
 
-    /// <summary>
-    /// if the trans is already a part of a split payment- this lists holds all trans of this series
-    /// </summary>
+
     List<RepeatedTransToShow> reapeatedTransValuesList = new List<RepeatedTransToShow>();
 
     TagsToShow chosenTag = new TagsToShow();
@@ -902,9 +900,7 @@
     private string GetCurrentMonth() => DateTime.Now.ToString("MMMM");
     private Dictionary<string, string> monthsAndValues = new Dictionary<string, string>();
 
-    /// <summary>
-    /// holds the children of a trans when its fixedMonthly
-    /// </summary>
+
     List<TransactionToAdd> fixedTransChildrenToAdd = new List<TransactionToAdd>();
     int indexOfPayment = 0;
 
@@ -1004,10 +1000,11 @@
     void backToTrans()
     {
         hiddenReOverlay = "display:none;";
+        returningTrans = false;
     }
 
     /// <summary>
-    /// In fixedMonthly overlay- changes the input values after they were reset
+    /// In fixedMonthly overlay-handles values when the parent was not already fixedMonthly
     /// </summary>
     private void HandleInput(ChangeEventArgs e, string monthName)
     {
@@ -1052,7 +1049,7 @@
     }
 
     /// <summary>
-    /// In fixedMonthly overlay- handles values before they are reset, and if a value doesn't exist, it is added
+    /// In fixedMonthly overlay- handles values when the parent was already fixedMonthly, and if a value doesn't exist, it is added
     /// </summary>
     private void HandleRepeatedInput(ChangeEventArgs eventArgs, string month, RepeatedTransToShow existingTrans)
     {
@@ -1132,6 +1129,16 @@
                     titleInput = newTransaction.transTitle;
                     initialSplitPayment = newTransaction.splitPayment;
                     initialFixedMonthly = newTransaction.fixedMonthly;
+
+                    if (newTransaction.fixedMonthly == true)
+                    {
+                        repeatedBtnTitle = "עריכת ההזנה החוזרת";
+                    }
+                    else
+                    {
+                        repeatedBtnTitle = "הגדרת ההוצאה כחוזרת";
+                    }
+
                     if (newTransaction.splitPayment == true)
                     {
 
@@ -1671,7 +1678,7 @@
         {
             Console.WriteLine("couldn't save edit");
         }
-        
+
     }
 
     /// <summary>
@@ -1979,6 +1986,7 @@
         isReapetedBtnClicked = true;
         if (newTransaction.fixedMonthly == true)
         {
+            
             //gets all transactions that are a part of this fixed payment
             var repeatedTransValuesRes = await Http.GetAsync("api/Transactions/getRepeatedTransToEdit/" + transIDtoEdit);
 
