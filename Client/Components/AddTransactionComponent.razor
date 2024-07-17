@@ -1208,8 +1208,6 @@
         openSubCatsOptions = !openSubCatsOptions;
     }
 
-
-    List<TransactionToAdd> tempChildrenList = new List<TransactionToAdd>();
     public async Task saveAndEndTransactions()
     {
         newTransaction.subCategoryID = subCategoryIDTOGet;
@@ -1227,38 +1225,38 @@
             newTransaction.tagID = chosenTag.id;
         }
 
-        if (fixedTransChildrenToAdd.Count > 0 && fixedTransChildrenToAdd != null) //means the transaction is fixedMonthly
+
+        if (fixedTransChildrenToAdd.Count > 0 && fixedTransChildrenToAdd != null) //means the trans is fixedMonthly
         {
             newTransaction.fixedMonthly = true;
-            //tempChildrenList = transactionsToAdd;
-            tempChildrenList.Clear();
-            foreach (TransactionToAdd t in fixedTransChildrenToAdd)
+            var transToSaveRes = await Http.PostAsJsonAsync("api/Transactions/AddTransaction", newTransaction);
+            if (transToSaveRes.IsSuccessStatusCode)
             {
-                TransactionToAdd tr = new TransactionToAdd()
-                    {
-                        transValue = t.transValue,
-                        valueType = t.valueType,
-                        description = t.description,
-                        fixedMonthly = t.fixedMonthly,
-                        tagID = t.tagID,
-                        tagTitle = t.tagTitle,
-                        tagColor = t.tagColor,
-                        transTitle = t.transTitle,
-                        subCategoryID = subCategoryIDTOGet,
-                        transDate = t.transDate,
-                        transType = t.transType,
-                        splitPayment = t.splitPayment
-                    };
+                transIDtoEdit = await transToSaveRes.Content.ReadFromJsonAsync<int>();
+                if (!categoryTypeIndicator)
+                {
+                    await checkOverdraft();
+                }
 
-                tempChildrenList.Add(tr);
+
+                await saveRepeatedTransactions(transIDtoEdit); //saves the children separately
+
+                Console.WriteLine("ההזנה נשמרה בהצלחה :)");
+                addTransactionToTotal.InvokeAsync(newTransaction.transValue);
+                transValueToAdd.InvokeAsync(newTransaction.transValue);
+                await getStreakDetails();
+                isTransactionOverlayOpen.InvokeAsync(false);
+
             }
-            fixedTransChildrenToAdd.Clear();
+            else
+            {
+                Console.WriteLine("הזנה נכשלה");
+            }
+
         }
-        else if (newTransaction.splitPayment == true && selectedNumber > 1) //means the transaction is a split payment
+        else if (newTransaction.splitPayment == true && selectedNumber > 1) //means the trans is split
         {
             double splitValue = newTransaction.transValue / selectedNumber;
-            //DateTime currentMonth = DateTime.Now;
-
             for (int i = 0; i < selectedNumber; i++)
             {
                 newTransaction.transValue = splitValue;
@@ -1272,39 +1270,15 @@
                 var transToSaveRes = await Http.PostAsJsonAsync("api/Transactions/AddTransaction", newTransaction);
                 if (transToSaveRes.IsSuccessStatusCode)
                 {
-                    if (i == 0)
+                    transIDtoEdit = await transToSaveRes.Content.ReadFromJsonAsync<int>();
+                    if (!categoryTypeIndicator && i == 0)
                     {
-                        transIDtoEdit = await transToSaveRes.Content.ReadFromJsonAsync<int>();
-                        if (!categoryTypeIndicator)
-                        {
-                            await checkOverdraft();
-                        }
+                        await checkOverdraft();
 
-                        if (!overdraftDetected)
-                        {
-                            if (newTransaction.fixedMonthly == true)
-                            {
-                                await saveRepeatedTransactions(transIDtoEdit);
-                            }
-                            Console.WriteLine("ההזנה נשמרה בהצלחה :)");
-                            addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                            transValueToAdd.InvokeAsync(newTransaction.transValue);
-
-
-                            isTransactionOverlayOpen.InvokeAsync(false);
-                        }
-                    }
-
-                    if (i > 0)
-                    {
-                        //if (newTransaction.fixedMonthly == true)
-                        //{
-                        //    await saveRepeatedTransactions(transIDtoEdit);
-                        //}
                         Console.WriteLine("ההזנה נשמרה בהצלחה :)");
-                        //addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                        //transValueToAdd.InvokeAsync(newTransaction.transValue);
-                        isTransactionOverlayOpen.InvokeAsync(false);
+                        addTransactionToTotal.InvokeAsync(newTransaction.transValue);
+                        transValueToAdd.InvokeAsync(newTransaction.transValue);
+
                     }
                 }
                 else
@@ -1313,47 +1287,25 @@
                 }
             }
             await getStreakDetails();
+            isTransactionOverlayOpen.InvokeAsync(false);
         }
-        else //means the transaction is normal- not split or fixed
+        else //means the trans is not split or fixed
         {
             var transToSaveRes = await Http.PostAsJsonAsync("api/Transactions/AddTransaction", newTransaction);
             if (transToSaveRes.IsSuccessStatusCode)
             {
                 transIDtoEdit = await transToSaveRes.Content.ReadFromJsonAsync<int>();
-                if (tempChildrenList.Count > 0)
-                {
-
-                    fixedTransChildrenToAdd.Clear();
-                    foreach (TransactionToAdd t in tempChildrenList)
-                    {
-                        fixedTransChildrenToAdd.Add(t);
-                    }
-                }
                 if (!categoryTypeIndicator)
                 {
                     await checkOverdraft();
-                    if (!overdraftDetected)
-                    {
-                        if (newTransaction.fixedMonthly == true)
-                        {
-                            await saveRepeatedTransactions(transIDtoEdit);
-                        }
-                        Console.WriteLine("ההזנה נשמרה בהצלחה :)");
-                        addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                        transValueToAdd.InvokeAsync(newTransaction.transValue);
 
-                        isTransactionOverlayOpen.InvokeAsync(false);
-                    }
-                }
-                else
-                {
-                    addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                    transValueToAdd.InvokeAsync(newTransaction.transValue);
-
-                    isTransactionOverlayOpen.InvokeAsync(false);
+                    Console.WriteLine("ההזנה נשמרה בהצלחה :)");
                 }
 
+                addTransactionToTotal.InvokeAsync(newTransaction.transValue);
+                transValueToAdd.InvokeAsync(newTransaction.transValue);
                 await getStreakDetails();
+                isTransactionOverlayOpen.InvokeAsync(false);
             }
             else
             {
@@ -1361,12 +1313,13 @@
             }
         }
 
+
     }
 
     public async Task saveAndRepeatTransactions()
     {
         newTransaction.subCategoryID = subCategoryIDTOGet;
-        //newTransaction.transType = 1;
+       
         newTransaction.tagID = null;
         if (!categoryTypeIndicator)
         {
@@ -1381,16 +1334,43 @@
         {
             newTransaction.tagID = chosenTag.id;
         }
-
-        if (fixedTransChildrenToAdd.Count > 0 && fixedTransChildrenToAdd != null)
+        if (fixedTransChildrenToAdd.Count > 0 && fixedTransChildrenToAdd != null) //means the trans is fixedMonthly
         {
             newTransaction.fixedMonthly = true;
+            var transToSaveRes = await Http.PostAsJsonAsync("api/Transactions/AddTransaction", newTransaction);
+            if (transToSaveRes.IsSuccessStatusCode)
+            {
+                transIDtoEdit = await transToSaveRes.Content.ReadFromJsonAsync<int>();
+                if (!categoryTypeIndicator)
+                {
+                    await checkOverdraft();
+                }
+
+
+                await saveRepeatedTransactions(transIDtoEdit); //saves the children separately
+
+                Console.WriteLine("ההזנה נשמרה בהצלחה :)");
+                addTransactionToTotal.InvokeAsync(newTransaction.transValue);
+                transValueToAdd.InvokeAsync(newTransaction.transValue);
+                await getStreakDetails();
+                titleInput = "";
+                    titleInputLength = 0;
+                    newTransaction = new TransactionToAdd()
+                        {
+                            transDate = DateTime.Today // Set the transaction date to today
+                        };
+                //isTransactionOverlayOpen.InvokeAsync(false);
+
+            }
+            else
+            {
+                Console.WriteLine("הזנה נכשלה");
+            }
+
         }
-        if (newTransaction.splitPayment == true && selectedNumber > 0)
+        else if (newTransaction.splitPayment == true && selectedNumber > 1) //means the trans is split
         {
             double splitValue = newTransaction.transValue / selectedNumber;
-            //DateTime currentMonth = DateTime.Now;
-
             for (int i = 0; i < selectedNumber; i++)
             {
                 newTransaction.transValue = splitValue;
@@ -1404,34 +1384,16 @@
                 var transToSaveRes = await Http.PostAsJsonAsync("api/Transactions/AddTransaction", newTransaction);
                 if (transToSaveRes.IsSuccessStatusCode)
                 {
-                    if (i == 0)
+                    transIDtoEdit = await transToSaveRes.Content.ReadFromJsonAsync<int>();
+                    if (!categoryTypeIndicator && i == 0)
                     {
-                        transIDtoEdit = await transToSaveRes.Content.ReadFromJsonAsync<int>();
-                        if (!categoryTypeIndicator)
-                        {
-                            await checkOverdraft();
-                        }
-                        if (!overdraftDetected)
-                        {
-                            await saveRepeatedTransactions(transIDtoEdit);
-                            Console.WriteLine("ההזנה נשמרה בהצלחה :)");
-                            addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                            transValueToAdd.InvokeAsync(newTransaction.transValue);
-                            isTransactionOverlayOpen.InvokeAsync(false);
-                        }
-                    }
-                    if (i > 0)
-                    {
-                        if (newTransaction.fixedMonthly == true)
-                        {
-                            await saveRepeatedTransactions(transIDtoEdit);
-                        }
+                        await checkOverdraft();
+
                         Console.WriteLine("ההזנה נשמרה בהצלחה :)");
                         addTransactionToTotal.InvokeAsync(newTransaction.transValue);
                         transValueToAdd.InvokeAsync(newTransaction.transValue);
-                        isTransactionOverlayOpen.InvokeAsync(false);
-                    }
 
+                    }
                 }
                 else
                 {
@@ -1445,9 +1407,9 @@
                 {
                     transDate = DateTime.Today // Set the transaction date to today
                 };
-
+            //isTransactionOverlayOpen.InvokeAsync(false);
         }
-        else
+        else //means the trans is not split or fixed
         {
             var transToSaveRes = await Http.PostAsJsonAsync("api/Transactions/AddTransaction", newTransaction);
             if (transToSaveRes.IsSuccessStatusCode)
@@ -1456,23 +1418,20 @@
                 if (!categoryTypeIndicator)
                 {
                     await checkOverdraft();
-                    if (!overdraftDetected)
-                    {
-                        await saveRepeatedTransactions(transIDtoEdit);
-                        Console.WriteLine("ההזנה נשמרה בהצלחה :)");
-                        addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                        transValueToAdd.InvokeAsync(newTransaction.transValue);
-                        //isTransactionOverlayOpen.InvokeAsync(false);
-                        titleInput = "";
-                        titleInputLength = 0;
-                        newTransaction = new TransactionToAdd()
-                            {
-                                transDate = DateTime.Today // Set the transaction date to today
-                            };
-                    }
+
+                    Console.WriteLine("ההזנה נשמרה בהצלחה :)");
                 }
 
+                addTransactionToTotal.InvokeAsync(newTransaction.transValue);
+                transValueToAdd.InvokeAsync(newTransaction.transValue);
                 await getStreakDetails();
+                titleInput = "";
+                titleInputLength = 0;
+                newTransaction = new TransactionToAdd()
+                    {
+                        transDate = DateTime.Today // Set the transaction date to today
+                    };
+                //isTransactionOverlayOpen.InvokeAsync(false);
             }
             else
             {
@@ -1480,6 +1439,8 @@
             }
         }
     }
+
+
     public async Task updateExistingTrans()
     {
         if (!categoryTypeIndicator)
@@ -1986,7 +1947,7 @@
         isReapetedBtnClicked = true;
         if (newTransaction.fixedMonthly == true)
         {
-            
+
             //gets all transactions that are a part of this fixed payment
             var repeatedTransValuesRes = await Http.GetAsync("api/Transactions/getRepeatedTransToEdit/" + transIDtoEdit);
 
