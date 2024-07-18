@@ -200,7 +200,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        //Console.WriteLine("transaction- "+transaction.transTitle+", id- "+transaction.id+", transIDtoEdit- "+transIDtoEdit);
         if (transaction.parentTransID.HasValue) //checking if the transaction is part of a repeated/split payment
         {
             if (transaction.parentTransID.Value > 0)
@@ -321,14 +320,14 @@
                     }
                 }
             }
-            else
+            else 
             {
                 Console.WriteLine("בעיה במחיקת הזנה");
             }
         }
-        else //deleting a parent-less transaction
+        else //deleting a parent-less transaction, and if it is fixedmonthly- all its children will also be deleted
         {
-            var deleteRes = await Http.DeleteAsync("api/Transactions/deleteTransaction/" + transaction.id);
+            var deleteRes = await Http.DeleteAsync("api/Transactions/deleteSplittedTransChildren/" + transaction.id);
             if (deleteRes.IsSuccessStatusCode)
             {
                 removeTransaction.InvokeAsync(transaction.id);

@@ -477,14 +477,14 @@ ORDER BY transactions.transDate DESC;";
 
         [HttpPost("UpdateRepeatedTrans")]
 
-        public async Task<IActionResult> UpdateRepeatedTrans([FromBody] List<RepeatedTransToShow> reTransToUpdate)
+        public async Task<IActionResult> UpdateRepeatedTrans(RepeatedTransToShow reTrans)
         {
             bool isTransUpdate = false;
+            //[FromBody] List<RepeatedTransToShow> reTransToUpdate
+            //foreach (var reTrans in reTransToUpdate)
+            //{
 
-            foreach (var reTrans in reTransToUpdate)
-            {
-
-                object updateTransParam = new
+            object updateTransParam = new
                 {
                     ID = reTrans.id,
                     transValue = reTrans.transValue,
@@ -492,10 +492,10 @@ ORDER BY transactions.transDate DESC;";
 
                 };
 
-                string TransToUpdateQuery = "UPDATE transactions set transValue = @transValue WHERE id =@ID";
+                string TransToUpdateQuery = "UPDATE transactions set transValue = @transValue, transDate=@transDate WHERE id =@ID";
                 isTransUpdate = await _db.SaveDataAsync(TransToUpdateQuery, updateTransParam);
 
-            }
+            //}
 
             if (isTransUpdate)
             {
