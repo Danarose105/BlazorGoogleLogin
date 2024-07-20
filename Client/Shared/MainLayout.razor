@@ -22,9 +22,9 @@
             <div id="@hideNav" class="bottom-nav" @ref="navBar">
                 <button class="navBtn" style="opacity:60%">מבט לעבר<img src="./css/images/past.svg" /></button>
                 <div class="NavLines"> </div>
-                <button class="navBtn" style="font-weight:600; color:#6775F4" @onclick="goToPresentHomePage">מבט להווה<img src="./css/images/present.svg" /></button>
+                <button class="navBtn" style="@currentPresentNavPage" @onclick="goToPresentHomePage">מבט להווה<img src="./css/images/present.svg" /></button>
                 <div class="NavLines"> </div>
-                <button class="navBtn" style="opacity:60%">מבט לעתיד<img src="./css/images/future.svg" /></button>
+                <button class="navBtn" style="@currentFuturetNavPage" @onclick="goToFutureHomePage">מבט לעתיד<img src="./css/images/future.svg" /></button>
             </div>
        }
            
@@ -39,8 +39,22 @@
 
     bool isScrollingDown = false;
     string hideNav => isScrollingDown ? "nav-hidden" : "bottomNav";
+    string currentPresentNavPage = "";
+    string currentFuturetNavPage = "" ;
 
     private ElementReference navBar;
+
+    protected override async Task OnInitializedAsync()
+    {
+        @if (NavManager.Uri.Contains("/HomePage"))
+        { 
+            currentPresentNavPage = "font - weight:600; color:#6775F4;";
+        }
+        else
+        {
+            currentFuturetNavPage = "font - weight:600; color:#6775F4;";
+        }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -57,6 +71,17 @@
 
     public void goToPresentHomePage()
     {
+        
+        currentPresentNavPage = "font - weight:600; color:#6775F4;";
+        currentFuturetNavPage = "";
         Nav.NavigateTo("./HomePage");
+    }
+    
+    public void goToFutureHomePage()
+    {
+       
+        currentFuturetNavPage = "font - weight:600; color:#6775F4;";
+        currentPresentNavPage = "";
+        Nav.NavigateTo("./FutureHomePage");
     }
 }

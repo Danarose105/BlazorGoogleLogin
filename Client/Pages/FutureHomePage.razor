@@ -1,0 +1,278 @@
+﻿@page "/FutureHomePage"
+
+
+@inject HttpClient Http
+@inject NavigationManager Nav
+@using BlazorGoogleLogin.Shared.Models.future.toShow
+@using BlazorGoogleLogin.Shared.Models.future.toAdd
+@using BlazorGoogleLogin.Shared.Models.future.toEdit
+@using BlazorGoogleLogin.Client.Components
+@using Microsoft.AspNetCore.Components.Web
+@*@inject DateService DateService*@
+@inject IJSRuntime JSRuntime
+
+<div>תכנית עסקית לחלומות</div>
+
+<div>
+
+    <span>@sumSavings</span>
+    <span>/</span>
+    <span>@sumGoals</span>
+
+
+</div>
+
+
+<div>
+    @if (earliestDate.HasValue)
+    {
+        numberOfMonthesToDivide = (12 - earliestDate.Value.Month) + 1;
+        @*<div>The earliest date in the current year is @earliestDate.Value.ToShortDateString().</div>*@
+        @if (numberOfMonthesToDivide > 0)
+        {
+            monthlySavings = sumNeededSavingsPerYear / numberOfMonthesToDivide;
+
+        }
+        else
+        {
+            monthlySavings = 0;
+        }
+        <div>
+            <span>כדי להגיע ליעדי @CurrentYear, אצטרך לחסוך:</span>
+            <div>בחודש</div>
+            <span>@monthlySavings</span>
+            <div>בשנה</div>            
+            <span>@sumNeededSavingsPerYear </span>
+        </div>
+
+    }
+</div>
+
+<div>
+
+    @for (int i = 0; i < 16; i++)
+    {
+        <div>
+            @(CurrentYear + i)
+
+            <div>
+                @foreach (AllUserGoalsToShow goalPerYearToSend in allGoals)
+                {
+                    if (goalPerYearToSend.dueYear == CurrentYear + i)
+                    {
+                        <div style="background-color:@goalPerYearToSend.color" @onclick="()=> openGoalsPerYearPopUp(goalPerYearToSend.dueYear)">
+                            @goalPerYearToSend.goalTitle
+                        </div>
+                    }
+
+                }
+            </div>
+        </div>
+
+
+    }
+</div>
+
+<div>
+    <button>יעד חדש</button>
+</div>
+
+
+<div>
+    <button @onclick="goToSavingsPage">לסביבת החסכונות</button>
+</div>
+
+@if (showYearlyGoals)
+{
+    <div>
+        <button @onclick="closeYearlyGoalsPopUp">X</button>
+    </div>
+
+    <div>
+        @goalsYearToShow
+    </div>
+    <div>
+        @if (goalsPerYearList.Count == 0)
+        {
+            <span>לא נמצאו יעדים לשנה זו</span>
+        }
+        else
+        {
+            @foreach (AllUserGoalsToShow goalPerYear in goalsPerYearList)
+            {
+
+                <div style="background-color:@goalPerYear.color" @onclick="()=>showGoalDetails(goalPerYear)">
+                    @goalPerYear.goalTitle
+                </div>
+            }
+        }
+
+
+    </div>
+    <div>
+         <button>יעד חדש</button>
+    </div>
+}
+
+
+@if (isGoalFullDetails)
+{
+
+    <div>
+        <button @onclick="closeGoalDetailsPopUp">X</button>
+    </div>
+
+    <div style="background-color:@goalDetailsToShow.color">
+        <span>@goalDetailsToShow.goalTitle</span>
+        <span>@goalDetailsToShow.dueYear</span>
+        <span>@goalDetailsToShow.budget</span>
+        
+    </div>
+   
+    
+}
+
+@code {
+
+    [Parameter]
+    public int userID { get; set; }
+
+    [CascadingParameter]
+    private UserDTO user { get; set; }
+
+
+    List<AllUserGoalsToShow> allGoals = new List<AllUserGoalsToShow>();
+    List<AllUserSavingsToShow> allSavings = new List<AllUserSavingsToShow>();
+    List<AllUserGoalsToShow> goalsPerYearList = new List<AllUserGoalsToShow>();
+    List<DateTime> dates = new List<DateTime>();
+
+    AllUserGoalsToShow goalDetailsToShow;
+
+    int sumGoals = 0;
+    int sumSavings = 0;
+    int sumNeededSavingsPerYear = 0;
+    int numberOfMonthesToDivide = 0;
+    int monthlySavings = 0;
+    int goalsYearToShow = 0;
+    bool showYearlyGoals = false;
+    bool isGoalFullDetails = false;
+    private DateTime? earliestDate;
+
+
+    private int CurrentYear => DateTime.Now.Year;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        userID = user.Id;
+
+        await Task.Delay(1); // This is just to simulate an async process.
+
+        //int currentMonthNumber = DateTime.Now.Month; // Gets the current month number
+        StateHasChanged();
+
+
+        var userGoalsRes = await Http.GetAsync("api/Future/userFutureGoalsToShow/" + userID);
+
+        if (userGoalsRes.IsSuccessStatusCode)
+        {
+            allGoals = userGoalsRes.Content.ReadFromJsonAsync<List<AllUserGoalsToShow>>().Result;
+            //getCurrentStreak();
+
+        }
+        else
+        {
+            Console.WriteLine("no goals");
+
+        }
+
+        var userSavingsRes = await Http.GetAsync("api/Future/userFutureSavingsToShow/" + userID);
+
+        if (userSavingsRes.IsSuccessStatusCode)
+        {
+            allSavings = userSavingsRes.Content.ReadFromJsonAsync<List<AllUserSavingsToShow>>().Result;
+            //getCurrentStreak();
+
+        }
+        else
+        {
+            Console.WriteLine("no savings");
+
+        }
+
+        foreach (AllUserSavingsToShow saving in allSavings)
+        {
+            sumSavings += saving.savingsSum;
+        }
+
+        foreach (AllUserGoalsToShow goal in allGoals)
+        {
+            sumGoals += goal.budget;
+        }
+
+        foreach (AllUserGoalsToShow goal in allGoals)
+        {
+            if (goal.dueYear == CurrentYear)
+            {
+                sumNeededSavingsPerYear += goal.budget;
+            }
+
+        }
+        earliestDate = FindEarliestDateInCurrentYear(allGoals);
+    }
+
+
+
+    private DateTime? FindEarliestDateInCurrentYear(List<AllUserGoalsToShow> goals)
+    {
+        int currentYear = DateTime.Now.Year;
+        var datesInCurrentYear = goals
+                                 .Select(g => g.inputDate)
+                                 .Where(date => date.Year == currentYear)
+                                 .ToList();
+
+        if (datesInCurrentYear.Any())
+        {
+            return datesInCurrentYear.Min();
+        }
+
+        return null; // Return null if no dates found in the current year
+    }
+
+    void goToSavingsPage()
+    {
+        Nav.NavigateTo("./UserSavingsPage");
+    }
+
+    void openGoalsPerYearPopUp(int goalsYear)
+    {
+        showYearlyGoals = true;
+        goalsYearToShow = goalsYear;
+        @foreach (AllUserGoalsToShow goal in allGoals)
+        {
+            if (goal.dueYear == goalsYear)
+            {
+                goalsPerYearList.Add(goal);
+            }
+
+        }
+    }
+
+    void closeYearlyGoalsPopUp()
+    {
+        showYearlyGoals = false;
+        goalsPerYearList.Clear();
+    }
+
+    void closeGoalDetailsPopUp()
+    {
+        isGoalFullDetails = false;
+        
+    }
+
+    void showGoalDetails(AllUserGoalsToShow goalFullDetails)
+    {
+        isGoalFullDetails = true;
+        goalDetailsToShow = goalFullDetails;
+    }
+}
