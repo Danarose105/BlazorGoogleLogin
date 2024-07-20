@@ -1,0 +1,1671 @@
+﻿@page "/TransactionsOverview/{subCatID:int}/{categoryID:int}/{budget:double}/{userID:int}/{isOverdraft:bool}"
+@using BlazorGoogleLogin.Shared.Models.present.toShow
+@using BlazorGoogleLogin.Shared.Models.present.toAdd
+@using BlazorGoogleLogin.Shared.Models.present.toEdit
+@using BlazorGoogleLogin.Client.Components
+@using Microsoft.AspNetCore.Components.Web
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject DateService DateService
+@inject IJSRuntime JSRuntime
+
+<div class="outerPage">
+
+    <div class="outerTop">
+        <div class="outerBackAndProfile">
+
+            <button class="backArrow" @onclick="goBack"><img src="./css/images/back-repeated.svg" /></button>
+            @if (isOverdraft)
+            {
+                <span>@returnToMainPage > @categoryTitle > @subCategoryTitle <img src="./css/images/overdraft-warning.svg" @onclick="openOverdraftPopUp" /></span>
+            }
+            else
+            {
+                <span>@returnToMainPage > @categoryTitle > @subCategoryTitle</span>
+            }
+        </div>
+        <div class="profileAndStreak">
+
+            <div class="streakBtn">
+                @if (streakStatTitle != null && streakStatTitle != "")
+                {
+                    if (streakImgIcon != "")
+                    {
+                        <img src=@streakImgIcon style="width:87%;" />
+                    }
+                }
+            </div>
+            <button class="profilePic" @onclick="goToSProfilePage">@userIcon</button>
+
+        </div>
+    </div>
+
+
+</div>
+
+<div class="outerContent">
+
+    <div class="content">
+        <div class="outerTitleAndOptions">
+
+
+            <div class="outerPageTitle" style="background-color:@catColor;border:1px solid @catOutlineColor;">
+
+                <div class="outerTitleBudgetAndDots">
+
+                    <h3 class="pageTitle">מבט על: "@subCategoryTitle"</h3>
+                    @if (!typeByCat)
+                    {
+                        <span class="budget">תקציב: @budget ₪</span>
+                    }
+                    <div class="outerDotsAndDes">
+
+                        <button class="optionsMenu" @onclick="OpetionsBtnClicked"><img src="./css/images/option menu.svg" /></button>
+
+                    </div>
+                </div>
+
+            </div>
+
+            @if (editSubCatBtnClicked)
+            {
+                <div class="overlay">
+                    <div class="outerSubCatOverlay">
+
+                        <div class="innerSubCatOverlay">
+                            <button class="modal-close-btn" @onclick="closeOptionsMenu"><img src="./css/images/close x.svg" /></button>
+                            <h2>עריכת תת קטגוריה</h2>
+                            <div class="editAndAddSubCat">
+
+                                @if (userCategories.Count > 0)
+                                {
+                                    <span>עריכת תת קטגוריה ל</span>
+                                    @if (subCatToEdit.categroyTitle == null)
+                                    {
+                                        subCatToEdit.categroyTitle = categoryTitle;
+                                    }
+                                    <select class="catsDropDown" @bind="subCatToEdit.categroyTitle">
+
+                                        @foreach (AllUserCategories userCategory in userCategories)
+                                        {
+
+                                            <option class="catsOptions" value=@userCategory.categroyTitle> @userCategory.categroyTitle</option>
+                                        }
+                                    </select>
+
+                                }
+                            </div>
+                            <div class="outerTitleName">
+                                <label class="titleName" for="amount">שם תת קטגוריה</label>
+                                <input class="titleBox" type="text" id="amount" placeholder="שם תת הקטגוריה" @bind="subCatToEdit.subCategoryTitle" maxlength="18" minlength="2" @oninput="SubCatTitleLengthCounter" />
+                            </div>
+                            @if (!typeByCat)
+                            {
+                                <label for="description">מה התקציב החודשי שלך עבור @subCatToEdit.subCategoryTitle? </label>
+                                <div class="outerBudget">
+                                    <input class="budgetBox" type="number" id="description" placeholder="0" @bind="subCatToEdit.monthlyPlannedBudget" />
+                                    <span class="currency-symbol">₪</span>
+                                    <br />
+                                    @if (ogBudget < 0)
+                                    {
+                                        <span>הקטנת את התקציב ב- @(Math.Round((ogBudget * -1), 2))%.</span>
+                                        <br />
+                                    }
+                                    else if (ogBudget > 0)
+                                    {
+                                        <span>הגדלת את התקציב ב- @(Math.Round(ogBudget, 2))%.</span>
+                                        <br />
+                                    }
+                                    <div class="lineBetween"></div>
+                                </div>
+                                <div class="outerImportance">
+                                    <label class="titleName" for="importance">עדיפות תת הקטגוריה</label>
+
+                                    @* <span>@subCatToEdit.importance</span>*@
+                                    <div class="outerBtns">
+                                        <div class="importanceBtns">
+                                            @if (subCatToEdit.importance == 0)
+                                            {
+                                                <input type="radio" id="wants" name="importance" @onchange="@(() => subCatToEdit.importance = 0)" checked />
+                                                <label class="" for="wants">רצון</label>
+                                            }
+                                            else
+                                            {
+                                                <input type="radio" id="wants" name="importance" @onchange="@(() => subCatToEdit.importance = 0)" />
+                                                <label for="wants">רצון</label>
+                                            }
+                                            @if (subCatToEdit.importance == 1)
+                                            {
+                                                <input type="radio" id="needs" name="importance" @onchange="@(() => subCatToEdit.importance = 1)" checked />
+                                                <label for="needs">צורך</label>
+                                            }
+                                            else
+                                            {
+                                                <input type="radio" id="needs" name="importance" @onchange="@(() => subCatToEdit.importance = 1)" />
+                                                <label for="needs">צורך</label>
+                                            }
+                                            @if (subCatToEdit.importance == 2)
+                                            {
+                                                <input type="radio" id="must" name="importance" @onchange="@(() => subCatToEdit.importance = 2)" checked />
+                                                <label for="must">חובה</label>
+                                            }
+                                            else
+                                            {
+                                                <input type="radio" id="must" name="importance" @onchange="@(() => subCatToEdit.importance = 2)" />
+                                                <label for="must">חובה</label>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="outerExample">
+                                    <div>
+                                        <span class="example">לדוגמה:</span>
+                                        לק - רצון, דלק - צורך, שכ״ד- חובה. העדיפות משפיעה על הטיפים לייעול התקציב.
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="outerSaveBtns">
+                                @if (typeByCat)
+                                {
+                                    if (titleInput.Length >= 2 && titleInput.Length <= 18)
+                                    {
+                                        <button class="primery-button" @onclick="saveUpdatedSubCat">שמירה וסיום</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="primery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
+                                    }
+                                }
+                                else
+                                {
+                                    if (titleInput == null || titleInput == "" || titleInput.Length <= 0)
+                                    {
+                                        <button class="secondery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
+                                        <br />
+                                        <span>לא ניתן לשמור תת קטגוריה ללא שם.</span>
+                                    }
+                                    else if (subCatToEdit.monthlyPlannedBudget <= 0 || subCatToEdit.monthlyPlannedBudget == null)
+                                    {
+                                        <button class="secondery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
+                                        <br />
+                                        <span>לא ניתן לשמור תת קטגוריה ללא תקציב .</span>
+                                    }
+                                    else if (subCatToEdit.importance > 2 || subCatToEdit.importance < 0)
+                                    {
+                                        <button class="secondery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
+                                        <br />
+                                        <span>לא ניתן לשמור תת קטגוריה ללא הגדרת עדיפות .</span>
+                                    }
+                                    else
+                                    {
+                                        <button class="secondery-button" @onclick="saveUpdatedSubCat">שמירה וסיום</button>
+                                    }
+                                }
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+            <div class="options">
+                @if (isOpetionsBtnClicked)
+                {
+                    <OptionsMenuComponent editBtnClicked="getUserCategories" deleteBtnClicked="deleteSubCatPopUp"></OptionsMenuComponent>
+
+                }
+            </div>
+        </div>
+
+        @if (deleteBtnClicked)
+        {
+            <GeneralPopUpComponent popupTypeTitle="מחיקת תת קטגוריה" middleText="@popupBodyText" action="מחיקה" makeAction="deleteSubCat" closePopUp="deleteSubCatPopUp"></GeneralPopUpComponent>
+        }
+        <div class="outerLowerPart">
+
+            <div class="searchWrapper">
+                <div class="search__container">
+                    <img src="./css/images/search btn.svg" />
+                    <input class="searchInput" type="text" value="@searchQuery" @oninput="UpdateSearchQuery" @onkeyup="HandleKeyUp" placeholder="חפשו הוצאה..." />
+
+                </div>
+            </div>
+
+
+            <div class="outerSortAndFilter">
+
+                <div class="sortAndFilterBtns">
+                    <div class="outerFilterBtnAndOptions">
+
+                        <div class="outerBtnAndFilterStatus">
+                            <button class="filterAndSortBtns" @onclick="filterBtnClickedFunc"><img src="./css/images/filter btn.svg" /></button>
+                            <span>@filterStatus</span>
+                        </div>
+
+                        @if (filterBtnClicked)
+                        {
+                            @*sortBtnClicked = false;*@
+                            <div class="outerFilterOptions">
+
+                                <div class="filterOptions">
+                                    <button class="dropDownOptionBtn" @onclick="filterByTransTypeOverlayControl">אמצעי תשלום</button>
+                                    <div class="filterDivider"></div>
+                                    <button class="dropDownOptionBtn" @onclick="filterByTagsOverlayControl">תגית</button>
+                                    <div class="filterDivider"></div>
+                                    <button class="dropDownOptionBtn" @onclick="filterByRepeatedTrans">הוצאה חוזרת</button>
+                                    <div class="filterDivider"></div>
+                                    <button class="dropDownOptionBtn" @onclick="filterBySplitPayment">תשלומים</button>
+                                </div>
+                            </div>
+
+                        }
+                        @if (filterByTransTypeOverlay)
+                        {
+                            ;
+                            <div class="outerPaymentMethod">
+                                <div class="PaymentMethods">
+                                    <div class="outerLay">
+
+                                        <div class="BgOverlay">
+
+                                            <div class="outerPaymentOverlay">
+
+                                                <div class="outerPaymentMethodsOptions">
+                                                    <div class="straightDiv">
+                                                        <button class="modal-close-btn" @onclick="() => filterByTransTypeOverlay = false"><img src="./css/images/close x.svg" /></button>
+
+                                                        <div class="patmentsTitle">אמצעי תשלום</div>
+                                                    </div>
+
+
+                                                    <div class="outerPaymentMethodsAndBtn">
+                                                        <fieldset id="transValueType" name="transType">
+
+                                                            <div class="paymentOptions">
+                                                                <input type="radio" id="מזומן" name="transType" @onchange="@(()=> filterByType= "מזומן")" />
+                                                                <label for="מזומן">מזומן</label>
+                                                                <div class="divider"></div>
+                                                                <input type="radio" id="אשראי" name="transType" @onchange="@(()=> filterByType= "אשראי")" />
+                                                                <label for="אשראי">אשראי</label>
+                                                                <div class="divider"></div>
+                                                                <input type="radio" id="ביט/פייבוקס" name="transType" @onchange="@(()=> filterByType= "ביט/פייבוקס")" />
+                                                                <label for="ביט/פייבוקס">ביט/פייבוקס</label>
+                                                                <div class="divider"></div>
+                                                                <input type="radio" id="אחר" name="transType" @onchange="@(()=> filterByType= "אחר")" />
+                                                                <label for="אחר">אחר</label>
+                                                            </div>
+                                                        </fieldset>
+
+                                                        <button class="primery-button" @onclick="@(()=>filterByTransType(filterByType))">סינון הוצאות</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        }
+                        @if (filterByTagOverlay)
+                        {
+                            
+                           Console.WriteLine(filterBtnClicked + "filterBtnClicked");
+                            <div class="outerPaymentMethod">
+                                <div class="PaymentMethods">
+                                    <div class="outerLay">
+
+                                        <div class="BgOverlay">
+
+                                            <div class="outerPaymentOverlay">
+
+                                                <div class="outerPaymentMethodsOptions">
+
+                                                    @if (subCatTagsList.Count > 0)
+                                                    {
+
+                                                        <div class="straightDiv">
+
+
+                                                            <button class="modal-close-btn" @onclick="() => filterByTagOverlay = false"><img src="./css/images/close x.svg" /></button>
+                                                            <div class="patmentsTitle">התגיות שלי</div>
+                                                        </div>
+
+
+
+                                                        <div class="outerPaymentMethodsAndBtn">
+
+                                                            <div class="outerGalleryAndNav">
+                                                                <div class="outerGallery">
+
+
+                                                                    @foreach (TagsToShow tag in subCatTagsList)
+                                                                    {
+                                                                        var fontWeight = (chosenTag == tag) ? "font-weight: 600;" : "";
+                                                                        <button class="tag" @onclick="(() => chosenFilterByTag(tag))"
+                                                                    style="background-color:@tag.tagColor; @fontWeight">
+                                                                            @tag.tagTitle
+                                                                        </button>
+
+                                                                    }
+                                                                </div>
+                                                                <div class="outerBtnAndDots">
+
+                                                                    <button class="galleryArrow @disBtnStyle" @onclick="PreviousPage"><img src="./css/images/arrow-back.svg" /></button>
+                                                                    <div class="pageDots">
+                                                                        @for (int i = 0; i < totalPages; i++)
+                                                                        {
+                                                                            <span class="dot @(i == currentPage ? "active" : "")"></span>
+                                                                        }
+                                                                    </div>
+                                                                    <button class="galleryArrow @disNextBtnStyle" @onclick="NextPage"><img src="./css/images/arrow-next.svg" /></button>
+
+                                                                </div>
+                                                            </div>
+                                                            <button class="primery-button" @onclick="(()=>filterByTags(filterByTag))">סינון הוצאות</button>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="straightDiv">
+
+
+                                                            <button class="modal-close-btn" @onclick="() => filterByTagOverlay = false"><img src="./css/images/close x.svg" /></button>
+                                                            <div class="patmentsTitle">
+                                                                <p>אין לך תגיות עדיין.. .</p>
+                                                                <p>ניתן ליצור תגיות חדשות בעמוד הפרופיל.</p>
+                                                            </div>
+                                                        </div>
+
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+
+                    <div class="outerFilterBtnAndOptions">
+                        <div class="outerBtnAndFilterStatus">
+                            <button class="filterAndSortBtns" @onclick="sortBtnClickedFunc"><img src="./css/images/sort btn.svg" /></button>
+                            <span>@sortStatus</span>
+                        </div>
+                        @if (sortBtnClicked)
+                        {
+                            <div class="outerSortOptions">
+                                <div class="filterOptions">
+
+                                    <fieldset id="sortTrans" name="transSorting">
+                                        <div class="sortOptions">
+                                            <input class="sortBtn" type="radio" id="תאריך (מהחדש לישן)" name="transSorting" @onchange="@(()=> SortingOptions("dateDes"))" />
+                                            <label for="תאריך (מהחדש לישן)">תאריך (מהחדש לישן)</label>
+                                            <div class="sortDivider"></div>
+                                            <input class="sortBtn" type="radio" id="תאריך (מהישן לחדש)" name="transSorting" @onchange="@(()=> SortingOptions("dateAsc"))" />
+                                            <label for="תאריך (מהישן לחדש)">תאריך (מהישן לחדש)</label>
+                                            <div class="sortDivider"></div>
+                                            <input class="sortBtn" type="radio" id="סכום הוצאה (מהגבוה לנמוך)" name="transSorting" @onchange="@(()=> SortingOptions("sumDes"))" />
+                                            <label for="סכום הוצאה (מהגבוה לנמוך)">סכום הוצאה (מהגבוה לנמוך)</label>
+                                            <div class="sortDivider"></div>
+                                            <input class="sortBtn" type="radio" id="סכום הוצאה (מהנמוך לגבוה)" name="transSorting" @onchange="@(()=> SortingOptions("sumAsc"))" />
+                                            <label for="סכום הוצאה (מהנמוך לגבוה)">סכום הוצאה (מהנמוך לגבוה)</label>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                    <button class="filterAndSortBtns" @onclick="undoFilterAndSort"><img src="./css/images/reset.svg" /></button>
+
+
+                </div>
+            </div>
+
+            <div class="transactions">
+                @if (allTransactions != null && allTransactions.Count > 0 && string.IsNullOrEmpty(searchQuery))
+                {
+                    foreach (TransactionOverviewToShow transaction in allTransactions)
+                    {
+                        if (!filterByReturnTrans)
+                        {
+
+                            <TransOverviewComponent transaction="transaction" removeTransaction="@(()=>transactionDeleted(transaction.id))" subCatID="@subCatID" userID="@userID" subCatTakenBudget="updateSubCatBudgetPostOverdraft" overdraftStatus="@overdraftStatus" typeByCat="@typeByCat"></TransOverviewComponent>
+
+                        }
+                        else
+                        {
+                            filterStatus = "הוצאה חוזרת";
+                            if (transaction.fixedMonthly == true)
+                            {
+                                <TransOverviewComponent transaction="transaction" removeTransaction="@(()=>transactionDeleted(transaction.id))" subCatID="@subCatID" userID="@userID" subCatTakenBudget="updateSubCatBudgetPostOverdraft" overdraftStatus="@overdraftStatus" typeByCat="@typeByCat"></TransOverviewComponent>
+                                <hr />
+                            }
+
+                        }
+                        @if (totalSpendings < budget && budget != null)
+                        {
+                            overdraftStatus = false;
+                            isOverdraft = false;
+                        }
+
+                    }
+                }
+                else
+                {
+                    @if (!string.IsNullOrEmpty(searchQuery))
+                    {
+                        @if (toSearch && (allTransactions.Any(t => string.IsNullOrEmpty(searchQuery) || t.transTitle.ToLower().Contains(searchQuery.ToLower()))))
+                        {
+                            @foreach (TransactionOverviewToShow transaction in allTransactions.Where(t => string.IsNullOrEmpty(searchQuery) || t.transTitle.ToLower().Contains(searchQuery.ToLower())))
+                            {
+
+                                <div class="transactions">
+                                    <TransOverviewComponent transaction="transaction" removeTransaction="@(()=>transactionDeleted(transaction.id))" subCatID="@subCatID" userID="@userID" subCatTakenBudget="updateSubCatBudgetPostOverdraft" overdraftStatus="@overdraftStatus" typeByCat="@typeByCat"></TransOverviewComponent>
+                                </div>
+
+                            }
+
+                            toSearch = false;
+                        }
+                        else
+                        {
+                            if (toSearch)
+                            {
+                                <p>אופס, לא נמצא תוצאה שמתאימה לחיפוש</p>
+                            }
+
+                        }
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@if (overdraftOverlayOpen)
+{
+    if (!noOverdraftOptions && isOverdraft)
+    {
+        <div class="overlay">
+            <div class="outerOverdraft">
+                <div class="overdraftWindow">
+
+                    <div class="outerText">
+                        <h3 class="titleText">חרגת...</h3>
+
+                        <div>נראה שהוצאת ב @overDraftSubCategory.subCategoryTitle @closeOverdraftOpts[closeOverdraftOpts.Count-1].remainingBudget ₪ </div>
+                        <div>שזה <span><b>@currentGap ₪</b></span> יותר </div>
+                        <div>מהתקציב שהגדרת: @closeOverdraftOpts[closeOverdraftOpts.Count-1].monthlyPlannedBudget ₪ </div>
+                        <div>כדאי להגדיל את התקציב.</div>
+                        <div><b>הסכום שאני רוצה להעביר:</b></div>
+                        <div class="outerCurrentGap">
+                            <input class="currentGap" type="number" @bind="currentGap" min="@currentGap" />
+                            <span class="currency-symbolOverDraft">₪</span>
+                            <div class="lineBetweenOverdraft"></div>
+                        </div>
+
+                        <div>מאיזו תת קטגוריה יועבר הסכום?</div>
+                    </div>
+                    <div class="outerTranferTable">
+
+                        <div class="outerFromSubCats">
+                            <span style="font-weight:700;">העברה מ:</span>
+                            <div class="outerDropAndOptions">
+                                <div class="outerDropAndPoly" @onclick="()=>openSubCatsOptions =! openSubCatsOptions">
+                                    <div class="subCatsDrop">
+                                        <span>@chosenSubCategory.subCategoryTitle</span>
+                                        <span class="accordionPoly"><img style="width:7vw;" src="./css/images/arrow3.svg" /></span>
+                                    </div>
+
+                                </div>
+                                @if (openSubCatsOptions)
+                                {
+                                    <div class="subCatsDropDown">
+                                        @foreach (OverBudgetToShow subcategoryOpt in closeOverdraftOpts)
+                                        {
+
+                                            @if (subcategoryOpt.id != overDraftSubCategory.id)
+                                            {
+                                                <div @onclick="()=>HandleChange(subcategoryOpt)">
+                                                    @subcategoryOpt.subCategoryTitle
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+
+                                }
+                            </div>
+                            <div class="outerBudgets">
+                                <div class="outerBudgetTitle">
+                                    <div style="font-weight: 600;">תקציב:</div>
+                                    <div class="titleDivder"></div>
+                                </div>
+                                @if (string.IsNullOrEmpty(chosenSubCategory.subCategoryTitle))
+                                {
+                                    <div>
+                                        נוכחי: 0 <span>₪</span>
+
+                                    </div>
+                                    <div>
+                                        עתידי: 0 <span>₪</span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div>
+                                        נוכחי: @chosenSubCategory.monthlyPlannedBudget
+                                        <span>₪</span>
+                                    </div>
+                                    <div>
+                                        עתידי: @(
+                                     chosenSubCategory.monthlyPlannedBudget - currentGap
+                                     )
+                                        <span>₪</span>
+                                    </div>
+                                }
+                            </div>
+
+                        </div>
+                        <div class="outerToSubCat">
+
+                            <span style="font-weight:700;">העברה ל:</span>
+                            <div class="outerDropAndOptions">
+                                <div class="outerDropAndPoly">
+                                    <div class="subCatsDrop" style="justify-content: center;">
+                                        @(
+                                            overDraftSubCategory.subCategoryTitle = closeOverdraftOpts[closeOverdraftOpts.Count - 1].subCategoryTitle
+                                            )
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="outerBudgets">
+                                <div class="outerBudgetTitle">
+                                    <div style="font-weight: 600;">תקציב:</div>
+                                    <div class="titleDivder"></div>
+                                </div>
+                                @if (string.IsNullOrEmpty(chosenSubCategory.subCategoryTitle))
+                                {
+                                    <div>
+                                        נוכחי: @(
+                                     closeOverdraftOpts[closeOverdraftOpts.Count - 1].monthlyPlannedBudget)
+                                        <span>₪</span>
+                                    </div>
+                                    <div>
+                                        עתידי: 0 <span>₪</span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div>
+                                        נוכחי: @(
+                                     closeOverdraftOpts[closeOverdraftOpts.Count - 1].monthlyPlannedBudget)
+                                        <span>₪</span>
+                                    </div>
+                                    <div>
+                                        עתידי: @(
+                                     closeOverdraftOpts[closeOverdraftOpts.Count - 1].monthlyPlannedBudget + currentGap)
+                                        <span>₪</span>
+                                    </div>
+
+                                }
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="outerBtns">
+                        @if (chosenSubCategory == null)
+                        {
+                            <button class="primery-buttonOverDraft" @onclick="manageBudgetsToTranfer" disabled>העברה</button>
+                        }
+                        else
+                        {
+                            <button class="primery-buttonOverDraft" @onclick="manageBudgetsToTranfer">העברה</button>
+                        }
+
+                        <button class="thirdBtn" @onclick="NotTreatedOverdraft">אטפל בהמשך</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+    else if (noOverdraftOptions && isOverdraft)
+    {
+        <div class="overlay">
+            <div class="outerOverdraft">
+                <div class="overdraftWindow">
+
+                    <div class="outerText">
+                        <div class="outerCloseBtn">
+                            <button class="modal-close-btn" @onclick="()=>overdraftOverlayOpen = false"><img src="./css/images/close x.svg" /></button>
+                        </div>
+
+                        <h3 class="titleText">חרגת...</h3>
+
+                        <div>
+                            אין תתי קטגוריות בעלות תקציב
+                            פנוי להעברה.
+
+                        </div>
+                        <div>
+                            <span><b>טיפ מאיתנו-</b></span>
+                            לקראת החודש הבא,
+                            כדאי להעריך מחדש את התקציב של
+                            תתי הקטגוריות השונות.
+                        </div>
+
+
+                        <div class="outerBtns">
+                            <img style="height: 31vh;" src="./css/images/no-overdraft-options.svg" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+}
+
+
+@code {
+    [Parameter]
+    public int userID { get; set; }
+
+    [Parameter]
+    public int subCatID { get; set; }
+
+    [Parameter]
+    public int categoryID { get; set; }
+
+    [Parameter]
+    public double? budget { get; set; }
+
+    /// <summary>
+    /// triggers the overdraft symbol in the breadcrumbs
+    /// </summary>
+    [Parameter]
+    public bool isOverdraft { get; set; }
+
+    //[Parameter]
+    //public EventCallback<SubCategoryToEdit> updateEditedSubCat { get; set; }
+
+    public string categoryTitle = "";
+
+
+    public string subCategoryTitle = "";
+    List<TransactionOverviewToShow> allTransactions = new List<TransactionOverviewToShow>();
+    List<TransactionOverviewToShow> searchTrans = new List<TransactionOverviewToShow>();
+    List<TransactionOverviewToShow> prefilteredTransactions = new List<TransactionOverviewToShow>();
+
+
+    bool deleteBtnClicked = false;
+
+    bool editSubCatBtnClicked = false;
+    SubCategoryToEdit subCatToEdit = new SubCategoryToEdit();
+    List<AllUserCategories> userCategories = new List<AllUserCategories>();
+    SubCategoryToUpdate subCategoryToUpdate = new SubCategoryToUpdate();
+    TagsToShow chosenTag = new TagsToShow();
+    public string popupBodyText = "";
+
+    /// <summary>
+    /// means there is an overdraft
+    /// </summary>
+    public bool overdraftStatus = false;
+
+    public double totalSpendings = 0;
+
+    bool filterBtnClicked = false;
+    /// <summary>
+    /// if there isn't any funds free to close the overdraft- this is true
+    /// </summary>
+    bool noOverdraftOptions = false;
+    bool filterByTransTypeOverlay = false;
+    bool toSearch = false;
+    string filterByType = "";
+    int filterByTag = 0;
+    bool filterByTagOverlay = false;
+    bool filterByReturnTrans = false;
+    bool sortBtnClicked = false;
+    bool isOpetionsBtnClicked = false;
+    bool disBtn = false;
+    bool disNextBtn = false;
+    List<TagsToShow> subCatTagsList = new List<TagsToShow>();
+    string filterStatus = "";
+    string sortStatus = "";
+    string searchQuery = "";
+    string disBtnStyle => disBtn ? "disBtn" : "";
+    string disNextBtnStyle => disNextBtn ? "disBtn" : "";
+    private int currentPage = 0;
+    private int pageSize = 6;
+    private int totalPages => (int)Math.Ceiling(subCatTagsList.Count / (double)pageSize);
+    string returnToMainPage = "סביבת ההווה";
+
+
+    bool typeByCat = false; //false- expense, true- income
+
+    string userIcon = "";
+    string streakImgIcon = "";
+    string streakStatTitle = "";
+    string catColor = "";
+    string catOutlineColor = "";
+
+    string titleInput = "";
+    int titleInputLength = 0;
+    double ogBudget = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var getUserIcon = await Http.GetAsync("api/Present/getUserIcon/" + userID);
+        if (getUserIcon.IsSuccessStatusCode)
+        {
+            string iconCheck = await getUserIcon.Content.ReadAsStringAsync();
+            userIcon = iconCheck;
+        }
+        else
+        {
+            userIcon = "🌟";
+            var errorContent = await getUserIcon.Content.ReadAsStringAsync();
+            Console.WriteLine("failed to find icon or update it to default because: " + errorContent);
+        }
+
+        await getCurrentStreak();
+
+        //get category title:
+
+        var catTitle = await Http.GetAsync("api/Present/getCategoryTitle/" + categoryID);
+        if (catTitle.IsSuccessStatusCode)
+        {
+            var catTitleRes = await catTitle.Content.ReadAsStringAsync();
+            categoryTitle = catTitleRes;
+
+            var catColorRes = await Http.GetAsync("api/Present/getCatColor/" + categoryID);
+            if (catColorRes.IsSuccessStatusCode)
+            {
+                var colorFromDB = await catColorRes.Content.ReadAsStringAsync();
+                //Console.WriteLine("cat color in db- " + colorFromDB);
+
+                if (colorFromDB != null)
+                {
+                    catColor = convertCatColors(colorFromDB);
+                }
+                else
+                {
+                    catColor = "rgba(103, 142, 244, 0.13)";
+                }
+            }
+
+
+            //Console.WriteLine("catTitle had a successful request ");
+            //get subcategory title:
+            var subCatTitle = await Http.GetAsync("api/Present/GetSubCategory/" + subCatID);
+            if (subCatTitle.IsSuccessStatusCode)
+            {
+                SubCategoryToShow subTitle = await subCatTitle.Content.ReadFromJsonAsync<SubCategoryToShow>();
+                subCategoryTitle = subTitle.subCategoryTitle;
+                if (categoryTitle == "הכנסות")
+                {
+                    var checkCatType = await Http.GetAsync("api/Transactions/getCatType/" + userID);
+                    if (checkCatType.IsSuccessStatusCode)
+                    {
+                        List<int> incomeSubCats = new List<int>();
+                        incomeSubCats = checkCatType.Content.ReadFromJsonAsync<List<int>>().Result;
+                        if (incomeSubCats.Count > 0)
+                        {
+                            if (incomeSubCats.Contains(subCatID))
+                            {
+                                typeByCat = true;
+
+                                var getAllIncomeTransactions = await Http.GetAsync("api/Transactions/getAllIncomeTransactions/" + userID + "/" + subCatID);
+                                if (getAllIncomeTransactions.IsSuccessStatusCode)
+                                {
+                                    var checkTransList = getAllIncomeTransactions.Content.ReadFromJsonAsync<List<TransactionOverviewToShow>>().Result;
+                                    if (checkTransList != null && checkTransList.Count > 0)
+                                    {
+                                        allTransactions = checkTransList;
+                                        foreach (TransactionOverviewToShow trans in allTransactions)
+                                        {
+                                            totalSpendings += trans.transValue;
+                                        }
+                                        prefilteredTransactions = checkTransList;
+                                        await getSubCatTags();
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("No transactions found related to this sub category");
+                                    }
+                                }
+                                else
+                                {
+                                    var transErrorContent = await getAllIncomeTransactions.Content.ReadAsStringAsync();
+                                    Console.WriteLine("Failed to find transactions. Error: " + transErrorContent);
+                                }
+                            }
+
+                        }
+                    }
+                }
+                else
+                {
+                    var getAllTransactions = await Http.GetAsync("api/Transactions/getAllTransactionsByDate/" + userID + "/" + subCatID);
+                    if (getAllTransactions.IsSuccessStatusCode)
+                    {
+                        var checkTransList = getAllTransactions.Content.ReadFromJsonAsync<List<TransactionOverviewToShow>>().Result;
+                        if (checkTransList != null && checkTransList.Count > 0)
+                        {
+                            allTransactions = checkTransList;
+
+                            foreach (TransactionOverviewToShow trans in allTransactions)
+                            {
+                                totalSpendings += trans.transValue;
+
+                            }
+                            prefilteredTransactions = checkTransList;
+                            Console.WriteLine("total spendings- " + totalSpendings);
+
+
+                            if (totalSpendings > budget)
+                            {
+                                Console.WriteLine("איןןןןןןן תתיייייי קטגוריותתתתתתת");
+                                //overdraftStatus = true;
+                                isOverdraft = true; //triggers the warning button in the breadcrumbs
+                                var overdraftRes = await Http.GetAsync("api/Transactions/showOverdraft/" + subCatID + "/" + userID);
+                                if (overdraftRes.IsSuccessStatusCode)
+                                {
+                                    Console.WriteLine("איןןןןןןן תתיייייי קטגוריותתתתתתת");
+                                    closeOverdraftOpts = await overdraftRes.Content.ReadFromJsonAsync<List<OverBudgetToShow>>();
+
+                                    if (closeOverdraftOpts.Count <= 1 && closeOverdraftOpts[closeOverdraftOpts.Count - 1].id == subCatID)
+                                    {
+
+                                        noOverdraftOptions = true;
+                                    }
+                                }
+
+
+                            }
+                            else
+                            {
+                                overdraftStatus = false;
+                                isOverdraft = false;
+                                noOverdraftOptions = false;
+                            }
+                            await getSubCatTags();
+                        }
+                        else
+                        {
+                            Console.WriteLine("No transactions found related to this sub category");
+                        }
+                    }
+                    else
+                    {
+                        var transErrorContent = await getAllTransactions.Content.ReadAsStringAsync();
+                        Console.WriteLine("Failed to find transactions. Error: " + transErrorContent);
+                    }
+                }
+            }
+            else
+            {
+                var errorContent = await catTitle.Content.ReadAsStringAsync();
+                Console.WriteLine("Failed to find category title. Error: " + errorContent);
+            }
+
+
+        }
+
+    }
+
+    public string convertCatColors(string catColor)
+    {
+        string convertedColor = "";
+        string outlineColor = "";
+        switch (catColor)
+        {
+            case "#F4B367": //mustard
+                convertedColor = "rgba(244, 179, 103, 0.13)";
+                outlineColor = "rgba(244, 179, 103, 1)";
+                Console.WriteLine("cat color is mustard");
+                break;
+            case "#AEA2F9": //purple
+                convertedColor = "rgba(174, 162, 249, 0.13)";
+                outlineColor = "rgba(174, 162, 249, 1)";
+                Console.WriteLine("cat color is dark purple");
+                break;
+            case "#F467AB": //dark pink
+                convertedColor = "rgba(244, 103, 171, 0.13)";
+                outlineColor = "rgba(244, 103, 171, 1)";
+                Console.WriteLine("cat color is dark pink");
+                break;
+            case "#F47867": //salmon pink
+                convertedColor = "rgba(244, 120, 103, 0.13)";
+                outlineColor = "rgba(244, 120, 103, 1)";
+                Console.WriteLine("cat color is salmon pink");
+                break;
+            case "#678EF4": //defualt
+                convertedColor = "rgba(103, 142, 244, 0.13)";
+                outlineColor = "rgba(103, 142, 244, 1)";
+                Console.WriteLine("cat color is default");
+                break;
+            case "#8DE4BF": //light green
+                convertedColor = "rgba(141, 228, 191, 0.13)";
+                outlineColor = "rgba(141, 228, 191, 1)";
+                Console.WriteLine("cat color is light green");
+                break;
+            case "#67CAF4": //light blue
+                convertedColor = "rgba(103, 202, 244, 0.13)";
+                outlineColor = "rgba(103, 202, 244, 1)";
+                Console.WriteLine("cat color is light blue");
+                break;
+            case "#FCE884": //banana
+                convertedColor = "rgba(255, 239, 157, 0.13)";
+                outlineColor = "rgba(255, 239, 157, 1)";
+                Console.WriteLine("cat color is banana");
+                break;
+            case "#F9D3C2": //cream
+                convertedColor = "rgba(249, 211, 194, 0.13)";
+                outlineColor = "rgba(249, 211, 194, 1)";
+                Console.WriteLine("cat color is cream");
+                break;
+            case "#09AE73": //dark green
+                convertedColor = "rgba(9, 174, 115, 0.13)";
+                outlineColor = "rgba(9, 174, 115, 1)";
+                Console.WriteLine("cat color is dark green");
+                break;
+            case "#8C8B8B": //dark gray
+                convertedColor = "rgba(140, 139, 139, 0.25)";
+                outlineColor = "rgba(140, 139, 139, 1)";
+                Console.WriteLine("cat color is dark gray");
+                break;
+            case "#DADADA": //gray
+                convertedColor = "rgba(218, 218, 218, 0.13)";
+                outlineColor = "rgba(218, 218, 218, 1)";
+                Console.WriteLine("cat color is light gray");
+                break;
+            default:
+                convertedColor = "rgba(103, 142, 244, 0.13)";
+                outlineColor = "rgba(103, 142, 244, 1)";
+                Console.WriteLine("cat color is default");
+                break;
+        };
+
+        catOutlineColor = outlineColor;
+        return convertedColor;
+    }
+
+    public async Task goBack()
+    {
+        await JSRuntime.InvokeVoidAsync("navigateBack");
+    }
+
+    public async void transactionDeleted(int transIdToRemove)
+    {
+        Console.WriteLine("transaction id- " + transIdToRemove + " needs to be deleted");
+        double checkOverdraft = 0;
+        for (int i = allTransactions.Count - 1; i >= 0; i--)
+        {
+            checkOverdraft += allTransactions[i].transValue;
+            if (allTransactions[i].id == transIdToRemove)
+            {
+                checkOverdraft -= allTransactions[i].transValue;
+                allTransactions.Remove(allTransactions[i]);
+                //Console.WriteLine("transaction id- " + allTransactions[i].id + " deleted");
+            }
+        }
+
+        if (checkOverdraft > budget)
+        {
+            //overdraftStatus = true;
+            //if (!isOverdraft)
+            //{
+            //    isOverdraft = true;
+            //}
+            await checkOverdraftFunc(subCatID);
+        }
+        else
+        {
+            overdraftStatus = false;
+            isOverdraft = false;
+        }
+    }
+
+    public void OpetionsBtnClicked()
+    {
+        isOpetionsBtnClicked = !isOpetionsBtnClicked;
+
+    }
+
+    public void updateSubCatBudgetPostOverdraft(List<OverDraftBudgetToEdit> subNewBudget)
+    {
+        foreach (OverDraftBudgetToEdit newBudget in subNewBudget)
+        {
+            if (newBudget.id == subCatID)
+            {
+                budget = newBudget.monthlyPlannedBudget;
+            }
+        }
+
+
+        double checkOverdraft = 0;
+        foreach (TransactionOverviewToShow t in allTransactions)
+        {
+            checkOverdraft += t.transValue;
+        }
+        if (checkOverdraft > budget)
+        {
+            overdraftStatus = true;
+            isOverdraft = true;
+        }
+        else
+        {
+            overdraftStatus = false;
+            isOverdraft = false;
+        }
+    }
+
+    public async Task saveUpdatedSubCat()
+    {
+        subCategoryToUpdate.subCategoryTitle = subCatToEdit.subCategoryTitle;
+        subCategoryToUpdate.importance = subCatToEdit.importance;
+        foreach (AllUserCategories category in userCategories)
+        {
+            if (category.categroyTitle == subCatToEdit.categroyTitle)
+            {
+                subCatToEdit.categoryID = category.id;
+            }
+        }
+        subCategoryToUpdate.categoryID = subCatToEdit.categoryID;
+        subCategoryToUpdate.id = subCatToEdit.id;
+        subCategoryToUpdate.monthlyPlannedBudget = subCatToEdit.monthlyPlannedBudget;
+
+        var updateCatRes = await Http.PostAsJsonAsync("api/Present/EditSubCategory/", subCategoryToUpdate);
+        if (updateCatRes.IsSuccessStatusCode)
+        {
+            SubCategoryToUpdate updatedSubCat = await updateCatRes.Content.ReadFromJsonAsync<SubCategoryToUpdate>();
+            subCatToEdit.subCategoryTitle = updatedSubCat.subCategoryTitle;
+            subCatToEdit.importance = updatedSubCat.importance;
+            subCatToEdit.monthlyPlannedBudget = updatedSubCat.monthlyPlannedBudget;
+
+            //updateEditedSubCat.InvokeAsync(subCatToEdit);
+
+            subCategoryTitle = updatedSubCat.subCategoryTitle;
+            budget = updatedSubCat.monthlyPlannedBudget;
+            foreach (AllUserCategories category in userCategories)
+            {
+                if (updatedSubCat.categoryID == category.id)
+                {
+                    categoryTitle = category.categroyTitle;
+                }
+            }
+            double checkOverdraft = 0;
+            foreach (TransactionOverviewToShow t in allTransactions)
+            {
+                checkOverdraft += t.transValue;
+            }
+            if (checkOverdraft > budget)
+            {
+                //overdraftStatus = true;
+                await checkOverdraftFunc(subCatID);
+            }
+            else
+            {
+                overdraftStatus = false;
+                isOverdraft = false;
+            }
+
+            editSubCatBtnClicked = false; //closeing the edit overlay
+
+            Console.WriteLine("sub category updated");
+
+        }
+        else
+        {
+            Console.WriteLine("failed to update category");
+        }
+    }
+
+    public async Task getUserCategories()
+    {
+        //editSubCatBtnClicked = true;
+        isOpetionsBtnClicked = !isOpetionsBtnClicked;
+        subCatToEdit.categroyTitle = categoryTitle;
+        subCatToEdit.monthlyPlannedBudget = budget;
+        subCatToEdit.subCategoryTitle = subCategoryTitle;
+        subCatToEdit.id = subCatID;
+        subCatToEdit.categoryID = categoryID;
+        var getSubCatImportance = await Http.GetAsync("api/Present/GetSubCatImportance/" + subCatToEdit.id);
+        if (getSubCatImportance.IsSuccessStatusCode)
+        {
+            subCatToEdit.importance = await getSubCatImportance.Content.ReadFromJsonAsync<int>();
+        }
+        else
+        {
+            Console.WriteLine("couldn't find this sub cat's importance");
+        }
+
+
+        var getAllUserCategories = await Http.GetAsync("api/Present/GetUserCategories/" + userID);
+        if (getAllUserCategories.IsSuccessStatusCode)
+        {
+            userCategories = await getAllUserCategories.Content.ReadFromJsonAsync<List<AllUserCategories>>().ConfigureAwait(false);
+
+            //arranges the category dropdown so the current category will be the one initially displayed
+            List<AllUserCategories> tempUserCategories = new List<AllUserCategories>();
+            foreach (AllUserCategories category in userCategories)
+            {
+                if (category.id == categoryID)
+                {
+                    tempUserCategories.Insert(0, category);
+                }
+                else
+                {
+                    tempUserCategories.Add(category);
+                }
+
+            }
+            userCategories = tempUserCategories;
+            editSubCatBtnClicked = !editSubCatBtnClicked;
+        }
+        else
+        {
+            Console.WriteLine("no Categories found");
+        }
+    }
+    public void deleteSubCatPopUp()
+    {
+        popupBodyText = "תת הקטגוריה: '" + subCategoryTitle + "' תמחק";
+        deleteBtnClicked = !deleteBtnClicked;
+        isOpetionsBtnClicked = false;
+    }
+    public async Task deleteSubCat()
+    {
+        var deleteRes = await Http.DeleteAsync("api/Present/deleteSubCategory/" + subCatID);
+        if (deleteRes.IsSuccessStatusCode)
+        {
+            Console.WriteLine("sub category deleted");
+            goBack();
+
+        }
+        else
+        {
+            Console.WriteLine(" בעיה במחיקת תת- קטגוריה");
+        }
+    }
+
+    public void filterByTransTypeOverlayControl()
+    {
+        filterByTransTypeOverlay = !filterByTransTypeOverlay;
+        filterBtnClicked = false;
+    }
+
+    public void filterByTagsOverlayControl()
+    {
+        filterByTagOverlay = !filterByTagOverlay;
+        filterBtnClicked = false;
+    }
+
+    public async Task filterByTransType(string selectedType)
+    {
+        filterStatus = selectedType;
+        for (int i = allTransactions.Count - 1; i >= 0; i--)
+        {
+            if (allTransactions[i].valueType != selectedType)
+            {
+                allTransactions.Remove(allTransactions[i]);
+            }
+        }
+        if (allTransactions == null || allTransactions.Count <= 0)
+        {
+            Console.WriteLine("no transactions fit selected payment method");
+        }
+        filterByTransTypeOverlay = false;
+        filterBtnClicked = false;
+    }
+
+    public async Task filterByTags(int tagID)
+    {
+        await undoFilterAndSort();
+
+        Console.WriteLine(filterByTag + ", " + tagID);
+        string tagTitle = "";
+        for (int i = allTransactions.Count - 1; i >= 0; i--)
+        {
+            if (allTransactions[i].tagID != tagID)
+            {
+                allTransactions.Remove(allTransactions[i]);
+            }
+            else
+            {
+                tagTitle = allTransactions[i].tagTitle;
+            }
+        }
+        filterStatus = tagTitle;
+        filterByTagOverlay = false;
+        filterBtnClicked = false;
+
+    }
+    public async Task getSubCatTags()
+    {
+        subCatTagsList = new List<TagsToShow>();
+        var getTagsRes = await Http.GetAsync("api/Transactions/getSubCatTags/" + subCatID);
+        if (getTagsRes.IsSuccessStatusCode)
+        {
+            var subCatTags = getTagsRes.Content.ReadFromJsonAsync<List<TagsToShow>>().Result;
+            subCatTagsList = subCatTags;
+
+            //filterByTagOverlay = true;
+        }
+        else
+        {
+            Console.WriteLine("No tags found");
+        }
+    }
+
+    public async Task filterBySplitPayment()
+    {
+        await undoFilterAndSort();
+
+        for (int i = allTransactions.Count - 1; i >= 0; i--)
+        {
+            if (allTransactions[i].parentTransID != null)
+            {
+                var findParentRes = await Http.GetAsync("api/Transactions/identifyParent/" + allTransactions[i].parentTransID);
+                if (findParentRes.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("transaction: " + allTransactions[i].transTitle + " is a part of a split payment");
+                }
+            }
+            else if (allTransactions[i].splitPayment == true)
+            {
+                Console.WriteLine("transaction: " + allTransactions[i].transTitle + " is a parent of a split payment");
+            }
+            else
+            {
+                allTransactions.Remove(allTransactions[i]);
+            }
+        }
+        filterStatus = "תשלומים";
+        filterBtnClicked = false;
+    }
+
+    public void SortingOptions(string sortDirection)
+    {
+        switch (sortDirection)
+        {
+            case "dateDes":
+                allTransactions = allTransactions.OrderByDescending(e => e.transDate).ToList();
+                sortStatus = "תאריך (מהחדש לישן)";
+                break;
+            case "dateAsc":
+                allTransactions = allTransactions.OrderBy(e => e.transDate).ToList();
+                sortStatus = "תאריך (מהישן לחדש)";
+                break;
+            case "sumDes":
+                allTransactions = allTransactions.OrderByDescending(e => e.transValue).ToList();
+                sortStatus = "סכום הוצאה (מהגבוה לנמוך)";
+                break;
+            case "sumAsc":
+                allTransactions = allTransactions.OrderBy(e => e.transValue).ToList();
+                sortStatus = "סכום הוצאה (מהנמוך לגבוה)";
+                break;
+        }
+        sortBtnClicked = false;
+    }
+
+    public void filterByRepeatedTrans()
+    {
+        filterByReturnTrans = true;
+        filterBtnClicked = false;
+        filterStatus = "הוצאה חוזרת";
+    }
+
+    public async Task undoFilterAndSort()
+    {
+        allTransactions = new List<TransactionOverviewToShow>();
+        var getAllTransactions = await Http.GetAsync("api/Transactions/getAllTransactionsByDate/" + userID + "/" + subCatID);
+        if (getAllTransactions.IsSuccessStatusCode)
+        {
+            var checkTransList = getAllTransactions.Content.ReadFromJsonAsync<List<TransactionOverviewToShow>>().Result;
+            if (checkTransList != null && checkTransList.Count > 0)
+            {
+                allTransactions = checkTransList;
+                foreach (TransactionOverviewToShow trans in allTransactions)
+                {
+                    totalSpendings += trans.transValue;
+                }
+                if (totalSpendings > budget)
+                {
+                    overdraftStatus = true;
+                }
+                else
+                {
+                    overdraftStatus = false;
+                    isOverdraft = false;
+                }
+            }
+            else
+            {
+                Console.WriteLine("No transactions found related to this sub category");
+            }
+        }
+        else
+        {
+            var transErrorContent = await getAllTransactions.Content.ReadAsStringAsync();
+            Console.WriteLine("Failed to find transactions. Error: " + transErrorContent);
+        }
+        filterBtnClicked = false;
+        filterStatus = "";
+        sortStatus = "";
+        if (filterByReturnTrans)
+        {
+            filterByReturnTrans = false;
+        }
+    }
+
+    void UpdateSearchQuery(ChangeEventArgs e)
+    {
+        searchQuery = e.Value.ToString();
+
+        //FilterCatsOrSubCats();
+
+    }
+
+    void HandleKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")  // Trigger when Enter key is released
+        {
+            toSearch = true;
+
+            if (string.IsNullOrEmpty(searchQuery))
+            {
+
+            }
+            FilterTagsOrTrans();
+        }
+
+    }
+
+
+    private async Task getCurrentStreak()
+    {
+        var getCurrentStatRes = await Http.GetAsync("api/Present/getUserStreakStatus/" + userID);
+        if (getCurrentStatRes.IsSuccessStatusCode)
+        {
+            streakStatTitle = await getCurrentStatRes.Content.ReadAsStringAsync();
+            switch (streakStatTitle) //will fill the related streak image route
+            {
+                case "מטבע ארד":
+
+                    streakImgIcon = "./css/images/bronzeCoin.svg";
+
+                    break;
+                case "מטבע כסף":
+
+                    streakImgIcon = "./css/images/silverCoin.svg";
+
+                    break;
+                case "מטבע זהב":
+
+                    streakImgIcon = "./css/images/goldCoin.svg";
+
+                    break;
+                case "שטר":
+
+                    streakImgIcon = "./css/images/singleCashNote.svg";
+
+                    break;
+                case "שטרות":
+
+                    streakImgIcon = "./css/images/cashNotes.svg";
+
+                    break;
+                case "גביע":
+
+                    streakImgIcon = "./css/images/goblet.svg";
+
+                    break;
+                case "יהלום":
+
+                    streakImgIcon = "./css/images/diamond.svg";
+
+                    break;
+                default:
+                    Console.WriteLine("no picture is associated with this streak");
+                    streakImgIcon = "";
+
+                    break;
+            }
+        }
+    }
+
+    public void goToSProfilePage()
+    {
+        Nav.NavigateTo("./ProfilePage/" + userID);
+    }
+
+    void FilterTagsOrTrans()
+    {
+        if (!string.IsNullOrEmpty(searchQuery))
+        {
+
+            searchTrans = allTransactions.Where(trans => trans.transTitle.Contains(searchQuery)).ToList();
+            Console.WriteLine(searchTrans);
+
+
+        }
+        else
+        {
+            searchTrans = null; // Show all categories if the search query is empty
+
+        }
+    }
+
+    void filterBtnClickedFunc()
+    {
+        filterBtnClicked = !filterBtnClicked;
+        sortBtnClicked = false;
+
+    }
+
+    void sortBtnClickedFunc()
+    {
+        sortBtnClicked = !sortBtnClicked;
+        filterBtnClicked = false;
+
+    }
+
+    private void NextPage()
+    {
+        if (currentPage < totalPages - 1)
+        {
+            disBtn = false;
+            disNextBtn = false;
+            currentPage++;
+        }
+        if (currentPage == totalPages - 1)
+        {
+            disNextBtn = true;
+        }
+    }
+
+    private void PreviousPage()
+    {
+        if (currentPage > 0)
+        {
+            disNextBtn = false;
+            disBtn = false;
+            currentPage--;
+        }
+        if (currentPage == 0)
+        {
+            disBtn = true;
+        }
+
+    }
+
+    void chosenFilterByTag(TagsToShow tagAfterFilter)
+    {
+        filterByTag = tagAfterFilter.id;
+        chosenTag = tagAfterFilter; // Set the new selected tag
+    }
+
+
+    //handle overdraft after editing budget:
+    List<OverBudgetToShow> closeOverdraftOpts = new List<OverBudgetToShow>();
+    double currentGap = 0;
+    OverBudgetToShow overDraftSubCategory = new OverBudgetToShow();
+    bool overdraftOverlayOpen = false;
+    OverBudgetToShow chosenSubCategory = new OverBudgetToShow();
+    bool openSubCatsOptions = false;
+    bool overdraftNotTreated = false;
+
+
+
+    public async Task openOverdraftPopUp()
+    {
+        overdraftOverlayOpen = true;
+        await checkOverdraftFunc(subCatID);
+    }
+    public async Task checkOverdraftFunc(int subCatID)
+    {
+        //if (overDraftSubCategory==null)
+        //{
+        var getOverdraftDetails = await Http.GetAsync("api/Present/GetSubCategory/" + subCatID);
+        if (getOverdraftDetails.IsSuccessStatusCode)
+        {
+            SubCategoryToShow tempSub = await getOverdraftDetails.Content.ReadFromJsonAsync<SubCategoryToShow>();
+            if (tempSub != null)
+            {
+                overDraftSubCategory.id = subCatID;
+                overDraftSubCategory.subCategoryTitle = tempSub.subCategoryTitle;
+
+                overDraftSubCategory.remainingBudget = tempSub.transactionsValue;
+                if (tempSub.monthlyPlannedBudget.HasValue)
+                {
+                    overDraftSubCategory.monthlyPlannedBudget = tempSub.monthlyPlannedBudget.Value;
+                }
+
+                var overdraftRes = await Http.GetAsync("api/Transactions/showOverdraft/" + subCatID + "/" + userID);
+                if (overdraftRes.IsSuccessStatusCode)
+                {
+                    overdraftStatus = true;
+                    isOverdraft = true;
+                    //overdraftOverlayOpen = true;
+
+                    closeOverdraftOpts = new List<OverBudgetToShow>();
+                    closeOverdraftOpts = await overdraftRes.Content.ReadFromJsonAsync<List<OverBudgetToShow>>();
+                    currentGap = (closeOverdraftOpts[closeOverdraftOpts.Count - 1].remainingBudget) - (closeOverdraftOpts[closeOverdraftOpts.Count - 1].monthlyPlannedBudget);
+
+                    overDraftSubCategory.id = closeOverdraftOpts[closeOverdraftOpts.Count - 1].id;
+                    overDraftSubCategory.monthlyPlannedBudget = closeOverdraftOpts[closeOverdraftOpts.Count - 1].monthlyPlannedBudget;
+                    chosenSubCategory = new OverBudgetToShow();
+                    Console.WriteLine("overDraftSubCategory- " + closeOverdraftOpts.Count);
+                    Console.WriteLine("overDraftSubCategory- " + closeOverdraftOpts[closeOverdraftOpts.Count - 1].subCategoryTitle);
+                    int lastItem = closeOverdraftOpts.IndexOf(closeOverdraftOpts[closeOverdraftOpts.Count - 1]);
+                    if (closeOverdraftOpts.Count <= 1 && closeOverdraftOpts[lastItem].id == subCatID)
+                    {
+                        noOverdraftOptions = true;
+                    }
+                    else
+                    {
+                        noOverdraftOptions = false;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No overdraft detected");
+
+                }
+            }
+        }
+
+
+    }
+
+    private void HandleChange(OverBudgetToShow chosenSubCat)
+    {
+        chosenSubCategory = chosenSubCat;
+        openSubCatsOptions = !openSubCatsOptions;
+    }
+
+    List<OverDraftBudgetToEdit> budgetToUpdate = new List<OverDraftBudgetToEdit>();
+    public async Task manageBudgetsToTranfer()
+    {
+        budgetToUpdate = new List<OverDraftBudgetToEdit>();
+
+        budgetToUpdate.Add(new OverDraftBudgetToEdit
+            {
+                id = chosenSubCategory.id,  // ID of chosen subcategory
+                monthlyPlannedBudget = chosenSubCategory.monthlyPlannedBudget - currentGap // Updated budget
+
+            });
+
+
+        budgetToUpdate.Add(new OverDraftBudgetToEdit
+            {
+                id = overDraftSubCategory.id, // ID of the overdraft subcategory
+                monthlyPlannedBudget = overDraftSubCategory.monthlyPlannedBudget + currentGap // Updated budget
+            });
+
+        await updateSubCategoryBudget(budgetToUpdate);
+
+    }
+
+
+    List<SubCategoryToShow> subCategories = new List<SubCategoryToShow>();
+    public async Task updateSubCategoryBudget(List<OverDraftBudgetToEdit> budgetsToUpdate)
+    {
+
+        var budgetToSaveRes = await Http.PostAsJsonAsync("api/Transactions/EditSubCategoriesNewBudgets", budgetsToUpdate);
+        if (budgetToSaveRes.IsSuccessStatusCode)
+        {
+            Console.WriteLine("התקציבים עודכנו בהצלחה :)");
+
+            overdraftStatus = false;
+            overdraftNotTreated = false;
+            isOverdraft = false;
+
+            var subCatRes = await Http.GetAsync("api/Present/subCategoryToShow/" + categoryID);
+            if (subCatRes.IsSuccessStatusCode)
+            {
+                budget = budgetsToUpdate[1].monthlyPlannedBudget;
+            }
+            else
+            {
+                Console.WriteLine("no subcategories found");
+            }
+        }
+        else
+        {
+            Console.WriteLine("עדכון התקציבים נכשל");
+        }
+    }
+
+    public void NotTreatedOverdraft()
+    {
+        overdraftStatus = false;
+        overdraftOverlayOpen = false;
+    }
+
+
+    void closeOptionsMenu()
+    {
+        editSubCatBtnClicked = false;
+        isOpetionsBtnClicked = false;
+    }
+
+    private void SubCatTitleLengthCounter(ChangeEventArgs e)
+    {
+        titleInput = e.Value.ToString();
+        titleInputLength = titleInput.Length;
+    }
+}

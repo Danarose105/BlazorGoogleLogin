@@ -1,0 +1,54 @@
+﻿@using BlazorGoogleLogin.Shared.Models.present.toShow
+@using BlazorGoogleLogin.Shared.Models.present.toAdd
+@using BlazorGoogleLogin.Shared.Models.present.toEdit
+@using Microsoft.AspNetCore.Components.Web
+@inject HttpClient Http
+
+<div class="outerOptions">
+    <button class="optionButton editButton" @onclick="(() => iseditBtnClicked = !iseditBtnClicked)">
+        <img src="./css/images/edit_pencil.svg" class="icon" />
+        עריכה
+    </button>
+    <div class="lineBetween"> </div>
+    <button class="optionButton deleteButton" @onclick="(() => isdeleteBtnClicked = !isdeleteBtnClicked)">
+        <img src="./css/images/trash.svg" class="icon" />
+        מחיקה
+    </button>
+</div>
+
+
+@if (iseditBtnClicked)
+{
+    editBtnClicked.InvokeAsync();
+    iseditBtnClicked = !iseditBtnClicked;
+}
+
+@if (isdeleteBtnClicked)
+{
+    deleteBtnClicked.InvokeAsync();
+    isdeleteBtnClicked = !isdeleteBtnClicked;
+}
+
+
+
+@code {
+
+
+    [Parameter]
+    public EventCallback editBtnClicked { get; set; }
+
+    [Parameter]
+    public EventCallback deleteBtnClicked { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> closeOverlay { get; set; }
+
+    public bool iseditBtnClicked;
+    public bool isdeleteBtnClicked;
+
+    void closeDeleteOverLay()
+    {
+        closeOverlay.InvokeAsync(true);
+    }
+
+}

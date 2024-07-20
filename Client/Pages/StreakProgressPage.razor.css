@@ -1,0 +1,314 @@
+﻿body {
+    background-image: url('css/images/bg-rank.svg');
+}
+
+.profileAndBack {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 94%;
+    margin: 1vh 0;
+    padding-top: 2vh;
+}
+
+.TopProfileAndBack {
+    display: flex;
+    justify-content: center;
+}
+
+.profilePic {
+    width: 2.5rem;
+    height: 2.5rem;
+    background-color: #F9F9F9;
+    border: 3.5px solid #6775F4;
+    color: inherit;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    text-align: center;
+    border-radius: 50%;
+    font-size: 1.8rem;
+    display: inline-block;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rankTxt {
+    display: flex;
+    flex-direction: column;
+}
+
+.rankInnerText {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #6775F4;
+}
+
+.rankInnerText2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.allRank {
+    border-radius: 0.3rem;
+    background: #F9F9F9;
+    display: flex;
+    width: 78%;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0.5vh;
+}
+
+
+
+.content {
+    height: 90%;
+    /* width: 79%; */
+    /* margin-bottom: 1vh; */
+    padding: 0;
+    width: 100%;
+    display: flex;
+    /* width: 80%; */
+    justify-content: center;
+    background-image: url('css/images/welldone-bg.svg');
+    background-repeat: no-repeat;
+    height:95%;
+}
+
+.wrapperContent {
+    display: flex;
+    align-items: center;
+    align-content: flex-end;
+    flex-direction: column;
+    height: 100%;
+    background-image: url(css/images/welldone-bg.svg);
+    background-repeat: no-repeat;
+}
+
+.topNextRank {
+    width: 100%;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    height: 6vh;
+    column-gap: 2vw;
+    justify-content: center;
+    background-color: #D6D9F1;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+
+#ranks {
+    display: flex;
+    flex-direction: column;
+    /* row-gap: 2vh; */
+    justify-content: space-evenly;
+    margin-top: 0;
+    width: 80%;
+}
+
+.topRanksAndBanner {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 80vh;
+}
+
+.outerRank {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    /* align-items: center; */
+}
+
+
+
+.backbtn {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+}
+
+.centringTop {
+    display: flex;
+    justify-content: center;
+    width: 100%
+}
+
+
+#bottomNav {
+    background-color: #F9F9F9;
+    border-radius: 1.25rem 1.25rem 0rem 0rem;
+    height: 10vh;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    position: relative;
+    align-content: stretch;
+    align-items: center;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1); /* Shadow added here */
+    position: fixed;
+    bottom: 0;
+    z-index: 2;
+    transition: transform 0.3s ease-in-out;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    will-change: transform;
+    transition: opacity 0.5s ease-in-out; /* Smooth transition for the opacity */
+}
+
+#nav-hidden {
+    display: none; /* Moves the navbar out of view */
+}
+
+
+.NavLines {
+    content: "";
+    display: block;
+    width: 0.06rem;
+    height: 60%;
+    background-color: #D6D9F1;
+    display: flex;
+    align-self: auto;
+    right: 14.5vh;
+    top: 20%;
+    /* flex-direction: column-reverse; */
+    /* flex-wrap: wrap; */
+    /* align-content: stretch; */
+    align-items: baseline;
+}
+
+.navBtn {
+    position: relative;
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    row-gap: 0.4vh;
+}
+
+
+#rank_1 {
+    /* display: flex; */
+    width: 100%;
+    justify-content: flex-start;
+    margin: 0 4vw 0 0;
+    height: 8vh;
+}
+
+#rank_2 {
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+    height: 8vh;
+}
+
+#rank_3 {
+    display: flex;
+    width: 100%;
+    height: 8vh;
+}
+
+#rank_4 {
+    display: flex;
+    justify-content: flex-end;
+    height: 8vh;
+}
+
+#rank_5 {
+    margin: 0 10vw 0 0;
+    display: flex;
+    justify-content: flex-start;
+    margin: 0 10vw 0 0;
+    height: 8vh;
+}
+
+#rank_6 {
+    display: flex;
+    /* width: 80%; */
+    justify-content: flex-start;
+    height: 8vh;
+}
+
+.textContent {
+    height: 90%;
+    /* width: 79%; */
+    /* margin-bottom: 1vh; */
+    padding: 0;
+    width: 100%;
+    display: flex;
+    /* width: 80%; */
+    justify-content: center;
+    background-image: url('css/images/welldone-bg.svg');
+    background-repeat: no-repeat;
+    height: 95%;
+    column-gap: 1vh;
+}
+
+.lockRank {
+    position: relative; /* Ensures the pseudo-element positions correctly */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width:78%;
+}
+
+    .lockRank::after {
+        content: ''; /* Required for pseudo-elements */
+        position: absolute; /* Position over the lockRank content */
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.55); /* Semi-transparent black */
+        pointer-events: none; /* Allows clicks to pass through to underlying elements */
+        border-radius: 0.3rem;
+        padding: 0.5vh;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+    }
+
+
+
+.allRankLock {
+    border-radius: 0.3rem;
+    background: #F9F9F9;
+    display: flex;
+    width: 100%;
+    height:100%;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0.5vh;
+}
+
+.lockImg {
+    z-index: 1;
+    position: absolute;
+}

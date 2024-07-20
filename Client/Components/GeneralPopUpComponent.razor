@@ -1,0 +1,63 @@
+﻿@using BlazorGoogleLogin.Shared.Models.present.toShow
+@using BlazorGoogleLogin.Shared.Models.present.toAdd
+@using BlazorGoogleLogin.Shared.Models.present.toEdit
+@using Microsoft.AspNetCore.Components.Web
+@inject HttpClient Http
+
+<div class="overlay">
+    <div class="outerPopUp">
+       
+        <div class="outerX" @onclick="undoAction"><img src="./css/images/close x.svg" /></div>
+        <h3> @popupTypeTitle</h3>
+        <div class="lineBetween"></div>
+        <div class="outerText">
+            <span>@middleText</span>
+            <span>@name</span>
+        </div>
+        
+        <div class="outerBtns">
+            <button id="cancleBtn" @onclick="undoAction">ביטול</button>
+            <button id="actionBtn" @onclick=doAction>@action</button>
+
+        </div>
+        
+    </div>
+</div>
+
+
+
+
+@code {
+    [Parameter]
+    public string popupTypeTitle { get; set; }
+    [Parameter]
+    public string middleText { get; set; }
+    [Parameter]
+    public string action { get; set; }
+    [Parameter]
+    public string name { get; set; }
+
+    [Parameter]
+
+    public EventCallback makeAction { get; set; }
+
+    [Parameter]
+    public EventCallback closePopUp { get; set; }
+
+    
+
+    public void doAction()
+    {
+        makeAction.InvokeAsync();
+
+    }
+
+    public void undoAction()
+    {
+        closePopUp.InvokeAsync();
+    }
+
+
+
+
+}
