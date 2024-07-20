@@ -1,6 +1,0 @@
-.vscode
-.vs
-bin
-obj
-*.db
-appsettings.json
