@@ -13,28 +13,15 @@
 
 <div>תכנית עסקית לחלומות</div>
 
-@foreach (AllUserSavingsToShow saving in allSavings)
-{
-    sumSavings += saving.savingsSum;
-}
-
-@foreach (AllUserGoalsToShow goal in allGoals)
-{
-    sumGoals += goal.budget;
-}
-
-@foreach (AllUserGoalsToShow goal in allGoals)
-{
-    if (goal.dueYear == CurrentYear)
-    {
-        sumNeededSavingsPerYear += goal.budget;
-    }
-
-}
-
 <div>
-    @sumGoals /@sumSavings
+
+    <span>@sumSavings</span>
+    <span>/</span>
+    <span>@sumGoals</span>
+
+
 </div>
+
 
 <div>
     @if (earliestDate.HasValue)
@@ -51,8 +38,10 @@
             monthlySavings = 0;
         }
         <div>
+            <span>כדי להגיע ליעדי @CurrentYear, אצטרך לחסוך:</span>
+            <div>בחודש</div>
             <span>@monthlySavings</span>
-            <span>/</span>
+            <div>בשנה</div>            
             <span>@sumNeededSavingsPerYear </span>
         </div>
 
@@ -67,12 +56,12 @@
             @(CurrentYear + i)
 
             <div>
-                @foreach (AllUserGoalsToShow goal in allGoals)
+                @foreach (AllUserGoalsToShow goalPerYearToSend in allGoals)
                 {
-                    if (goal.dueYear == CurrentYear + i)
+                    if (goalPerYearToSend.dueYear == CurrentYear + i)
                     {
-                        <div style="background-color:@goal.color">
-                            @goal.goalTitle                          
+                        <div style="background-color:@goalPerYearToSend.color" @onclick="()=> openGoalsPerYearPopUp(goalPerYearToSend.dueYear)">
+                            @goalPerYearToSend.goalTitle
                         </div>
                     }
 
@@ -83,6 +72,65 @@
 
     }
 </div>
+
+<div>
+    <button>יעד חדש</button>
+</div>
+
+
+<div>
+    <button @onclick="goToSavingsPage">לסביבת החסכונות</button>
+</div>
+
+@if (showYearlyGoals)
+{
+    <div>
+        <button @onclick="closeYearlyGoalsPopUp">X</button>
+    </div>
+
+    <div>
+        @goalsYearToShow
+    </div>
+    <div>
+        @if (goalsPerYearList.Count == 0)
+        {
+            <span>לא נמצאו יעדים לשנה זו</span>
+        }
+        else
+        {
+            @foreach (AllUserGoalsToShow goalPerYear in goalsPerYearList)
+            {
+
+                <div style="background-color:@goalPerYear.color" @onclick="()=>showGoalDetails(goalPerYear)">
+                    @goalPerYear.goalTitle
+                </div>
+            }
+        }
+
+
+    </div>
+    <div>
+         <button>יעד חדש</button>
+    </div>
+}
+
+
+@if (isGoalFullDetails)
+{
+
+    <div>
+        <button @onclick="closeGoalDetailsPopUp">X</button>
+    </div>
+
+    <div style="background-color:@goalDetailsToShow.color">
+        <span>@goalDetailsToShow.goalTitle</span>
+        <span>@goalDetailsToShow.dueYear</span>
+        <span>@goalDetailsToShow.budget</span>
+        
+    </div>
+   
+    
+}
 
 @code {
 
@@ -95,12 +143,19 @@
 
     List<AllUserGoalsToShow> allGoals = new List<AllUserGoalsToShow>();
     List<AllUserSavingsToShow> allSavings = new List<AllUserSavingsToShow>();
+    List<AllUserGoalsToShow> goalsPerYearList = new List<AllUserGoalsToShow>();
     List<DateTime> dates = new List<DateTime>();
+
+    AllUserGoalsToShow goalDetailsToShow;
+
     int sumGoals = 0;
     int sumSavings = 0;
     int sumNeededSavingsPerYear = 0;
     int numberOfMonthesToDivide = 0;
     int monthlySavings = 0;
+    int goalsYearToShow = 0;
+    bool showYearlyGoals = false;
+    bool isGoalFullDetails = false;
     private DateTime? earliestDate;
 
 
@@ -145,6 +200,24 @@
 
         }
 
+        foreach (AllUserSavingsToShow saving in allSavings)
+        {
+            sumSavings += saving.savingsSum;
+        }
+
+        foreach (AllUserGoalsToShow goal in allGoals)
+        {
+            sumGoals += goal.budget;
+        }
+
+        foreach (AllUserGoalsToShow goal in allGoals)
+        {
+            if (goal.dueYear == CurrentYear)
+            {
+                sumNeededSavingsPerYear += goal.budget;
+            }
+
+        }
         earliestDate = FindEarliestDateInCurrentYear(allGoals);
     }
 
@@ -164,5 +237,42 @@
         }
 
         return null; // Return null if no dates found in the current year
+    }
+
+    void goToSavingsPage()
+    {
+        Nav.NavigateTo("./UserSavingsPage");
+    }
+
+    void openGoalsPerYearPopUp(int goalsYear)
+    {
+        showYearlyGoals = true;
+        goalsYearToShow = goalsYear;
+        @foreach (AllUserGoalsToShow goal in allGoals)
+        {
+            if (goal.dueYear == goalsYear)
+            {
+                goalsPerYearList.Add(goal);
+            }
+
+        }
+    }
+
+    void closeYearlyGoalsPopUp()
+    {
+        showYearlyGoals = false;
+        goalsPerYearList.Clear();
+    }
+
+    void closeGoalDetailsPopUp()
+    {
+        isGoalFullDetails = false;
+        
+    }
+
+    void showGoalDetails(AllUserGoalsToShow goalFullDetails)
+    {
+        isGoalFullDetails = true;
+        goalDetailsToShow = goalFullDetails;
     }
 }
