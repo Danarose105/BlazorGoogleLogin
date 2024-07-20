@@ -131,7 +131,7 @@
         </div>
 
         <div>
-            <button @onclick="addNewGoal"></button>
+            <button @onclick="addNewGoal">שמירה וסיום</button>
         </div>
     </div>
 
@@ -169,8 +169,8 @@
 
     </div>
     <div>
-        <button>יעד חדש</button>
-    </div>
+    <button @onclick="()=> isAddGoalOverlayClicked = !isAddGoalOverlayClicked">יעד חדש</button>
+</div>
 
 
 }
