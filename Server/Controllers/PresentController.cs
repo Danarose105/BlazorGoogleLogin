@@ -1261,6 +1261,25 @@ namespace BlazorGoogleLogin.Server.Controllers
             return BadRequest("failed to add tag");
         }
 
+        [HttpPost("addFirstTag/{userID}")]
+        public async Task<IActionResult> addFirstTag(int userID, TagsToShow tagToUpdate)
+        {
+            object newTagParam = new
+            {
+                tagTitle = tagToUpdate.tagTitle,
+                tagColor = tagToUpdate.tagColor,
+                userID = userID
+            };
+            string insertTagQuery = "insert into tags(tagTitle, tagColor, userID) values (@tagTitle, @tagColor, @userID)";
+
+            int wasTagAdded = await _db.InsertReturnIdAsync(insertTagQuery, newTagParam);
+            if (wasTagAdded > 0)
+            {
+                return Ok(wasTagAdded);
+            }
+            return BadRequest("failed to add tag");
+        }
+
         [HttpGet("checkUserMonthDate/{userID}")]
         public async Task<IActionResult> checkUserMonthDate(int userID)
         {
