@@ -436,7 +436,7 @@
                         if (!filterByReturnTrans)
                         {
 
-                            <TransOverviewComponent transaction="transaction" removeTransaction="@(()=>transactionDeleted(transaction.id))" subCatID="@subCatID" userID="@userID" subCatTakenBudget="updateSubCatBudgetPostOverdraft" overdraftStatus="@overdraftStatus" typeByCat="@typeByCat"></TransOverviewComponent>
+                            <TransOverviewComponent transaction="transaction" removeTransaction="@(()=>transactionDeleted(transaction.id))" subCatID="@subCatID" userID="@userID" subCatTakenBudget="updateSubCatBudgetPostOverdraft" overdraftStatus="@overdraftStatus" typeByCat="@typeByCat" refreshTags="refreshTransAndTags"></TransOverviewComponent>
 
                         }
                         else
@@ -444,7 +444,7 @@
                             filterStatus = "הוצאה חוזרת";
                             if (transaction.fixedMonthly == true)
                             {
-                                <TransOverviewComponent transaction="transaction" removeTransaction="@(()=>transactionDeleted(transaction.id))" subCatID="@subCatID" userID="@userID" subCatTakenBudget="updateSubCatBudgetPostOverdraft" overdraftStatus="@overdraftStatus" typeByCat="@typeByCat"></TransOverviewComponent>
+                                <TransOverviewComponent transaction="transaction" removeTransaction="@(()=>transactionDeleted(transaction.id))" subCatID="@subCatID" userID="@userID" subCatTakenBudget="updateSubCatBudgetPostOverdraft" overdraftStatus="@overdraftStatus" typeByCat="@typeByCat" refreshTags="refreshTransAndTags"></TransOverviewComponent>
                                 <hr />
                             }
 
@@ -467,7 +467,7 @@
                             {
 
                                 <div class="transactions">
-                                    <TransOverviewComponent transaction="transaction" removeTransaction="@(()=>transactionDeleted(transaction.id))" subCatID="@subCatID" userID="@userID" subCatTakenBudget="updateSubCatBudgetPostOverdraft" overdraftStatus="@overdraftStatus" typeByCat="@typeByCat"></TransOverviewComponent>
+                                    <TransOverviewComponent transaction="transaction" removeTransaction="@(()=>transactionDeleted(transaction.id))" subCatID="@subCatID" userID="@userID" subCatTakenBudget="updateSubCatBudgetPostOverdraft" overdraftStatus="@overdraftStatus" typeByCat="@typeByCat" refreshTags="refreshTransAndTags"></TransOverviewComponent>
                                 </div>
 
                             }
@@ -1192,7 +1192,7 @@
         if (deleteRes.IsSuccessStatusCode)
         {
             Console.WriteLine("sub category deleted");
-            goBack();
+            await goBack();
 
         }
         else
@@ -1252,6 +1252,14 @@
         filterByTagOverlay = false;
         filterBtnClicked = false;
 
+    }
+
+    public async Task refreshTransAndTags(TransactionOverviewToShow trans)
+    {
+        await getSubCatTags();
+        var getUpdatedTrans = allTransactions.FirstOrDefault(t => t.id == trans.id);
+        int transToUpdateIndex = allTransactions.IndexOf(getUpdatedTrans);
+        allTransactions[transToUpdateIndex] = trans;
     }
     public async Task getSubCatTags()
     {

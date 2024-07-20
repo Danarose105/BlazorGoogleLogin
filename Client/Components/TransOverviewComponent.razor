@@ -173,6 +173,9 @@
     [Parameter]
     public bool typeByCat { get; set; } //false- expense, true- income
 
+    [Parameter]
+    public EventCallback<TransactionOverviewToShow> refreshTags { get; set; }
+
     bool deleteBtnClicked = false;
     bool editBtnClicked = false;
     bool isOpetionsBtnClicked = false;
@@ -255,15 +258,15 @@
 
         //if (typeByCat)
         //{
-            Console.WriteLine("trans date pre switch- " + transaction.transDate);
-            bool convertingDate = DateTime.TryParse(transaction.transDate, out date);
-            string convertedDate = "";
-            if (convertingDate)
-            {
-                convertedDate = date.ToString("dd/MM/yyyy");
-                transaction.transDate = convertedDate;
-                Console.WriteLine("trans date format- " + date + " , trans date as string- " + convertedDate);
-            }
+        Console.WriteLine("trans date pre switch- " + transaction.transDate);
+        bool convertingDate = DateTime.TryParse(transaction.transDate, out date);
+        string convertedDate = "";
+        if (convertingDate)
+        {
+            convertedDate = date.ToString("dd/MM/yyyy");
+            transaction.transDate = convertedDate;
+            Console.WriteLine("trans date format- " + date + " , trans date as string- " + convertedDate);
+        }
         //}
 
 
@@ -441,6 +444,7 @@
         }
 
         transaction = editedTransaction;
+        refreshTags.InvokeAsync(transaction);
     }
 
     public void closeEditTransWindow()
