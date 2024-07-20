@@ -1,0 +1,168 @@
+﻿@page "/FutureHomePage"
+
+
+@inject HttpClient Http
+@inject NavigationManager Nav
+@using BlazorGoogleLogin.Shared.Models.future.toShow
+@using BlazorGoogleLogin.Shared.Models.future.toAdd
+@using BlazorGoogleLogin.Shared.Models.future.toEdit
+@using BlazorGoogleLogin.Client.Components
+@using Microsoft.AspNetCore.Components.Web
+@*@inject DateService DateService*@
+@inject IJSRuntime JSRuntime
+
+<div>תכנית עסקית לחלומות</div>
+
+@foreach (AllUserSavingsToShow saving in allSavings)
+{
+    sumSavings += saving.savingsSum;
+}
+
+@foreach (AllUserGoalsToShow goal in allGoals)
+{
+    sumGoals += goal.budget;
+}
+
+@foreach (AllUserGoalsToShow goal in allGoals)
+{
+    if (goal.dueYear == CurrentYear)
+    {
+        sumNeededSavingsPerYear += goal.budget;
+    }
+
+}
+
+<div>
+    @sumGoals /@sumSavings
+</div>
+
+<div>
+    @if (earliestDate.HasValue)
+    {
+        numberOfMonthesToDivide = (12 - earliestDate.Value.Month) + 1;
+        @*<div>The earliest date in the current year is @earliestDate.Value.ToShortDateString().</div>*@
+        @if (numberOfMonthesToDivide > 0)
+        {
+            monthlySavings = sumNeededSavingsPerYear / numberOfMonthesToDivide;
+
+        }
+        else
+        {
+            monthlySavings = 0;
+        }
+        <div>
+            <span>@monthlySavings</span>
+            <span>/</span>
+            <span>@sumNeededSavingsPerYear </span>
+        </div>
+
+    }
+</div>
+
+<div>
+
+    @for (int i = 0; i < 16; i++)
+    {
+        <div>
+            @(CurrentYear + i)
+
+            <div>
+                @foreach (AllUserGoalsToShow goal in allGoals)
+                {
+                    if (goal.dueYear == CurrentYear + i)
+                    {
+                        <div style="background-color:@goal.color">
+                            @goal.goalTitle                          
+                        </div>
+                    }
+
+                }
+            </div>
+        </div>
+
+
+    }
+</div>
+
+@code {
+
+    [Parameter]
+    public int userID { get; set; }
+
+    [CascadingParameter]
+    private UserDTO user { get; set; }
+
+
+    List<AllUserGoalsToShow> allGoals = new List<AllUserGoalsToShow>();
+    List<AllUserSavingsToShow> allSavings = new List<AllUserSavingsToShow>();
+    List<DateTime> dates = new List<DateTime>();
+    int sumGoals = 0;
+    int sumSavings = 0;
+    int sumNeededSavingsPerYear = 0;
+    int numberOfMonthesToDivide = 0;
+    int monthlySavings = 0;
+    private DateTime? earliestDate;
+
+
+    private int CurrentYear => DateTime.Now.Year;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        userID = user.Id;
+
+        await Task.Delay(1); // This is just to simulate an async process.
+
+        //int currentMonthNumber = DateTime.Now.Month; // Gets the current month number
+        StateHasChanged();
+
+
+        var userGoalsRes = await Http.GetAsync("api/Future/userFutureGoalsToShow/" + userID);
+
+        if (userGoalsRes.IsSuccessStatusCode)
+        {
+            allGoals = userGoalsRes.Content.ReadFromJsonAsync<List<AllUserGoalsToShow>>().Result;
+            //getCurrentStreak();
+
+        }
+        else
+        {
+            Console.WriteLine("no goals");
+
+        }
+
+        var userSavingsRes = await Http.GetAsync("api/Future/userFutureSavingsToShow/" + userID);
+
+        if (userSavingsRes.IsSuccessStatusCode)
+        {
+            allSavings = userSavingsRes.Content.ReadFromJsonAsync<List<AllUserSavingsToShow>>().Result;
+            //getCurrentStreak();
+
+        }
+        else
+        {
+            Console.WriteLine("no savings");
+
+        }
+
+        earliestDate = FindEarliestDateInCurrentYear(allGoals);
+    }
+
+
+
+    private DateTime? FindEarliestDateInCurrentYear(List<AllUserGoalsToShow> goals)
+    {
+        int currentYear = DateTime.Now.Year;
+        var datesInCurrentYear = goals
+                                 .Select(g => g.inputDate)
+                                 .Where(date => date.Year == currentYear)
+                                 .ToList();
+
+        if (datesInCurrentYear.Any())
+        {
+            return datesInCurrentYear.Min();
+        }
+
+        return null; // Return null if no dates found in the current year
+    }
+}
