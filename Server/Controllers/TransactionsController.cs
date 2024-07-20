@@ -567,7 +567,6 @@ ORDER BY transactions.transDate DESC;";
 
             if (isTransDeleted)
             {
-
                 return Ok();
             }
 

@@ -78,8 +78,13 @@
                                         <button class="repeatedBtn" @onclick=@(async () => await repeatingTransOverlay())>@repeatedBtnTitle <img src="./css/images/repeat icon.svg" /></button>
                                         @if (isReapetedBtnClicked)
                                         {
+                                            repeatedBtnTitle = "עריכת ההזנה החוזרת";
                                             <button class="cancleRepeatedBtn" @onclick="()=>undoFixedMonthly(newTransaction.transDate)">ביטול הוצאה חוזרת</button>
                                             //צריך לחבר את הכפתור לפונקציה שמבטלת את ההוצאה החוזרת ואז גם לשנות את המשתנה הזה שם לפולס
+                                        }
+                                        else
+                                        {
+                                            repeatedBtnTitle = "הגדרת ההזנה כחוזרת";
                                         }
 
                                     </div>
@@ -208,7 +213,7 @@
                                                                 @{
                                                                     // Attempt to find a matching transaction for the month
                                                                     var matchingTrans = reapeatedTransValuesList.FirstOrDefault(trans => trans.transDate.ToString("MMMM") == month);
-                                                                    
+
 
                                                                     <div class="monthDivider"></div>
                                                                     // Determine the value to display in the input
@@ -257,14 +262,14 @@
                                                                 <label>@GetHebrewMonthName(month)</label>
                                                                 @if (GetCurrentMonth() != month)
                                                                 {
-                                                                   
-                                                                        <div class="monthDivider"></div>
-                                                                        <div class="outerValue">
-                                                                            <input class="month" type="text"
+
+                                                                    <div class="monthDivider"></div>
+                                                                    <div class="outerValue">
+                                                                        <input class="month" type="text"
                                                    disabled="@IsPastMonth(month)" value="0" @oninput="eventArgs => HandleInput(eventArgs, month)" />
-                                                                            <span class="ShekelSign">₪</span>
-                                                                        </div>
-                                                                  
+                                                                        <span class="ShekelSign">₪</span>
+                                                                    </div>
+
                                                                 }
                                                                 else
                                                                 {
@@ -324,7 +329,7 @@
 
                                                         foreach (string month in months)
                                                         {
-                                                            string defValue= GetDefaultValue(month);
+                                                            string defValue = GetDefaultValue(month);
 
                                                             <div class="monthValueInput">
 
@@ -1008,6 +1013,21 @@
     {
         hiddenReOverlay = "display:none;";
         returningTrans = false;
+
+        if (reapeatedTransValuesList.Count > 0 && transIDtoEdit > 0 || fixedTransChildrenToAdd.Count > 0)
+        {
+            newTransaction.fixedMonthly = true;
+        }
+
+        if (resetMonthValues == true && isResetBtnClicked == true && isValueTyped == false && isValueTypedAfterReset == false) //means there was a reset, no new data was inserted and the user pressed back
+        {
+            reapeatedTransValuesList.Clear();
+            fixedTransChildrenToAdd.Clear();
+            isReapetedBtnClicked = false;
+            newTransaction.fixedMonthly = false;
+
+        }
+
     }
 
     /// <summary>
@@ -1079,6 +1099,11 @@
         {
             // Update the existing transaction
             existingTrans.transValue = parsedValue;
+            if (reapeatedTransValuesList.Contains(existingTrans))
+            {
+                int indexOfChild = reapeatedTransValuesList.IndexOf(existingTrans);
+                reapeatedTransValuesList[indexOfChild] = existingTrans;
+            }
         }
         else
         {
@@ -1142,19 +1167,19 @@
                     {
                         repeatedBtnTitle = "עריכת ההזנה החוזרת";
 
-                        var getRepeatedChildren = await Http.GetAsync("api/Transactions/getRepeatedTransToEdit/" + transIDtoEdit);
+                        var getRepeatedChildren = await Http.GetAsync("api/Transactions/getRepeatedTransToEdit/" + transIDtoEdit); //gets the fixed children only
                         if (getRepeatedChildren.IsSuccessStatusCode)
                         {
                             reapeatedTransValuesList = getRepeatedChildren.Content.ReadFromJsonAsync<List<RepeatedTransToShow>>().Result;
                         }
                         else
                         {
-                            Console.WriteLine("failed to get related repeated transactions"); 
+                            Console.WriteLine("failed to get related repeated transactions");
                         }
                     }
                     else
                     {
-                        repeatedBtnTitle = "הגדרת ההוצאה כחוזרת";
+                        repeatedBtnTitle = "הגדרת ההזנה כחוזרת";
                     }
 
                     if (newTransaction.splitPayment == true)
@@ -1204,8 +1229,8 @@
             newTransaction = new TransactionToAdd()
                 {
                     transDate = DateTime.Today, // Set the transaction date to today
-                    fixedMonthly=false,
-                    splitPayment=false
+                    fixedMonthly = false,
+                    splitPayment = false
                 };
             overlayTitle = "הוספה לתת קטגוריה";
             isItAnewTrans = true;
@@ -1518,10 +1543,6 @@
             newTransaction.transType = 2;
         }
 
-        if (reapeatedTransValuesList.Count > 0 && reapeatedTransValuesList != null)
-        {
-            newTransaction.fixedMonthly = true;
-        } 
         TransactionToEdit transToEdit = new TransactionToEdit()
             {
                 id = transIDtoEdit,
@@ -1550,7 +1571,7 @@
         }
         if (initialAmountOfSplits > 1)
         {
-            //double formerTransValue = transToEdit.transValue * initialAmountOfSplits;
+
             transToEdit.transValue = sumPreSplit / selectedNumber;
         }
 
@@ -1689,21 +1710,40 @@
                     await updateSplitPayments(postEditTrans);
                 }
 
-                addTransactionAfterEdit.InvokeAsync(editedTransaction);
 
-                if (postEditTrans.fixedMonthly == true && postEditTrans.fixedMonthly==ogTransaction.fixedMonthly) //means contents were changed but not necessarily the amount of children
+
+                if (postEditTrans.fixedMonthly == true && postEditTrans.fixedMonthly == ogTransaction.fixedMonthly) //means contents were changed
                 {
-                    await updateReTransactions(reapeatedTransValuesList);
+                    if (isResetBtnClicked && isValueTypedAfterReset)
+                    {
+                        await updateReTransactionsPostReset(fixedTransChildrenToAdd); //means all children are post reset
+                        //await saveRepeatedTransactions(postEditTrans.id);
+                    }
+                    else
+                    {
+                        await updateReTransactions(reapeatedTransValuesList);
+                    }
+
                 }
-                else if (postEditTrans.fixedMonthly!=ogTransaction.fixedMonthly) //means children were completely added/removed
+                else if (postEditTrans.fixedMonthly != ogTransaction.fixedMonthly) //means children were completely added/removed
                 {
-                    await updateReTransactions(reapeatedTransValuesList);
+                    if (isResetBtnClicked && isValueTypedAfterReset)
+                    {
+                        await updateReTransactionsPostReset(fixedTransChildrenToAdd); //means all children are post reset
+                       //await saveRepeatedTransactions(postEditTrans.id);
+                    }
+                    else
+                    {
+                        await updateReTransactions(reapeatedTransValuesList);
+                    }
                 }
 
                 if (!overdraftDetected)
                 {
                     isTransactionOverlayOpen.InvokeAsync(false); //closes the edit overlay
                 }
+
+                addTransactionAfterEdit.InvokeAsync(editedTransaction);
             }
         }
         else
@@ -2015,7 +2055,7 @@
     /// </summary>
     public async Task repeatingTransOverlay()
     {
-         undoFixedMonthly(newTransaction.transDate); 
+
         isReapetedBtnClicked = true;
         resetMonthValues = false;
         if (newTransaction.fixedMonthly == true)
@@ -2034,10 +2074,6 @@
             }
 
         }
-        //else
-        //{
-        //    newTransaction.fixedMonthly = true;
-        //}
 
         returningTrans = !returningTrans; //opens the overlay
         fixedTransChildrenToAdd = new List<TransactionToAdd>();
@@ -2047,8 +2083,8 @@
         //adds possible transactions to the fixed children list:
         foreach (string m in months)
         {
-            string dateString = $"{currentDay} {m} {currentYear}";
 
+            string dateString = $"{currentDay} {m} {currentYear}";
             DateTime tempDate;
             if (DateTime.TryParseExact(dateString, "d MMMM yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out tempDate))
             {
@@ -2060,38 +2096,79 @@
             }
             attemptedParsing = true;
 
-
-            TransactionToAdd childTrans = new TransactionToAdd()
+            if (reapeatedTransValuesList.Count > 0)
+            {
+                var matchingTrans = reapeatedTransValuesList.FirstOrDefault(t => t.transDate == tempDate);
+                TransactionToAdd childTrans = new TransactionToAdd()
+                    {
+                        transValue = newTransaction.transValue,
+                        valueType = newTransaction.valueType,
+                        description = newTransaction.description,
+                        fixedMonthly = false,
+                        splitPayment = false,
+                        parentTransID = newTransaction.parentTransID,
+                        tagID = newTransaction.tagID,
+                        tagTitle = newTransaction.tagTitle,
+                        tagColor = newTransaction.tagColor,
+                        transTitle = newTransaction.transTitle,
+                        subCategoryID = subCategoryIDTOGet,
+                        transDate = parsedDate,
+                        transType = newTransaction.transType
+                    };
+                if (!categoryTypeIndicator)
                 {
-                    transValue = newTransaction.transValue,
-                    valueType = newTransaction.valueType,
-                    description = newTransaction.description,
-                    fixedMonthly = false,
-                    parentTransID = newTransaction.parentTransID,
-                    tagID = newTransaction.tagID,
-                    tagTitle = newTransaction.tagTitle,
-                    tagColor = newTransaction.tagColor,
-                    transTitle = newTransaction.transTitle,
-                    subCategoryID = subCategoryIDTOGet,
-                    transDate = parsedDate,
-                    transType = newTransaction.transType
-                };
-            if (!categoryTypeIndicator)
-            {
-                childTrans.transType = 1; //expense
+                    childTrans.transType = 1; //expense
+                }
+                else
+                {
+                    childTrans.transType = 2; //income
+                }
+
+                if (matchingTrans != null) //if the childTrans exists in DB
+                {
+                    childTrans.transValue = matchingTrans.transValue;
+
+                }
+                fixedTransChildrenToAdd.Add(childTrans);
+                Console.WriteLine("childTrans.transValue- " + childTrans.transValue);
             }
-            else
+            else //if the trans wasn't fixedMonthly before
             {
-                childTrans.transType = 2; //income
+                TransactionToAdd childTrans = new TransactionToAdd()
+                    {
+                        transValue = newTransaction.transValue,
+                        valueType = newTransaction.valueType,
+                        description = newTransaction.description,
+                        fixedMonthly = false,
+                        splitPayment=false,
+                        parentTransID = newTransaction.parentTransID,
+                        tagID = newTransaction.tagID,
+                        tagTitle = newTransaction.tagTitle,
+                        tagColor = newTransaction.tagColor,
+                        transTitle = newTransaction.transTitle,
+                        subCategoryID = subCategoryIDTOGet,
+                        transDate = parsedDate,
+                        transType = newTransaction.transType
+                    };
+                if (!categoryTypeIndicator)
+                {
+                    childTrans.transType = 1; //expense
+                }
+                else
+                {
+                    childTrans.transType = 2; //income
+                }
+
+                fixedTransChildrenToAdd.Add(childTrans);
             }
-            fixedTransChildrenToAdd.Add(childTrans);
+
 
         }
-        Console.WriteLine(fixedTransChildrenToAdd.Count);
+
     }
 
     /// <summary>
-    /// saving repeating transactions when the parent is fixedMonthly
+    /// saving repeating transactions when the parent is fixedMonthly and was created now
     /// </summary>
 
     public async Task saveRepeatedTransactions(int parentTransID)
@@ -2106,6 +2183,8 @@
                 repT.tagID = newTransaction.tagID;
                 repT.tagColor = newTransaction.tagColor;
                 repT.tagTitle = newTransaction.tagTitle;
+                repT.fixedMonthly=false;
+                repT.splitPayment = false;
             }
 
             if (fixedTransChildrenToAdd[i].transValue <= 0 || fixedTransChildrenToAdd[i].transValue == null)
@@ -2134,11 +2213,14 @@
     /// </summary>
     public async Task updateReTransactions(List<RepeatedTransToShow> reTransToUpdate)
     {
-        foreach (RepeatedTransToShow childTrans in reTransToUpdate)
+        reTransToUpdate.RemoveAll(e => e.transDate <= DateTime.Now); //removes all transaction that don't occur in the past (including the present trans)
+        if (newTransaction.fixedMonthly == true)
         {
-            if (childTrans.id>0 && childTrans.transValue == 0 || childTrans.id>0 && childTrans.transValue.ToString() == "" || childTrans.id>0 && childTrans.transValue == null) //deletes the child if it doesn't have an appropriate value
+            foreach (RepeatedTransToShow childTrans in reTransToUpdate)
             {
-                
+                if (childTrans.id > 0 && childTrans.transValue <= 0 || childTrans.id > 0 && childTrans.transValue.ToString() == "" || childTrans.id > 0 && childTrans.transValue == null) //deletes the child if it exists in DB and doesn't have an appropriate value
+                {
+
                     var deleteRes = await Http.DeleteAsync("api/Transactions/deleteTransaction/" + childTrans.id);
                     if (deleteRes.IsSuccessStatusCode)
                     {
@@ -2148,53 +2230,73 @@
                     {
                         Console.WriteLine("בעיה במחיקת הזנה חוזרת ריקה");
                     }
-                
-                
-            }
-            else if (childTrans.id == 0 && childTrans.transValue > 0 || childTrans.id == null && childTrans.transValue > 0) //adds the child if it doesn't exist yet
-            {
 
-                TransactionToAdd newRepeatedT = new TransactionToAdd()
+
+                }
+                else if (childTrans.id == 0 && childTrans.transValue > 0 || childTrans.id == null && childTrans.transValue > 0) //adds the child if it doesn't exist yet
+                {
+
+                    TransactionToAdd newRepeatedT = new TransactionToAdd()
+                        {
+                            transTitle = newTransaction.transTitle,
+                            subCategoryID = newTransaction.subCategoryID,
+                            transType = newTransaction.transType,
+                            transValue = childTrans.transValue,
+                            valueType = newTransaction.valueType,
+                            transDate = childTrans.transDate,
+                            description = newTransaction.description,
+                            parentTransID = transIDtoEdit,
+                            fixedMonthly = false,
+                            splitPayment = false
+
+                        };
+                    var transToSaveRes = await Http.PostAsJsonAsync("api/Transactions/AddTransaction", newRepeatedT);
+                    if (transToSaveRes.IsSuccessStatusCode)
                     {
-                        transTitle = newTransaction.transTitle,
-                        subCategoryID = newTransaction.subCategoryID,
-                        transType = newTransaction.transType,
-                        transValue = childTrans.transValue,
-                        valueType = newTransaction.valueType,
-                        transDate = childTrans.transDate,
-                        description = newTransaction.description,
-                        parentTransID = transIDtoEdit,
-
-                    };
-                var transToSaveRes = await Http.PostAsJsonAsync("api/Transactions/AddTransaction", newRepeatedT);
-                if (transToSaveRes.IsSuccessStatusCode)
-                {
-                    Console.WriteLine("נוספה הוצאה חוזרת בהצלחה");
+                        Console.WriteLine("נוספה הוצאה חוזרת בהצלחה");
+                    }
+                    else
+                    {
+                        Console.WriteLine("נכשלה הוספה של הוצאה חוזרת ");
+                    }
                 }
-                else
+                else if (childTrans.id > 0 && childTrans.transValue > 0)//updates the child if it already exists
                 {
-                    Console.WriteLine("נכשלה הוספה של הוצאה חוזרת ");
-                }
-            }
-            else if(childTrans.id>0 && childTrans.transValue>0)//updates the child if it already exists
-            {
-                var TransactionsToSaveRes = await Http.PostAsJsonAsync("api/Transactions/UpdateRepeatedTrans", childTrans);
-                if (TransactionsToSaveRes.IsSuccessStatusCode)
-                {
-                    Console.WriteLine("הזנה חוזרת עודכנה בהצלחה");
-                }
-                else
-                {
-                    Console.WriteLine("עדכון הוצאה חוזרת נכשל");
+                    var TransactionsToSaveRes = await Http.PostAsJsonAsync("api/Transactions/UpdateRepeatedTrans", childTrans);
+                    if (TransactionsToSaveRes.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("הזנה חוזרת עודכנה בהצלחה");
+                    }
+                    else
+                    {
+                        Console.WriteLine("עדכון הוצאה חוזרת נכשל");
+                    }
                 }
             }
         }
+        else //if the transaction was turned fixedMonthly=false
+        {
+            var deleteSplitChildren = await Http.DeleteAsync("api/Transactions/deleteSplittedChildrenOnly/" + transIDtoEdit);
+            if (deleteSplitChildren.IsSuccessStatusCode)
+            {
+                Console.WriteLine("כל החזרות של הזנה זו נמחקו בהצלחה");
+            }
+            else
+            {
+                Console.WriteLine("נכשלה המחיקה של כל החזרות של הזנה זו");
+            }
+        }
+
 
     }
 
     public void undoFixedMonthly(DateTime transDate)
     {
-        newTransaction.fixedMonthly = false;
+        if (isReapetedBtnClicked == true)
+        {
+            newTransaction.fixedMonthly = false;
+        }
+
         fixedTransChildrenToAdd.Clear();
         fixedTransChildrenToAdd = new List<TransactionToAdd>();
         Console.WriteLine("fixedTransChildrenToAdd count- " + fixedTransChildrenToAdd.Count);
@@ -2206,6 +2308,44 @@
         hiddenReOverlay = "";
     }
 
+    public async Task updateReTransactionsPostReset(List<TransactionToAdd> reTransToUpdate)
+    {
+        reTransToUpdate.RemoveAll(e => e.transDate <= DateTime.Now); //removes all transaction that don't occur in the past (including the present trans)
+        if (newTransaction.fixedMonthly == true)
+        {
+            foreach (TransactionToAdd childTrans in reTransToUpdate)
+            {
+                if (childTrans.transValue > 0) //adds the child if it doesn't exist yet
+                {
+                    childTrans.fixedMonthly = false;
+                    childTrans.splitPayment = false;
+                    var transToSaveRes = await Http.PostAsJsonAsync("api/Transactions/AddTransaction", childTrans);
+                    if (transToSaveRes.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("נוספה הוצאה חוזרת בהצלחה");
+                    }
+                    else
+                    {
+                        Console.WriteLine("נכשלה הוספה של הוצאה חוזרת ");
+                    }
+                }
+            }
+        }
+        else //if the transaction was turned fixedMonthly=false
+        {
+            var deleteSplitChildren = await Http.DeleteAsync("api/Transactions/deleteSplittedChildrenOnly/" + transIDtoEdit);
+            if (deleteSplitChildren.IsSuccessStatusCode)
+            {
+                Console.WriteLine("כל החזרות של הזנה זו נמחקו בהצלחה");
+            }
+            else
+            {
+                Console.WriteLine("נכשלה המחיקה של כל החזרות של הזנה זו");
+            }
+        }
+
+
+    }
 
     public async Task getStreakDetails()
     {
