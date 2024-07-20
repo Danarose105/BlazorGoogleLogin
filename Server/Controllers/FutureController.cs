@@ -62,6 +62,30 @@ namespace BlazorGoogleLogin.Server.Controllers
 
         }
 
+        [HttpPost("addGoal/{userID}")] // הוספת יעד חדש
+        public async Task<IActionResult> addGoal(int userID, GoalToAdd UsergoalToAdd)
+        {
+            object newGoalParam = new
+            {
+                goalTitle = UsergoalToAdd.goalTitle,
+                budget = UsergoalToAdd.budget,
+                dueYear = UsergoalToAdd.dueYear,
+                color = UsergoalToAdd.color,
+                userID = userID
+            };
+            string insertGoalQuery = "insert into goals(goalTitle, budget, dueYear, color, userID) values (@goalTitle, @budget, @dueYear, @color, @userID)";
+
+            int wasGoalAdded = await _db.InsertReturnIdAsync(insertGoalQuery, newGoalParam);
+            if (wasGoalAdded > 0)
+            {
+                string GoalQuery = "SELECT * FROM goals Where id = @wasGoalAdded";
+                var newGoalAfterAdding = await _db.GetRecordsAsync<AllUserGoalsToShow>(GoalQuery, wasGoalAdded);
+                AllUserGoalsToShow newGoalToShow = newGoalAfterAdding.FirstOrDefault();
+                return Ok(newGoalToShow);
+            }
+            return BadRequest("failed to add goal");
+        }
+
 
 
 

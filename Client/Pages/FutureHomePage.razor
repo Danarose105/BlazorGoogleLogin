@@ -41,7 +41,7 @@
             <span>כדי להגיע ליעדי @CurrentYear, אצטרך לחסוך:</span>
             <div>בחודש</div>
             <span>@monthlySavings</span>
-            <div>בשנה</div>            
+            <div>בשנה</div>
             <span>@sumNeededSavingsPerYear </span>
         </div>
 
@@ -74,9 +74,68 @@
 </div>
 
 <div>
-    <button>יעד חדש</button>
+    <button @onclick="()=> isAddGoalOverlayClicked = !isAddGoalOverlayClicked">יעד חדש</button>
 </div>
 
+@if (isAddGoalOverlayClicked)
+{
+    <div>
+        <div>הוספת יעד חדש</div>
+        <div>
+            <span>שם היעד</span>
+            <input type="text" @bind="newGoal.goalTitle" />
+        </div>
+        <div>
+            <span>צבע היעד</span>
+        </div>
+        <div>
+            <span>שנת היעד</span>
+            <div>
+                <div @onclick="()=>openYearsOptions =! openYearsOptions">
+                    <!-- Fixed malformed tag here -->
+                    @if (newGoal.dueYear != null && newGoal.dueYear != 0)
+                    {
+                        <div class="dropDownTitle">
+                            @newGoal.dueYear
+                            <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
+                        </div>
+                    }
+                    else
+                    {
+                        newGoal.dueYear = CurrentYear;
+
+                        <div class="dropDownTitle" style="color:#727272">
+                            @newGoal.dueYear
+                            <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
+                        </div>
+                    }
+                </div>
+                @if (openYearsOptions)
+                {
+                    <div class="outerMonthDayOptions">
+                        @for (int i = 0; i < 16; i++)
+                        {
+                            int currentLoopValue = i;  // Create a temporary variable to capture the loop variable
+                            <div @onclick="@(()=>newGoal.dueYear = (CurrentYear + currentLoopValue))">
+                                @(CurrentYear + currentLoopValue)
+                            </div>
+                            <div class="daydivider"></div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+        <div>
+            <span>סכום היעד</span>
+            <input type="number" @bind="newGoal.budget" />
+        </div>
+
+        <div>
+            <button @onclick="addNewGoal"></button>
+        </div>
+    </div>
+
+}
 
 <div>
     <button @onclick="goToSavingsPage">לסביבת החסכונות</button>
@@ -110,12 +169,10 @@
 
     </div>
     <div>
-         <button>יעד חדש</button>
+        <button>יעד חדש</button>
     </div>
 
-    @*<div>
-        <button>יעד חדש</button>
-    </div>*@
+
 }
 
 
@@ -130,10 +187,9 @@
         <span>@goalDetailsToShow.goalTitle</span>
         <span>@goalDetailsToShow.dueYear</span>
         <span>@goalDetailsToShow.budget</span>
-        
+
     </div>
-   
-    
+
 }
 
 @code {
@@ -151,6 +207,7 @@
     List<DateTime> dates = new List<DateTime>();
 
     AllUserGoalsToShow goalDetailsToShow;
+    GoalToAdd newGoal = new GoalToAdd();
 
     int sumGoals = 0;
     int sumSavings = 0;
@@ -158,8 +215,11 @@
     int numberOfMonthesToDivide = 0;
     int monthlySavings = 0;
     int goalsYearToShow = 0;
+    int selectedYear;
     bool showYearlyGoals = false;
     bool isGoalFullDetails = false;
+    bool isAddGoalOverlayClicked = false;
+    bool openYearsOptions = false;
     private DateTime? earliestDate;
 
 
@@ -271,7 +331,7 @@
     void closeGoalDetailsPopUp()
     {
         isGoalFullDetails = false;
-        
+
     }
 
     void showGoalDetails(AllUserGoalsToShow goalFullDetails)
@@ -279,4 +339,29 @@
         isGoalFullDetails = true;
         goalDetailsToShow = goalFullDetails;
     }
+
+    public async Task addNewGoal()
+    {
+        if (newGoal.color == "" || newGoal.color == null)
+        {
+            newGoal.color = "#6775F4";
+        }
+
+        var goalToAddRes = await Http.PostAsJsonAsync("api/Future/addGoal/" + userID, newGoal);
+        if (goalToAddRes.IsSuccessStatusCode)
+        {
+            // Use 'await' to asynchronously read the content of the response.
+            AllUserGoalsToShow newGoalToAddToList = await goalToAddRes.Content.ReadFromJsonAsync<AllUserGoalsToShow>();
+
+            allGoals.Add(newGoalToAddToList);
+            newGoal = new GoalToAdd();
+        }
+        else
+        {
+
+            Console.WriteLine("Failed to add new goal");
+        }
+    }
+
+
 }
