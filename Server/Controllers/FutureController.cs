@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using BlazorGoogleLogin.Data;
 using BlazorGoogleLogin.Shared.Models.present.toShow;
+using BlazorGoogleLogin.Shared.Models.present.toEdit;
 
 namespace BlazorGoogleLogin.Server.Controllers
 {
@@ -113,7 +114,43 @@ namespace BlazorGoogleLogin.Server.Controllers
         }
 
 
+        [HttpPost("EditSaving")]  // עריכת חסכון
 
+        public async Task<IActionResult> EditSaving(SavingToEdit savingToUpdate)
+        {
+
+            object savingUpdateParam = new
+            {
+                ID = savingToUpdate.id,
+                savingsTitle = savingToUpdate.savingsTitle,
+                savingsSum = savingToUpdate.savingsSum
+
+            };
+
+            string UpdateSavingQuery = "UPDATE savings set savingsTitle = @savingsTitle, savingsSum = @savingsSum where id =@ID";
+            bool isUpdate = await _db.SaveDataAsync(UpdateSavingQuery, savingUpdateParam);
+
+            if (isUpdate)
+            {
+                return Ok(savingToUpdate);
+            }
+            return BadRequest("update saving failed");
+        }
+
+
+        [HttpDelete("deleteSaving/{SavingIdToDelete}")] // מחיקת חסכון
+        public async Task<IActionResult> deleteSaving(int SavingIdToDelete)
+        {
+            string DeleteQuery = "DELETE FROM savings WHERE id=@ID";
+            bool isSavingDeleted = await _db.SaveDataAsync(DeleteQuery, new { ID = SavingIdToDelete });
+
+            if (isSavingDeleted)
+            {
+                return Ok();
+            }
+
+            return BadRequest("Failed to delete saving");
+        }
 
 
 

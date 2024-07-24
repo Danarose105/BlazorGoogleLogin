@@ -21,10 +21,7 @@
     <div>
        סך החסכונות עד כה:
     </div>
-    @foreach (AllUserSavingsToShow saving in allSavings)
-    {
-        sumSavings += saving.savingsSum;
-    }
+   
     <span>@sumSavings</span>
 </div>
 
@@ -56,12 +53,100 @@
 <div>
     @foreach (AllUserSavingsToShow saving in allSavings)
     {
-        <div>
+        <div @onclick="()=>showSavingDetails(saving)">
             @saving.savingsTitle
             @saving.savingsSum
         </div>
     }
 </div>
+
+@if (OpenSavingDetails)
+{
+    <div>
+        <button @onclick="closeSavingDetailsPopUp"><img src="../css/images/back-repeated.svg" /></button>
+    </div>
+    <div>
+        
+    <div>
+            <div class="closedAndOpenMenu">
+                <button class="options" @onclick="OpetionsBtnClicked"><img src="./css/images/option menu.svg" /></button>
+                @if (isOpetionsBtnClicked)
+                {
+
+                    <OptionsMenuComponent editBtnClicked="@showEditSaving" deleteBtnClicked="@deleteSavingBtnClciked" closeOverlay="closeDeleteOverlay"></OptionsMenuComponent>
+                }
+            </div>
+    </div>
+
+       <div>
+           @savingDetailsToShow.savingsTitle
+       </div>
+        <div>
+            @savingDetailsToShow.savingsSum
+        </div>
+
+    </div>
+}
+
+
+@if(isEditSavingClicked)
+{
+    <div class="megaOuterLay">
+        <div class="outerLay">
+            <div class="BgOverlay"> </div>
+            <div class="overlay">
+
+                <div class="paddingDiv">
+                    <div class="outerTitleAndIcon">
+                        <button class="closeOverlay" @onclick="()=> isEditSavingClicked = !isEditSavingClicked"><img src="./css/images/close x.svg" /></button>
+                        <h3 class="popupTitle">עריכת חסכון</h3>
+                        <div class="titleAndIcon">
+                            <div class="outerTitleAndCounter">
+                                <div class="input-container">
+                                    <input class="catTitle" type="text" maxlength="18" minlength="2" @oninput="titleLengthCounter" @bind="@editedSaving.savingsTitle" />
+                                    <div class="counter">
+                                        @if (editedSaving.savingsTitle == null || editedSaving.savingsTitle == "")
+                                        {
+                                            <span>0/18</span>
+                                        }
+                                        else
+                                        {
+                                            if (editedSaving.savingsTitle.Length < 2 || editedSaving.savingsTitle.Length > 18)
+                                            {
+
+                                                <span>@titleInputLength/18</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@titleInputLength/18</span>
+
+                                            }
+                                        }
+                                    </div>
+
+                                    <div>
+                                        <input class="savingSum" type="number" @bind="@editedSaving.savingsSum" />
+                                    </div>
+
+                                    <button class="saveBtn" @onclick="saveUpdatedSaving">שמירת שינויים</button>
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@if (deleteBtnClicked)
+{
+    isOpetionsBtnClicked = false;
+    <GeneralPopUpComponent popupTypeTitle="מחיקת חסכון" middleText="@popupBodyText" action="מחיקה" makeAction="deleteSaving" closePopUp="closeDeletePopUp"></GeneralPopUpComponent>
+}
+
+
 
 
 @code {
@@ -74,10 +159,20 @@
 
     List<AllUserSavingsToShow> allSavings = new List<AllUserSavingsToShow>();
     SavingToAdd newSaving = new SavingToAdd();
+    SavingToEdit editedSaving = new SavingToEdit();
+    AllUserSavingsToShow savingDetailsToShow = new AllUserSavingsToShow();
     int sumSavings = 0;
     private int CurrentYear => DateTime.Now.Year;
 
     bool isAddSavingOverlayClicked = false;
+    bool OpenSavingDetails = false;
+    bool isOpetionsBtnClicked = false;
+    bool isEditSavingClicked = false;
+    bool deleteBtnClicked = false;
+
+    string titleInput = "";
+    string popupBodyText = "";
+    int titleInputLength = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -103,6 +198,11 @@
 
         }
 
+        @foreach (AllUserSavingsToShow saving in allSavings)
+        {
+            sumSavings += saving.savingsSum;
+        }
+
     }
 
     void backToFutureHomePage()
@@ -112,7 +212,7 @@
 
     public async Task addNewSaving()
     {
-        
+
         var SavingToAddRes = await Http.PostAsJsonAsync("api/Future/addSaving/" + userID, newSaving);
         if (SavingToAddRes.IsSuccessStatusCode)
         {
@@ -130,5 +230,115 @@
 
         isAddSavingOverlayClicked = false;
     }
+
+    void closeSavingDetailsPopUp()
+    {
+        OpenSavingDetails = false;
+
+    }
+
+    void showSavingDetails(AllUserSavingsToShow savingFullDetails)
+    {
+        OpenSavingDetails = true;
+        savingDetailsToShow = savingFullDetails;
+    }
+
+    public void OpetionsBtnClicked()
+    {
+        isOpetionsBtnClicked = !isOpetionsBtnClicked;
+
+    }
+
+    void showEditSaving()
+    {
+        isEditSavingClicked = true;
+        editedSaving.savingsTitle = savingDetailsToShow.savingsTitle;
+        editedSaving.savingsSum = savingDetailsToShow.savingsSum;
+        editedSaving.id = savingDetailsToShow.id;
+
+    } 
+
+
+    public void closeDeletePopUp()
+    {
+        deleteBtnClicked = false ;
+    }
+
+    void deleteSavingBtnClciked()
+    {
+        deleteBtnClicked = !deleteBtnClicked;
+        editedSaving.id = savingDetailsToShow.id;
+
+        popupBodyText = "החסכון '" + savingDetailsToShow.savingsTitle + "' עומד להמחק";
+        isOpetionsBtnClicked = false;
+        
+    }
+
+    void closeDeleteOverlay()
+    {
+        OpetionsBtnClicked();
+
+    }
+
+    private void titleLengthCounter(ChangeEventArgs e)
+    {
+        titleInput = e.Value.ToString();
+        titleInputLength = titleInput.Length;
+    }
+
+    public async Task saveUpdatedSaving()
+    {
+        
+        
+        var updateSavingRes = await Http.PostAsJsonAsync("api/Future/EditSaving/", editedSaving);
+        if (updateSavingRes.IsSuccessStatusCode)
+        {
+            SavingToEdit updatedSaving = await updateSavingRes.Content.ReadFromJsonAsync<SavingToEdit>();
+            savingDetailsToShow.savingsTitle = editedSaving.savingsTitle;
+            savingDetailsToShow.savingsSum = editedSaving.savingsSum;
+            isEditSavingClicked = false;
+            OpenSavingDetails = false;
+            OpetionsBtnClicked();
+
+            //need to refresh the home page
+
+            Console.WriteLine("saving updated");
+
+        }
+        else
+        {
+            Console.WriteLine("failed to update saving");
+        }
+    }
+
+
+    public async Task deleteSaving()
+    {
+        deleteBtnClicked = false;
+        OpenSavingDetails = false;
+        
+        var deleteRes = await Http.DeleteAsync("api/Future/deleteSaving/" + editedSaving.id);
+       
+        if (deleteRes.IsSuccessStatusCode)
+        {
+            @foreach (AllUserSavingsToShow saving in allSavings)
+            {
+                @if(saving.id == editedSaving.id)
+                {
+                    allSavings.Remove(saving);
+                }
+            }
+
+            
+            
+        }
+        else
+        {
+            Console.WriteLine(" בעיה במחיקת חסכון");
+        }
+
+        
+    }
+
 
 }
