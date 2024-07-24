@@ -80,13 +80,36 @@
 @if (isAddGoalOverlayClicked)
 {
     <div>
-        <div>הוספת יעד חדש</div>
+        <div>הוספת יעד</div>
         <div>
             <span>שם היעד</span>
             <input type="text" @bind="newGoal.goalTitle" />
         </div>
         <div>
-            <span>צבע היעד</span>
+            <div class="outerColors">
+                <div class="colorsContainer">
+                    <div class="colorsRow">
+                        @foreach (var color in new[] { "#F4B367", "#AEA2F9", "#F467AB", "#F47867", "#6775F4", "#8DE4BF" })
+                        {
+                            <div id="@(color)" class="@(selectedClass == color ? "color-selected" : "")">
+                                <input style="opacity:0;" type="radio" name="categoryColors" value="@color"
+                               @onclick="() => UpdateColor(color)" />
+
+                            </div>
+                        }
+                    </div>
+                    <div class="colorsRow">
+                        @foreach (var color in new[] { "#67CAF4", "#FCE884", "#F9D3C2", "#16A78D", "#696969", "#DADADA" })
+                        {
+                            <div id="@(color)" class="@(selectedClass == color ? "color-selected" : "")">
+                                <input style="opacity:0;" type="radio" name="categoryColors" value="@color"
+                               @onclick="() => UpdateColor(color)" />
+
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
         </div>
         <div>
             <span>שנת היעד</span>
@@ -221,7 +244,7 @@
     bool isAddGoalOverlayClicked = false;
     bool openYearsOptions = false;
     private DateTime? earliestDate;
-
+    string selectedClass = "";
 
     private int CurrentYear => DateTime.Now.Year;
 
@@ -361,7 +384,27 @@
 
             Console.WriteLine("Failed to add new goal");
         }
+
+        isAddGoalOverlayClicked = false;
     }
+
+     private void UpdateColor(string color)
+    {
+        if (selectedClass == color)
+        {
+            // If the color is already selected, unselect it
+            selectedClass = ""; // Reset the selected color
+            newGoal.color = ""; // Assuming you want to clear the selected color
+        }
+        else
+        {
+            // Otherwise, update to the new selected color
+            newGoal.color = color;
+            selectedClass = color;
+        }
+    }
+
+
 
 
 }

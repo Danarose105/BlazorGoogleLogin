@@ -30,8 +30,28 @@
 
 
 <div>
-    <button>חסכון חדש</button>
+    <button @onclick="()=> isAddSavingOverlayClicked = !isAddSavingOverlayClicked">חסכון חדש</button>
 </div>
+
+@if (isAddSavingOverlayClicked)
+{
+    <div>
+        <div>הוספת חסכון</div>
+        <div>
+            <span>שם החסכון</span>
+            <input type="text" @bind="newSaving.savingsTitle" />
+        </div>
+        <div>
+            <span>סכום החסכון</span>
+            <input type="number" @bind="newSaving.savingsSum" />
+        </div>
+
+        <div>
+            <button @onclick="addNewSaving">שמירה וסיום</button>
+        </div>
+    </div>
+
+}
 
 <div>
     @foreach (AllUserSavingsToShow saving in allSavings)
@@ -53,8 +73,11 @@
     private UserDTO user { get; set; }
 
     List<AllUserSavingsToShow> allSavings = new List<AllUserSavingsToShow>();
+    SavingToAdd newSaving = new SavingToAdd();
     int sumSavings = 0;
     private int CurrentYear => DateTime.Now.Year;
+
+    bool isAddSavingOverlayClicked = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -86,4 +109,26 @@
     {
         Nav.NavigateTo("./FutureHomePage");
     }
+
+    public async Task addNewSaving()
+    {
+        
+        var SavingToAddRes = await Http.PostAsJsonAsync("api/Future/addSaving/" + userID, newSaving);
+        if (SavingToAddRes.IsSuccessStatusCode)
+        {
+            // Use 'await' to asynchronously read the content of the response.
+            AllUserSavingsToShow newSavingToAddToList = await SavingToAddRes.Content.ReadFromJsonAsync<AllUserSavingsToShow>();
+
+            allSavings.Add(newSavingToAddToList);
+            newSaving= new SavingToAdd();
+        }
+        else
+        {
+
+            Console.WriteLine("Failed to add new saving");
+        }
+
+        isAddSavingOverlayClicked = false;
+    }
+
 }

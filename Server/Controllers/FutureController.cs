@@ -86,6 +86,32 @@ namespace BlazorGoogleLogin.Server.Controllers
             return BadRequest("failed to add goal");
         }
 
+        [HttpPost("addSaving/{userID}")] // הוספת חסכון חדש
+        public async Task<IActionResult> addSaving(int userID, SavingToAdd UserSavingToAdd)
+        {
+            object newSavingParam = new
+            {
+                savingTitle = UserSavingToAdd.savingsTitle,
+                savingsSum = UserSavingToAdd.savingsSum,
+                interestRate = 0.4,
+                userID = userID
+            };
+            string insertSavingQuery = "insert into savings(savingsTitle, savingsSum, interestRate, userID) values (@savingTitle, @savingsSum,@interestRate, @userID)";
+
+            int wasSavingAdded = await _db.InsertReturnIdAsync(insertSavingQuery, newSavingParam);
+            if (wasSavingAdded > 0)
+            {
+
+                var id = new { id = wasSavingAdded };  
+
+                string SavingQuery = "SELECT * FROM savings Where id = @id";
+                var newSavingAfterAdding = await _db.GetRecordsAsync<AllUserSavingsToShow>(SavingQuery, id);
+                AllUserSavingsToShow newSavingToShow = newSavingAfterAdding.FirstOrDefault();
+                return Ok(newSavingToShow);
+            }
+            return BadRequest("failed to add saving");
+        }
+
 
 
 
