@@ -213,7 +213,7 @@
             @if (isOpetionsBtnClicked)
             {
 
-                <OptionsMenuComponent editBtnClicked="@showEditGoal" deleteBtnClicked="@deleteGoaltnClciked" closeOverlay="closeDeleteOverlay"></OptionsMenuComponent>
+                <OptionsMenuComponent editBtnClicked="@showEditGoal" deleteBtnClicked="@deleteGoalBtnClciked" closeOverlay="closeDeleteOverlay"></OptionsMenuComponent>
             }
         </div>
     </div>
@@ -375,6 +375,7 @@
     string titleInput = "";
     string popupBodyText = "";
     int titleInputLength = 0;
+    int deletedGoalYear = 0;
 
     private int CurrentYear => DateTime.Now.Year;
 
@@ -475,6 +476,7 @@
         }
     }
 
+
     void closeYearlyGoalsPopUp()
     {
         showYearlyGoals = false;
@@ -509,7 +511,7 @@
             allGoals.Add(newGoalToAddToList);
             newGoal = new GoalToAdd();
             await OnInitializedAsync();
-           
+
         }
         else
         {
@@ -575,7 +577,7 @@
 
     }
 
-    void deleteGoaltnClciked()
+    void deleteGoalBtnClciked()
     {
         deleteBtnClicked = !deleteBtnClicked;
         editedGoal.id = goalDetailsToShow.id;
@@ -620,7 +622,7 @@
             //need to refresh the home page
 
             Console.WriteLine("goal updated");
-           await OnInitializedAsync();
+            await OnInitializedAsync();
 
         }
         else
@@ -634,25 +636,58 @@
 
     public async Task deleteSaving()
     {
-        //deleteBtnClicked = false;
-        //OpenSavingDetails = false;
+        showYearlyGoals = false;
+        deleteBtnClicked = false;
+        isGoalFullDetails = false;
+        userID = user.Id;
 
-        //var deleteRes = await Http.DeleteAsync("api/Future/deleteSaving/" + editedSaving.id);
 
-        //if (deleteRes.IsSuccessStatusCode)
-        //{
-        //    @foreach (AllUserSavingsToShow saving in allSavings)
-        //    {
-        //        @if(saving.id == editedSaving.id)
-        //        {
-        //            allSavings.Remove(saving);
-        //        }
-        //    }
-        //}
-        //else
-        //{
-        //    Console.WriteLine(" בעיה במחיקת חסכון");
-        //}
+        var deleteRes = await Http.DeleteAsync("api/Future/deleteGoal/" + editedGoal.id);
+
+        if (deleteRes.IsSuccessStatusCode)
+        {
+
+            //foreach (AllUserGoalsToShow goalPerYearToSend in allGoals)
+            //{
+            //    if(goalPerYearToSend.id == editedGoal.id)
+            //    {
+            //        allGoals.Remove(goalPerYearToSend);
+            //    }
+            //}
+
+            //foreach (AllUserGoalsToShow goalPerYear in goalsPerYearList)
+            //{
+            //    if(goalPerYear.id == editedGoal.id)
+            //    {
+            //        goalsPerYearList.Remove(goalPerYear);
+            //    }
+
+            //}
+
+
+            var userGoalsRes = await Http.GetAsync("api/Future/userFutureGoalsToShow/" + userID);
+
+            if (userGoalsRes.IsSuccessStatusCode)
+            {
+                allGoals = userGoalsRes.Content.ReadFromJsonAsync<List<AllUserGoalsToShow>>().Result;
+                //getCurrentStreak();
+
+            }
+            else
+            {
+                Console.WriteLine("no goals");
+
+            }
+
+            showYearlyGoals = true;
+            StateHasChanged();
+            //goalsPerYearList.Clear();
+            //openGoalsPerYearPopUAfterDelete(deletedGoalYear);
+        }
+        else
+        {
+            Console.WriteLine(" בעיה במחיקת יעד");
+        }
     }
 
     public void closeDeletePopUp()
@@ -667,7 +702,7 @@
         selectedClass = "";
     }
 
-       public void closeEditGoalPopup()
+    public void closeEditGoalPopup()
     {
         isEditGoalClicked = !isEditGoalClicked;
         selectedClass = "";

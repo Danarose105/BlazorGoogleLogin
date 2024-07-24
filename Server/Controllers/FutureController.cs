@@ -154,6 +154,21 @@ namespace BlazorGoogleLogin.Server.Controllers
             return BadRequest("Failed to delete saving");
         }
 
+        [HttpDelete("deleteGoal/{GoalIdToDelete}")] // מחיקת יעד
+        public async Task<IActionResult> deleteGoal(int GoalIdToDelete)
+        {
+            string DeleteQuery = "DELETE FROM goals WHERE id=@ID";
+            bool isSavingDeleted = await _db.SaveDataAsync(DeleteQuery, new { ID = GoalIdToDelete });
+
+            if (isSavingDeleted)
+            {
+                return Ok();
+            }
+
+            return BadRequest("Failed to delete goal");
+        }
+
+
         [HttpPost("EditGoal")]  // עריכת יעד
 
         public async Task<IActionResult> EditGoal(GoalToEdit goalToUpdate)
