@@ -68,13 +68,11 @@
                 }
             </div>
         </div>
-
-
     }
 </div>
 
 <div>
-    <button @onclick="()=> isAddGoalOverlayClicked = !isAddGoalOverlayClicked">יעד חדש</button>
+    <button @onclick="closeAddGoalPopup">יעד חדש</button>
 </div>
 
 @if (isAddGoalOverlayClicked)
@@ -93,7 +91,7 @@
                         {
                             <div id="@(color)" class="@(selectedClass == color ? "color-selected" : "")">
                                 <input style="opacity:0;" type="radio" name="categoryColors" value="@color"
-                               @onclick="() => UpdateColor(color)" />
+                               @onclick="() => addColor(color)" />
 
                             </div>
                         }
@@ -103,7 +101,7 @@
                         {
                             <div id="@(color)" class="@(selectedClass == color ? "color-selected" : "")">
                                 <input style="opacity:0;" type="radio" name="categoryColors" value="@color"
-                               @onclick="() => UpdateColor(color)" />
+                               @onclick="() => addColor(color)" />
 
                             </div>
                         }
@@ -182,18 +180,21 @@
         {
             @foreach (AllUserGoalsToShow goalPerYear in goalsPerYearList)
             {
+                @if (goalPerYear.dueYear == goalsYearToShow)
+                {
+                    <div style="background-color:@goalPerYear.color" @onclick="()=>showGoalDetails(goalPerYear)">
+                        @goalPerYear.goalTitle
+                    </div>
+                }
 
-                <div style="background-color:@goalPerYear.color" @onclick="()=>showGoalDetails(goalPerYear)">
-                    @goalPerYear.goalTitle
-                </div>
             }
         }
 
 
     </div>
     <div>
-    <button @onclick="()=> isAddGoalOverlayClicked = !isAddGoalOverlayClicked">יעד חדש</button>
-</div>
+        <button @onclick="()=> isAddGoalOverlayClicked = !isAddGoalOverlayClicked">יעד חדש</button>
+    </div>
 
 
 }
@@ -203,7 +204,18 @@
 {
 
     <div>
-        <button @onclick="closeGoalDetailsPopUp">X</button>
+        <button @onclick="closeGoalDetailsPopUp"><img src="../css/images/back-repeated.svg" /></button>
+    </div>
+
+    <div>
+        <div class="closedAndOpenMenu">
+            <button class="options" @onclick="OpetionsBtnClicked"><img src="./css/images/option menu.svg" /></button>
+            @if (isOpetionsBtnClicked)
+            {
+
+                <OptionsMenuComponent editBtnClicked="@showEditGoal" deleteBtnClicked="@deleteGoaltnClciked" closeOverlay="closeDeleteOverlay"></OptionsMenuComponent>
+            }
+        </div>
     </div>
 
     <div style="background-color:@goalDetailsToShow.color">
@@ -214,6 +226,115 @@
     </div>
 
 }
+
+
+@if (isEditGoalClicked)
+{
+    <div class="megaOuterLay">
+        <div class="outerLay">
+            <div class="BgOverlay"> </div>
+            <div class="overlay">
+
+                <div class="paddingDiv">
+                    <div class="outerTitleAndIcon">
+                        <button class="closeOverlay" @onclick="closeEditGoalPopup"><img src="./css/images/close x.svg" /></button>
+                        <h3 class="popupTitle">עריכת חסכון</h3>
+                        <div class="titleAndIcon">
+                            <div class="outerTitleAndCounter">
+                                <div class="input-container">
+                                    <input class="catTitle" type="text" maxlength="18" minlength="2" @oninput="titleLengthCounter" @bind="@editedGoal.goalTitle" />
+                                    <div class="counter">
+                                        @if (editedGoal.goalTitle == null || editedGoal.goalTitle == "")
+                                        {
+                                            <span>0/18</span>
+                                        }
+                                        else
+                                        {
+                                            if (editedGoal.goalTitle.Length < 2 || editedGoal.goalTitle.Length > 18)
+                                            {
+
+                                                <span>@titleInputLength/18</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@titleInputLength/18</span>
+
+                                            }
+                                        }
+                                    </div>
+
+
+                                    <div class="outerColorsAndBtn">
+                                        <div class="outerColors">
+                                            <div class="colorsContainer">
+                                                <div class="colorsRow">
+                                                    @foreach (var color in new[] { "#F4B367", "#AEA2F9", "#F467AB", "#F47867", "#6775F4", "#8DE4BF" })
+                                                    {
+                                                        <div id="@(color)" class="@(selectedClass == color ? "color-selected" : "")">
+                                                            <input style="opacity:0;" type="radio" name="categoryColors" value="@color"
+                                                           @onclick="() => UpdateColor(color)" />
+
+                                                        </div>
+                                                    }
+                                                </div>
+                                                <div class="colorsRow">
+                                                    @foreach (var color in new[] { "#67CAF4", "#FCE884", "#F9D3C2", "#16A78D", "#696969", "#DADADA" })
+                                                    {
+                                                        <div id="@(color)" class="@(selectedClass == color ? "color-selected" : "")">
+                                                            <input style="opacity:0;" type="radio" name="categoryColors" value="@color"
+                                                           @onclick="() => UpdateColor(color)" />
+
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <input class="savingSum" type="text" @bind="@editedGoal.dueYear" />
+                            </div>
+
+                            <div>
+                                <input class="savingSum" type="number" @bind="@editedGoal.budget" />
+                            </div>
+
+                            <div class="divBtn">
+
+                                @if (editedGoal.goalTitle == null || editedGoal.goalTitle == "" || editedGoal.goalTitle.Length > 18 || editedGoal.goalTitle.Length < 2)
+                                {
+                                    <button class="saveBtn" style="opacity:0.6" disabled>שמירת שינויים</button>
+                                    <span>לא ניתן לשמור יעד ללא שם.</span>
+                                }
+                                else
+                                {
+                                    <button class="saveBtn" @onclick="saveUpdatedGoal">שמירת שינויים</button>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+}
+
+
+@if (deleteBtnClicked)
+{
+    isOpetionsBtnClicked = false;
+    <GeneralPopUpComponent popupTypeTitle="מחיקת חסכון" middleText="@popupBodyText" action="מחיקה" makeAction="deleteSaving" closePopUp="closeDeletePopUp"></GeneralPopUpComponent>
+}
+
+
+
+
+
 
 @code {
 
@@ -230,7 +351,10 @@
     List<DateTime> dates = new List<DateTime>();
 
     AllUserGoalsToShow goalDetailsToShow;
+
     GoalToAdd newGoal = new GoalToAdd();
+    GoalToEdit editedGoal = new GoalToEdit();
+
 
     int sumGoals = 0;
     int sumSavings = 0;
@@ -243,8 +367,14 @@
     bool isGoalFullDetails = false;
     bool isAddGoalOverlayClicked = false;
     bool openYearsOptions = false;
+    bool isOpetionsBtnClicked = false;
+    bool isEditGoalClicked = false;
+    bool deleteBtnClicked = false;
     private DateTime? earliestDate;
     string selectedClass = "";
+    string titleInput = "";
+    string popupBodyText = "";
+    int titleInputLength = 0;
 
     private int CurrentYear => DateTime.Now.Year;
 
@@ -378,6 +508,8 @@
 
             allGoals.Add(newGoalToAddToList);
             newGoal = new GoalToAdd();
+            await OnInitializedAsync();
+           
         }
         else
         {
@@ -386,9 +518,27 @@
         }
 
         isAddGoalOverlayClicked = false;
+        selectedClass = "";
     }
 
-     private void UpdateColor(string color)
+    private void UpdateColor(string color)
+    {
+        if (selectedClass == color)
+        {
+            // If the color is already selected, unselect it
+            selectedClass = ""; // Reset the selected color
+            editedGoal.color = ""; // Assuming you want to clear the selected color
+        }
+        else
+        {
+            // Otherwise, update to the new selected color
+            editedGoal.color = color;
+            selectedClass = color;
+        }
+    }
+
+
+    private void addColor(string color)
     {
         if (selectedClass == color)
         {
@@ -404,7 +554,124 @@
         }
     }
 
+    public void OpetionsBtnClicked()
+    {
+        isOpetionsBtnClicked = !isOpetionsBtnClicked;
 
+    }
+
+    void showEditGoal()
+    {
+        isEditGoalClicked = true;
+        selectedClass = goalDetailsToShow.color;
+
+        editedGoal.id = goalDetailsToShow.id;
+        editedGoal.goalTitle = goalDetailsToShow.goalTitle;
+        editedGoal.dueYear = goalDetailsToShow.dueYear;
+        editedGoal.budget = goalDetailsToShow.budget;
+        editedGoal.color = goalDetailsToShow.color;
+
+        titleInputLength = editedGoal.goalTitle.Length;
+
+    }
+
+    void deleteGoaltnClciked()
+    {
+        deleteBtnClicked = !deleteBtnClicked;
+        editedGoal.id = goalDetailsToShow.id;
+
+        popupBodyText = "היעד '" + goalDetailsToShow.goalTitle + "' עומד להמחק";
+        isOpetionsBtnClicked = false;
+
+    }
+
+    void closeDeleteOverlay()
+    {
+        OpetionsBtnClicked();
+
+    }
+
+    private void titleLengthCounter(ChangeEventArgs e)
+    {
+        titleInput = e.Value.ToString();
+        titleInputLength = titleInput.Length;
+    }
+
+    public async Task saveUpdatedGoal()
+    {
+
+        if (editedGoal.color == "" || editedGoal.color == null)
+        {
+            editedGoal.color = "#6775F4";
+        }
+
+        var updateGoalRes = await Http.PostAsJsonAsync("api/Future/EditGoal/", editedGoal);
+        if (updateGoalRes.IsSuccessStatusCode)
+        {
+            GoalToEdit updatedGoal = await updateGoalRes.Content.ReadFromJsonAsync<GoalToEdit>();
+            goalDetailsToShow.color = editedGoal.color;
+            goalDetailsToShow.dueYear = editedGoal.dueYear;
+            goalDetailsToShow.budget = editedGoal.budget;
+            goalDetailsToShow.goalTitle = editedGoal.goalTitle;
+            isEditGoalClicked = false;
+            isGoalFullDetails = false;
+            OpetionsBtnClicked();
+
+            //need to refresh the home page
+
+            Console.WriteLine("goal updated");
+           await OnInitializedAsync();
+
+        }
+        else
+        {
+            Console.WriteLine("failed to update goal");
+        }
+
+        selectedClass = "";
+    }
+
+
+    public async Task deleteSaving()
+    {
+        //deleteBtnClicked = false;
+        //OpenSavingDetails = false;
+
+        //var deleteRes = await Http.DeleteAsync("api/Future/deleteSaving/" + editedSaving.id);
+
+        //if (deleteRes.IsSuccessStatusCode)
+        //{
+        //    @foreach (AllUserSavingsToShow saving in allSavings)
+        //    {
+        //        @if(saving.id == editedSaving.id)
+        //        {
+        //            allSavings.Remove(saving);
+        //        }
+        //    }
+        //}
+        //else
+        //{
+        //    Console.WriteLine(" בעיה במחיקת חסכון");
+        //}
+    }
+
+    public void closeDeletePopUp()
+    {
+        deleteBtnClicked = false;
+    }
+
+
+    public void closeAddGoalPopup()
+    {
+        isAddGoalOverlayClicked = !isAddGoalOverlayClicked;
+        selectedClass = "";
+    }
+
+       public void closeEditGoalPopup()
+    {
+        isEditGoalClicked = !isEditGoalClicked;
+        selectedClass = "";
+    }
 
 
 }

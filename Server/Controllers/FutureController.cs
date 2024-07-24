@@ -79,8 +79,10 @@ namespace BlazorGoogleLogin.Server.Controllers
             int wasGoalAdded = await _db.InsertReturnIdAsync(insertGoalQuery, newGoalParam);
             if (wasGoalAdded > 0)
             {
-                string GoalQuery = "SELECT * FROM goals Where id = @wasGoalAdded";
-                var newGoalAfterAdding = await _db.GetRecordsAsync<AllUserGoalsToShow>(GoalQuery, wasGoalAdded);
+                var id = new { id = wasGoalAdded };
+
+                string GoalQuery = "SELECT * FROM goals Where id = @id";
+                var newGoalAfterAdding = await _db.GetRecordsAsync<AllUserGoalsToShow>(GoalQuery, id);
                 AllUserGoalsToShow newGoalToShow = newGoalAfterAdding.FirstOrDefault();
                 return Ok(newGoalToShow);
             }
@@ -152,6 +154,30 @@ namespace BlazorGoogleLogin.Server.Controllers
             return BadRequest("Failed to delete saving");
         }
 
+        [HttpPost("EditGoal")]  // עריכת יעד
+
+        public async Task<IActionResult> EditGoal(GoalToEdit goalToUpdate)
+        {
+
+            object goalUpdateParam = new
+            {
+                id = goalToUpdate.id,
+                goalTitle = goalToUpdate.goalTitle,
+                budget = goalToUpdate.budget,
+                dueYear = goalToUpdate.dueYear,
+                color = goalToUpdate.color
+
+            };
+
+            string UpdateGoalQuery = "UPDATE goals set goalTitle = @goalTitle, budget = @budget, dueYear=@dueYear, color=@color where id =@id";
+            bool isUpdate = await _db.SaveDataAsync(UpdateGoalQuery, goalUpdateParam);
+
+            if (isUpdate)
+            {
+                return Ok(goalToUpdate);
+            }
+            return BadRequest("update goal failed");
+        }
 
 
 
