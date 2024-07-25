@@ -118,7 +118,15 @@ else
                         <td>@Math.Round(currentUser.spendingValueFullList,2) ₪</td>
                         <td id="middleTableRow">@Math.Round(currentUser.incomeValueFullList,2) ₪</td>
                         <td id="leftTableRow">
-                            @Math.Round(currentUser.budgetFullValue,2)%
+                            @if (currentUser.spendingValueFullList <= 0 && currentUser.budgetFullValue > 0)
+                            {
+                                <span>0</span>
+                            }
+                            else
+                            {
+                              <span> @Math.Round(currentUser.budgetFullValue,2)%</span> 
+                            }
+
                             <br />
                             <span id="fromBudget">מהתקציב</span>
                         </td>
@@ -128,7 +136,7 @@ else
             </table>
 
             <button class="primery-button" @onclick="getSubCatTotalsForStory">מצב החודש כרגע</button>
-           
+
 
 
 
@@ -694,14 +702,7 @@ else
 
     }
 
-    //private async Task refreshUser()
-    //{
-    //     var userRes = await Http.GetAsync("api/Present/userToShow/" + userGoogleId);
-    //     if(userRes.IsSuccessStatusCode)
-    //     {
 
-    //     }
-    //}
 
 
 
@@ -844,7 +845,7 @@ else
 
 
         }
-        
+
     }
 
 
