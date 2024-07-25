@@ -12,6 +12,6 @@ namespace BlazorGoogleLogin.Shared.Models.future.toShow
         public int userID { get; set; }
         public string savingsTitle { get; set; }
         public int savingsSum { get; set; }
-
+        public double interestRate { get; set; }
     }
 }

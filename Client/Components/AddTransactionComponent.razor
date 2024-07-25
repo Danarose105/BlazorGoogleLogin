@@ -546,31 +546,25 @@
                             <button class="secondery-button" @onclick="saveAndEndTransactions">שמירה וסיום</button>
                         </div>
                     }
-                    else if (titleInput.Length < 2)
+                    else
                     {
                         <div class="outerSaveBtns">
                             <button class="primery-button" @onclick="saveAndRepeatTransactions" disabled>שמירה והזנה נוספת</button>
                             <button class="secondery-button" @onclick="saveAndEndTransactions" disabled>שמירה וסיום</button>
-                            <span>אורך שם ההזנה לא תקין.</span>
+                            @if (titleInput.Length < 2)
+                            {
+                                <span>אורך שם ההזנה לא תקין.</span>
+                            }
+                            else if (newTransaction.transValue <= 0)
+                            {
+                                <span>סך ההזנה לא תקין.</span>
+                            }
+                            else if (newTransaction.valueType == "" || newTransaction.valueType == null)
+                            {
+                                <span>לא נבחר אמצעי תשלום.</span>
+                            }
                         </div>
                     }
-                    else if (newTransaction.transValue <= 0)
-                    {
-                        <div class="outerSaveBtns">
-                            <button class="primery-button" @onclick="saveAndRepeatTransactions" disabled>שמירה והזנה נוספת</button>
-                            <button class="secondery-button" @onclick="saveAndEndTransactions" disabled>שמירה וסיום</button>
-                            <span>סך ההזנה לא תקין.</span>
-                        </div>
-                    }
-                    else if (newTransaction.valueType == "" || newTransaction.valueType == null)
-                    {
-                        <div class="outerSaveBtns">
-                            <button class="primery-button" @onclick="saveAndRepeatTransactions" disabled>שמירה והזנה נוספת</button>
-                            <button class="secondery-button" @onclick="saveAndEndTransactions" disabled>שמירה וסיום</button>
-                            <span>לא נבחר אמצעי תשלום.</span>
-                        </div>
-                    }
-
 
                 }
                 else
@@ -1598,7 +1592,7 @@
 
         }
 
-        if (reapeatedTransValuesList.Count > 0 && transIDtoEdit > 0 || fixedTransChildrenToAdd.Count > 0)
+        if ((reapeatedTransValuesList.Count > 0 && transIDtoEdit > 0) || fixedTransChildrenToAdd.Count > 0)
         {
             newTransaction.fixedMonthly = true;
         }
@@ -2170,8 +2164,6 @@
 
                 fixedTransChildrenToAdd.Add(childTrans);
             }
-
-
         }
 
     }
@@ -2301,10 +2293,9 @@
 
     public void undoFixedMonthly(DateTime transDate)
     {
-        if (isReapetedBtnClicked == true)
-        {
+
             newTransaction.fixedMonthly = false;
-        }
+        
 
         fixedTransChildrenToAdd.Clear();
         fixedTransChildrenToAdd = new List<TransactionToAdd>();

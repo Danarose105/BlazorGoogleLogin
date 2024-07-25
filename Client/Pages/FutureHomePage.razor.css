@@ -1,0 +1,115 @@
+﻿.outerColors {
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.5rem;
+    background: #EDEFF7;
+    row-gap: 1.7vh;
+    align-items: center;
+    padding: 0.8vh 0;
+    width: 100%;
+}
+
+.colorsRow {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.colorsContainer {
+    width: 90%;
+    row-gap: 1.7vh;
+    display: flex;
+    row-gap: 1.7vh;
+    flex-direction: column;
+}
+
+.color-selected {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 0.16em solid #6775F4;
+}
+
+#\#F4B367 {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #F4B367;
+}
+
+#\#AEA2F9 {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #AEA2F9;
+}
+
+#\#F467AB {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #F467AB;
+}
+
+#\#F47867 {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #F47867;
+}
+
+#\#6775F4 {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #6775F4;
+}
+
+#\#8DE4BF {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #8DE4BF;
+}
+
+#\#67CAF4 {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #67CAF4;
+}
+
+#\#FCE884 {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #FCE884;
+}
+
+#\#F9D3C2 {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #F9D3C2;
+}
+
+#\#16A78D {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #16A78D;
+}
+
+#\#696969 {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #696969;
+}
+
+#\#DADADA {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #DADADA;
+}
