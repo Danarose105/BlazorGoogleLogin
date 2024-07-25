@@ -76,7 +76,7 @@
                                 <div class="outerReBtn">
                                     <div class="outerReBtn">
                                         <button class="repeatedBtn" @onclick=@(async () => await repeatingTransOverlay())>@repeatedBtnTitle <img src="./css/images/repeat icon.svg" /></button>
-                                        @if (isReapetedBtnClicked)
+                                        @if (newTransaction.fixedMonthly.Value==true)
                                         {
                                             repeatedBtnTitle = "עריכת ההזנה החוזרת";
                                             <button class="cancleRepeatedBtn" @onclick="()=>undoFixedMonthly(newTransaction.transDate)">ביטול הוצאה חוזרת</button>
@@ -1014,15 +1014,19 @@
         hiddenReOverlay = "display:none;";
         returningTrans = false;
 
-        if (reapeatedTransValuesList.Count > 0 && transIDtoEdit > 0 || fixedTransChildrenToAdd.Count > 0)
+        if ((reapeatedTransValuesList.Count > 0 && transIDtoEdit > 0) || fixedTransChildrenToAdd.Count > 0)
         {
             newTransaction.fixedMonthly = true;
+        }
+        else
+        {
+            newTransaction.fixedMonthly = false;
         }
 
         if (resetMonthValues == true && isResetBtnClicked == true && isValueTyped == false && isValueTypedAfterReset == false) //means there was a reset, no new data was inserted and the user pressed back
         {
-            reapeatedTransValuesList.Clear();
-            fixedTransChildrenToAdd.Clear();
+            reapeatedTransValuesList = new List<RepeatedTransToShow>();
+            fixedTransChildrenToAdd = new List<TransactionToAdd>();
             isReapetedBtnClicked = false;
             newTransaction.fixedMonthly = false;
 
@@ -1103,6 +1107,8 @@
             {
                 int indexOfChild = reapeatedTransValuesList.IndexOf(existingTrans);
                 reapeatedTransValuesList[indexOfChild] = existingTrans;
+
+                fixedTransChildrenToAdd[indexOfChild].transValue = existingTrans.transValue;
             }
         }
         else
@@ -1592,7 +1598,10 @@
 
         }
 
-
+        if (reapeatedTransValuesList.Count > 0 && transIDtoEdit > 0 || fixedTransChildrenToAdd.Count > 0)
+        {
+            newTransaction.fixedMonthly = true;
+        }
 
         var transEditRes = await Http.PostAsJsonAsync("api/Transactions/editTransaction", transToEdit);
         if (transEditRes.IsSuccessStatusCode)
@@ -1714,7 +1723,7 @@
 
                 if (postEditTrans.fixedMonthly == true && postEditTrans.fixedMonthly == ogTransaction.fixedMonthly) //means contents were changed
                 {
-                    if (isResetBtnClicked && isValueTypedAfterReset)
+                    if (resetMonthValues)
                     {
                         await updateReTransactionsPostReset(fixedTransChildrenToAdd); //means all children are post reset
                         //await saveRepeatedTransactions(postEditTrans.id);
@@ -1727,10 +1736,10 @@
                 }
                 else if (postEditTrans.fixedMonthly != ogTransaction.fixedMonthly) //means children were completely added/removed
                 {
-                    if (isResetBtnClicked && isValueTypedAfterReset)
+                    if (resetMonthValues)
                     {
                         await updateReTransactionsPostReset(fixedTransChildrenToAdd); //means all children are post reset
-                       //await saveRepeatedTransactions(postEditTrans.id);
+                                                                                      //await saveRepeatedTransactions(postEditTrans.id);
                     }
                     else
                     {
@@ -2096,7 +2105,7 @@
             }
             attemptedParsing = true;
 
-            if (reapeatedTransValuesList.Count > 0)
+            if (reapeatedTransValuesList.Count > 0) //means the transaction is fixedMonthly=true in DB
             {
                 var matchingTrans = reapeatedTransValuesList.FirstOrDefault(t => t.transDate == tempDate);
                 TransactionToAdd childTrans = new TransactionToAdd()
