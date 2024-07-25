@@ -329,6 +329,10 @@ ORDER BY transactions.transDate DESC;";
             return BadRequest("Failed to delete transaction");
         }
 
+        [HttpGet("get")]
+
+
+
         [HttpPost("editTransaction")]
         public async Task<IActionResult> updateTransaction(TransactionToEdit transToEdit)
         {

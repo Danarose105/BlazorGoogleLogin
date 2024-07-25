@@ -16,7 +16,7 @@
                     <div class="titleAndIcon">
                         <div class="outerTitleAndCounter">
                             <div class="input-container">
-                                <input class="catTitle" type="text" placeholder="שם הקטגוריה" maxlength="18" minlength="2" @oninput="titleLengthCounter" @bind="@titleInput" />
+                                <input class="catTitle" type="text" placeholder="שם הקטגוריה" maxlength="18" minlength="2" @oninput="titleLengthCounter" @bind="@titleInput" disabled="@disabledEditOfIncomeTitle" />
                                 <div class="counter">
                                     @if (titleInput == null || titleInput == "")
                                     {
@@ -36,6 +36,10 @@
                                         }
                                     }
                                 </div>
+                                @if (disabledEditOfIncomeTitle)
+                                {
+                                    <span style="font-size: 0.85em;">לא ניתן לשנות את שם קטגוריית ההכנסות.</span>
+                                }
                             </div>
                         </div>
 
@@ -224,6 +228,7 @@
         if (ogCatName == "הכנסות")
         {
             disabledEditOfIncomeTitle = true;
+
         }
 
         if (categoryToEdit.categroyTitle != "" && categoryToEdit.categroyTitle != null)

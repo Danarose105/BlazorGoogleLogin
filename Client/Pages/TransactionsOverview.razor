@@ -264,7 +264,7 @@
                         }
                         @if (filterByTransTypeOverlay)
                         {
-                            ;
+                            
                             <div class="outerPaymentMethod">
                                 <div class="PaymentMethods">
                                     <div class="outerLay">
@@ -700,7 +700,7 @@
     //public EventCallback<SubCategoryToEdit> updateEditedSubCat { get; set; }
 
     public string categoryTitle = "";
-
+    bool categoryTypeIndicator = false;
 
     public string subCategoryTitle = "";
     List<TransactionOverviewToShow> allTransactions = new List<TransactionOverviewToShow>();
@@ -788,7 +788,10 @@
         {
             var catTitleRes = await catTitle.Content.ReadAsStringAsync();
             categoryTitle = catTitleRes;
-
+            if (categoryTitle == "הכנסות") ;
+            {
+                categoryTypeIndicator = true;
+            }
             var catColorRes = await Http.GetAsync("api/Present/getCatColor/" + categoryID);
             if (catColorRes.IsSuccessStatusCode)
             {
