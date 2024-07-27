@@ -1,0 +1,121 @@
+﻿.backArrow {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+}
+
+.outerPage {
+    width: 94%;
+    padding: 2vh 0;
+}
+
+.megaOuterPage {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.pageTitle {
+    font-size: 1.3rem;
+    margin-bottom: 1vh;
+    font-weight: 600;
+}
+
+.secondTitle {
+    font-size: 1.3rem;
+    margin-bottom: 2vh;
+    font-weight: 500;
+}
+
+.thirdTitle {
+    font-size: 1.2rem;
+    margin-bottom: 3vh;
+    font-weight: 500;
+    padding:2vh 2vw;
+}
+
+.outerSavings {
+    background-color: #F9F9F9;
+    border-radius: 0.625rem;
+    box-shadow: 0px 75px 21px 0px rgba(104, 116, 244, 0.00), 0px 48px 19px 0px rgba(104, 116, 244, 0.01), 0px 27px 16px 0px rgba(104, 116, 244, 0.02), 0px 12px 12px 0px rgba(104, 116, 244, 0.04), 0px 3px 7px 0px rgba(104, 116, 244, 0.05);
+}
+
+.AddNewSaving {
+    border-radius: 0.6rem;
+    border: 2px dashed #6775F4;
+    background: #FBFBFB;
+    width: 100%;
+    height: 9vh;
+    display: flex;
+    align-content: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    column-gap: 1vh;
+    margin-bottom: 3vh;
+    align-items: center;
+}
+
+.addTitle {
+    font-size: 1.3125rem;
+    font-style: normal;
+    font-weight: 700;
+    color: #6775F4;
+    margin: 0;
+}
+
+.emoji-circle {
+    width: 2em;
+    height: 2em;
+    background-color: #D6D9F1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);or depth */
+}
+
+.outerSavingsLines {
+    display: flex;
+    flex-direction: column;
+    row-gap: 3vh;
+    height: 18vh;
+}
+
+.outerSavingsLine {
+    background-color: #F9F9F9;
+    border-radius: 0.625rem;
+    box-shadow: 0px 75px 21px 0px rgba(104, 116, 244, 0.00), 0px 48px 19px 0px rgba(104, 116, 244, 0.01), 0px 27px 16px 0px rgba(104, 116, 244, 0.02), 0px 12px 12px 0px rgba(104, 116, 244, 0.04), 0px 3px 7px 0px rgba(104, 116, 244, 0.05);
+    height: 18vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 1vh 0;
+}
+
+.outerIconTitleAndSum {
+    width: 94%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.outerIconAndTitle {
+    display: flex;
+    align-items: center;
+    column-gap: 2vh;
+}
+
+.divider {
+    height: 8vh;
+    width: 0.3vw;
+    background-color: #D6D9F1;
+}

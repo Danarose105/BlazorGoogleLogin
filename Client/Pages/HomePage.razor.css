@@ -159,6 +159,7 @@ tbody td {
         left: -1px;
         border-right: none;
         border-left: 0.2vh solid #D6D9F1;
+        z-index: 1;
     }
 
 #middleTableRow {

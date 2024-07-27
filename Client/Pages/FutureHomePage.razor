@@ -174,7 +174,7 @@
             </div>
 
             <div class="outerBtnAndDots outerTableAndNavigation">
-                <button class="galleryArrow @disBtnStyle" @onclick="PreviousYears" disabled="@IsPreviousDisabled" ><img src="./css/images/arrow-back.svg" /></button>
+                <button class="galleryArrow @disBtnStyle" @onclick="PreviousYears" disabled="@IsPreviousDisabled"><img src="./css/images/arrow-back.svg" /></button>
 
                 <button class="galleryArrow @disNextBtnStyle" @onclick="NextYears" disabled="@IsNextDisabled"><img src="./css/images/arrow-next.svg" /></button>
 
@@ -187,8 +187,8 @@
 
 
 
-        <div>
-            <button @onclick="closeAddGoalPopup">יעד חדש</button>
+        <div class="outerAddNewGoalBtn">
+            <button @onclick="closeAddGoalPopup" class="primery-button">יעד חדש</button>
         </div>
 
         @if (isAddGoalOverlayClicked)
@@ -273,10 +273,29 @@
             </div>
 
         }
+        <div class="outerSavingSection">
+            <div class="outerRight">
+                <div>
+                    <div><b>יש לך חסכונות קיימים?</b></div>
+                    <div>
+                        סביבת החסכונות מאפשרת
+                        מעקב אחר החסכון שלך
+                    </div>
+                </div>
+                <div class="outerToSavingsPage">
+                    <button @onclick="goToSavingsPage" class="toSavingsBtn">לסביבת החסכונות</button>
+                </div>
+            </div>
+            <div style=" background-color: #D6D9F1;
+    display: flex;border-top-left-radius: 0.375rem;
+    border-bottom-left-radius: 0.375rem;">
+                <img src="../css/images/piggy.svg" style="width: 7rem;
+    padding: 1vh;" />
+            </div>
 
-        <div>
-            <button @onclick="goToSavingsPage">לסביבת החסכונות</button>
+
         </div>
+
 
         @if (showYearlyGoals)
         {
@@ -658,7 +677,7 @@
     {
         showYearlyGoals = true;
         goalsYearToShow = goalsYear;
-    @foreach (AllUserGoalsToShow goal in allGoals)
+        @foreach (AllUserGoalsToShow goal in allGoals)
         {
             if (goal.dueYear == goalsYear)
             {
