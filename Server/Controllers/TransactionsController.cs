@@ -329,7 +329,7 @@ ORDER BY transactions.transDate DESC;";
             return BadRequest("Failed to delete transaction");
         }
 
-        [HttpGet("get")]
+
 
 
 

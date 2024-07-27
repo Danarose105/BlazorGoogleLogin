@@ -17,16 +17,22 @@
         <article>
             @Body
         </article>
-     @if (!NavManager.Uri.EndsWith("/"))
-       {
-            <div id="@hideNav" class="bottom-nav" @ref="navBar">
-                <button class="navBtn" style="opacity:60%">מבט לעבר<img src="./css/images/past.svg" /></button>
-                <div class="NavLines"> </div>
-                <button class="navBtn" style="@currentPresentNavPage" @onclick="goToPresentHomePage">מבט להווה<img src="./css/images/present.svg" /></button>
-                <div class="NavLines"> </div>
-                <button class="navBtn" style="@currentFuturetNavPage" @onclick="goToFutureHomePage">מבט לעתיד<img src="./css/images/future.svg" /></button>
-            </div>
-       }
+        @if (!NavManager.Uri.Contains("LogoutPage"))
+        {
+            if (!NavManager.Uri.EndsWith("/"))
+            {
+                <div id="@hideNav" class="bottom-nav" @ref="navBar">
+                    <button class="navBtn" style="opacity:60%">מבט לעבר<img src="./css/images/past.svg" /></button>
+                    <div class="NavLines"> </div>
+                    <button class="navBtn" style="@currentPresentNavPage" @onclick="goToPresentHomePage">מבט להווה<img src="./css/images/present.svg" /></button>
+                    <div class="NavLines"> </div>
+                    <button class="navBtn" style="@currentFuturetNavPage" @onclick="goToFutureHomePage">מבט לעתיד<img src="./css/images/future.svg" /></button>
+                </div>
+            }
+        }
+        
+
+
            
 
     </main>

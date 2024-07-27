@@ -1,15 +1,32 @@
 ﻿@page "/LogoutPage"
+@inject NavigationManager Nav
 
-<div>
 
-    <div>
-        התנתקת בהצלחה
-    </div>
-    <div>
-        נשמח לראותך שוב :)
+
+<div class="outerWrap col-md-6 col-md-offset-2 loginWrapperDiv">
+    <div class="BgOverlay">
+
+        <div>
+            <h2 id="firstTitle">
+                התנתקת בהצלחה
+            </h2>
+        </div>
+
+        <div>
+            נשמח לראותך שוב :)
+        </div>
+
+        <div>
+            <button @onclick="ReLogIn" class="primary-button">להתחברות מחדש</button>
+        </div>
     </div>
 </div>
 
 @code {
 
+
+    private void ReLogIn()
+    {
+        Nav.NavigateTo("/");
+    }
 }

@@ -271,14 +271,18 @@
                     {
                         if (titleInput.Length >= 2 && titleInput.Length < 19)
                         {
-                            <button class="primery-button" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
-                            <button class="secondery-button" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
+                            <div class="outerSaveBtns">
+                                <button class="primery-button" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
+                                <button class="secondery-button" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
+                            </div>
                         }
                         else
                         {
-                            <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הזנה</button>
-                            <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
-                            <span>אורך שם תת הקטגוריה לא תקין.</span>
+                            <div class="outerSaveBtns">
+                                <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הזנה</button>
+                                <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
+                                <span>אורך שם תת הקטגוריה לא תקין.</span>
+                            </div>
                         }
                     }
 

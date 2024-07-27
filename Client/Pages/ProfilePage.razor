@@ -823,7 +823,11 @@
     private async Task BeginSignOut(MouseEventArgs args)
     {
         await _Auth.Logout();
+
+       
         Nav.NavigateTo("./LogoutPage");
+        
+       
     }
 
     private IEnumerable<TagsToShow> GetCurrentPageTags()
