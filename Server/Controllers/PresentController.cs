@@ -167,7 +167,7 @@ namespace BlazorGoogleLogin.Server.Controllers
             return Math.Round((spending / budget) * 100, 2);
         }
 
-        [HttpGet("checkStreak/{userID}")] //checks if the user has a current streak
+        [HttpGet("checkStreak/{userID}")] //checks the amount of weeks a user has input at least 3 transactions- including the current week
         public async Task<IActionResult> CheckUserStreak(int userID)
         {
             if (userID > 0)
@@ -176,11 +176,11 @@ namespace BlazorGoogleLogin.Server.Controllers
                 {
                     ID = userID
                 };
-                string getStreakQuery = "WITH valid_weeks AS (SELECT WEEK(t.transInputDate) AS week_number,YEAR(t.transInputDate) AS year_number,ROW_NUMBER() OVER (ORDER BY YEAR(t.transInputDate), WEEK(t.transInputDate)) AS rn FROM users u JOIN categories c ON u.id = c.userID JOIN subcategories sc ON c.id = sc.categoryID JOIN transactions t ON sc.id = t.subCategoryID WHERE t.transInputDate BETWEEN u.signUpDate AND CURRENT_DATE() AND u.id =@ID GROUP BY YEAR(t.transInputDate), WEEK(t.transInputDate) HAVING COUNT(*) >= 3),streaks AS (SELECT vw.*,(ROW_NUMBER() OVER (ORDER BY vw.year_number, vw.week_number) - vw.rn) AS streak_group FROM valid_weeks vw),current_streak AS (SELECT s.streak_group,COUNT(*) AS streak_length,MAX(CASE WHEN vw2.year_number = YEAR(CURRENT_DATE()) AND vw2.week_number = WEEK(CURRENT_DATE()) THEN 1 ELSE 0 END) AS is_current_streak FROM streaks s JOIN valid_weeks vw2 ON s.year_number = vw2.year_number AND s.week_number = vw2.week_number GROUP BY s.streak_group) SELECT CASE WHEN MAX(is_current_streak) = 1 THEN TRUE ELSE FALSE END AS current_streak_group,MAX(streak_length) AS streak_length FROM current_streak ORDER BY streak_length DESC LIMIT 1;";
-                //gets the amount of weeks where there was a minimum of 3 transactions (in the current streak) and the streak's length
+                string getStreakQuery = "WITH WeeklyTransactions AS (SELECT u.id AS userID, DATE_SUB(t.transDate, INTERVAL (DAYOFWEEK(t.transDate) - 1) DAY) AS weekStartDate, COUNT(*) AS transactionCount FROM transactions t JOIN subcategories sc ON t.subCategoryID = sc.id JOIN categories c ON sc.categoryID = c.id JOIN users u ON c.userID = u.id WHERE u.id = @ID AND t.transDate >= u.signUpDate GROUP BY u.id, weekStartDate) SELECT COUNT(*) AS weekCount FROM WeeklyTransactions WHERE transactionCount >= 3 OR (weekStartDate = DATE_SUB(CURRENT_DATE(), INTERVAL (DAYOFWEEK(CURRENT_DATE()) - 1) DAY) AND transactionCount >= 3);";
+                //gets the amount of weeks where there was a minimum of 3 transactions including the current week
 
-                var getStreaks = await _db.GetRecordsAsync<UserStreakData>(getStreakQuery, param);
-                UserStreakData weekAmountInStreak = getStreaks.FirstOrDefault();
+                var getStreaks = await _db.GetRecordsAsync<int>(getStreakQuery, param);
+                int weekAmountInStreak = getStreaks.FirstOrDefault();
                 if (weekAmountInStreak != null)
                 {
                     return Ok(weekAmountInStreak);
@@ -203,11 +203,13 @@ namespace BlazorGoogleLogin.Server.Controllers
                 string getStreakQuery = "SELECT streakStatus FROM users where id=@ID;";
                 var getStreaks = await _db.GetRecordsAsync<string>(getStreakQuery, param);
                 string streakStatus = getStreaks.FirstOrDefault();
-                if (streakStatus != null)
+                if (streakStatus == null) //means the user is new
                 {
-                    return Ok(streakStatus);
+                    streakStatus = "";
+                    
                 }
-                return BadRequest("couldn't find streak data for this user");
+                return Ok(streakStatus);
+
             }
 
             return BadRequest("invalid user id");
@@ -290,7 +292,7 @@ namespace BlazorGoogleLogin.Server.Controllers
                 {
                     ID = userID
                 };
-                string getStreakQuery = "SELECT COUNT(*) AS totalWeekTransactions FROM users u JOIN categories c ON u.id = c.userID JOIN subcategories sc ON c.id = sc.categoryID JOIN transactions t ON sc.id = t.subCategoryID WHERE u.id=@ID and WEEK(t.transInputDate, 0) = WEEK(CURRENT_DATE(), 0) AND YEAR(t.transInputDate) = YEAR(CURRENT_DATE()) AND t.transDate <= CURRENT_DATE();";
+                string getStreakQuery = "SELECT COUNT(*) AS transactionCountThisWeek FROM users u JOIN categories c ON u.id = c.userID JOIN subcategories sc ON c.id = sc.categoryID JOIN transactions t ON t.subCategoryID=sc.id WHERE u.id = @ID AND YEAR(t.transDate) = YEAR(CURRENT_DATE()) AND WEEK(t.transDate, 0) = WEEK(CURRENT_DATE(), 0);";
                 var StreaksUpdate = await _db.GetRecordsAsync<int>(getStreakQuery, param);
 
                 if (StreaksUpdate != null)
