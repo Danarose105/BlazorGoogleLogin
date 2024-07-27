@@ -133,13 +133,13 @@
 
                             if (ogCatName != "הכנסות" && titleInput == "הכנסות")
                             {
-                                <button class="saveBtn" @onclick="saveUpdatedCat" disabled>שמירה וסיום</button>
+                                <button class="saveBtn" @onclick="saveUpdatedCat" disabled style="opacity:60%">שמירה וסיום</button>
                                 <br />
                                 <span>לא ניתן לשמור קטגוריה נוספת בשם 'הכנסות'.</span>
                             }
                             else if (titleInput == null || titleInput == "" || titleInput.Length > 18 || titleInput.Length < 2)
                             {
-                                <button class="saveBtn" @onclick="saveUpdatedCat" disabled>שמירה וסיום</button>
+                                <button class="saveBtn" @onclick="saveUpdatedCat" disabled style="opacity:60%">שמירה וסיום</button>
                                 <br />
                                 <span>לא ניתן לשמור קטגוריה ללא שם.</span>
                             }
@@ -155,13 +155,13 @@
                             if (ogCatName != "הכנסות" && titleInput == "הכנסות")
                             {
 
-                                <button class="saveBtn" @onclick="addNewCategory" disabled>שמירה וסיום</button>
+                                <button class="saveBtn" @onclick="addNewCategory" disabled style="opacity:60%">שמירה וסיום</button>
                                 <br />
                                 <span>לא ניתן לשמור קטגוריה נוספת בשם 'הכנסות'.</span>
                             }
                             else if (titleInput == null || titleInput == "" || titleInput.Length > 18 || titleInput.Length < 2)
                             {
-                                <button class="saveBtn" @onclick="addNewCategory" disabled>שמירה וסיום</button>
+                                <button class="saveBtn" @onclick="addNewCategory" disabled style="opacity:60%">שמירה וסיום</button>
                                 <br />
                                 <span>לא ניתן לשמור קטגוריה ללא שם.</span>
                             }
