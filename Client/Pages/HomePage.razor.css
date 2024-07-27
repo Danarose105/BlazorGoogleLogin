@@ -1,4 +1,7 @@
-﻿#firstTitle {
+﻿body {
+    background-color: #6775F4;
+}
+#firstTitle {
     font-size: 1.3125rem;
     font-style: normal;
     font-weight: 500;

@@ -4,17 +4,17 @@
             <Found Context="routeData">
                 <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                     <Authorizing>
-                        <text>Please wait, we are authorizing the user.</text>
+                        <text>בבקשה המתינו בזמן שאנחנו מאמתים את המשתמש/ת</text>
                     </Authorizing>
                     <NotAuthorized>
-                        <text>You are not authorized to access this page.</text>
+                        <text>אין לך הרשאה לצפות בדף זה.</text>
                     </NotAuthorized>
                 </AuthorizeRouteView>
             </Found>
             <NotFound>
                 <LayoutView Layout="@typeof(MainLayout)">
                     <PageTitle>Not found</PageTitle>
-                    <p role="alert">Sorry, there's nothing at this address.</p>
+                    <p role="alert">סליחה, לא נמצא דבר בכתובת זו.</p>
                 </LayoutView>
             </NotFound>
         </Router>

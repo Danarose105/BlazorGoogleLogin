@@ -1,4 +1,14 @@
-﻿.megaOuterLay {
+﻿body {
+    direction: rtl;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #6775F4;
+    /*  z-index: 5;
+        position:relative;*/
+}
+
+.megaOuterLay {
     width: 100%;
 }
 
