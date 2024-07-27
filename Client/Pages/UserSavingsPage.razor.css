@@ -91,7 +91,6 @@
     background-color: #F9F9F9;
     border-radius: 0.625rem;
     box-shadow: 0px 75px 21px 0px rgba(104, 116, 244, 0.00), 0px 48px 19px 0px rgba(104, 116, 244, 0.01), 0px 27px 16px 0px rgba(104, 116, 244, 0.02), 0px 12px 12px 0px rgba(104, 116, 244, 0.04), 0px 3px 7px 0px rgba(104, 116, 244, 0.05);
-    height: 18vh;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -118,4 +117,162 @@
     height: 8vh;
     width: 0.3vw;
     background-color: #D6D9F1;
+}
+
+
+.overlay {
+    position: fixed; /* Fixed position to cover the whole screen */
+    top: 0;
+    left: 0;
+    width: 100vw; /* Cover full viewport width */
+    height: 100vh; /* Cover full viewport height */
+    z-index: 1000; /* Lower than modal but higher than anything else */
+
+    background-color: rgba(1, 5, 43, 0.28);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.outerPopUp {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    width: 90%;
+    /* max-width: 500px; */
+    padding: 1vh 5vw;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+    border: 0.2px solid rgba(0, 0, 0, 0.30);
+    background: #FFF;
+    box-shadow: 0px 147px 41px 0px rgba(21, 36, 147, 0.00), 0px 94px 38px 0px rgba(21, 36, 147, 0.01), 0px 53px 32px 0px rgba(21, 36, 147, 0.05), 0px 24px 24px 0px rgba(21, 36, 147, 0.09), 0px 6px 13px 0px rgba(21, 36, 147, 0.10);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 3vh;
+}
+
+
+.outerBtns {
+    display: flex;
+    flex-direction: row;
+    row-gap: 0vw;
+    width: 80%;
+    justify-content: space-around;
+}
+
+#actionBtn {
+    border-radius: 0.25rem;
+    background: #6775F4;
+    color: #FFF;
+    border: none;
+    width: 4.6395rem;
+    height: 2.75rem;
+}
+
+#cancleBtn {
+    border-radius: 0.25rem;
+    border: 2px solid #6775F4;
+    background-color: #fff;
+    padding: 1vh;
+    width: 4.6395rem;
+    height: 2.75rem;
+}
+
+.outerText {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 4vh;
+}
+
+.lineBetween {
+    width: 15.542rem;
+    background-color: #EDEFF7;
+    height: 0.2vh;
+    position: relative;
+    bottom: -1vh;
+}
+
+.outerX {
+    width: 90%;
+}
+
+.options-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+}
+
+    .options-button img {
+        width: 24px;
+        height: 24px;
+    }
+
+.outerFirstRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 108%;
+}
+
+.outerTitle{
+    display:flex;
+    flex-direction:column;
+}
+
+.outerSavingAmount {
+    border-radius: 0.5rem;
+    display: flex;
+    background-color: #F9F9F9;
+    padding: 1vh 5vw;
+    font-size: 1.1rem;
+}
+
+.outerSaving {
+    display: flex;
+    background-color: #EDEFF7;
+    border-radius: 0.625rem;
+    padding: 3vh 0;
+    align-items: center;
+    justify-content: space-around;
+    margin: 3vh 0;
+}
+
+#options {
+    position: absolute;
+    z-index: 4;
+    margin-left: 4vw;
+}
+
+.outerDotsAndOptionsTrans {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-start;
+}
+
+.optionsMenu {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
 }
