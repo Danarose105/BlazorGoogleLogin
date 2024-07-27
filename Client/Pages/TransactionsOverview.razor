@@ -229,7 +229,7 @@
 
             <div class="searchWrapper">
                 <div class="search__container">
-                    <img src="./css/images/search btn.svg" />
+                    <img src="./css/images/search btn.svg" @onclick="SearchAfterClick"/>
                     <input class="searchInput" type="text" value="@searchQuery" @oninput="UpdateSearchQuery" @onkeyup="HandleKeyUp" placeholder="חפשו הוצאה..." />
 
                 </div>
@@ -1423,7 +1423,16 @@
         }
 
     }
+    void SearchAfterClick()
+    {
+        toSearch = true;
 
+        if (string.IsNullOrEmpty(searchQuery))
+        {
+
+        }
+        FilterTagsOrTrans();
+    }
 
     private async Task getCurrentStreak()
     {

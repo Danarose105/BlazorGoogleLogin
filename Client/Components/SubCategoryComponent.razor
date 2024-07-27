@@ -539,18 +539,20 @@
         subCatToEdit.subCategoryTitle = titleInput;
         subCatToEdit.id = subCategoryIDToGet;
         subCatToEdit.categoryID = categoryID;
-        var getSubCatImportance = await Http.GetAsync("api/Present/GetSubCatImportance/" + subCatToEdit.id);
-        if (getSubCatImportance.IsSuccessStatusCode)
-        {
-            subCatToEdit.importance = await getSubCatImportance.Content.ReadFromJsonAsync<int>();
-        }
-        else
-        {
-            Console.WriteLine("couldn't find this sub cat's importance");
-        }
+        titleInputLength = subCatToEdit.subCategoryTitle.Length;
 
         if (!categoryTypeIndicator)
         {
+            var getSubCatImportance = await Http.GetAsync("api/Present/GetSubCatImportance/" + subCatToEdit.id);
+            if (getSubCatImportance.IsSuccessStatusCode)
+            {
+                subCatToEdit.importance = await getSubCatImportance.Content.ReadFromJsonAsync<int>();
+            }
+            else
+            {
+                Console.WriteLine("couldn't find this sub cat's importance");
+            }
+
             var getAllUserCategories = await Http.GetAsync("api/Present/GetUserCategories/" + userID);
             if (getAllUserCategories.IsSuccessStatusCode)
             {
@@ -591,7 +593,7 @@
                 userCategories.Add(incomeCat);
             }
         }
-        titleInputLength = subCatToEdit.subCategoryTitle.Length;
+        
         editSubCatBtnClicked = !editSubCatBtnClicked;
 
         toggleOptionsMenu();

@@ -96,7 +96,7 @@ else
 
             <div class="searchWrapper">
                 <div class="search__container">
-                    <img src="./css/images/search btn.svg" />
+                    <img src="./css/images/search btn.svg" @onclick="SearchAfterClick" />
                     <input class="searchInput" type="text" value="@searchQuery" @oninput="UpdateSearchQuery" @onkeyup="HandleKeyUp" placeholder="חפשו קטגוריה ..." />
 
                 </div>
@@ -389,7 +389,11 @@ else
                 }
                 else
                 {
-                    <p>אופס, לא נמצא תוצאה שמתאימה לחיפוש</p>
+                    if (toSearch)
+                    {
+                        <p>אופס, לא נמצא תוצאה שמתאימה לחיפוש</p>
+                    }
+                    
                 }
             }
             else
@@ -447,7 +451,7 @@ else
                 }
                 else
                 {
-                    if (finalsearchSubCats.Any(sb => string.IsNullOrEmpty(searchQuery)))
+                    if (finalsearchSubCats.Any(sb => string.IsNullOrEmpty(searchQuery)) && toSearch)
                     {
                         <p> אופס, לא נמצא תוצאה שמתאימה לחיפוש </p>
                     }
@@ -994,6 +998,17 @@ else
 
     }
 
+
+    void SearchAfterClick()
+    {
+        toSearch = true;
+
+        if (string.IsNullOrEmpty(searchQuery))
+        {
+            finalsearchSubCats = new List<SubCategoryToAdd>();
+        }
+        FilterCatsOrSubCats();
+    }
     void FilterCatsOrSubCats()
     {
         if (!string.IsNullOrEmpty(searchQuery))
