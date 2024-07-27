@@ -175,6 +175,7 @@
                                     else
                                     {
                                         <button class="primery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
+                                        <span>אורך שם תת הקטגוריה לא תקין.</span>
                                     }
                                 }
                                 else
@@ -264,7 +265,7 @@
                         }
                         @if (filterByTransTypeOverlay)
                         {
-                            
+
                             <div class="outerPaymentMethod">
                                 <div class="PaymentMethods">
                                     <div class="outerLay">
@@ -313,8 +314,8 @@
                         }
                         @if (filterByTagOverlay)
                         {
-                            
-                           Console.WriteLine(filterBtnClicked + "filterBtnClicked");
+
+                            Console.WriteLine(filterBtnClicked + "filterBtnClicked");
                             <div class="outerPaymentMethod">
                                 <div class="PaymentMethods">
                                     <div class="outerLay">
@@ -816,6 +817,7 @@
             {
                 SubCategoryToShow subTitle = await subCatTitle.Content.ReadFromJsonAsync<SubCategoryToShow>();
                 subCategoryTitle = subTitle.subCategoryTitle;
+                titleInput = subCategoryTitle;
                 if (categoryTitle == "הכנסות")
                 {
                     var checkCatType = await Http.GetAsync("api/Transactions/getCatType/" + userID);
@@ -1145,43 +1147,60 @@
         subCatToEdit.subCategoryTitle = subCategoryTitle;
         subCatToEdit.id = subCatID;
         subCatToEdit.categoryID = categoryID;
-        var getSubCatImportance = await Http.GetAsync("api/Present/GetSubCatImportance/" + subCatToEdit.id);
-        if (getSubCatImportance.IsSuccessStatusCode)
-        {
-            subCatToEdit.importance = await getSubCatImportance.Content.ReadFromJsonAsync<int>();
-        }
-        else
-        {
-            Console.WriteLine("couldn't find this sub cat's importance");
-        }
 
 
-        var getAllUserCategories = await Http.GetAsync("api/Present/GetUserCategories/" + userID);
-        if (getAllUserCategories.IsSuccessStatusCode)
+        if (!categoryTypeIndicator)
         {
-            userCategories = await getAllUserCategories.Content.ReadFromJsonAsync<List<AllUserCategories>>().ConfigureAwait(false);
-
-            //arranges the category dropdown so the current category will be the one initially displayed
-            List<AllUserCategories> tempUserCategories = new List<AllUserCategories>();
-            foreach (AllUserCategories category in userCategories)
+            var getSubCatImportance = await Http.GetAsync("api/Present/GetSubCatImportance/" + subCatToEdit.id);
+            if (getSubCatImportance.IsSuccessStatusCode)
             {
-                if (category.id == categoryID)
-                {
-                    tempUserCategories.Insert(0, category);
-                }
-                else
-                {
-                    tempUserCategories.Add(category);
-                }
-
+                subCatToEdit.importance = await getSubCatImportance.Content.ReadFromJsonAsync<int>();
             }
-            userCategories = tempUserCategories;
-            editSubCatBtnClicked = !editSubCatBtnClicked;
+            else
+            {
+                Console.WriteLine("couldn't find this sub cat's importance");
+            }
+
+
+            var getAllUserCategories = await Http.GetAsync("api/Present/GetUserCategories/" + userID);
+            if (getAllUserCategories.IsSuccessStatusCode)
+            {
+                userCategories = await getAllUserCategories.Content.ReadFromJsonAsync<List<AllUserCategories>>().ConfigureAwait(false);
+
+                //arranges the category dropdown so the current category will be the one initially displayed
+                List<AllUserCategories> tempUserCategories = new List<AllUserCategories>();
+                foreach (AllUserCategories category in userCategories)
+                {
+                    if (category.id == categoryID)
+                    {
+                        tempUserCategories.Insert(0, category);
+                    }
+                    else
+                    {
+                        tempUserCategories.Add(category);
+                    }
+
+                }
+                userCategories = tempUserCategories;
+                editSubCatBtnClicked = !editSubCatBtnClicked;
+            }
+            else
+            {
+                Console.WriteLine("no Categories found");
+            }
         }
         else
         {
-            Console.WriteLine("no Categories found");
+            AllUserCategories incomeCat = new AllUserCategories()
+            {
+                id=categoryID,
+                categroyTitle="הכנסות"
+            };
+            userCategories.Add(incomeCat);
         }
+
+        editSubCatBtnClicked = !editSubCatBtnClicked;
+
     }
     public void deleteSubCatPopUp()
     {
