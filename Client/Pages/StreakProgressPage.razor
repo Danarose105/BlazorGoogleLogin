@@ -151,8 +151,9 @@
                     var getCurrentStatRes = await Http.GetAsync("api/Present/getUserStreakStatus/" + userID);
                     if (getCurrentStatRes.IsSuccessStatusCode)
                     {
-
                         string getCurrentStat = await getCurrentStatRes.Content.ReadAsStringAsync(); //stat in DB
+
+
                         if (streakStatusOpt.Contains(getCurrentStat) && streakStatusOpt.Contains(streakStatus))
                         {
 
@@ -204,6 +205,19 @@
                                 Console.WriteLine("failed to update streak status, status remains the same and is: " + streakStatus);
                             }
                         }
+                        else
+                        {
+                            streakStatus = null;
+
+                            var updateStreak = await Http.GetAsync("api/Present/updateStreakStat/" + userID + "/" + streakStatus);
+                            if (updateStreak.IsSuccessStatusCode)
+                            {
+                                //open new status pop up
+                                Console.WriteLine("streak status updated, new status is: " + streakStatus);
+                                currentUserStreakIndex = -1;
+                                neededTransAmount = 3;
+                            }
+                        }
 
                     }
                 }
@@ -216,7 +230,7 @@
                     {
                         //open new status pop up
                         Console.WriteLine("streak status updated, new status is: " + streakStatus);
-                        currentUserStreakIndex = 0;
+                        currentUserStreakIndex = -1;
                         neededTransAmount = 3;
                     }
                 }
@@ -237,17 +251,20 @@
         int rankMinTransCount = 3;
         if (weekAmount <= 1 && weekAmount < 2)
         {
+            string streakTitle = "";
             if (weekAmount < 1)
             {
                 rankMinTransCount = 3;
+
             }
             else if (weekAmount == 1)
             {
                 rankMinTransCount = 6;
+                streakTitle= "מטבע ארד";
             }
             //rankMinTransCount = 6;
             neededTransAmount = rankMinTransCount - (3 * weekAmount);
-            return "מטבע ארד";
+            return streakTitle;
         }
         else if (weekAmount > 2 && weekAmount <= 9)
         {

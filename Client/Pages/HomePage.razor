@@ -638,7 +638,10 @@ else
             currentUser = userRes.Content.ReadFromJsonAsync<userToShow>().Result;
             userID = currentUser.id;
             searchCats = currentUser.categoriesFullList;
+
             await getCurrentStreak();
+
+
             Console.WriteLine("current streak status- " + currentUser.streakStatus);
 
             var getCatDetails = await Http.GetAsync("api/Present/checkOverdraftCats/" + userID);
@@ -708,13 +711,13 @@ else
 
     private async Task getCurrentStreak()
     {
-        var streakDataRes = await Http.GetAsync("api/Present/checkStreak/" + userID);
+        var streakDataRes = await Http.GetAsync("api/Present/checkStreak/" + userID); //checks the total week amount with minimum 3 transactions- including the current week
         if (streakDataRes.IsSuccessStatusCode)
         {
-            int weekAmount = streakDataRes.Content.ReadFromJsonAsync<int>().Result;
+            int weekAmount = await streakDataRes.Content.ReadFromJsonAsync<int>();
             string streakStatCheck = streakStatusCheck(weekAmount);
 
-            var getCurrentStatRes = await Http.GetAsync("api/Present/getUserStreakStatus/" + userID);
+            var getCurrentStatRes = await Http.GetAsync("api/Present/getUserStreakStatus/" + userID); //gets the current streak status title
             if (getCurrentStatRes.IsSuccessStatusCode)
             {
                 streakStatTitle = await getCurrentStatRes.Content.ReadAsStringAsync();
@@ -722,7 +725,7 @@ else
                 {
                     streakStatTitle=streakStatCheck;
 
-                    var updateStreakRes = await Http.GetAsync("api/Present/updateStreakStat/" + userID + "/" + streakStatTitle);
+                    var updateStreakRes = await Http.GetAsync("api/Present/updateStreakStat/" + userID + "/" + streakStatTitle); //updates the status title if necessary
                     if (updateStreakRes.IsSuccessStatusCode)
                     {
                         Console.WriteLine("streak status up to date");
@@ -778,14 +781,21 @@ else
                 }
             }
         }
-        
+
     }
 
     public string streakStatusCheck(int weekAmount)
     {
         if (weekAmount <= 1 && weekAmount < 2)
         {
-            return "מטבע ארד";
+            if (weekAmount==0)
+            {
+                return "";
+            }
+            else
+            {
+                return "מטבע ארד";
+            }
         }
         else if (weekAmount > 2 && weekAmount <= 9)
         {
