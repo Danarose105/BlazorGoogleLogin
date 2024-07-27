@@ -137,7 +137,7 @@
                         @for (int i = 0; i < 16; i++)
                         {
                             int currentLoopValue = i;  // Create a temporary variable to capture the loop variable
-                            <div @onclick="@(()=>newGoal.dueYear = (CurrentYear + currentLoopValue))">
+                            <div @onclick="@(()=>{newGoal.dueYear = (CurrentYear + currentLoopValue); openYearsOptions = false;})">
                                 @(CurrentYear + currentLoopValue)
                             </div>
                             <div class="daydivider"></div>
@@ -238,7 +238,7 @@
                 <div class="paddingDiv">
                     <div class="outerTitleAndIcon">
                         <button class="closeOverlay" @onclick="closeEditGoalPopup"><img src="./css/images/close x.svg" /></button>
-                        <h3 class="popupTitle">עריכת חסכון</h3>
+                        <h3 class="popupTitle">עריכת יעד</h3>
                         <div class="titleAndIcon">
                             <div class="outerTitleAndCounter">
                                 <div class="input-container">
@@ -294,7 +294,45 @@
                             </div>
 
                             <div>
-                                <input class="savingSum" type="text" @bind="@editedGoal.dueYear" />
+
+                                <div>
+                                    <div @onclick="()=>openYearsOptions =! openYearsOptions">
+                                        <!-- Fixed malformed tag here -->
+                                        @if (editedGoal.dueYear != null && editedGoal.dueYear != 0)
+                                        {
+                                            <div class="dropDownTitle">
+                                                @editedGoal.dueYear
+                                                <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            editedGoal.dueYear = CurrentYear;
+
+                                            <div class="dropDownTitle" style="color:#727272">
+                                                @editedGoal.dueYear
+                                                <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
+                                            </div>
+                                        }
+                                    </div>
+                                    @if (openYearsOptions)
+                                    {
+                                        <div class="outerMonthDayOptions">
+                                            @for (int i = 0; i < 16; i++)
+                                            {
+                                                int currentLoopValue = i;  // Create a temporary variable to capture the loop variable
+                                                <div @onclick="@(()=>{editedGoal.dueYear = (CurrentYear + currentLoopValue); openYearsOptions = false;})">
+                                                    @(CurrentYear + currentLoopValue)
+                                                </div>
+                                                <div class="daydivider"></div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+
+                                
+
+                               @* <input class="savingSum" type="text" @bind="@editedGoal.dueYear" />*@
                             </div>
 
                             <div>
@@ -633,6 +671,8 @@
             Console.WriteLine("failed to update goal");
         }
 
+        isEditGoalClicked = false;
+        showYearlyGoals = false;
         selectedClass = "";
     }
 
