@@ -38,7 +38,7 @@ else
                 <div class="weeklyTransAmount">הזנת השבוע @weeklyTransAmount הוצאות,</div>
                 <div class="mainTitle">שאפו!</div>
                 <div class="outerInfoText">
-                    <div>זה השבוע ה-@currentStreak.streak_length ברציפות. וזו הדרך הנכונה!</div>
+                    <div>זה השבוע ה-@currentStreak ברציפות. וזו הדרך הנכונה!</div>
                     <div class="statusText">
                         @if (nextStreakStatIn < 35)
                         {
@@ -572,7 +572,7 @@ else
 
     List<SubCategoryToShow> incomeSubCats = new List<SubCategoryToShow>();
 
-    UserStreakData currentStreak = new UserStreakData();
+    int currentStreak = 0;
     string streakStatTitle = "";
     bool streakOverlay = false;
     string streakImgSrc = "";
@@ -1085,15 +1085,14 @@ else
             var streakDataRes = await Http.GetAsync("api/Present/checkStreak/" + userID);
             if (streakDataRes.IsSuccessStatusCode)
             {
-                currentStreak = await streakDataRes.Content.ReadFromJsonAsync<UserStreakData>();
+                currentStreak = await streakDataRes.Content.ReadFromJsonAsync<int>();
 
-                if (currentStreak.streak_length != null && currentStreak.streak_length > 0 && currentStreak.current_streak_group == true)
+                if (currentStreak > 0)
                 {
                     var totalTransThisWeekRes = await Http.GetAsync("api/Present/getTotalWeekTrans/" + userID);
                     weeklyTransAmount = await totalTransThisWeekRes.Content.ReadFromJsonAsync<int>();
                     if (weeklyTransAmount >= 3)
                     {
-
                         switch (streakStatTitle) //will fill the related streak image route
                         {
                             case "מטבע ארד":
@@ -1142,7 +1141,7 @@ else
                         streakOverlay = true;
                     }
                 }
-                else if (!currentStreak.current_streak_group)
+                else
                 {
                     streakImgSrc = "";
                     streakImgIcon = "";

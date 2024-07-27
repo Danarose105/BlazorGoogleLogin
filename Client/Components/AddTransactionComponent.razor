@@ -916,7 +916,7 @@
     //TransactionToAdd ogTransaction = new TransactionToAdd();
 
     bool isLoadComplete = false;
-    UserStreakData currentStreak = new UserStreakData();
+    int currentStreak = 0;
 
     private int currentPage = 0;
     private int pageSize = 6;
@@ -2360,11 +2360,11 @@
             var streakDataRes = await Http.GetAsync("api/Present/checkStreak/" + userID);
             if (streakDataRes.IsSuccessStatusCode)
             {
-                currentStreak = await streakDataRes.Content.ReadFromJsonAsync<UserStreakData>();
+                currentStreak = await streakDataRes.Content.ReadFromJsonAsync<int>();
 
-                if (currentStreak.streak_length != null && currentStreak.streak_length > 0 && currentStreak.current_streak_group == true)
+                if (currentStreak > 0)
                 {
-                    string streakStatus = streakStatusCheck(currentStreak.streak_length);
+                    string streakStatus = streakStatusCheck(currentStreak); //streak in page
                     List<string> streakStatusOpt = new List<string>()
                 {
                     "מטבע ארד", "מטבע כסף", "מטבע זהב", "שטר", "שטרות","גביע","יהלום"
@@ -2373,7 +2373,7 @@
                     var getCurrentStatRes = await Http.GetAsync("api/Present/getUserStreakStatus/" + userID);
                     if (getCurrentStatRes.IsSuccessStatusCode)
                     {
-                        string getCurrentStat = await getCurrentStatRes.Content.ReadAsStringAsync();
+                        string getCurrentStat = await getCurrentStatRes.Content.ReadAsStringAsync(); //streak in DB
                         if (streakStatusOpt.Contains(getCurrentStat))
                         {
                             int statInDB = streakStatusOpt.IndexOf(getCurrentStat);
@@ -2390,6 +2390,10 @@
                                     Console.WriteLine("streak status updated, new status is: " + streakStatus);
                                     updatedStreak.InvokeAsync(streakStatus);
                                 }
+                                else
+                                {
+                                    Console.WriteLine("failed to update streak status, status remains the same and is: " + streakStatus);
+                                }
                             }
                         }
                         else if (getCurrentStat == null || getCurrentStat == "")
@@ -2404,10 +2408,14 @@
                                 Console.WriteLine("streak status updated, new status is null");
                                 updatedStreak.InvokeAsync(streakStatus);
                             }
+                            else
+                            {
+                                Console.WriteLine("failed to update streak status, status remains the same and is: " + streakStatus);
+                            }
                         }
                     }
 
-                    Console.WriteLine("streak status- " + streakStatus + ", week amount- " + currentStreak.streak_length);
+                    Console.WriteLine("streak status- " + streakStatus + ", week amount- " + currentStreak);
                 }
             }
         }
