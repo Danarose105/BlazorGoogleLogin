@@ -33,7 +33,7 @@
 
 
                 </div>
-                @if (categoryTypeIndicator == false && (totalSpendings > budget || subCatTransTotal> budget))
+                @if (categoryTypeIndicator == false && (totalSpendings > budget || subCatTransTotal > budget))
                 {
                     isOverdraft = true;
                     <span class="overdraftBtn"><img src="./css/images/overdtaft.svg" /></span>
@@ -127,7 +127,20 @@
                         <div class="input-container">
                             <label class="titleName" for="amount">שם תת קטגוריה</label>
                             <input class="titleBox" type="text" id="amount" placeholder="שם תת הקטגוריה" @bind="titleInput" @oninput="SubCatTitleLengthCounter" maxlength="18" minlength="2" />
-                            
+                            <div class="counter">
+                                <div class="outerTitleName">
+
+                                    @if (titleInputLength > 0)
+                                    {
+
+                                        <span>@titleInput.Length/18</span>
+                                    }
+                                    else
+                                    {
+                                        <span>0/18</span>
+                                    }
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -223,13 +236,13 @@
                     {
                         if (titleInput == null || titleInput == "" || titleInput.Length <= 0 || subCatToEdit.subCategoryTitle.Length <= 0)
                         {
-                          
-                                <button class="primery-button" @onclick="EditSubCategoryAndTransaction" disabled>שמירה ויצירת הזנה</button>
-                                <button class="secondery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
-                                <br />
-                                <span>לא ניתן לשמור תת קטגוריה ללא שם.</span>
-                            
-                            
+
+                            <button class="primery-button" @onclick="EditSubCategoryAndTransaction" disabled>שמירה ויצירת הזנה</button>
+                            <button class="secondery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
+                            <br />
+                            <span>לא ניתן לשמור תת קטגוריה ללא שם.</span>
+
+
                         }
                         else if (subCatToEdit.monthlyPlannedBudget <= 0 || subCatToEdit.monthlyPlannedBudget == null)
                         {
@@ -263,14 +276,14 @@
                         }
                         else
                         {
-                            <button class="primery-button" @onclick="EditSubCategoryAndTransaction" >שמירה ויצירת הזנה</button>
-                            <button class="secondery-button" @onclick="saveUpdatedSubCat" >שמירה וסיום</button>
+                            <button class="primery-button" @onclick="EditSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
+                            <button class="secondery-button" @onclick="saveUpdatedSubCat">שמירה וסיום</button>
 
 
                         }
 
-                            
-                        
+
+
                     }
 
 

@@ -80,7 +80,7 @@
                                         {
                                             repeatedBtnTitle = "עריכת ההזנה החוזרת";
                                             <button class="cancleRepeatedBtn" @onclick="()=>undoFixedMonthly(newTransaction.transDate)">ביטול הוצאה חוזרת</button>
-                                          
+
                                         }
                                         else
                                         {
@@ -1293,7 +1293,7 @@
         }
 
 
-        if (newTransaction.fixedMonthly==true) //means the trans is fixedMonthly
+        if (newTransaction.fixedMonthly == true) //means the trans is fixedMonthly
         {
 
             var transToSaveRes = await Http.PostAsJsonAsync("api/Transactions/AddTransaction", newTransaction);
@@ -1346,31 +1346,60 @@
                 if (transToSaveRes.IsSuccessStatusCode)
                 {
                     transIDtoEdit = await transToSaveRes.Content.ReadFromJsonAsync<int>();
-                    if (!categoryTypeIndicator && i == 0)
+                    if (!categoryTypeIndicator)
                     {
-                        await checkOverdraft();
-                        if (overdraftDetected)
+                        if (i == 0)
                         {
-                            var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
-                            if (transOverdraftRes.IsSuccessStatusCode)
+                            await checkOverdraft();
+                            if (overdraftDetected)
                             {
-                                Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
+                                var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
+                                if (transOverdraftRes.IsSuccessStatusCode)
+                                {
+                                    Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
+
+                                }
                             }
                         }
-
                         Console.WriteLine("ההזנה נשמרה בהצלחה :)");
                         addTransactionToTotal.InvokeAsync(newTransaction.transValue);
                         transValueToAdd.InvokeAsync(newTransaction.transValue);
-
                     }
+                    else
+                    {
+                        Console.WriteLine("ההזנה נשמרה בהצלחה :)");
+                        addTransactionToTotal.InvokeAsync(newTransaction.transValue);
+                        transValueToAdd.InvokeAsync(newTransaction.transValue);
+                    }
+                    //if (!categoryTypeIndicator && i == 0)
+                    //{
+                    //    await checkOverdraft();
+                    //    if (overdraftDetected)
+                    //    {
+                    //        var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
+                    //        if (transOverdraftRes.IsSuccessStatusCode)
+                    //        {
+                    //            Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
+                    //        }
+                    //    }
+
+                    //    Console.WriteLine("ההזנה נשמרה בהצלחה :)");
+                    //    addTransactionToTotal.InvokeAsync(newTransaction.transValue);
+                    //    transValueToAdd.InvokeAsync(newTransaction.transValue);
+
+                    //}
                 }
                 else
                 {
                     Console.WriteLine("הזנה נכשלה");
                 }
             }
+
+
             await getStreakDetails();
             isTransactionOverlayOpen.InvokeAsync(false);
+
+
         }
         else //means the trans is not split or fixed
         {
@@ -1425,7 +1454,7 @@
         {
             newTransaction.tagID = chosenTag.id;
         }
-        if (newTransaction.fixedMonthly==true) //means the trans is fixedMonthly
+        if (newTransaction.fixedMonthly == true) //means the trans is fixedMonthly
         {
 
             var transToSaveRes = await Http.PostAsJsonAsync("api/Transactions/AddTransaction", newTransaction);
@@ -1534,16 +1563,22 @@
                     }
                     Console.WriteLine("ההזנה נשמרה בהצלחה :)");
                 }
+                else
+                {
+                    addTransactionToTotal.InvokeAsync(newTransaction.transValue);
+                    transValueToAdd.InvokeAsync(newTransaction.transValue);
+                    await getStreakDetails();
+                    titleInput = "";
+                    titleInputLength = 0;
+                    newTransaction = new TransactionToAdd()
+                        {
+                            transDate = DateTime.Today, // Set the transaction date to today
+                            fixedMonthly = false,
+                            splitPayment = false
+                        };
+                }
 
-                addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                transValueToAdd.InvokeAsync(newTransaction.transValue);
-                await getStreakDetails();
-                titleInput = "";
-                titleInputLength = 0;
-                newTransaction = new TransactionToAdd()
-                    {
-                        transDate = DateTime.Today // Set the transaction date to today
-                    };
+
                 //isTransactionOverlayOpen.InvokeAsync(false);
             }
             else
@@ -1734,22 +1769,22 @@
 
 
 
-                if (postEditTrans.fixedMonthly == true && postEditTrans.fixedMonthly == ogTransaction.fixedMonthly ) //means contents were changed
+                if (postEditTrans.fixedMonthly == true && postEditTrans.fixedMonthly == ogTransaction.fixedMonthly) //means contents were changed
                 {
 
                     foreach (TransactionToAdd repT in fixedTransChildrenToAdd)
                     {
-                        var findMatchTrans= reapeatedTransValuesList.FirstOrDefault(t=> t.transDate==repT.transDate);
-                        if (findMatchTrans!=null)
+                        var findMatchTrans = reapeatedTransValuesList.FirstOrDefault(t => t.transDate == repT.transDate);
+                        if (findMatchTrans != null)
                         {
-                            int indexOfMatch= reapeatedTransValuesList.IndexOf(findMatchTrans);
+                            int indexOfMatch = reapeatedTransValuesList.IndexOf(findMatchTrans);
                             reapeatedTransValuesList[indexOfMatch].transValue = repT.transValue;
                         }
-                        else if(findMatchTrans==null && repT.transValue>0 && repT.transDate.Month>DateTime.Today.Month)
+                        else if (findMatchTrans == null && repT.transValue > 0 && repT.transDate.Month > DateTime.Today.Month)
                         {
                             RepeatedTransToShow repTtoUpdate = new RepeatedTransToShow()
                                 {
-                                    id=0,
+                                    id = 0,
                                     transValue = repT.transValue,
                                     transDate = repT.transDate
                                 };
@@ -1972,11 +2007,12 @@
             overdraftDetected = true;
             closeOverdraftOpts = new List<OverBudgetToShow>();
             closeOverdraftOpts = await overdraftRes.Content.ReadFromJsonAsync<List<OverBudgetToShow>>();
+
             currentGap = (closeOverdraftOpts[closeOverdraftOpts.Count - 1].remainingBudget) - (closeOverdraftOpts[closeOverdraftOpts.Count - 1].monthlyPlannedBudget);
 
             overDraftSubCategory.id = closeOverdraftOpts[closeOverdraftOpts.Count - 1].id;
             overDraftSubCategory.monthlyPlannedBudget = closeOverdraftOpts[closeOverdraftOpts.Count - 1].monthlyPlannedBudget;
-            //chosenSubCategory = closeOverdraftOpts[0];
+
 
 
         }
