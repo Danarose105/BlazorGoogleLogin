@@ -37,15 +37,15 @@
         {
             monthlySavings = 0;
         }
-        <div>
-            <span>כדי להגיע ליעדי @CurrentYear, אצטרך לחסוך:</span>
-            <div>בחודש</div>
-            <span>@monthlySavings</span>
-            <div>בשנה</div>
-            <span>@sumNeededSavingsPerYear </span>
-        </div>
-
     }
+
+    <div>
+        <span>כדי להגיע ליעדי @CurrentYear, אצטרך לחסוך:</span>
+        <div>בחודש</div>
+        <span>@monthlySavings</span>
+        <div>בשנה</div>
+        <span>@sumNeededSavingsPerYear </span>
+    </div>
 </div>
 
 <div>
@@ -328,7 +328,7 @@
 @if (deleteBtnClicked)
 {
     isOpetionsBtnClicked = false;
-    <GeneralPopUpComponent popupTypeTitle="מחיקת חסכון" middleText="@popupBodyText" action="מחיקה" makeAction="deleteSaving" closePopUp="closeDeletePopUp"></GeneralPopUpComponent>
+    <GeneralPopUpComponent popupTypeTitle="מחיקת יעד" middleText="@popupBodyText" action="מחיקה" makeAction="deleteGoal" closePopUp="closeDeletePopUp"></GeneralPopUpComponent>
 }
 
 
@@ -418,6 +418,9 @@
 
         }
 
+        sumSavings = 0;
+        sumGoals = 0;
+        sumNeededSavingsPerYear = 0;
         foreach (AllUserSavingsToShow saving in allSavings)
         {
             sumSavings += saving.savingsSum;
@@ -634,7 +637,7 @@
     }
 
 
-    public async Task deleteSaving()
+    public async Task deleteGoal()
     {
         showYearlyGoals = false;
         deleteBtnClicked = false;
@@ -642,45 +645,21 @@
         userID = user.Id;
 
 
+
         var deleteRes = await Http.DeleteAsync("api/Future/deleteGoal/" + editedGoal.id);
 
         if (deleteRes.IsSuccessStatusCode)
         {
 
-            //foreach (AllUserGoalsToShow goalPerYearToSend in allGoals)
-            //{
-            //    if(goalPerYearToSend.id == editedGoal.id)
-            //    {
-            //        allGoals.Remove(goalPerYearToSend);
-            //    }
-            //}
+            await DeleteGoalFromYearlyGoals();
 
-            //foreach (AllUserGoalsToShow goalPerYear in goalsPerYearList)
-            //{
-            //    if(goalPerYear.id == editedGoal.id)
-            //    {
-            //        goalsPerYearList.Remove(goalPerYear);
-            //    }
-
-            //}
+            await OnInitializedAsync();
 
 
-            var userGoalsRes = await Http.GetAsync("api/Future/userFutureGoalsToShow/" + userID);
 
-            if (userGoalsRes.IsSuccessStatusCode)
-            {
-                allGoals = userGoalsRes.Content.ReadFromJsonAsync<List<AllUserGoalsToShow>>().Result;
-                //getCurrentStreak();
 
-            }
-            else
-            {
-                Console.WriteLine("no goals");
-
-            }
-
-            showYearlyGoals = true;
-            StateHasChanged();
+            //showYearlyGoals = true;
+            //StateHasChanged();
             //goalsPerYearList.Clear();
             //openGoalsPerYearPopUAfterDelete(deletedGoalYear);
         }
@@ -706,6 +685,29 @@
     {
         isEditGoalClicked = !isEditGoalClicked;
         selectedClass = "";
+    }
+
+
+    async Task<bool> DeleteGoalFromYearlyGoals()
+    {
+        // Remove the goal directly in the goalsPerYearList
+        bool isRemoved = goalsPerYearList.RemoveAll(goalPerYear => goalPerYear.id == editedGoal.id) > 0;
+
+        // If any goal was removed, update the display of goals
+        if (isRemoved)
+        {
+            await ShowGoalsAfterDelete();
+        }
+
+        return true;
+    }
+
+    async Task<bool> ShowGoalsAfterDelete()
+    {
+        // Remove the goal from allGoals
+        allGoals.RemoveAll(goalPerYearToSend => goalPerYearToSend.id == editedGoal.id);
+
+        return true;
     }
 
 
