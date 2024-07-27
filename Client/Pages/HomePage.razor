@@ -638,7 +638,7 @@ else
             currentUser = userRes.Content.ReadFromJsonAsync<userToShow>().Result;
             userID = currentUser.id;
             searchCats = currentUser.categoriesFullList;
-            getCurrentStreak();
+            await getCurrentStreak();
             Console.WriteLine("current streak status- " + currentUser.streakStatus);
 
             var getCatDetails = await Http.GetAsync("api/Present/checkOverdraftCats/" + userID);
@@ -708,56 +708,120 @@ else
 
     private async Task getCurrentStreak()
     {
-        var getCurrentStatRes = await Http.GetAsync("api/Present/getUserStreakStatus/" + userID);
-        if (getCurrentStatRes.IsSuccessStatusCode)
+        var streakDataRes = await Http.GetAsync("api/Present/checkStreak/" + userID);
+        if (streakDataRes.IsSuccessStatusCode)
         {
-            streakStatTitle = await getCurrentStatRes.Content.ReadAsStringAsync();
-            switch (streakStatTitle) //will fill the related streak image route
+            int weekAmount = streakDataRes.Content.ReadFromJsonAsync<int>().Result;
+            string streakStatCheck = streakStatusCheck(weekAmount);
+
+            var getCurrentStatRes = await Http.GetAsync("api/Present/getUserStreakStatus/" + userID);
+            if (getCurrentStatRes.IsSuccessStatusCode)
             {
-                case "מטבע ארד":
+                streakStatTitle = await getCurrentStatRes.Content.ReadAsStringAsync();
+                if (streakStatTitle != streakStatCheck)
+                {
+                    streakStatTitle=streakStatCheck;
 
-                    streakImgIcon = "./css/images/bronzeCoin.svg";
+                    var updateStreakRes = await Http.GetAsync("api/Present/updateStreakStat/" + userID + "/" + streakStatTitle);
+                    if (updateStreakRes.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("streak status up to date");
+                    }
+                    else
+                    {
+                        Console.WriteLine("failed to update streak status on page load, shown streak isn't necessarily accurate");
+                    }
+                }
 
-                    break;
-                case "מטבע כסף":
+                switch (streakStatTitle) //will fill the related streak image route
+                {
+                    case "מטבע ארד":
 
-                    streakImgIcon = ".../css/images/silverCoin.svg";
+                        streakImgIcon = "./css/images/bronzeCoin.svg";
 
-                    break;
-                case "מטבע זהב":
+                        break;
+                    case "מטבע כסף":
 
-                    streakImgIcon = "./css/images/goldCoin.svg";
+                        streakImgIcon = ".../css/images/silverCoin.svg";
 
-                    break;
-                case "שטר":
+                        break;
+                    case "מטבע זהב":
 
-                    streakImgIcon = "./css/images/singleCashNote.svg";
+                        streakImgIcon = "./css/images/goldCoin.svg";
 
-                    break;
-                case "שטרות":
+                        break;
+                    case "שטר":
 
-                    streakImgIcon = "./css/images/cashNotes.svg";
+                        streakImgIcon = "./css/images/singleCashNote.svg";
 
-                    break;
-                case "גביע":
+                        break;
+                    case "שטרות":
 
-                    streakImgIcon = "./css/images/goblet.svg";
+                        streakImgIcon = "./css/images/cashNotes.svg";
 
-                    break;
-                case "יהלום":
+                        break;
+                    case "גביע":
 
-                    streakImgIcon = "./css/images/diamond.svg";
+                        streakImgIcon = "./css/images/goblet.svg";
 
-                    break;
-                default:
-                    Console.WriteLine("no picture is associated with this streak");
-                    streakImgIcon = "";
+                        break;
+                    case "יהלום":
 
-                    break;
+                        streakImgIcon = "./css/images/diamond.svg";
+
+                        break;
+                    default:
+                        Console.WriteLine("no picture is associated with this streak");
+                        streakImgIcon = "";
+
+                        break;
+                }
             }
         }
+        
     }
 
+    public string streakStatusCheck(int weekAmount)
+    {
+        if (weekAmount <= 1 && weekAmount < 2)
+        {
+            return "מטבע ארד";
+        }
+        else if (weekAmount > 2 && weekAmount <= 9)
+        {
+
+            return "מטבע כסף";
+        }
+        else if (weekAmount > 9 && weekAmount <= 12)
+        {
+
+            return "מטבע זהב";
+        }
+        else if (weekAmount > 12 && weekAmount <= 20)
+        {
+
+            return "שטר";
+        }
+        else if (weekAmount > 20 && weekAmount <= 24)
+        {
+
+            return "שטרות";
+        }
+        else if (weekAmount >= 32)
+        {
+
+            return "גביע";
+        }
+        else if (weekAmount > 32)
+        {
+
+            return "יהלום";
+        }
+        else
+        {
+            return "";
+        }
+    }
 
 
     private string GetHebrewMonthName(int monthNumber)
