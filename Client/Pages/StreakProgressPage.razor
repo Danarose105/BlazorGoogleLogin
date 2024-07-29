@@ -85,6 +85,9 @@
 </div>
 
 @code {
+    [CascadingParameter]
+    private UserDTO user { get; set; }
+
     [Parameter]
     public int userID { get; set; }
 

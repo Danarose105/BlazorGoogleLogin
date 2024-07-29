@@ -74,17 +74,17 @@ else
         <div id="topSectionDiv">
             <div class="outerTopSection">
 
-                <div class="profileAndStreak">
+                <div class="profileAndStreak" @onclick="goToSProfilePage">
 
                     @if (streakStatTitle != null && streakStatTitle != "")
                     {
                         @if (streakImgIcon != "")
                         {
-                            <button @onclick="goToSProfilePage" class="streakBtn"><img src=@streakImgIcon style="width:87%;" /></button>
+                            <button class="streakBtn"><img src=@streakImgIcon style="width:87%;" /></button>
 
                         }
                     }
-                    <button class="profilePic" @onclick="goToSProfilePage">@currentUser.profilePicOrIcon</button>
+                    <button class="profilePic">@currentUser.profilePicOrIcon</button>
                 </div>
                 <div id="topText">
                     <p id="firstTitle">היי @currentUser.firstName 👋🏼</p>

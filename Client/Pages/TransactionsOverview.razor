@@ -24,18 +24,18 @@
                 <span>@returnToMainPage > @categoryTitle > @subCategoryTitle</span>
             }
         </div>
-        <div class="profileAndStreak">
+        <div class="profileAndStreak"@onclick="goToSProfilePage">
 
             <div class="streakBtn">
                 @if (streakStatTitle != null && streakStatTitle != "")
                 {
                     if (streakImgIcon != "")
                     {
-                        <img src=@streakImgIcon style="width:87%;" />
+                        <img src=@streakImgIcon style="width:87%;"/>
                     }
                 }
             </div>
-            <button class="profilePic" @onclick="goToSProfilePage">@userIcon</button>
+            <button class="profilePic">@userIcon</button>
 
         </div>
     </div>
@@ -229,7 +229,7 @@
 
             <div class="searchWrapper">
                 <div class="search__container">
-                    <img src="./css/images/search btn.svg" @onclick="SearchAfterClick"/>
+                    <img src="./css/images/search btn.svg" @onclick="SearchAfterClick" />
                     <input class="searchInput" type="text" value="@searchQuery" @oninput="UpdateSearchQuery" @onkeyup="HandleKeyUp" placeholder="חפשו הוצאה..." />
 
                 </div>
@@ -679,6 +679,10 @@
 
 
 @code {
+
+    [CascadingParameter]
+    private UserDTO user { get; set; }
+
     [Parameter]
     public int userID { get; set; }
 
@@ -1192,10 +1196,10 @@
         else
         {
             AllUserCategories incomeCat = new AllUserCategories()
-            {
-                id=categoryID,
-                categroyTitle="הכנסות"
-            };
+                {
+                    id = categoryID,
+                    categroyTitle = "הכנסות"
+                };
             userCategories.Add(incomeCat);
         }
 

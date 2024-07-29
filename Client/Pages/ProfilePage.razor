@@ -763,7 +763,7 @@
         }
     }
 
-    public void LeavingWithoutSave()
+    public async Task LeavingWithoutSave()
     {
         goingBackDisabled = false;
 
@@ -777,6 +777,7 @@
         }
 
         editBtnClicked = false;
+         await JSRuntime.InvokeVoidAsync("navigateBack");
     }
 
     public void closingLeavingPopUp()
