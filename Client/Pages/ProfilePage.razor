@@ -824,10 +824,10 @@
     {
         await _Auth.Logout();
 
-       
+
         Nav.NavigateTo("./LogoutPage");
-        
-       
+
+
     }
 
     private IEnumerable<TagsToShow> GetCurrentPageTags()
@@ -957,7 +957,7 @@
             {
                 currentUser.userTags[0].id = firstTagID;
             }
-            
+
         }
         else
         {
@@ -1077,7 +1077,7 @@
     private void tagTitleLengthCheck(ChangeEventArgs e)
     {
         currentTagName = e.Value.ToString();
-        tagToEdit.tagTitle = currentTagName;
+        //tagToEdit.tagTitle = currentTagName;
         tagNameLength = currentTagName.Length;
         //tagTitleInputLength = tagToEdit.tagTitle.Length;
 
@@ -1212,11 +1212,16 @@
         if (selectedClass == null || selectedClass == "")
         {
             selectedClass = ogTagColor;
+
         }
         else
         {
             editedTag = currentUser.userTags.IndexOf(chosenTag);
-            currentUser.userTags[editedTag].tagColor = OgColor;
+            if (editedTag>-1)
+            {
+                currentUser.userTags[editedTag].tagColor = OgColor;
+            }
+            
 
         }
 
