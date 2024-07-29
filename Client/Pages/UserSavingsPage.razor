@@ -10,143 +10,215 @@
 @*@inject DateService DateService*@
 @inject IJSRuntime JSRuntime
 
-<div>
-    <button @onclick="backToFutureHomePage"><img src="./css/images/arrow-back.svg" /></button>
-</div>
-
-<div>תכנית עסקית לחלומות</div>
-<div>החסכונות שלי</div>
-
-<div>
-    <div>
-       סך החסכונות עד כה:
-    </div>
-   
-    <span>@sumSavings</span>
-</div>
-
-
-<div>
-    <button @onclick="()=> isAddSavingOverlayClicked = !isAddSavingOverlayClicked">חסכון חדש</button>
-</div>
-
-@if (isAddSavingOverlayClicked)
-{
-    <div>
-        <div>הוספת חסכון</div>
+<div class="megaOuterPage">
+    <div class="outerPage">
         <div>
-            <span>שם החסכון</span>
-            <input type="text" @bind="newSaving.savingsTitle" />
-        </div>
-        <div>
-            <span>סכום החסכון</span>
-            <input type="number" @bind="newSaving.savingsSum" />
+            <button @onclick="backToFutureHomePage" class="backArrow"><img src="../css/images/back-repeated.svg" /></button>
         </div>
 
-        <div>
-            <button @onclick="addNewSaving">שמירה וסיום</button>
-        </div>
-    </div>
+        <div class="pageTitle">תכנית עסקית לחלומות</div>
+        <div class="secondTitle">החסכונות שלי</div>
 
-}
-
-<div>
-    @foreach (AllUserSavingsToShow saving in allSavings)
-    {
-        <div @onclick="()=>showSavingDetails(saving)">
-            @saving.savingsTitle
-            @saving.savingsSum
-        </div>
-    }
-</div>
-
-@if (OpenSavingDetails)
-{
-    <div>
-        <button @onclick="closeSavingDetailsPopUp"><img src="../css/images/back-repeated.svg" /></button>
-    </div>
-    <div>
-        
-    <div>
-            <div class="closedAndOpenMenu">
-                <button class="options" @onclick="OpetionsBtnClicked"><img src="./css/images/option menu.svg" /></button>
-                @if (isOpetionsBtnClicked)
-                {
-
-                    <OptionsMenuComponent editBtnClicked="@showEditSaving" deleteBtnClicked="@deleteSavingBtnClciked" closeOverlay="closeDeleteOverlay"></OptionsMenuComponent>
-                }
+        <div class="outerSavings">
+            <div class="thirdTitle">
+                סך החסכונות עד כה:
+                <span>@sumSavings ₪</span>
             </div>
-    </div>
-
-       <div>
-           @savingDetailsToShow.savingsTitle
-       </div>
-        <div>
-            @savingDetailsToShow.savingsSum
         </div>
 
-    </div>
-}
 
+        <div>
+            <button @onclick="()=> isAddSavingOverlayClicked = !isAddSavingOverlayClicked" class="AddNewSaving">
+                <div class="emoji-circle">
+                    💰
+                </div>
+                <p class="addTitle">חסכון חדש</p>
+            </button>
+        </div>
 
-@if(isEditSavingClicked)
-{
-    <div class="megaOuterLay">
-        <div class="outerLay">
-            <div class="BgOverlay"> </div>
+        @if (isAddSavingOverlayClicked)
+        {
+            <div>
+                <div>הוספת חסכון</div>
+                <div>
+                    <span>שם החסכון</span>
+                    <input type="text" @bind="newSaving.savingsTitle" />
+                </div>
+                <div>
+                    <span>סכום החסכון</span>
+                    <input type="number" @bind="newSaving.savingsSum" />
+                </div>
+
+                <div>
+                    <button @onclick="addNewSaving">שמירה וסיום</button>
+                </div>
+            </div>
+
+        }
+
+        <div class="outerSavingsLines">
+            @foreach (AllUserSavingsToShow saving in allSavings)
+            {
+                <div @onclick="()=>showSavingDetails(saving)" class="outerSavingsLine">
+                    <div class="outerIconTitleAndSum">
+                        <div class="outerIconAndTitle">
+                            <span class="emoji-circle">
+                                💰
+                            </span>
+                            <span>@saving.savingsTitle</span>
+                        </div>
+                        <div class="divider"></div>
+                        <span>@saving.savingsSum ₪</span>
+                    </div>
+
+                </div>
+            }
+        </div>
+
+        @if (OpenSavingDetails)
+        {
+
             <div class="overlay">
+                <div class="outerPopUp">
 
-                <div class="paddingDiv">
-                    <div class="outerTitleAndIcon">
-                        <button class="closeOverlay" @onclick="()=> isEditSavingClicked = !isEditSavingClicked"><img src="./css/images/close x.svg" /></button>
-                        <h3 class="popupTitle">עריכת חסכון</h3>
-                        <div class="titleAndIcon">
-                            <div class="outerTitleAndCounter">
-                                <div class="input-container">
+                    <div class="outerFirstRow">
+                        <div>
+                            <button @onclick="closeSavingDetailsPopUp" class="backArrow"><img src="../css/images/back-repeated.svg" /></button>
+                        </div>
+
+
+                        <div class="outerDotsAndOptionsTrans">
+                            <button class="optionsMenu" @onclick="OpetionsBtnClicked"><img src="./css/images/option menu.svg" /></button>
+
+                            @if (isOpetionsBtnClicked)
+                            {
+                                <div id="options">
+
+                                    <OptionsMenuComponent editBtnClicked="@showEditSaving" deleteBtnClicked="@deleteSavingBtnClciked" closeOverlay="closeDeleteOverlay"></OptionsMenuComponent>
+                                </div>
+                            }
+                        </div>
+
+
+                    </div>
+                    <div>
+                        <div class="outerTitle">
+                            <div class="outerIconAndTitle">
+                                <span class="emoji-circle">
+                                    💰
+                                </span>
+                                <span><b>@savingDetailsToShow.savingsTitle</b></span>
+                            </div>
+
+
+                            <div class="lineBetween"></div>
+                        </div>
+
+
+                        <div class="outerSaving">
+                            <span><b>סכום חסכון</b></span>
+
+
+                            <span class="outerSavingAmount"><b> @savingDetailsToShow.savingsSum ₪</b></span>
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        }
+
+
+        @if (isEditSavingClicked)
+        {
+            <div class="overlay">
+                <div class="outerPopUp">
+
+                    <div class="outerFirstRow">
+
+
+                        <div>
+                            <button class="backArrow" @onclick="()=> isEditSavingClicked = !isEditSavingClicked"><img src="./css/images/close x.svg" /></button>
+                        </div>
+
+                    </div>
+
+                    <div>
+                        <div class="outerTitle">
+                            <div> <span><b>עריכת חסכון</b></span></div>
+                            <div class="outerIconAndTitle">
+
+                                <span class="emoji-circle">
+                                    💰
+                                </span>
+                                <span>
                                     <input class="catTitle" type="text" maxlength="18" minlength="2" @oninput="titleLengthCounter" @bind="@editedSaving.savingsTitle" />
-                                    <div class="counter">
-                                        @if (editedSaving.savingsTitle == null || editedSaving.savingsTitle == "")
+                                    </span>
+                            </div>
+
+                            <div class="outerTitleAndCounter">
+                            <div class="input-container">
+                               
+                                <div class="counter">
+                                    @if (editedSaving.savingsTitle == null || editedSaving.savingsTitle == "")
+                                    {
+                                        <span>0/18</span>
+                                    }
+                                    else
+                                    {
+                                        if (editedSaving.savingsTitle.Length < 2 || editedSaving.savingsTitle.Length > 18)
                                         {
-                                            <span>0/18</span>
+
+                                            <span>@titleInputLength/18</span>
                                         }
                                         else
                                         {
-                                            if (editedSaving.savingsTitle.Length < 2 || editedSaving.savingsTitle.Length > 18)
-                                            {
+                                            <span>@titleInputLength/18</span>
 
-                                                <span>@titleInputLength/18</span>
-                                            }
-                                            else
-                                            {
-                                                <span>@titleInputLength/18</span>
-
-                                            }
                                         }
-                                    </div>
-
-                                    <div>
-                                        <input class="savingSum" type="number" @bind="@editedSaving.savingsSum" />
-                                    </div>
-
-                                    <button class="saveBtn" @onclick="saveUpdatedSaving">שמירת שינויים</button>
+                                    }
                                 </div>
-                            </div> 
+
+                            </div>
+                        </div
+                            <div class="lineBetween"></div>
                         </div>
+
+
+
+                        <div class="outerSaving">
+                            <span><b>סכום חסכון</b></span>
+
+
+                          
+                             <div>
+                                    <input class="outerSavingAmount" type="number" @bind="@editedSaving.savingsSum" />
+                                    <span>₪</span>
+                                </div>
+                                
+
+                        </div>
+                    </div>
+
+                  
+                    <div>      
+
+                         <button class="saveBtn" @onclick="saveUpdatedSaving">שמירת שינויים</button>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 }
 
 
-@if (deleteBtnClicked)
-{
-    isOpetionsBtnClicked = false;
+        @if (deleteBtnClicked)
+        {
+            isOpetionsBtnClicked = false;
     <GeneralPopUpComponent popupTypeTitle="מחיקת חסכון" middleText="@popupBodyText" action="מחיקה" makeAction="deleteSaving" closePopUp="closeDeletePopUp"></GeneralPopUpComponent>
-}
+        }
 
-
+    </div>
+</div>
 
 
 @code {
@@ -198,6 +270,7 @@
 
         }
 
+        sumSavings = 0;
         @foreach (AllUserSavingsToShow saving in allSavings)
         {
             sumSavings += saving.savingsSum;
@@ -220,7 +293,7 @@
             AllUserSavingsToShow newSavingToAddToList = await SavingToAddRes.Content.ReadFromJsonAsync<AllUserSavingsToShow>();
 
             allSavings.Add(newSavingToAddToList);
-            newSaving= new SavingToAdd();
+            newSaving = new SavingToAdd();
         }
         else
         {
@@ -229,6 +302,13 @@
         }
 
         isAddSavingOverlayClicked = false;
+
+        sumSavings = 0;
+        @foreach (AllUserSavingsToShow saving in allSavings)
+        {
+            sumSavings += saving.savingsSum;
+        }
+
     }
 
     void closeSavingDetailsPopUp()
@@ -256,12 +336,12 @@
         editedSaving.savingsSum = savingDetailsToShow.savingsSum;
         editedSaving.id = savingDetailsToShow.id;
 
-    } 
+    }
 
 
     public void closeDeletePopUp()
     {
-        deleteBtnClicked = false ;
+        deleteBtnClicked = false;
     }
 
     void deleteSavingBtnClciked()
@@ -271,7 +351,9 @@
 
         popupBodyText = "החסכון '" + savingDetailsToShow.savingsTitle + "' עומד להמחק";
         isOpetionsBtnClicked = false;
-        
+
+
+
     }
 
     void closeDeleteOverlay()
@@ -288,8 +370,8 @@
 
     public async Task saveUpdatedSaving()
     {
-        
-        
+
+
         var updateSavingRes = await Http.PostAsJsonAsync("api/Future/EditSaving/", editedSaving);
         if (updateSavingRes.IsSuccessStatusCode)
         {
@@ -299,6 +381,12 @@
             isEditSavingClicked = false;
             OpenSavingDetails = false;
             OpetionsBtnClicked();
+
+            sumSavings = 0;
+            @foreach (AllUserSavingsToShow saving in allSavings)
+            {
+                sumSavings += saving.savingsSum;
+            }
 
             //need to refresh the home page
 
@@ -316,26 +404,42 @@
     {
         deleteBtnClicked = false;
         OpenSavingDetails = false;
-        
+
         var deleteRes = await Http.DeleteAsync("api/Future/deleteSaving/" + editedSaving.id);
-       
+
         if (deleteRes.IsSuccessStatusCode)
         {
+            //@foreach (AllUserSavingsToShow saving in allSavings)
+            //{
+            //    @if (saving.id == editedSaving.id)
+            //    {
+            //        allSavings.Remove(saving);
+            //    }
+            //}
+
+            await deleteSavingFromList();
+            sumSavings = 0;
             @foreach (AllUserSavingsToShow saving in allSavings)
             {
-                @if(saving.id == editedSaving.id)
-                {
-                    allSavings.Remove(saving);
-                }
+                sumSavings += saving.savingsSum;
             }
+
+
         }
         else
         {
             Console.WriteLine(" בעיה במחיקת חסכון");
         }
 
-        
+
     }
 
+    async Task<bool> deleteSavingFromList()
+    {
+        // Remove the goal from allGoals
+        allSavings.RemoveAll(saving => saving.id == editedSaving.id);
+
+        return true;
+    }
 
 }
