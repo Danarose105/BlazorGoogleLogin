@@ -91,7 +91,7 @@ namespace BlazorGoogleLogin.Server.Controllers
 
         }
 
-        [HttpGet("userToShowByDate/{userID}")] // שליפה של התצוגה הראשונית בסביבה השניה לפני לחיצות על כפתורים
+        [HttpGet("userToShowByDate/{userID}")] 
         public async Task<IActionResult> GetUserDataByDate(int userID)
         {
             // Initialize the SQL queries

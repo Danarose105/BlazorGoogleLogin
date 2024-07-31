@@ -13,6 +13,23 @@
 
 <div class="megaOuterPage">
     <div class="outerPage">
+        <div class="outerTop">
+            <div class="profileAndStreak"@onclick="goToSProfilePage">
+
+            <div class="streakBtn">
+                @if (streakStatTitle != null && streakStatTitle != "")
+                {
+                    if (streakImgIcon != "")
+                    {
+                        <img src=@streakImgIcon style="width:87%;"/>
+                    }
+                }
+            </div>
+            <button class="profilePic">@userIcon</button>
+
+        </div>
+        </div>
+         
         <div class="pageTitle">תכנית עסקית לחלומות</div>
 
         <div class="outerProgressBar">
@@ -95,42 +112,6 @@
                 </div>
             </div>
         </div>
-
-        @*<div class="outerYearsTable">
-        @for (int i = currentYearIndex; i < currentYearIndex + 5; i++)
-        {
-        var year = CurrentYear + i;
-        var goalsThisYear = allGoals.Where(goal => goal.dueYear == year).ToList();
-        int goalsCounter = 0; // Initialize the counter for each year
-
-        <div class="outerYearInTable">
-        <b style="padding-bottom: 2vh;">@year</b>
-
-        <div class="outerYears">
-        <div style="width:85%;">
-        @foreach (var goalPerYearToSend in goalsThisYear)
-        {
-        goalsCounter++;
-
-        <div style="background-color:@ConvertHexToRGBA(goalPerYearToSend.color, 0.13f); border:1px solid @goalPerYearToSend.color; width: 85%; display: flex; flex-direction: column; row-gap: 1.3vh;" class="goalInTable" @onclick="()=> openGoalsPerYearPopUp(goalPerYearToSend.dueYear)">
-        @goalPerYearToSend.goalTitle
-        </div>
-
-        // Ensure the additional goals message is outside the foreach loop
-        }
-
-
-        @if (goalsCounter > 3)
-        {
-        <div style="background-color:#D6D9F1; width: 85%; display: flex; flex-direction: column; row-gap: 1.3vh;" class="goalInTable">
-        <span>@(goalsCounter - 3) יעדים נוספים</span>
-        </div>
-        }
-        </div>
-        </div>
-        </div>
-        }
-        </div>*@
 
         <div>
             <div class="outerYearsTable">
@@ -517,6 +498,9 @@
     [CascadingParameter]
     private UserDTO user { get; set; }
 
+    string userIcon = "";
+    string streakImgIcon = "";
+    string streakStatTitle = "";
 
     List<AllUserGoalsToShow> allGoals = new List<AllUserGoalsToShow>();
     List<AllUserSavingsToShow> allSavings = new List<AllUserSavingsToShow>();
@@ -571,6 +555,21 @@
 
         //int currentMonthNumber = DateTime.Now.Month; // Gets the current month number
         StateHasChanged();
+
+        var getUserIcon = await Http.GetAsync("api/Present/getUserIcon/" + userID);
+        if (getUserIcon.IsSuccessStatusCode)
+        {
+            string iconCheck = await getUserIcon.Content.ReadAsStringAsync();
+            userIcon = iconCheck;
+        }
+        else
+        {
+            userIcon = "🌟";
+            var errorContent = await getUserIcon.Content.ReadAsStringAsync();
+            Console.WriteLine("failed to find icon or update it to default because: " + errorContent);
+        }
+
+        await getCurrentStreak();
 
 
         var userGoalsRes = await Http.GetAsync("api/Future/userFutureGoalsToShow/" + userID);
@@ -988,4 +987,61 @@
         return $"rgba({r}, {g}, {b}, {opacity})";
     }
 
+
+    private async Task getCurrentStreak()
+    {
+        var getCurrentStatRes = await Http.GetAsync("api/Present/getUserStreakStatus/" + userID);
+        if (getCurrentStatRes.IsSuccessStatusCode)
+        {
+            streakStatTitle = await getCurrentStatRes.Content.ReadAsStringAsync();
+            switch (streakStatTitle) //will fill the related streak image route
+            {
+                case "מטבע ארד":
+
+                    streakImgIcon = "./css/images/bronzeCoin.svg";
+
+                    break;
+                case "מטבע כסף":
+
+                    streakImgIcon = "./css/images/silverCoin.svg";
+
+                    break;
+                case "מטבע זהב":
+
+                    streakImgIcon = "./css/images/goldCoin.svg";
+
+                    break;
+                case "שטר":
+
+                    streakImgIcon = "./css/images/singleCashNote.svg";
+
+                    break;
+                case "שטרות":
+
+                    streakImgIcon = "./css/images/cashNotes.svg";
+
+                    break;
+                case "גביע":
+
+                    streakImgIcon = "./css/images/goblet.svg";
+
+                    break;
+                case "יהלום":
+
+                    streakImgIcon = "./css/images/diamond.svg";
+
+                    break;
+                default:
+                    Console.WriteLine("no picture is associated with this streak");
+                    streakImgIcon = "";
+
+                    break;
+            }
+        }
+    }
+
+    public void goToSProfilePage()
+    {
+        Nav.NavigateTo("./ProfilePage/" + userID);
+    }
 }

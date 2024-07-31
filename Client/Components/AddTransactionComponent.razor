@@ -540,7 +540,7 @@
 
                 @if (isItAnewTrans)
                 {
-                    if (titleInput.Length >= 2 && titleInput.Length < 19 && newTransaction.transValue > 0 && newTransaction.transDate != null && newTransaction.valueType != null)
+                    if (titleInput.Length >= 2 && titleInput.Length < 19 && newTransaction.transValue > 0 && newTransaction.valueType != null)
                     {
                         <div class="outerSaveBtns">
                             <button class="primery-button" @onclick="saveAndRepeatTransactions">שמירה והזנה נוספת</button>
