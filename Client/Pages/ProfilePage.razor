@@ -319,24 +319,7 @@
                                         </div>
                                     }
                                 }
-                               @* @if (OptionsBtnClicked)
-                                {
-                                    <div class="outerOptions">
-                                         <OptionsMenuComponent editBtnClicked="openEditOrAddTagOverlay" deleteBtnClicked="callDeleteWarning" closeOverlay="()=>openDeleteTagWarning(true)"></OptionsMenuComponent>
 
-                                        <div class="outerOptions">
-                                            <button class="optionButton editButton" @onclick="(() => iseditBtnClicked = !iseditBtnClicked)">
-                                                <img src="../css/images/edit_pencil.svg" class="icon" />
-                                                עריכה
-                                            </button>
-                                            <div class="lineBetween"> </div>
-                                            <button class="optionButton deleteButton" @onclick="(() => isdeleteBtnClicked = !isdeleteBtnClicked)">
-                                                <img src="../css/images/trash.svg" class="icon" />
-                                                מחיקה
-                                            </button>
-                                        </div>
-                                    </div>
-                                }*@
 
                                 @if (iseditBtnClicked)
                                 {
@@ -369,8 +352,7 @@
                     @if (OptionsBtnClicked)
                     {
                         <div class="megaTagsOuterOptions">
-                            @* <OptionsMenuComponent editBtnClicked="openEditOrAddTagOverlay" deleteBtnClicked="callDeleteWarning" closeOverlay="()=>openDeleteTagWarning(true)"></OptionsMenuComponent>*@
-
+                           
                             <div class="tagsOuterOptions">
                                 <button class="optionButton editButton" @onclick="(() => iseditBtnClicked = !iseditBtnClicked)">
                                     <img src="./css/images/edit_pencil.svg" class="icon" />
@@ -480,12 +462,16 @@
                             <div class="outerTitleAndCounter">
                                 <div class="input-container">
                                     <div>שם התגית:</div>
-                                    <input type="text" class="catTitle" value="@tagToEdit.tagTitle" @oninput="tagTitleLengthCheck" maxlength="8" />
+                                    <input type="text" class="catTitle" @bind="@currentTagName" @oninput="tagTitleLengthCheck" maxlength="8" minlength="2"/>
                                     <div class="counter">
-
-
-                                     @*   <span>@tagTitleInputLength/8</span>*@
-
+                                        @if (tagNameLength>0 && tagNameLength<9)
+                                        {
+                                            <span>8/@tagNameLength</span>
+                                        }
+                                        else if(tagNameLength<1)
+                                        {
+                                            <span>0/8</span>
+                                        }
 
                                     </div>
                                 </div>
@@ -504,12 +490,16 @@
                             <div class="outerTitleAndCounter">
                                 <div class="input-container">
                                     <div>שם התגית:</div>
-                                    <input type="text" class="catTitle" @oninput="tagTitleLengthCheck" maxlength="8" />
+                                    <input type="text" class="catTitle" @bind="@currentTagName" @oninput="tagTitleLengthCheck" maxlength="8" minlength="2" />
                                     <div class="counter">
-
-
-                                        @*<span>@tagTitleInputLength/8</span>*@
-
+                                        @if (tagNameLength > 0 && tagNameLength < 9)
+                                        {
+                                            <span>8/@tagNameLength</span>
+                                        }
+                                        else if (tagNameLength < 1)
+                                        {
+                                            <span>8/0</span>
+                                        }
 
                                     </div>
                                 </div>
@@ -566,14 +556,28 @@
                         {
 
                             <div class="outerSaveBtns">
-                                @if ((tagToEdit.tagTitle != "" || tagToEdit.tagTitle != null))
-                                {
-                                    <button class="primery-button" @onclick="addTag">שמירה וסיום</button>
+                                @if(currentUser.userTags.Count>0){
+                                    if ((tagToEdit.tagTitle != "" || tagToEdit.tagTitle != null))
+                                    {
+                                        <button class="primery-button" @onclick="addTag">שמירה וסיום</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="primery-button" style="opacity:60%" @onclick="addTag" disabled>שמירה וסיום</button>
+                                    }
                                 }
                                 else
                                 {
-                                    <button class="primery-button" style="opacity:60%" @onclick="addTag" disabled>שמירה וסיום</button>
+                                    if ((tagToEdit.tagTitle != "" || tagToEdit.tagTitle != null))
+                                    {
+                                        <button class="primery-button" @onclick="async ()=> await addFirstTagToDB()">שמירה וסיום</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="primery-button" style="opacity:60%" @onclick="async ()=> await addFirstTagToDB()" disabled>שמירה וסיום</button>
+                                    }
                                 }
+
                             </div>
 
                         }
@@ -650,6 +654,7 @@
     string hideBtn = "";
     string currentTagColor = "";
     string currentTagName = "";
+    int tagNameLength = 0;
     bool noEmojiBtn = false;
     private Dictionary<string, List<string>> emojiCategories = new Dictionary<string, List<string>>
     {
@@ -758,7 +763,7 @@
         }
     }
 
-    public void LeavingWithoutSave()
+    public async Task LeavingWithoutSave()
     {
         goingBackDisabled = false;
 
@@ -772,6 +777,7 @@
         }
 
         editBtnClicked = false;
+         await JSRuntime.InvokeVoidAsync("navigateBack");
     }
 
     public void closingLeavingPopUp()
@@ -814,12 +820,15 @@
             disBtn = false;
         }
     }
+
     private async Task BeginSignOut(MouseEventArgs args)
     {
-        //await SignOutManager.SetSignOutState();
-        //Nav.NavigateTo($"authentication/logout");
         await _Auth.Logout();
+
+
         Nav.NavigateTo("./LogoutPage");
+
+
     }
 
     private IEnumerable<TagsToShow> GetCurrentPageTags()
@@ -891,7 +900,7 @@
                 if (deleteTagsRec.IsSuccessStatusCode)
                 {
                     deletedTagsCounter++;
-                     Console.WriteLine("הצלחתי");
+                    Console.WriteLine("הצלחתי");
                 }
             }
             if (deletedTagsCounter == tagsToDeleteRes.Count)
@@ -916,6 +925,8 @@
         }
         isEdit = true;
         tagToEdit = chosenTag;
+        currentTagName = tagToEdit.tagTitle;
+        tagNameLength = currentTagName.Length;
         Console.WriteLine(chosenTag.tagColor + "!!!!!!!!!!!");
     }
 
@@ -928,9 +939,31 @@
 
         tagToEdit.id = 0;
         tagTitleInputLength = 0;
+        tagNameLength=0;
+        currentTagName = "";
         ogTagColor = "";
         currentTagColor = "";
         selectedClass = "";
+    }
+
+    private async Task addFirstTagToDB()
+    {
+        addTag();
+        var addFirstTagRes = await Http.PostAsJsonAsync("api/Present/addFirstTag/" + userID, currentUser.userTags[0]);
+        if (addFirstTagRes.IsSuccessStatusCode)
+        {
+            Console.WriteLine("first tag updated in db");
+            var firstTagID =  addFirstTagRes.Content.ReadFromJsonAsync<int>().Result;
+            if (firstTagID>0)
+            {
+                currentUser.userTags[0].id = firstTagID;
+            }
+
+        }
+        else
+        {
+            Console.WriteLine("failed to add first tag to db");
+        }
     }
 
     private void UpdateColor(string color)
@@ -980,6 +1013,7 @@
         selectedClass = "";
         currentTagColor = "";
         currentTagName = "";
+        tagNameLength = 0;
         editTag = false;
         isEdit = false;
     }
@@ -1007,6 +1041,7 @@
         currentTagName = "";
         tagToEdit.tagColor = "";
         tagTitleInputLength = 0;
+        tagNameLength = 0;
         chosenTag = new TagsToShow();
         editTag = false;
     }
@@ -1043,6 +1078,8 @@
     private void tagTitleLengthCheck(ChangeEventArgs e)
     {
         currentTagName = e.Value.ToString();
+        //tagToEdit.tagTitle = currentTagName;
+        tagNameLength = currentTagName.Length;
         //tagTitleInputLength = tagToEdit.tagTitle.Length;
 
     }
@@ -1176,11 +1213,16 @@
         if (selectedClass == null || selectedClass == "")
         {
             selectedClass = ogTagColor;
+
         }
         else
         {
             editedTag = currentUser.userTags.IndexOf(chosenTag);
-            currentUser.userTags[editedTag].tagColor = OgColor;
+            if (editedTag>-1)
+            {
+                currentUser.userTags[editedTag].tagColor = OgColor;
+            }
+            
 
         }
 

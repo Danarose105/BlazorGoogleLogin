@@ -135,7 +135,14 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <button class="primery-button" @onclick="@(async () => await createNewUser())">שמירה                                </button>
+                                        @if (newUser.monthStartDate <= 0 || newUser.profilePicOrIcon == null || newUser.profilePicOrIcon=="" || newUser.firstName== null || newUser.firstName=="")
+                                        {
+                                            <button class="primery-button" disabled @onclick="@(async () => await createNewUser())">שמירה                                </button>
+                                            
+                                        }else{
+                                            <button class="primery-button" @onclick="@(async () => await createNewUser())">שמירה                                </button>
+                                        }
+
                                     </div>
 
                                 </div>
@@ -152,11 +159,11 @@
 
     <NotAuthorized>
 
-        <body style="background-color:#6775F4;">
+        <div id="body" style="background-color:#6775F4;">
             <div>
                 <div class="col-md-6 col-md-offset-2 loginWrapperDiv">
                     <section class="loginWrapper">
-                        <h3 style="font-family: 'Heebo', sans-serif; font-weight: 600; color:#6775F4;"> כאן מתחילים!</h3>
+                        <h3 style="font-family: 'Heebo', sans-serif; font-weight: 600; color:#F9F9F9;"> כאן מתחילים!</h3>
                         <img src="./css/images/logo-new.svg" />
                         <a href="api/google/login" class="btn btn-primary" id="google_login_btn">
                             <div class="loginBtnWrapper">
@@ -166,7 +173,7 @@
                     </section>
                 </div>
             </div>
-        </body>
+        </div>
 
     </NotAuthorized>
 </AuthorizeView>
@@ -174,12 +181,13 @@
 <style>
 
     
-    body {
+    #body {
         direction: rtl;
         display: flex;
         flex-direction: column;
         justify-content: center;
         background-color: #6775F4;
+        padding: 10rem;
       /*  z-index: 5;
         position:relative;*/
     }
@@ -209,13 +217,11 @@
     }
 
     h3 {
-        color: #F9F9F9;
-        text-align: right;
-        font-family: Heebo;
-        font-size: 2.625rem;
-        font-style: normal;
-        font-weight: 700;
-        line-height: normal;
+        font-family: 'Heebo', sans-serif;
+        font-weight: 600;
+        color: white;
+        text-align: center;
+        font-size: 2.5rem;
     }
 
     #google_login_btn {
@@ -283,6 +289,8 @@
     string msg = "";
     private string visibilityClass => isVisible ? "visible" : "removeKeybord";
     private string selectedCategory = "כללי";
+
+    string bgColor = "";
 
     async Task logout()
     {
@@ -400,8 +408,8 @@
 
                             List<SubCategoryToAdd> defaultSubCategory1List = new List<SubCategoryToAdd>()
     {
-    new SubCategoryToAdd{subCategoryTitle = "חשבונות", categoryID = defaultCategory.id},
-    new SubCategoryToAdd{subCategoryTitle = "מזון", categoryID = defaultCategory.id}
+    new SubCategoryToAdd{subCategoryTitle = "חשבונות", categoryID = defaultCategory.id, monthlyPlannedBudget=0},
+    new SubCategoryToAdd{subCategoryTitle = "מזון", categoryID = defaultCategory.id, monthlyPlannedBudget=0}
     };
 
                             foreach (SubCategoryToAdd defaultSubCategory1 in defaultSubCategory1List)
@@ -423,8 +431,8 @@
 
                             List<SubCategoryToAdd> defaultSubCategory2List = new List<SubCategoryToAdd>()
     {
-    new SubCategoryToAdd{subCategoryTitle = "דלק", categoryID = defaultCategory.id},
-    new SubCategoryToAdd{subCategoryTitle = "תחבורה ציבורית", categoryID = defaultCategory.id}
+    new SubCategoryToAdd{subCategoryTitle = "דלק", categoryID = defaultCategory.id, monthlyPlannedBudget=0},
+    new SubCategoryToAdd{subCategoryTitle = "תחבורה ציבורית", categoryID = defaultCategory.id, monthlyPlannedBudget=0}
     };
 
                             foreach (SubCategoryToAdd defaultSubCategory2 in defaultSubCategory2List)
@@ -444,8 +452,8 @@
                         case "בריאות וטיפוח":
                             List<SubCategoryToAdd> defaultSubCategory3List = new List<SubCategoryToAdd>()
     {
-    new SubCategoryToAdd{subCategoryTitle = "קופת חולים", categoryID = defaultCategory.id},
-    new SubCategoryToAdd{subCategoryTitle = "טואלטיקה", categoryID = defaultCategory.id}
+    new SubCategoryToAdd{subCategoryTitle = "קופת חולים", categoryID = defaultCategory.id, monthlyPlannedBudget=0},
+    new SubCategoryToAdd{subCategoryTitle = "טואלטיקה", categoryID = defaultCategory.id, monthlyPlannedBudget=0}
     };
 
                             foreach (SubCategoryToAdd defaultSubCategory3 in defaultSubCategory3List)
@@ -488,6 +496,7 @@
                             break;
                     }
 
+                    await Task.Delay(1);
                     Nav.NavigateTo("./HomePage");
                 }
 
@@ -498,7 +507,6 @@
             }
 
         }
-
         else
         {
             msg = "Error adding new user";

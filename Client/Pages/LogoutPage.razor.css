@@ -1,0 +1,57 @@
+﻿.primary-button {
+    border-radius: 0.25rem;
+    background: #6775F4;
+    color: #6775F4;
+    width: 15.375rem;
+    height: 2.3rem;
+    flex-shrink: 0;
+    color: #F9F9F9;
+    text-align: center;
+    /* h2 - sub titles */
+    font-family: Heebo;
+    font-size: 1.2rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    border: none;
+}
+
+.outerWrap {
+    display: flex;
+    row-gap: 2.8vh;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.BgOverlay {
+    background-color: rgba(1, 5, 43, 0.28);
+    z-index: 3;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap:3vh;
+}
+
+#firstTitle {
+   
+    text-align: right;
+    font-family: Heebo;
+    
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.loginWrapperDiv {
+
+    margin-top: 14vh;
+}

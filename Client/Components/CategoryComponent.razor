@@ -54,8 +54,8 @@
     <div class="accordionAndSubCatsWrap">
 
 
-        <div class="categoryAccordion" style="background: @categoryColor">
-            <button class="options" @onclick="accordionControl">
+        <div class="categoryAccordion" style="background: @categoryColor" @onclick="accordionControl">
+            <button class="options" >
                 <svg width="33" height="12" viewBox="0 0 33 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M1.75 2L16.75 10L30.75 2" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
@@ -139,7 +139,7 @@
         <div class="overlay">
             <div class="outerSubCatOverlay">
                 <div class="innerSubCatOverlay">
-                    <button class="modal-close-btn" @onclick= "closeAddSubCatOverlay"><img src="./css/images/close x.svg" /></button>
+                    <button class="modal-close-btn" @onclick="closeAddSubCatOverlay"><img src="./css/images/close x.svg" /></button>
                     <h2>הוספת תת קטגוריה</h2>
 
                     <div class="editAndAddSubCat">
@@ -147,14 +147,21 @@
                         {
                             <span>הוספת תת קטגוריה ל</span>
                             <select class="catsDropDown" @bind="selectedCategoryForNewSubCat">
-
-                                @foreach (AllUserCategories userCategory in userCategories)
+                                @if (!categoryTypeIndicator)
                                 {
+                                    foreach (AllUserCategories userCategory in userCategories)
+                                    {
 
-                                    <option class="catsOptions" value=@userCategory.categroyTitle> @userCategory.categroyTitle</option>
+                                        <option class="catsOptions" value=@userCategory.categroyTitle> @userCategory.categroyTitle</option>
 
 
+                                    }
                                 }
+                                else
+                                {
+                                    <option class="catsOptions" value=@Category.categroyTitle> @Category.categroyTitle</option>
+                                }
+
                             </select>
                         }
                     </div>
@@ -211,55 +218,74 @@
                         <div class="outerExample">
                             <div>
                                 <span class="example">לדוגמה:</span>
-                                לק - רוצה, דלק - צריך, שכ״ד- חייב. העדיפות משפיעה על הטיפים לייעול התקציב.
+                                לק - רצון, דלק - צורך, שכ״ד - חובה. העדיפות משפיעה על הטיפים לייעול התקציב.
                             </div>
                         </div>
-                    }
 
-                    @if (titleInput.Length >= 2 && titleInput.Length < 19 && newSubCategory.monthlyPlannedBudget > 0)
-                    {
-                        Console.WriteLine(titleInput.Length + " titleInput.Length");
-                        Console.WriteLine(newSubCategory.monthlyPlannedBudget + " newSubCategory.monthlyPlannedBudget");
-                        <div class="outerSaveBtns">
-                            @if (!categoryTypeIndicator && newSubCategory.importance >= 0 || !categoryTypeIndicator && newSubCategory.importance < 3)
+                        @if (titleInput.Length >= 2 && titleInput.Length < 19 && newSubCategory.monthlyPlannedBudget > 0)
+                        {
+                            Console.WriteLine(titleInput.Length + " titleInput.Length");
+                            Console.WriteLine(newSubCategory.monthlyPlannedBudget + " newSubCategory.monthlyPlannedBudget");
+                            <div class="outerSaveBtns">
+                                @if (!categoryTypeIndicator && newSubCategory.importance >= 0 || !categoryTypeIndicator && newSubCategory.importance < 3)
+                                {
+
+                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
+                                    <button class="secondery-button" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
+
+                                }
+                                else
+                                {
+                                    <div class="outerSaveBtns">
+                                        <button class="primery-button" disabled @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
+                                        <button class="secondery-button" disabled @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
+
+                                    </div>
+                                }
+                            </div>
+
+                        }
+                        else
+                        {
+                            <div class="outerSaveBtns">
+                                <button class="primery-button" disabled @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
+                                <button class="secondery-button" disabled @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
+
+                            </div>
+                            if (titleInput.Length < 2 || titleInput.Length > 18)
                             {
-
-                    <button class="primery-button" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
-                            <button class="secondery-button" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
+                                <span>אורך שם תת הקטגוריה לא תקין.</span>
+                            }
+                            else if (newSubCategory.monthlyPlannedBudget < 0)
+                            {
+                                <span>תקציב תת קטגוריה צריך להיות גדול מאפס.</span>
+                            }
+                            else if (newSubCategory.importance < 0 && !categoryTypeIndicator || newSubCategory.importance > 2 && !categoryTypeIndicator)
+                            {
+                                <span>בחרו עדיפות לתת קטגוריה זו.</span>
 
                             }
-                            else
-                            {
-                                <div class="outerSaveBtns">
-                                    <button class="primery-button" disabled @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
-                                    <button class="secondery-button" disabled @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
-
-                                </div>
-                            }
-                        </div>
-
+                        }
                     }
                     else
                     {
-                        <div class="outerSaveBtns">
-                            <button class="primery-button" disabled @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
-                            <button class="secondery-button" disabled @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
-
-                        </div>
-                        if (titleInput.Length < 2 || titleInput.Length > 18)
+                        if (titleInput.Length >= 2 && titleInput.Length < 19)
                         {
-                            <span>אורך שם תת הקטגוריה לא תקין.</span>
+                            <div class="outerSaveBtns">
+                                <button class="primery-button" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
+                                <button class="secondery-button" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
+                            </div>
                         }
-                        else if (newSubCategory.monthlyPlannedBudget < 0)
+                        else
                         {
-                            <span>תקציב תת קטגוריה צריך להיות גדול מאפס.</span>
-                        }
-                        else if (newSubCategory.importance < 0 && !categoryTypeIndicator || newSubCategory.importance > 2 && !categoryTypeIndicator)
-                        {
-                            <span>בחרו עדיפות לתת קטגוריה זו.</span>
-
+                            <div class="outerSaveBtns">
+                                <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הזנה</button>
+                                <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
+                                <span>אורך שם תת הקטגוריה לא תקין.</span>
+                            </div>
                         }
                     }
+
                 </div>
             </div>
         </div>
@@ -458,14 +484,22 @@
 
     public async Task addSubCategoryAndEnd()
     {
-        foreach (AllUserCategories userCategory in userCategories)
+        if (!categoryTypeIndicator)
         {
-            if (userCategory.categroyTitle == selectedCategoryForNewSubCat)
+            foreach (AllUserCategories userCategory in userCategories)
             {
-                newSubCategory.categoryID = userCategory.id;
+                if (userCategory.categroyTitle == selectedCategoryForNewSubCat)
+                {
+                    newSubCategory.categoryID = userCategory.id;
 
+                }
             }
         }
+        else
+        {
+            newSubCategory.categoryID = Category.id;
+        }
+
         newSubCategory.subCategoryTitle = titleInput;
 
         var subCatToAddRes = await Http.PostAsJsonAsync("api/Present/AddSubCategory", newSubCategory);
@@ -501,12 +535,20 @@
     {
         newSubCatTitle = "";
         newSubCatID = 0;
-        foreach (AllUserCategories userCategory in userCategories)
+        if (!categoryTypeIndicator)
         {
-            if (userCategory.categroyTitle == selectedCategoryForNewSubCat)
+            foreach (AllUserCategories userCategory in userCategories)
             {
-                newSubCategory.categoryID = userCategory.id;
+                if (userCategory.categroyTitle == selectedCategoryForNewSubCat)
+                {
+                    newSubCategory.categoryID = userCategory.id;
+
+                }
             }
+        }
+        else
+        {
+            newSubCategory.categoryID = Category.id;
         }
         newSubCategory.subCategoryTitle = titleInput;
 

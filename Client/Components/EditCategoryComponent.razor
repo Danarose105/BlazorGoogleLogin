@@ -16,11 +16,11 @@
                     <div class="titleAndIcon">
                         <div class="outerTitleAndCounter">
                             <div class="input-container">
-                                <input class="catTitle" type="text" placeholder="שם הקטגוריה" maxlength="18" minlength="2" @oninput="titleLengthCounter" @bind="@titleInput" />
+                                <input class="catTitle" type="text" placeholder="שם הקטגוריה" maxlength="18" minlength="2" @oninput="titleLengthCounter" @bind="@titleInput" disabled="@disabledEditOfIncomeTitle" />
                                 <div class="counter">
                                     @if (titleInput == null || titleInput == "")
                                     {
-                                        <span>0/17</span>
+                                        <span>0/18</span>
                                     }
                                     else
                                     {
@@ -36,9 +36,12 @@
                                         }
                                     }
                                 </div>
+                                @if (disabledEditOfIncomeTitle)
+                                {
+                                    <span style="font-size: 0.85em;">לא ניתן לשנות את שם קטגוריית ההכנסות.</span>
+                                }
                             </div>
                         </div>
-
 
 
                         <div class="keyBoardAndBtn">
@@ -130,13 +133,13 @@
 
                             if (ogCatName != "הכנסות" && titleInput == "הכנסות")
                             {
-                                <button class="saveBtn" @onclick="saveUpdatedCat" disabled>שמירה וסיום</button>
+                                <button class="saveBtn" @onclick="saveUpdatedCat" disabled style="opacity:60%">שמירה וסיום</button>
                                 <br />
                                 <span>לא ניתן לשמור קטגוריה נוספת בשם 'הכנסות'.</span>
                             }
                             else if (titleInput == null || titleInput == "" || titleInput.Length > 18 || titleInput.Length < 2)
                             {
-                                <button class="saveBtn" @onclick="saveUpdatedCat" disabled>שמירה וסיום</button>
+                                <button class="saveBtn" @onclick="saveUpdatedCat" disabled style="opacity:60%">שמירה וסיום</button>
                                 <br />
                                 <span>לא ניתן לשמור קטגוריה ללא שם.</span>
                             }
@@ -152,13 +155,13 @@
                             if (ogCatName != "הכנסות" && titleInput == "הכנסות")
                             {
 
-                                <button class="saveBtn" @onclick="addNewCategory" disabled>שמירה וסיום</button>
+                                <button class="saveBtn" @onclick="addNewCategory" disabled style="opacity:60%">שמירה וסיום</button>
                                 <br />
                                 <span>לא ניתן לשמור קטגוריה נוספת בשם 'הכנסות'.</span>
                             }
                             else if (titleInput == null || titleInput == "" || titleInput.Length > 18 || titleInput.Length < 2)
                             {
-                                <button class="saveBtn" @onclick="addNewCategory" disabled>שמירה וסיום</button>
+                                <button class="saveBtn" @onclick="addNewCategory" disabled style="opacity:60%">שמירה וסיום</button>
                                 <br />
                                 <span>לא ניתן לשמור קטגוריה ללא שם.</span>
                             }
@@ -225,6 +228,7 @@
         if (ogCatName == "הכנסות")
         {
             disabledEditOfIncomeTitle = true;
+
         }
 
         if (categoryToEdit.categroyTitle != "" && categoryToEdit.categroyTitle != null)

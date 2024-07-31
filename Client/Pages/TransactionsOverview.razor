@@ -24,18 +24,18 @@
                 <span>@returnToMainPage > @categoryTitle > @subCategoryTitle</span>
             }
         </div>
-        <div class="profileAndStreak">
+        <div class="profileAndStreak"@onclick="goToSProfilePage">
 
             <div class="streakBtn">
                 @if (streakStatTitle != null && streakStatTitle != "")
                 {
                     if (streakImgIcon != "")
                     {
-                        <img src=@streakImgIcon style="width:87%;" />
+                        <img src=@streakImgIcon style="width:87%;"/>
                     }
                 }
             </div>
-            <button class="profilePic" @onclick="goToSProfilePage">@userIcon</button>
+            <button class="profilePic">@userIcon</button>
 
         </div>
     </div>
@@ -175,6 +175,7 @@
                                     else
                                     {
                                         <button class="primery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
+                                        <span>אורך שם תת הקטגוריה לא תקין.</span>
                                     }
                                 }
                                 else
@@ -228,7 +229,7 @@
 
             <div class="searchWrapper">
                 <div class="search__container">
-                    <img src="./css/images/search btn.svg" />
+                    <img src="./css/images/search btn.svg" @onclick="SearchAfterClick" />
                     <input class="searchInput" type="text" value="@searchQuery" @oninput="UpdateSearchQuery" @onkeyup="HandleKeyUp" placeholder="חפשו הוצאה..." />
 
                 </div>
@@ -264,7 +265,7 @@
                         }
                         @if (filterByTransTypeOverlay)
                         {
-                            ;
+
                             <div class="outerPaymentMethod">
                                 <div class="PaymentMethods">
                                     <div class="outerLay">
@@ -313,8 +314,8 @@
                         }
                         @if (filterByTagOverlay)
                         {
-                            
-                           Console.WriteLine(filterBtnClicked + "filterBtnClicked");
+
+                            Console.WriteLine(filterBtnClicked + "filterBtnClicked");
                             <div class="outerPaymentMethod">
                                 <div class="PaymentMethods">
                                     <div class="outerLay">
@@ -436,7 +437,7 @@
                         if (!filterByReturnTrans)
                         {
 
-                            <TransOverviewComponent transaction="transaction" removeTransaction="@(()=>transactionDeleted(transaction.id))" subCatID="@subCatID" userID="@userID" subCatTakenBudget="updateSubCatBudgetPostOverdraft" overdraftStatus="@overdraftStatus" typeByCat="@typeByCat"></TransOverviewComponent>
+                            <TransOverviewComponent transaction="transaction" removeTransaction="@(()=>transactionDeleted(transaction.id))" subCatID="@subCatID" userID="@userID" subCatTakenBudget="updateSubCatBudgetPostOverdraft" overdraftStatus="@overdraftStatus" typeByCat="@typeByCat" refreshTags="refreshTransAndTags"></TransOverviewComponent>
 
                         }
                         else
@@ -444,7 +445,7 @@
                             filterStatus = "הוצאה חוזרת";
                             if (transaction.fixedMonthly == true)
                             {
-                                <TransOverviewComponent transaction="transaction" removeTransaction="@(()=>transactionDeleted(transaction.id))" subCatID="@subCatID" userID="@userID" subCatTakenBudget="updateSubCatBudgetPostOverdraft" overdraftStatus="@overdraftStatus" typeByCat="@typeByCat"></TransOverviewComponent>
+                                <TransOverviewComponent transaction="transaction" removeTransaction="@(()=>transactionDeleted(transaction.id))" subCatID="@subCatID" userID="@userID" subCatTakenBudget="updateSubCatBudgetPostOverdraft" overdraftStatus="@overdraftStatus" typeByCat="@typeByCat" refreshTags="refreshTransAndTags"></TransOverviewComponent>
                                 <hr />
                             }
 
@@ -467,7 +468,7 @@
                             {
 
                                 <div class="transactions">
-                                    <TransOverviewComponent transaction="transaction" removeTransaction="@(()=>transactionDeleted(transaction.id))" subCatID="@subCatID" userID="@userID" subCatTakenBudget="updateSubCatBudgetPostOverdraft" overdraftStatus="@overdraftStatus" typeByCat="@typeByCat"></TransOverviewComponent>
+                                    <TransOverviewComponent transaction="transaction" removeTransaction="@(()=>transactionDeleted(transaction.id))" subCatID="@subCatID" userID="@userID" subCatTakenBudget="updateSubCatBudgetPostOverdraft" overdraftStatus="@overdraftStatus" typeByCat="@typeByCat" refreshTags="refreshTransAndTags"></TransOverviewComponent>
                                 </div>
 
                             }
@@ -678,6 +679,10 @@
 
 
 @code {
+
+    [CascadingParameter]
+    private UserDTO user { get; set; }
+
     [Parameter]
     public int userID { get; set; }
 
@@ -700,7 +705,7 @@
     //public EventCallback<SubCategoryToEdit> updateEditedSubCat { get; set; }
 
     public string categoryTitle = "";
-
+    bool categoryTypeIndicator = false;
 
     public string subCategoryTitle = "";
     List<TransactionOverviewToShow> allTransactions = new List<TransactionOverviewToShow>();
@@ -788,7 +793,10 @@
         {
             var catTitleRes = await catTitle.Content.ReadAsStringAsync();
             categoryTitle = catTitleRes;
-
+            if (categoryTitle == "הכנסות") ;
+            {
+                categoryTypeIndicator = true;
+            }
             var catColorRes = await Http.GetAsync("api/Present/getCatColor/" + categoryID);
             if (catColorRes.IsSuccessStatusCode)
             {
@@ -813,6 +821,7 @@
             {
                 SubCategoryToShow subTitle = await subCatTitle.Content.ReadFromJsonAsync<SubCategoryToShow>();
                 subCategoryTitle = subTitle.subCategoryTitle;
+                titleInput = subCategoryTitle;
                 if (categoryTitle == "הכנסות")
                 {
                     var checkCatType = await Http.GetAsync("api/Transactions/getCatType/" + userID);
@@ -1142,43 +1151,60 @@
         subCatToEdit.subCategoryTitle = subCategoryTitle;
         subCatToEdit.id = subCatID;
         subCatToEdit.categoryID = categoryID;
-        var getSubCatImportance = await Http.GetAsync("api/Present/GetSubCatImportance/" + subCatToEdit.id);
-        if (getSubCatImportance.IsSuccessStatusCode)
-        {
-            subCatToEdit.importance = await getSubCatImportance.Content.ReadFromJsonAsync<int>();
-        }
-        else
-        {
-            Console.WriteLine("couldn't find this sub cat's importance");
-        }
 
 
-        var getAllUserCategories = await Http.GetAsync("api/Present/GetUserCategories/" + userID);
-        if (getAllUserCategories.IsSuccessStatusCode)
+        if (!categoryTypeIndicator)
         {
-            userCategories = await getAllUserCategories.Content.ReadFromJsonAsync<List<AllUserCategories>>().ConfigureAwait(false);
-
-            //arranges the category dropdown so the current category will be the one initially displayed
-            List<AllUserCategories> tempUserCategories = new List<AllUserCategories>();
-            foreach (AllUserCategories category in userCategories)
+            var getSubCatImportance = await Http.GetAsync("api/Present/GetSubCatImportance/" + subCatToEdit.id);
+            if (getSubCatImportance.IsSuccessStatusCode)
             {
-                if (category.id == categoryID)
-                {
-                    tempUserCategories.Insert(0, category);
-                }
-                else
-                {
-                    tempUserCategories.Add(category);
-                }
-
+                subCatToEdit.importance = await getSubCatImportance.Content.ReadFromJsonAsync<int>();
             }
-            userCategories = tempUserCategories;
-            editSubCatBtnClicked = !editSubCatBtnClicked;
+            else
+            {
+                Console.WriteLine("couldn't find this sub cat's importance");
+            }
+
+
+            var getAllUserCategories = await Http.GetAsync("api/Present/GetUserCategories/" + userID);
+            if (getAllUserCategories.IsSuccessStatusCode)
+            {
+                userCategories = await getAllUserCategories.Content.ReadFromJsonAsync<List<AllUserCategories>>().ConfigureAwait(false);
+
+                //arranges the category dropdown so the current category will be the one initially displayed
+                List<AllUserCategories> tempUserCategories = new List<AllUserCategories>();
+                foreach (AllUserCategories category in userCategories)
+                {
+                    if (category.id == categoryID)
+                    {
+                        tempUserCategories.Insert(0, category);
+                    }
+                    else
+                    {
+                        tempUserCategories.Add(category);
+                    }
+
+                }
+                userCategories = tempUserCategories;
+                editSubCatBtnClicked = !editSubCatBtnClicked;
+            }
+            else
+            {
+                Console.WriteLine("no Categories found");
+            }
         }
         else
         {
-            Console.WriteLine("no Categories found");
+            AllUserCategories incomeCat = new AllUserCategories()
+                {
+                    id = categoryID,
+                    categroyTitle = "הכנסות"
+                };
+            userCategories.Add(incomeCat);
         }
+
+        editSubCatBtnClicked = !editSubCatBtnClicked;
+
     }
     public void deleteSubCatPopUp()
     {
@@ -1192,7 +1218,7 @@
         if (deleteRes.IsSuccessStatusCode)
         {
             Console.WriteLine("sub category deleted");
-            goBack();
+            await goBack();
 
         }
         else
@@ -1252,6 +1278,14 @@
         filterByTagOverlay = false;
         filterBtnClicked = false;
 
+    }
+
+    public async Task refreshTransAndTags(TransactionOverviewToShow trans)
+    {
+        await getSubCatTags();
+        var getUpdatedTrans = allTransactions.FirstOrDefault(t => t.id == trans.id);
+        int transToUpdateIndex = allTransactions.IndexOf(getUpdatedTrans);
+        allTransactions[transToUpdateIndex] = trans;
     }
     public async Task getSubCatTags()
     {
@@ -1393,7 +1427,16 @@
         }
 
     }
+    void SearchAfterClick()
+    {
+        toSearch = true;
 
+        if (string.IsNullOrEmpty(searchQuery))
+        {
+
+        }
+        FilterTagsOrTrans();
+    }
 
     private async Task getCurrentStreak()
     {

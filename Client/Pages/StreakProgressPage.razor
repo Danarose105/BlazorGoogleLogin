@@ -14,6 +14,10 @@
 <div class="TopProfileAndBack">
     <div class="profileAndBack">
         <button class="backbtn" @onclick="goBack"><img src="./css/images/back-repeated.svg"></button>
+        @if (currentUserStreakIndex > -1)
+        {
+            <div class="streakBtn"><img src="@rankPicSrc[currentUserStreakIndex]" style="width:87%;" /></div>
+        }
         <button class="profilePic" @onclick="goToSProfilePage">@userIcon</button>
     </div>
 </div>
@@ -40,7 +44,7 @@
     }
 
     <div class="wrapperContent">
-        
+
         <div class="content">
             <div id="ranks">
                 @for (int i = 0; i < streakStatusOpt.Count; i++)
@@ -59,7 +63,7 @@
                     }
                     else
                     {
-                        @*add css that will make this look locked- for now I painted the text purple so we'll see the difference*@
+
                         <div class="outerRank" id="rank_@i">
                             <div class="lockRank">
                                 <img class="lockImg" src="./css/images/lock.svg" />
@@ -78,20 +82,16 @@
             </div>
         </div>
     </div>
-    <div id="@hideNav" class="bottom-nav" @ref="navBar">
-        <button class="navBtn">מבט לעבר<img src="./css/images/past.svg" /></button>
-        <div class="NavLines"> </div>
-        <button class="navBtn" style="font-weight:600">מבט להווה<img src="./css/images/present.svg" /></button>
-        <div class="NavLines"> </div>
-        <button class="navBtn">מבט לעתיד<img src="./css/images/future.svg" /></button>
-    </div>
 </div>
 
 @code {
+    [CascadingParameter]
+    private UserDTO user { get; set; }
+
     [Parameter]
     public int userID { get; set; }
 
-    UserStreakData currentStreak = new UserStreakData();
+    int currentStreak = 0;
 
     int currentUserStreakIndex = -1;
     int neededTransAmount = 0;
@@ -100,16 +100,25 @@
 
     string userIcon = "";
 
-
+    /// <summary>
+    /// List of all streak titles
+    /// </summary>
     List<string> streakStatusOpt = new List<string>()
 {
          "מטבע ארד", "מטבע כסף", "מטבע זהב", "שטר", "שטרות","גביע","יהלום"
     };
 
+    /// <summary>
+    /// List of time spans needed for each streak
+    /// </summary>
     List<string> weekAmountForRank = new List<string>()
 {
        "שבוע","שבועיים","חודשיים","3 חודשים","5 חודשים","חצי שנה","8 חודשים"
     };
+
+    /// <summary>
+    /// List of streak rank images
+    /// </summary>
     List<string> rankPicSrc = new List<string>()
 {
        "../css/images/bronzeCoin.svg","../css/images/silverCoin.svg","../css/images/goldCoin.svg","../css/images/singleCashNote.svg","../css/images/cashNotes.svg","../css/images/goblet.svg","../css/images/diamond.svg"
@@ -135,17 +144,19 @@
             var streakDataRes = await Http.GetAsync("api/Present/checkStreak/" + userID);
             if (streakDataRes.IsSuccessStatusCode)
             {
-                currentStreak = await streakDataRes.Content.ReadFromJsonAsync<UserStreakData>();
+                currentStreak = await streakDataRes.Content.ReadFromJsonAsync<int>();
                 //Console.WriteLine("streak status is -" + currentStreak.AllWeeksValid);
 
-                string streakStatus = streakStatusCheck(currentStreak.streak_length);
-                if (currentStreak.streak_length != null && currentStreak.streak_length > 0 && currentStreak.current_streak_group == true)
+                string streakStatus = streakStatusCheck(currentStreak); //new streak in page
+                if (currentStreak > 0)
                 {
 
                     var getCurrentStatRes = await Http.GetAsync("api/Present/getUserStreakStatus/" + userID);
                     if (getCurrentStatRes.IsSuccessStatusCode)
                     {
-                        string getCurrentStat = await getCurrentStatRes.Content.ReadAsStringAsync();
+                        string getCurrentStat = await getCurrentStatRes.Content.ReadAsStringAsync(); //stat in DB
+
+
                         if (streakStatusOpt.Contains(getCurrentStat) && streakStatusOpt.Contains(streakStatus))
                         {
 
@@ -160,6 +171,10 @@
                                     Console.WriteLine("streak status updated, new status is: " + streakStatus);
                                     currentUserStreakIndex = streakStatInpage;
                                 }
+                                else
+                                {
+                                    Console.WriteLine("failed to update streak status, status remains the same and is: " + streakStatus);
+                                }
                             }
                             else
                             {
@@ -170,9 +185,41 @@
                                     Console.WriteLine("streak status updated, new status is: " + streakStatus);
                                     currentUserStreakIndex = streakStatInDB;
                                 }
+                                else
+                                {
+                                    Console.WriteLine("failed to update streak status, status remains the same and is: " + streakStatus);
+                                }
 
                             }
 
+                        }
+                        else if (streakStatusOpt.Contains(streakStatus)) //means it's the user's first ever streak
+                        {
+                            int streakStatInpage = streakStatusOpt.IndexOf(streakStatus);
+                            var updateStreak = await Http.GetAsync("api/Present/updateStreakStat/" + userID + "/" + streakStatus);
+                            if (updateStreak.IsSuccessStatusCode)
+                            {
+                                //open new status pop up
+                                Console.WriteLine("streak status updated, new status is: " + streakStatus);
+                                currentUserStreakIndex = streakStatInpage;
+                            }
+                            else
+                            {
+                                Console.WriteLine("failed to update streak status, status remains the same and is: " + streakStatus);
+                            }
+                        }
+                        else
+                        {
+                            streakStatus = null;
+
+                            var updateStreak = await Http.GetAsync("api/Present/updateStreakStat/" + userID + "/" + streakStatus);
+                            if (updateStreak.IsSuccessStatusCode)
+                            {
+                                //open new status pop up
+                                Console.WriteLine("streak status updated, new status is: " + streakStatus);
+                                currentUserStreakIndex = -1;
+                                neededTransAmount = 3;
+                            }
                         }
 
                     }
@@ -186,12 +233,12 @@
                     {
                         //open new status pop up
                         Console.WriteLine("streak status updated, new status is: " + streakStatus);
-                        currentUserStreakIndex = 0;
+                        currentUserStreakIndex = -1;
                         neededTransAmount = 3;
                     }
                 }
 
-                Console.WriteLine("streak status- " + streakStatus + ", week amount- " + currentStreak.streak_length);
+                Console.WriteLine("streak status- " + streakStatus + ", week amount- " + currentStreak);
 
             }
             else
@@ -207,17 +254,20 @@
         int rankMinTransCount = 3;
         if (weekAmount <= 1 && weekAmount < 2)
         {
+            string streakTitle = "";
             if (weekAmount < 1)
             {
                 rankMinTransCount = 3;
+
             }
             else if (weekAmount == 1)
             {
                 rankMinTransCount = 6;
+                streakTitle= "מטבע ארד";
             }
             //rankMinTransCount = 6;
             neededTransAmount = rankMinTransCount - (3 * weekAmount);
-            return "מטבע ארד";
+            return streakTitle;
         }
         else if (weekAmount > 2 && weekAmount <= 9)
         {
