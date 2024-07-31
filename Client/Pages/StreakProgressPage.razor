@@ -121,7 +121,7 @@
     /// </summary>
     List<string> rankPicSrc = new List<string>()
 {
-       "../css/images/bronzeCoin.svg","../css/images/silverCoin.svg","../css/images/goldCoin.svg","../css/images/singleCashNote.svg","../css/images/cashNotes.svg","../css/images/goblet.svg","../css/images/diamond.svg"
+       "./css/images/bronzeCoin.svg","./css/images/silverCoin.svg","./css/images/goldCoin.svg","./css/images/singleCashNote.svg","./css/images/cashNotes.svg","./css/images/goblet.svg","./css/images/diamond.svg"
     };
 
 
@@ -269,7 +269,7 @@
             neededTransAmount = rankMinTransCount - (3 * weekAmount);
             return streakTitle;
         }
-        else if (weekAmount > 2 && weekAmount <= 9)
+        else if (weekAmount >= 2 && weekAmount <= 9)
         {
             rankMinTransCount = 9 * 3;
             neededTransAmount = rankMinTransCount - (3 * weekAmount);

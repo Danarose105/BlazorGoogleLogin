@@ -1154,3 +1154,11 @@
     pointer-events: none;
     padding-top: 1.1vh;
 }
+
+.breadcrumbs {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 0.4rem;
+    width:68vw;
+}

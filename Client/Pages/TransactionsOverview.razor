@@ -17,11 +17,20 @@
             <button class="backArrow" @onclick="goBack"><img src="./css/images/back-repeated.svg" /></button>
             @if (isOverdraft)
             {
-                <span>@returnToMainPage > @categoryTitle > @subCategoryTitle <img src="./css/images/overdraft-warning.svg" @onclick="openOverdraftPopUp" /></span>
+                <div class="breadcrumbs">
+                    <span>@returnToMainPage > </span>
+                    <span>@categoryTitle ></span>
+                    <span>@subCategoryTitle</span>
+                    <img src="./css/images/overdraft-warning.svg" @onclick="openOverdraftPopUp" />
+                </div>
             }
             else
             {
-                <span>@returnToMainPage > @categoryTitle > @subCategoryTitle</span>
+                <div class="breadcrumbs">
+                    <span>@returnToMainPage ></span>
+                    <span>@categoryTitle ></span>
+                    <span>@subCategoryTitle</span>
+                </div>
             }
         </div>
         <div class="profileAndStreak" @onclick="goToSProfilePage">

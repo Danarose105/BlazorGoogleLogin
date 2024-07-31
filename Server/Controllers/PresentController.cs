@@ -276,7 +276,7 @@ namespace BlazorGoogleLogin.Server.Controllers
                 {
                     return Ok(StreaksUpdate);
                 }
-                return BadRequest("couldn't update streak status for this user");
+                return BadRequest("failed to update streak status for this user");
             }
 
             return BadRequest("invalid user id");
@@ -294,12 +294,17 @@ namespace BlazorGoogleLogin.Server.Controllers
                 };
                 string getStreakQuery = "SELECT COUNT(*) AS transactionCountThisWeek FROM users u JOIN categories c ON u.id = c.userID JOIN subcategories sc ON c.id = sc.categoryID JOIN transactions t ON t.subCategoryID=sc.id WHERE u.id = @ID AND YEAR(t.transDate) = YEAR(CURRENT_DATE()) AND WEEK(t.transDate, 0) = WEEK(CURRENT_DATE(), 0);";
                 var StreaksUpdate = await _db.GetRecordsAsync<int>(getStreakQuery, param);
+                int totalWeekTrans = StreaksUpdate.FirstOrDefault();
 
-                if (StreaksUpdate != null)
+                if (totalWeekTrans != null)
                 {
-                    return Ok(StreaksUpdate);
+                    return Ok(totalWeekTrans);
                 }
+                else
+                {
+
                 return BadRequest("couldn't get total amount of transactions done this week by this user");
+                }
             }
 
             return BadRequest("invalid user id");

@@ -80,7 +80,7 @@ else
                     {
                         @if (streakImgIcon != "")
                         {
-                            <button class="streakBtn"><img src=@streakImgIcon style="width:87%;" /></button>
+                            <button class="streakBtn"><img src=@streakImgIcon style="width:87%;" @onclick="getStreakDetails"/></button>
 
                         }
                     }
@@ -749,7 +749,7 @@ else
                         break;
                     case "מטבע כסף":
 
-                        streakImgIcon = ".../css/images/silverCoin.svg";
+                        streakImgIcon = "./css/images/silverCoin.svg";
 
                         break;
                     case "מטבע זהב":
@@ -801,7 +801,7 @@ else
                 return "מטבע ארד";
             }
         }
-        else if (weekAmount > 2 && weekAmount <= 9)
+        else if (weekAmount >= 2 && weekAmount <= 9)
         {
 
             return "מטבע כסף";
@@ -1174,61 +1174,70 @@ else
             var streakDataRes = await Http.GetAsync("api/Present/checkStreak/" + userID);
             if (streakDataRes.IsSuccessStatusCode)
             {
+
                 currentStreak = await streakDataRes.Content.ReadFromJsonAsync<int>();
 
                 if (currentStreak > 0)
                 {
                     var totalTransThisWeekRes = await Http.GetAsync("api/Present/getTotalWeekTrans/" + userID);
-                    weeklyTransAmount = await totalTransThisWeekRes.Content.ReadFromJsonAsync<int>();
-                    if (weeklyTransAmount >= 3)
+                    if (totalTransThisWeekRes.IsSuccessStatusCode)
                     {
-                        switch (streakStatTitle) //will fill the related streak image route
+                        weeklyTransAmount = await totalTransThisWeekRes.Content.ReadFromJsonAsync<int>();
+                        if (weeklyTransAmount >= 3)
                         {
-                            case "מטבע ארד":
-                                streakImgSrc = "./css/images/Bronze-welldone.svg";
-                                streakImgIcon = "./css/images/bronzeCoin.svg";
-                                nextStreakStatIn = 1;
-                                break;
-                            case "מטבע כסף":
-                                streakImgSrc = "./css/images/silver-welldone.svg";
-                                streakImgIcon = "./css/images/silverCoin.svg";
-                                nextStreakStatIn = 6;
-                                break;
-                            case "מטבע זהב":
-                                streakImgSrc = "./css/images/gold-welldone.svg";
-                                streakImgIcon = "./css/images/goldCoin.svg";
-                                nextStreakStatIn = 4;
-                                break;
-                            case "שטר":
-                                streakImgSrc = "./css/images/note-welldone.svg";
-                                streakImgIcon = "./css/images/singleCashNote.svg";
-                                nextStreakStatIn = 8;
-                                break;
-                            case "שטרות":
-                                streakImgSrc = "./css/images/two-notes-welldone.svg";
-                                streakImgIcon = "./css/images/cashNotes.svg";
-                                nextStreakStatIn = 4;
-                                break;
-                            case "גביע":
-                                streakImgSrc = "./css/images/trophy-welldone.svg";
-                                streakImgIcon = "./css/images/goblet.svg";
-                                nextStreakStatIn = 8;
-                                break;
-                            case "יהלום":
-                                streakImgSrc = "./css/images/dimond-welldone.svg";
-                                streakImgIcon = "./css/images/diamond.svg";
-                                nextStreakStatIn = 35;
-                                break;
-                            default:
-                                Console.WriteLine("no picture is associated with this streak");
-                                streakImgSrc = "";
-                                streakImgIcon = "";
-                                nextStreakStatIn = 0;
-                                break;
-                        }
+                            if (currentStreak == 1)
+                            {
+                                streakStatTitle = "מטבע ארד";
+                            }
+                            switch (streakStatTitle) //will fill the related streak image route
+                            {
+                                case "מטבע ארד":
+                                    streakImgSrc = "./css/images/Bronze-welldone.svg";
+                                    streakImgIcon = "./css/images/bronzeCoin.svg";
+                                    nextStreakStatIn = 1;
+                                    break;
+                                case "מטבע כסף":
+                                    streakImgSrc = "./css/images/silver-welldone.svg";
+                                    streakImgIcon = "./css/images/silverCoin.svg";
+                                    nextStreakStatIn = 6;
+                                    break;
+                                case "מטבע זהב":
+                                    streakImgSrc = "./css/images/gold-welldone.svg";
+                                    streakImgIcon = "./css/images/goldCoin.svg";
+                                    nextStreakStatIn = 4;
+                                    break;
+                                case "שטר":
+                                    streakImgSrc = "./css/images/note-welldone.svg";
+                                    streakImgIcon = "./css/images/singleCashNote.svg";
+                                    nextStreakStatIn = 8;
+                                    break;
+                                case "שטרות":
+                                    streakImgSrc = "./css/images/two-notes-welldone.svg";
+                                    streakImgIcon = "./css/images/cashNotes.svg";
+                                    nextStreakStatIn = 4;
+                                    break;
+                                case "גביע":
+                                    streakImgSrc = "./css/images/trophy-welldone.svg";
+                                    streakImgIcon = "./css/images/goblet.svg";
+                                    nextStreakStatIn = 8;
+                                    break;
+                                case "יהלום":
+                                    streakImgSrc = "./css/images/dimond-welldone.svg";
+                                    streakImgIcon = "./css/images/diamond.svg";
+                                    nextStreakStatIn = 35;
+                                    break;
+                                default:
+                                    Console.WriteLine("no picture is associated with this streak");
+                                    streakImgSrc = "";
+                                    streakImgIcon = "";
+                                    nextStreakStatIn = 0;
+                                    break;
+                            }
 
-                        streakOverlay = true;
+                            streakOverlay = true;
+                        }
                     }
+                    
                 }
                 else
                 {
