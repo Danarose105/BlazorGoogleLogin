@@ -177,84 +177,188 @@
 
         @if (isAddGoalOverlayClicked)
         {
-            <div>
-                <div>הוספת יעד</div>
-                <div>
-                    <span>שם היעד</span>
-                    <input type="text" @bind="newGoal.goalTitle" />
-                </div>
-                <div>
-                    <div class="outerColors">
-                        <div class="colorsContainer">
-                            <div class="colorsRow">
-                                @foreach (var color in new[] { "#F4B367", "#AEA2F9", "#F467AB", "#F47867", "#6775F4", "#8DE4BF" })
-                                {
-                                    <div id="@(color)" class="@(selectedClass == color ? "color-selected" : "")">
-                                        <input style="opacity:0;" type="radio" name="categoryColors" value="@color"
-                                       @onclick="() => addColor(color)" />
 
-                                    </div>
-                                }
-                            </div>
-                            <div class="colorsRow">
-                                @foreach (var color in new[] { "#67CAF4", "#FCE884", "#F9D3C2", "#16A78D", "#696969", "#DADADA" })
-                                {
-                                    <div id="@(color)" class="@(selectedClass == color ? "color-selected" : "")">
-                                        <input style="opacity:0;" type="radio" name="categoryColors" value="@color"
-                                       @onclick="() => addColor(color)" />
 
+            <div class="megaOuterLay">
+                <div class="outerLay">
+                    <div class="BgOverlay"> </div>
+                    <div class="addSavingOverlay">
+
+                        <div class="paddingDiv">
+                            <div class="outerTitleAndIcon">
+                                <button class="closeOverlay" @onclick="closeAddGoalOverlay"><img src="./css/images/close x.svg" /></button>
+                                <h3 class="popupTitle">הוספת יעד</h3>
+                                <div class="titleAndIconToAdd">
+                                    <div class="outerTitleAndCounterToAdd">
+                                        <div>
+                                            <span><b>שם היעד</b></span>
+                                        </div>
+                                        <div class="input-containerToAdd">
+
+                                            <input class="catTitleToAdd" type="text" placeholder="שם היעד" maxlength="18" minlength="2" @oninput="titleLengthCounter" @bind="newGoal.goalTitle" />
+                                            <div class="counter">
+                                                @if (newGoal.goalTitle == null || newGoal.goalTitle == "")
+                                                {
+                                                    <span>0/18</span>
+                                                }
+                                                else
+                                                {
+                                                    if (newGoal.goalTitle.Length < 2 || newGoal.goalTitle.Length > 18)
+                                                    {
+
+                                                        <span>@titleInputLength/18</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>@titleInputLength/18</span>
+
+                                                    }
+                                                }
+                                            </div>
+
+                                        </div>
                                     </div>
-                                }
+                                </div>
+
+                                <div class="outerColors">
+                                    <div class="colorsContainer">
+                                        <div class="colorsRow">
+                                            @foreach (var color in new[] { "#F4B367", "#AEA2F9", "#F467AB", "#F47867", "#6775F4", "#8DE4BF" })
+                                            {
+                                                <div id="@(color)" class="@(selectedClass == color ? "color-selected" : "")">
+                                                    <input style="opacity:0;" type="radio" name="categoryColors" value="@color"
+                                                   @onclick="() => addColor(color)" />
+
+                                                </div>
+                                            }
+                                        </div>
+                                        <div class="colorsRow">
+                                            @foreach (var color in new[] { "#67CAF4", "#FCE884", "#F9D3C2", "#16A78D", "#696969", "#DADADA" })
+                                            {
+                                                <div id="@(color)" class="@(selectedClass == color ? "color-selected" : "")">
+                                                    <input style="opacity:0;" type="radio" name="categoryColors" value="@color"
+                                                   @onclick="() => addColor(color)" />
+
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="outerGoalToAdd">
+                                    <span><b>שנת היעד</b></span>
+                                    <div class="outerGoalYearToAdd">
+                                        <div style="width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;">
+                                            <div @onclick="()=>openYearsOptions =! openYearsOptions" class="outerGoalYearsOptions">
+                                                <!-- Fixed malformed tag here -->
+                                                @if (newGoal.dueYear != null && newGoal.dueYear != 0)
+                                                {
+                                                    <div class="dropDownTitle">
+                                                        @newGoal.dueYear
+                                                        <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    newGoal.dueYear = CurrentYear;
+
+                                                    <div class="dropDownTitle" style="color:#727272">
+                                                        @newGoal.dueYear
+                                                        <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
+                                                    </div>
+                                                }
+                                            </div>
+                                            @if (openYearsOptions)
+                                            {
+                                                <div class="outerMonthDayOptionsToAdd">
+                                                    @for (int i = 0; i < 16; i++)
+                                                    {
+                                                        int currentLoopValue = i;  // Create a temporary variable to capture the loop variable
+                                                        <div class="yearOption" @onclick="() => SetYearAndClose(CurrentYear + currentLoopValue)">
+                                                            @(CurrentYear + currentLoopValue)
+                                                        </div>
+                                                        
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="SavingAmountToAdd">
+                                    <span><b>סכום היעד</b></span>
+                                    <span class="outerSavingAmount">
+                                        <input class="SavingAmount" type="number" @bind="newGoal.budget" />
+                                        <span>₪</span>
+                                    </span>
+
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div>
-                    <span>שנת היעד</span>
-                    <div>
-                        <div @onclick="()=>openYearsOptions =! openYearsOptions">
-                            <!-- Fixed malformed tag here -->
-                            @if (newGoal.dueYear != null && newGoal.dueYear != 0)
-                            {
-                                <div class="dropDownTitle">
-                                    @newGoal.dueYear
-                                    <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
-                                </div>
-                            }
-                            else
-                            {
-                                newGoal.dueYear = CurrentYear;
-
-                                <div class="dropDownTitle" style="color:#727272">
-                                    @newGoal.dueYear
-                                    <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
-                                </div>
-                            }
+                        <div class="outerSaveSaving">
+                            <button class="primery-button" @onclick="addNewGoal">שמירה וסיום</button>
                         </div>
-                        @if (openYearsOptions)
-                        {
-                            <div class="outerMonthDayOptions">
-                                @for (int i = 0; i < 16; i++)
-                                {
-                                    int currentLoopValue = i;  // Create a temporary variable to capture the loop variable
-                                    <div @onclick="@(()=>{newGoal.dueYear = (CurrentYear + currentLoopValue); openYearsOptions = false;})">
-                                        @(CurrentYear + currentLoopValue)
-                                    </div>
-                                    <div class="daydivider"></div>
-                                }
-                            </div>
-                        }
                     </div>
-                </div>
-                <div>
-                    <span>סכום היעד</span>
-                    <input type="number" @bind="newGoal.budget" />
-                </div>
-
-                <div>
-                    <button class="primery-button" @onclick="addNewGoal">שמירה וסיום</button>
                 </div>
             </div>
+
+            @*<div>
+        <div>הוספת יעד</div>
+        <div>
+        <span>שם היעד</span>
+        <input type="text" @bind="newGoal.goalTitle" />
+        </div>
+        <div>
+        </div>
+        <div>
+        <span>שנת היעד</span>
+        <div>
+        <div @onclick="()=>openYearsOptions =! openYearsOptions">
+        <!-- Fixed malformed tag here -->
+        @if (newGoal.dueYear != null && newGoal.dueYear != 0)
+        {
+        <div class="dropDownTitle">
+        @newGoal.dueYear
+        <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
+        </div>
+        }
+        else
+        {
+        newGoal.dueYear = CurrentYear;
+
+        <div class="dropDownTitle" style="color:#727272">
+        @newGoal.dueYear
+        <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
+        </div>
+        }
+        </div>
+        @if (openYearsOptions)
+        {
+        <div class="outerMonthDayOptions">
+        @for (int i = 0; i < 16; i++)
+        {
+        int currentLoopValue = i;  // Create a temporary variable to capture the loop variable
+        <div @onclick="@(()=>{newGoal.dueYear = (CurrentYear + currentLoopValue); openYearsOptions = false;})">
+        @(CurrentYear + currentLoopValue)
+        </div>
+        <div class="daydivider"></div>
+        }
+        </div>
+        }
+        </div>
+        </div>
+        <div>
+        <span>סכום היעד</span>
+        <input type="number" @bind="newGoal.budget" />
+        </div>
+
+        <div>
+        <button class="primery-button" @onclick="addNewGoal">שמירה וסיום</button>
+        </div>
+        </div>*@
 
         }
         <div class="outerSavingSection">
@@ -283,62 +387,6 @@
 
         @if (showYearlyGoals)
         {
-
-            @*<div class="overlay">
-        <div class="outerPopUp">
-
-
-        <div class="outerFirstRow">
-        <div>
-        <button @onclick="closeYearlyGoalsPopUp" class="backArrow"><img src="../css/images/close x.svg" /></button>
-        </div>
-        </div>
-        <div class="outerDetails">
-        <div class="outerYearToShow">
-        <span class="yearToShow">@goalsYearToShow</span>
-        </div>
-
-        <div>
-
-        <button @onclick="()=> isAddGoalOverlayClicked = !isAddGoalOverlayClicked" class="AddNewSaving">
-        <div class="emoji-circle">
-        🎯
-        </div>
-        <p class="addTitle">יעד חדש</p>
-        </button>
-        </div>
-        <div>
-
-        <div>
-        @if (goalsPerYearList.Count == 0)
-        {
-        <span>לא נמצאו יעדים לשנה זו</span>
-        }
-        else
-        {
-        @foreach (AllUserGoalsToShow goalPerYear in goalsPerYearList)
-        {
-        @if (goalPerYear.dueYear == goalsYearToShow)
-        {
-        <div style="background-color:@ConvertHexToRGBA(goalPerYear.color, 0.13f); border:1px solid @goalPerYear.color;" class="goalInYear" @onclick="()=>showGoalDetails(goalPerYear)">
-        <div class="outerGoalAndIcon">
-        <div class="emoji-circle">
-        🎯
-        </div>
-        <span>@goalPerYear.goalTitle</span>
-        </div>
-        </div>
-        }
-        }
-        }
-        </div>
-        </div>
-
-        </div>
-
-        </div>
-        </div>*@
-
 
             <div class="overlay">
                 <div class="outerPopUp">
@@ -530,54 +578,11 @@
 
                                             </div>
                                         }
+
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        @*<div class="outerGoal">
-                    <span><b>שנת היעד</b></span>
-
-                    <div class="outerGoalYear">
-                    <div>
-                    <div @onclick="()=>openYearsOptions =! openYearsOptions" class="outerGoalYearsOptions">
-                    <!-- Fixed malformed tag here -->
-                    @if (editedGoal.dueYear != null && editedGoal.dueYear != 0)
-                    {
-                    <div class="dropDownTitle">
-                    @editedGoal.dueYear
-                    <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
-                    </div>
-                    }
-                    else
-                    {
-                    editedGoal.dueYear = CurrentYear;
-
-                    <div class="dropDownTitle" style="color:#727272">
-                    @editedGoal.dueYear
-                    <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
-                    </div>
-                    }
-
-                    @if (openYearsOptions)
-                    {
-                    <div class="outerMonthDayOptions">
-                    @for (int i = 0; i < 16; i++)
-                    {
-                    int currentLoopValue = i;  // Create a temporary variable to capture the loop variable
-                    <div @onclick="@(()=>{editedGoal.dueYear = (CurrentYear + currentLoopValue); openYearsOptions = false;})">
-                    @(CurrentYear + currentLoopValue)
-                    </div>
-                    <div class="daydivider"></div>
-                    }
-                    </div>
-                    }
-                    </div>
-
-                    </div>
-                    </div>
-
-                    </div>*@
 
                         <div class="outerGoal">
                             <span><b>שנת היעד</b></span>
@@ -612,6 +617,9 @@
                                                         @(CurrentYear + currentLoopValue)
                                                     </div>
                                                 }
+
+
+                                               
                                             </div>
                                         }
                                     </div>
@@ -1220,5 +1228,17 @@
         editedGoal.dueYear = year;
         openYearsOptions = true;
         StateHasChanged(); // Force the component to re-render
+    }
+
+    void closeAddGoalOverlay()
+    {
+        isAddGoalOverlayClicked = false;
+        selectedClass = "";
+    }
+
+     private void SetYearAndClose(int year)
+    {
+        newGoal.dueYear = year;
+        openYearsOptions = false;
     }
 }
