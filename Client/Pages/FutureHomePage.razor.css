@@ -1,4 +1,48 @@
-﻿
+﻿.profilePic {
+    width: 3rem;
+    height: 3rem;
+    background-color: #F9F9F9;
+    border: 3.5px solid #6775F4;
+    color: inherit;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    text-align: center;
+    border-radius: 50%;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profileAndStreak {
+    position: relative;
+    display: inline-block;
+}
+.streakBtn {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    outline: inherit;
+    position: absolute;
+    z-index: 1;
+    top: 33%;
+    left: 50%;
+    width: 111%;
+}
+
+.outerTop {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 94%;
+    padding: 3vh 0 0 0;
+}
 
 .outerColors {
     display: flex;

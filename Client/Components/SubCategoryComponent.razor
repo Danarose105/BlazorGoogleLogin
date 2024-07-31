@@ -85,6 +85,7 @@
 
 @if (openTransOverlay)
 {
+    isOptBtnClicked = false;
     <AddTransactionComponent subCategoryTitle="@subCategoryTitle" subCategoryIDTOGet="@subCategoryIDToGet" isTransactionOverlayOpen="openAddTransOverlay" userID="@userID" gapsToUpdateBudgets="gapsToUpdateTheBudget" addTransactionToTotal="addNewTransToTotalSpendings" categoryTypeIndicator="@categoryTypeIndicator" updatedStreak="updateStreak" closeAddTransAfterOverdraft="closeAddTrans" transValueToAdd="updateTotalsIndexTable"></AddTransactionComponent>
 
 }
