@@ -36,32 +36,14 @@
             </button>
         </div>
 
-        @if (isAddSavingOverlayClicked)
-        {
-            <div>
-                <div>הוספת חסכון</div>
-                <div>
-                    <span>שם החסכון</span>
-                    <input type="text" @bind="newSaving.savingsTitle" />
-                </div>
-                <div>
-                    <span>סכום החסכון</span>
-                    <input type="number" @bind="newSaving.savingsSum" />
-                </div>
-
-                <div>
-                    <button @onclick="addNewSaving">שמירה וסיום</button>
-                </div>
-            </div>
-
-        }
+        
 
         <div class="outerSavingsLines">
             @foreach (AllUserSavingsToShow saving in allSavings)
             {
                 <div @onclick="()=>showSavingDetails(saving)" class="outerSavingsLine">
                     <div class="outerIconTitleAndSum">
-                        <div class="outerIconAndTitle">
+                        <div class="outerIconAndTitleToShowFirst">
                             <span class="emoji-circle">
                                 💰
                             </span>
@@ -103,7 +85,7 @@
                     </div>
                     <div>
                         <div class="outerTitle">
-                            <div class="outerIconAndTitle">
+                            <div class="outerIconAndTitleToShow">
                                 <span class="emoji-circle">
                                     💰
                                 </span>
@@ -139,13 +121,16 @@
 
 
                         <div>
-                            <button class="backArrow" @onclick="()=> isEditSavingClicked = !isEditSavingClicked"><img src="./css/images/close x.svg" /></button>
+                            <button class="backArrow" @onclick="()=> isEditSavingClicked = !isEditSavingClicked"><img src="../css/images/back-repeated.svg" /></button>
                         </div>
 
                     </div>
 
                     <div>
                         <div class="outerTitle">
+
+                            <div class="outerTitleAndCounter">
+                            <div class="input-container">
                             <div> <span><b>עריכת חסכון</b></span></div>
                             <div class="outerIconAndTitle">
 
@@ -154,13 +139,9 @@
                                 </span>
                                 <span>
                                     <input class="catTitle" type="text" maxlength="18" minlength="2" @oninput="titleLengthCounter" @bind="@editedSaving.savingsTitle" />
-                                    </span>
-                            </div>
+                                </span>
 
-                            <div class="outerTitleAndCounter">
-                            <div class="input-container">
-                               
-                                <div class="counter">
+                                    <div class="counter">
                                     @if (editedSaving.savingsTitle == null || editedSaving.savingsTitle == "")
                                     {
                                         <span>0/18</span>
@@ -178,7 +159,10 @@
 
                                         }
                                     }
-                                </div>
+                                    </div>
+                            </div>
+                               
+                                
 
                             </div>
                         </div
@@ -192,10 +176,11 @@
 
 
                           
-                             <div>
-                                    <input class="outerSavingAmount" type="number" @bind="@editedSaving.savingsSum" />
+                             <div class="outerSavingsAmountAndShekel">
+                                    <input class="outerSavingAmountToEdit" type="number" @bind="@editedSaving.savingsSum" />
                                     <span>₪</span>
-                                </div>
+                                  
+                            </div>
                                 
 
                         </div>
@@ -204,7 +189,7 @@
                   
                     <div>      
 
-                         <button class="saveBtn" @onclick="saveUpdatedSaving">שמירת שינויים</button>
+                         <button class="primery-button" @onclick="saveUpdatedSaving">שמירת שינויים</button>
                     </div>
                 </div>
             </div>
@@ -219,6 +204,71 @@
 
     </div>
 </div>
+
+@if (isAddSavingOverlayClicked)
+        {
+
+            <div class="megaOuterLay">
+                <div class="outerLay">
+                    <div class="BgOverlay"> </div>
+                        <div class="addSavingOverlay">
+
+                          <div class="paddingDiv">
+                                <div class="outerTitleAndIcon">
+                                    <button class="closeOverlay" @onclick="closeAddSavingOverlay"><img src="./css/images/close x.svg" /></button>
+                                    <h3 class="popupTitle">הוספת חסכון</h3>
+                                <div class="titleAndIconToAdd">
+                                    <div class="outerTitleAndCounterToAdd">
+                                        <div>
+                                            <span><b>שם החסכון</b></span>
+                                        </div>
+                                        <div class="input-containerToAdd">
+                                             <input class="catTitleToAdd" type="text" placeholder="שם החסכון" maxlength="18" minlength="2" @oninput="titleLengthCounter" />
+                                            <div class="counter">
+                                                @if (newSaving.savingsTitle == null || newSaving.savingsTitle == "")
+                                                {
+                                                    <span>0/18</span>
+                                                }
+                                                else
+                                                {
+                                                    if (newSaving.savingsTitle.Length < 2 || newSaving.savingsTitle.Length > 18)
+                                                    {
+
+                                                        <span>@titleInputLength/18</span>
+                                                    }
+                                                    else
+                                                    {
+                                                    <span>@titleInputLength/18</span>
+
+                                                    }
+                                                }
+                                            </div>
+                                    
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="outerSavingToAdd">
+                                    <span><b>סכום החסכון</b></span>
+                                    <div  class="outerSavingsAmountAndShekel">
+                                         <input class="outerSavingAmountToAdd" type="number" @bind="newSaving.savingsSum" placeholder="סכום החסכון" />
+                                         <span>₪</span>
+                                    </div>
+                                   
+                                </div>
+
+                                
+                              
+                                 
+                            </div>
+                         </div>
+                           <div class="outerSaveSaving">
+                                    <button class="primery-button" @onclick="addNewSaving">שמירה וסיום</button>
+                            </div>
+                    </div>
+                </div>
+            </div>
+
+}
 
 
 @code {
@@ -302,6 +352,7 @@
         }
 
         isAddSavingOverlayClicked = false;
+        titleInputLength = 0;
 
         sumSavings = 0;
         @foreach (AllUserSavingsToShow saving in allSavings)
@@ -365,6 +416,7 @@
     private void titleLengthCounter(ChangeEventArgs e)
     {
         titleInput = e.Value.ToString();
+        newSaving.savingsTitle = titleInput;
         titleInputLength = titleInput.Length;
     }
 
@@ -442,4 +494,10 @@
         return true;
     }
 
+    void closeAddSavingOverlay()
+    {
+        isAddSavingOverlayClicked = !isAddSavingOverlayClicked;
+        titleInputLength = 0;
+        newSaving.savingsSum = 0;
+    }
 }
