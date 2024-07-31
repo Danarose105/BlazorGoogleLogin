@@ -281,8 +281,9 @@
 
 .outerTitleAndCounter {
     display: flex;
+    align-items: flex-start;
     flex-direction: column;
-    align-items: flex-end;
+    
 }
 
 .input-container {
@@ -393,4 +394,147 @@
     line-height: normal;
     border: none;
     margin-bottom: 2vh;
+}
+
+.outerLay {
+    display: flex;
+    bottom: 0;
+    position: fixed;
+    z-index: 4;
+    width: 100%;
+}
+
+.BgOverlay {
+    background-color: rgba(1, 5, 43, 0.28);
+    z-index: -1;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.titleAndIcon {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10vw;
+    /* width: 90%; */
+    justify-content: space-evenly;
+    align-items: flex-end;
+}
+
+.addSavingOverlay {
+    border-radius: 1.75rem 1.4375rem 0rem 0rem;
+    background-color: #F9F9F9;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    padding: 2vh 0 2vh 0;
+    width: 100%;
+}
+
+
+.paddingDiv {
+    display: flex;
+    flex-direction: column;
+    row-gap: 5vh;
+    width: 90%;
+}
+
+
+.outerTitleAndIcon {
+    display: flex;
+    width: 90%;
+    align-items: flex-start;
+    flex-direction: column;
+    row-gap: 2vh;
+}
+
+
+.closeOverlay {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+}
+
+.popupTitle {
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
+
+.outerTitleAndCounterToAdd {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1vh;
+    width: 100%;
+}
+
+.input-container {
+    position: relative;
+    width: 100%; /* Ensure full width */
+}
+
+
+.input-containerToAdd {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.outerSavingToAdd {
+    display: flex;
+    background-color: #EDEFF7;
+    border-radius: 0.625rem;
+    padding: 3vh 0;
+    align-items: center;
+    justify-content: space-around;
+    margin: 3vh 0;
+    width: 111%;
+}
+
+.titleAndIconToAdd {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10vw;
+    width: 80%;
+    justify-content: flex-start;
+    align-items: flex-end;
+}
+
+.catTitleToAdd {
+    font-weight: 500;
+    margin: 0;
+    height: 6vh;
+    border-radius: 0.3125rem;
+    background: #FFF;
+    box-shadow: 0px 85px 24px 0px rgba(171, 173, 191, 0.00), 0px 55px 22px 0px rgba(171, 173, 191, 0.01), 0px 31px 18px 0px rgba(171, 173, 191, 0.05), 0px 14px 14px 0px rgba(171, 173, 191, 0.09), 0px 3px 7px 0px rgba(171, 173, 191, 0.10);
+    border: 1px solid #F9F9F9;
+    position: relative;
+    width: 100%;
+}
+
+.outerSavingAmountToAdd {
+    border-radius: 0.5rem;
+    display: flex;
+    background-color: #F9F9F9;
+    padding: 1vh 5vw;
+    font-size: 1.1rem;
+    border: none;
+    width: 78%;
+}
+
+.outerSaveSaving {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
 }
