@@ -65,9 +65,9 @@
 
                     @if (isValueTypeTooltipOpen)
                     {
-                        
-                            <span class="bubbleText">@transaction.valueType</span>
-                       
+
+                        <span class="bubbleText">@transaction.valueType</span>
+
                     }
 
                     @if (transaction.valueType == "מזומן")
@@ -225,11 +225,13 @@
                 {
                     //Console.WriteLine("transaction: " + transaction.transTitle + " is a part of a split payment");
                     transIDtoEdit = transaction.parentTransID.Value;
+                    childOfSplit = true;
 
                 }
                 else
                 {
                     Console.WriteLine("couldn't find parent that has this ID and is split, this transaction is part of a fixed monthly");
+                    transaction.fixedMonthly = true;
                 }
             }
             else
@@ -242,30 +244,31 @@
             Console.WriteLine("transaction isn't a child");
 
             transIDtoEdit = transaction.id;
+            childOfSplit = false;
+        }
 
-            if (transaction.splitPayment == true)
+        if (transaction.splitPayment == true || childOfSplit==true)
+        {
+            var repeatedTransValuesRes = await Http.GetAsync("api/Transactions/getPaymentTransToEdit/" + transIDtoEdit);
+            if (repeatedTransValuesRes.IsSuccessStatusCode)
             {
-                var repeatedTransValuesRes = await Http.GetAsync("api/Transactions/getPaymentTransToEdit/" + transIDtoEdit);
-                if (repeatedTransValuesRes.IsSuccessStatusCode)
+                reapeatedTransValuesList = repeatedTransValuesRes.Content.ReadFromJsonAsync<List<RepeatedTransToShow>>().Result;
+                foreach (RepeatedTransToShow repeatedT in reapeatedTransValuesList)
                 {
-                    reapeatedTransValuesList = repeatedTransValuesRes.Content.ReadFromJsonAsync<List<RepeatedTransToShow>>().Result;
-                    foreach (RepeatedTransToShow repeatedT in reapeatedTransValuesList)
+                    if (repeatedT.id == transaction.id)
                     {
-                        if (repeatedT.id == transaction.id)
-                        {
-                            transIndexInPayments = reapeatedTransValuesList.IndexOf(repeatedT) + 1;
-                        }
+                        transIndexInPayments = reapeatedTransValuesList.IndexOf(repeatedT) + 1;
                     }
-
-                    totalPayments = reapeatedTransValuesList.Count;
-                    Console.WriteLine(totalPayments);
-                    //childOfSplit = true;
-
                 }
-                else
-                {
-                    Console.WriteLine("finding split trans values failed");
-                }
+
+                totalPayments = reapeatedTransValuesList.Count;
+                Console.WriteLine(totalPayments);
+                //childOfSplit = true;
+
+            }
+            else
+            {
+                Console.WriteLine("finding split trans values failed");
             }
         }
 

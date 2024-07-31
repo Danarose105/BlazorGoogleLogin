@@ -1108,6 +1108,10 @@ namespace BlazorGoogleLogin.Server.Controllers
 
         private async Task<bool> UpdateUserDetails(userProfileDataToShow editedUser)
         {
+            if (editedUser.profilePicOrIcon=="" || editedUser.profilePicOrIcon == null)
+            {
+                editedUser.profilePicOrIcon = "🌟";
+            }
             object newUser = new
             {
                 ID = editedUser.id,

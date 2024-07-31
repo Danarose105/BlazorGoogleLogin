@@ -108,18 +108,18 @@
                                 <label class="titleName" for="amount">שם תת קטגוריה</label>
                                 <input class="titleBox" type="text" id="amount" placeholder="שם תת הקטגוריה" @bind="subCatToEdit.subCategoryTitle" maxlength="18" minlength="2" @oninput="SubCatTitleLengthCounter" />
                                 <div class="input-container">
-                                     <div class="counter">
-                                    @if (titleInput.Length > 2 && titleInput.Length < 19)
-                                                {
-                                                    <span>@titleInput.Length/18</span>
-                                                }
-                                                else if (titleInput.Length < 2)
-                                                {
-                                                    <span>0/18</span>
-                                                }
+                                    <div class="counter">
+                                        @if (titleInput.Length > 2 && titleInput.Length < 19)
+                                        {
+                                            <span>@titleInput.Length/18</span>
+                                        }
+                                        else if (titleInput.Length < 2)
+                                        {
+                                            <span>0/18</span>
+                                        }
+                                    </div>
                                 </div>
-                                </div>
-                               
+
                             </div>
                             @if (!typeByCat)
                             {
@@ -270,7 +270,7 @@
 
                         @if (filterBtnClicked)
                         {
-                            @*sortBtnClicked = false;*@
+
                             <div class="outerFilterOptions">
 
                                 <div class="filterOptions">
@@ -337,7 +337,6 @@
                         @if (filterByTagOverlay)
                         {
 
-                            Console.WriteLine(filterBtnClicked + "filterBtnClicked");
                             <div class="outerPaymentMethod">
                                 <div class="PaymentMethods">
                                     <div class="outerLay">
@@ -462,16 +461,7 @@
                             <TransOverviewComponent transaction="transaction" removeTransaction="@(()=>transactionDeleted(transaction.id))" subCatID="@subCatID" userID="@userID" subCatTakenBudget="updateSubCatBudgetPostOverdraft" overdraftStatus="@overdraftStatus" typeByCat="@typeByCat" refreshTags="refreshTransAndTags"></TransOverviewComponent>
 
                         }
-                        else
-                        {
-                            filterStatus = "הוצאה חוזרת";
-                            if (transaction.fixedMonthly == true)
-                            {
-                                <TransOverviewComponent transaction="transaction" removeTransaction="@(()=>transactionDeleted(transaction.id))" subCatID="@subCatID" userID="@userID" subCatTakenBudget="updateSubCatBudgetPostOverdraft" overdraftStatus="@overdraftStatus" typeByCat="@typeByCat" refreshTags="refreshTransAndTags"></TransOverviewComponent>
-                                <hr />
-                            }
 
-                        }
                         @if (totalSpendings < budget && budget != null)
                         {
                             overdraftStatus = false;
@@ -480,9 +470,16 @@
 
                     }
                 }
+                else if (allTransactions.Count <= 0 && isOnInitializedOver )
+                {
+                
+                        <p>@failedFilterError</p>
+                  
+
+                }
                 else
                 {
-                    @if (!string.IsNullOrEmpty(searchQuery))
+                    if (!string.IsNullOrEmpty(searchQuery))
                     {
                         @if (toSearch && (allTransactions.Any(t => string.IsNullOrEmpty(searchQuery) || t.transTitle.ToLower().Contains(searchQuery.ToLower()))))
                         {
@@ -676,7 +673,7 @@
                         }
                         else
                         {
-                             overdraftClass = "outerOverdraft";
+                            overdraftClass = "outerOverdraft";
                         }
 
                     </div>
@@ -751,6 +748,7 @@
 
     public string categoryTitle = "";
     bool categoryTypeIndicator = false;
+    bool isOnInitializedOver = false;
 
     public string subCategoryTitle = "";
     List<TransactionOverviewToShow> allTransactions = new List<TransactionOverviewToShow>();
@@ -781,6 +779,11 @@
     bool noOverdraftOptions = false;
     bool filterByTransTypeOverlay = false;
     bool toSearch = false;
+
+    /// <summary>
+    /// if there aren't fitting transactions this error message will be shown
+    /// </summary>
+    string failedFilterError = "לא נמצאו הזנות שקשורות לתת קטגוריה הזו.";
     string filterByType = "";
     int filterByTag = 0;
     bool filterByTagOverlay = false;
@@ -840,7 +843,7 @@
         {
             var catTitleRes = await catTitle.Content.ReadAsStringAsync();
             categoryTitle = catTitleRes;
-            if (categoryTitle == "הכנסות") 
+            if (categoryTitle == "הכנסות")
             {
                 categoryTypeIndicator = true;
             }
@@ -861,7 +864,7 @@
             }
 
 
-            //Console.WriteLine("catTitle had a successful request ");
+
             //get subcategory title:
             var subCatTitle = await Http.GetAsync("api/Present/GetSubCategory/" + subCatID);
             if (subCatTitle.IsSuccessStatusCode)
@@ -979,6 +982,8 @@
 
         }
 
+        isOnInitializedOver = true;
+
     }
 
     public string convertCatColors(string catColor)
@@ -1080,11 +1085,6 @@
 
         if (checkOverdraft > budget)
         {
-            //overdraftStatus = true;
-            //if (!isOverdraft)
-            //{
-            //    isOverdraft = true;
-            //}
             await checkOverdraftFunc(subCatID);
         }
         else
@@ -1289,6 +1289,9 @@
 
     public async Task filterByTransType(string selectedType)
     {
+        //await undoFilterAndSort();
+        filterByTransTypeOverlay = false;
+        filterBtnClicked = false;
         filterStatus = selectedType;
         for (int i = allTransactions.Count - 1; i >= 0; i--)
         {
@@ -1297,13 +1300,13 @@
                 allTransactions.Remove(allTransactions[i]);
             }
         }
-        if (allTransactions == null || allTransactions.Count <= 0)
+        if (allTransactions.Count <= 0)
         {
             Console.WriteLine("no transactions fit selected payment method");
-            await undoFilterAndSort();
+            await failedFilterMsg();
+            //await undoFilterAndSort();
         }
-        filterByTransTypeOverlay = false;
-        filterBtnClicked = false;
+
     }
 
     public async Task filterByTags(int tagID)
@@ -1326,6 +1329,11 @@
         filterStatus = tagTitle;
         filterByTagOverlay = false;
         filterBtnClicked = false;
+
+        if (allTransactions.Count <= 0)
+        {
+            await failedFilterMsg();
+        }
 
     }
 
@@ -1362,63 +1370,111 @@
             if (allTransactions[i].parentTransID != null)
             {
                 var findParentRes = await Http.GetAsync("api/Transactions/identifyParent/" + allTransactions[i].parentTransID);
-                if (findParentRes.IsSuccessStatusCode)
+                if (!findParentRes.IsSuccessStatusCode) //if the parent isn't splitPayment
                 {
-                    Console.WriteLine("transaction: " + allTransactions[i].transTitle + " is a part of a split payment");
+                    allTransactions.Remove(allTransactions[i]);
                 }
             }
-            else if (allTransactions[i].splitPayment == true)
+            else if (allTransactions[i].splitPayment == false)
             {
-                Console.WriteLine("transaction: " + allTransactions[i].transTitle + " is a parent of a split payment");
-            }
-            else
-            {
+                Console.WriteLine("transaction: " + allTransactions[i].transTitle + " is NOT a parent of a split payment");
                 allTransactions.Remove(allTransactions[i]);
             }
         }
         filterStatus = "תשלומים";
         filterBtnClicked = false;
+
+        if (allTransactions.Count <= 0)
+        {
+            await failedFilterMsg();
+        }
     }
 
-    public void SortingOptions(string sortDirection)
+    public async Task SortingOptions(string sortDirection)
     {
-        switch (sortDirection)
+        if (allTransactions.Count > 0)
         {
-            case "dateDes":
-                allTransactions = allTransactions.OrderByDescending(e => e.transDate).ToList();
-                sortStatus = "תאריך (מהחדש לישן)";
-                break;
-            case "dateAsc":
-                allTransactions = allTransactions.OrderBy(e => e.transDate).ToList();
-                sortStatus = "תאריך (מהישן לחדש)";
-                break;
-            case "sumDes":
-                allTransactions = allTransactions.OrderByDescending(e => e.transValue).ToList();
-                sortStatus = "סכום הוצאה (מהגבוה לנמוך)";
-                break;
-            case "sumAsc":
-                allTransactions = allTransactions.OrderBy(e => e.transValue).ToList();
-                sortStatus = "סכום הוצאה (מהנמוך לגבוה)";
-                break;
+            switch (sortDirection)
+            {
+                case "dateDes":
+                    allTransactions = allTransactions.OrderByDescending(e => e.transDate).ToList();
+                    sortStatus = "תאריך (מהחדש לישן)";
+                    break;
+                case "dateAsc":
+                    allTransactions = allTransactions.OrderBy(e => e.transDate).ToList();
+                    sortStatus = "תאריך (מהישן לחדש)";
+                    break;
+                case "sumDes":
+                    allTransactions = allTransactions.OrderByDescending(e => e.transValue).ToList();
+                    sortStatus = "סכום הוצאה (מהגבוה לנמוך)";
+                    break;
+                case "sumAsc":
+                    allTransactions = allTransactions.OrderBy(e => e.transValue).ToList();
+                    sortStatus = "סכום הוצאה (מהנמוך לגבוה)";
+                    break;
+            }
         }
+        else
+        {
+            await failedFilterMsg();
+        }
+
         sortBtnClicked = false;
     }
 
-    public void filterByRepeatedTrans()
+    public async Task filterByRepeatedTrans()
     {
         filterByReturnTrans = true;
         filterBtnClicked = false;
         filterStatus = "הוצאה חוזרת";
+
+        for (int i = allTransactions.Count - 1; i >= 0; i--)
+        {
+            if (allTransactions[i].fixedMonthly == false)
+            {
+                allTransactions.Remove(allTransactions[i]);
+            }
+        }
+
+        if (allTransactions.Count <= 0)
+        {
+            await failedFilterMsg();
+        }
     }
+
+
+
+    public async Task failedFilterMsg()
+    {
+        failedFilterError = "לא נמצאו הזנות שעונות על תנאי המיון שבחרת. רשימת ההזנות המלאה תוצג מחדש.";
+        filterBtnClicked = false;
+        filterByTransTypeOverlay = false;
+        filterByTagOverlay = false;
+        filterByReturnTrans = false;
+        filterStatus = "";
+
+
+
+        await Task.Delay(2000);
+
+        StateHasChanged();
+        //failedFilterError = "לא נמצאו הזנות שקשורות לתת קטגוריה הזו.";
+        await undoFilterAndSort();
+    }
+
 
     public async Task undoFilterAndSort()
     {
+
+
+
+
         allTransactions = new List<TransactionOverviewToShow>();
         var getAllTransactions = await Http.GetAsync("api/Transactions/getAllTransactionsByDate/" + userID + "/" + subCatID);
         if (getAllTransactions.IsSuccessStatusCode)
         {
             var checkTransList = getAllTransactions.Content.ReadFromJsonAsync<List<TransactionOverviewToShow>>().Result;
-            if (checkTransList != null && checkTransList.Count > 0)
+            if (checkTransList.Count > 0)
             {
                 allTransactions = checkTransList;
                 foreach (TransactionOverviewToShow trans in allTransactions)
@@ -1438,6 +1494,7 @@
             else
             {
                 Console.WriteLine("No transactions found related to this sub category");
+                failedFilterError = "לא נמצאו הזנות שקשורות לתת קטגוריה הזו.";
             }
         }
         else
@@ -1445,13 +1502,19 @@
             var transErrorContent = await getAllTransactions.Content.ReadAsStringAsync();
             Console.WriteLine("Failed to find transactions. Error: " + transErrorContent);
         }
+
         filterBtnClicked = false;
         filterStatus = "";
         sortStatus = "";
+        sortBtnClicked = false;
         if (filterByReturnTrans)
         {
             filterByReturnTrans = false;
         }
+
+        filterByTagOverlay=false;
+        filterByTransTypeOverlay = false;
+
     }
 
     void UpdateSearchQuery(ChangeEventArgs e)

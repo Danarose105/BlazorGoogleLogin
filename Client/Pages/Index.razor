@@ -39,11 +39,11 @@
                                     <div class="firstLastAndEmoji">
                                         <div class="outerUserDetails">
                                             <span class="titleName">שם פרטי:</span>
-                                            <input class="catTitle" type="text" @bind=newUser.firstName />
+                                            <input class="catTitle" type="text" @bind="@newUser.firstName" maxlength="15" />
                                         </div>
                                         <div class="outerUserDetails">
                                             <span class="titleName">שם משפחה:</span>
-                                            <input class="catTitle" type="text" @bind=newUser.lastName />
+                                            <input class="catTitle" type="text" @bind="@newUser.lastName" maxlength="15" />
                                         </div>
 
 
@@ -376,6 +376,10 @@
 
     public async Task createNewUser()
     {
+        if (newUser.profilePicOrIcon == null || newUser.profilePicOrIcon == "")
+        {
+            newUser.profilePicOrIcon = "🌟";
+        }
         var newUserRes = await Http.PostAsJsonAsync("api/Present/AddUser/" + user.Id, newUser);
 
         if (newUserRes.IsSuccessStatusCode)

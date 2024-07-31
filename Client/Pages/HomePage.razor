@@ -211,7 +211,6 @@ else
                                     </div>
                                 </div>
                             }
-
                             else if (storyNav == 2 && tagsSpendingsList.Count > 0)
                             {
                                 tagCounter = 0;
@@ -1032,9 +1031,10 @@ else
 
     public async Task getSubCatTotalsForStory()
     {
-        storyPopUpWindow = !storyPopUpWindow;
-        if (storyPopUpWindow)
-        {
+       
+        //await Task.Delay(2000);
+        //if (storyPopUpWindow)
+        //{
             List<SubCategoryToShow> subCategories = new List<SubCategoryToShow>();
             subCatsTotalsStory = new List<StorySubCategoryTotals>();
             //first story stuff:
@@ -1122,7 +1122,7 @@ else
                         }
                     }
                 }
-            }
+            //}
             //second story stuff:
             tagsSpendingsList = new List<TagsAndSpendingsToShow>();
             var getUserSpendingsByTags = await Http.GetAsync("api/Present/GetTagsAndSpendings/" + currentUser.id);
@@ -1130,7 +1130,11 @@ else
             {
                 tagsSpendingsList = getUserSpendingsByTags.Content.ReadFromJsonAsync<List<TagsAndSpendingsToShow>>().Result;
             }
+
+            
             storyNav = 1;
+             storyPopUpWindow = !storyPopUpWindow;
+            //StateHasChanged();
         }
         else
         {
