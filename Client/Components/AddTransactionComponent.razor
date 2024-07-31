@@ -616,7 +616,7 @@
                         <div>כדאי להגדיל את התקציב.</div>
                         <div><b>הסכום שאני רוצה להעביר:</b></div>
                         <div class="outerCurrentGap">
-                            <input class="currentGap" type="number" @bind="currentGap" min="@currentGap" />
+                            <input class="currentGap" type="number" @oninput="OverdraftBudgetSumInput" min="@currentGap" maxlength="6" minlength="1" placeholder="@currentGap" />
                             <span class="currency-symbolOverDraft">₪</span>
                             <div class="lineBetweenOverdraft"></div>
                         </div>
@@ -674,7 +674,7 @@
                                     </div>
                                     <div>
                                         עתידי: @(
-                                     chosenSubCategory.monthlyPlannedBudget - currentGap
+                                     chosenSubCategory.monthlyPlannedBudget - budgetSumToMove
                                      )
                                         <span>₪</span>
                                     </div>
@@ -722,7 +722,7 @@
                                     </div>
                                     <div>
                                         עתידי: @(
-                                     closeOverdraftOpts[closeOverdraftOpts.Count - 1].monthlyPlannedBudget + currentGap)
+                                     closeOverdraftOpts[closeOverdraftOpts.Count - 1].monthlyPlannedBudget + budgetSumToMove)
                                         <span>₪</span>
                                     </div>
 
@@ -735,6 +735,10 @@
                     <div class="outerBtns">
 
                         @if (chosenSubCategory == null)
+                        {
+                            <button class="primery-buttonOverDraft" @onclick="manageBudgetsToTranfer" disabled>העברה</button>
+                        }
+                        else if (budgetSumToMove > chosenSubCategory.remainingBudget)
                         {
                             <button class="primery-buttonOverDraft" @onclick="manageBudgetsToTranfer" disabled>העברה</button>
                         }
@@ -889,6 +893,8 @@
 
 
     double currentGap = 0;
+    double budgetSumToMove = 0;
+    string overdraftClass = "outerOverdraft";
     public string overlayTitle = "";
     public string repeatedBtnTitle = "הגדרת ההוצאה כחוזרת";
     //string clikckedTag => isTagClicked ? "border: solid,0.1em,black" : "border:none";
@@ -1971,6 +1977,11 @@
 
     public async Task manageBudgetsToTranfer()
     {
+        if (budgetSumToMove > 0)
+        {
+            currentGap = budgetSumToMove;
+        }
+
         budgetToUpdate = new List<OverDraftBudgetToEdit>();
 
         budgetToUpdate.Add(new OverDraftBudgetToEdit
@@ -1994,7 +2005,12 @@
 
         await updateSubCategoryBudget(budgetToUpdate);
         await updateExistingTrans();
-        closeAddTransAfterOverdraft.InvokeAsync();
+
+        if (!overdraftDetected)
+        {
+            closeAddTransAfterOverdraft.InvokeAsync();
+        }
+      
 
 
     }
@@ -2009,6 +2025,7 @@
             closeOverdraftOpts = await overdraftRes.Content.ReadFromJsonAsync<List<OverBudgetToShow>>();
 
             currentGap = (closeOverdraftOpts[closeOverdraftOpts.Count - 1].remainingBudget) - (closeOverdraftOpts[closeOverdraftOpts.Count - 1].monthlyPlannedBudget);
+            budgetSumToMove = currentGap;
 
             overDraftSubCategory.id = closeOverdraftOpts[closeOverdraftOpts.Count - 1].id;
             overDraftSubCategory.monthlyPlannedBudget = closeOverdraftOpts[closeOverdraftOpts.Count - 1].monthlyPlannedBudget;
@@ -2019,6 +2036,7 @@
         else
         {
             Console.WriteLine("No overdraft detected");
+            overdraftDetected = false;
 
         }
     }
@@ -2030,10 +2048,16 @@
         if (budgetToSaveRes.IsSuccessStatusCode)
         {
             Console.WriteLine("התקציבים עודכנו בהצלחה :)");
+            await checkOverdraft();
+            if (!overdraftDetected)
+            {
+                currentGap = 0;
+                budgetSumToMove = 0;
+                isTransactionOverlayOpen.InvokeAsync(false);
+                gapsToUpdateBudgets.InvokeAsync(budgetsToUpdate);
+            }
+            //overdraftDetected = false;
 
-            overdraftDetected = false;
-            isTransactionOverlayOpen.InvokeAsync(false);
-            gapsToUpdateBudgets.InvokeAsync(budgetsToUpdate);
 
         }
         else
@@ -2042,6 +2066,22 @@
         }
     }
 
+    private void OverdraftBudgetSumInput(ChangeEventArgs e)
+    {
+        string budgetInTextBox = e.Value.ToString();
+        if (budgetInTextBox.Length > 0)
+        {
+            budgetSumToMove = Double.Parse(budgetInTextBox);
+        }
+        else
+        {
+            budgetSumToMove = currentGap;
+        }
+
+        Console.WriteLine(overdraftClass);
+
+        //titleInputLength = titleInput.Length;
+    }
 
     public async Task closeOverdraftWindow()
     {

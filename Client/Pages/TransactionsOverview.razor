@@ -24,14 +24,14 @@
                 <span>@returnToMainPage > @categoryTitle > @subCategoryTitle</span>
             }
         </div>
-        <div class="profileAndStreak"@onclick="goToSProfilePage">
+        <div class="profileAndStreak" @onclick="goToSProfilePage">
 
             <div class="streakBtn">
                 @if (streakStatTitle != null && streakStatTitle != "")
                 {
                     if (streakImgIcon != "")
                     {
-                        <img src=@streakImgIcon style="width:87%;"/>
+                        <img src=@streakImgIcon style="width:87%;" />
                     }
                 }
             </div>
@@ -98,6 +98,19 @@
                             <div class="outerTitleName">
                                 <label class="titleName" for="amount">שם תת קטגוריה</label>
                                 <input class="titleBox" type="text" id="amount" placeholder="שם תת הקטגוריה" @bind="subCatToEdit.subCategoryTitle" maxlength="18" minlength="2" @oninput="SubCatTitleLengthCounter" />
+                                <div class="input-container">
+                                     <div class="counter">
+                                    @if (titleInput.Length > 2 && titleInput.Length < 19)
+                                                {
+                                                    <span>@titleInput.Length/18</span>
+                                                }
+                                                else if (titleInput.Length < 2)
+                                                {
+                                                    <span>0/18</span>
+                                                }
+                                </div>
+                                </div>
+                               
                             </div>
                             @if (!typeByCat)
                             {
@@ -160,7 +173,7 @@
                                 <div class="outerExample">
                                     <div>
                                         <span class="example">לדוגמה:</span>
-                                        לק - רצון, דלק - צורך, שכ״ד- חובה. העדיפות משפיעה על הטיפים לייעול התקציב.
+                                        לק - רצון, דלק - צורך, שכ״ד - חובה. העדיפות משפיעה על הטיפים לייעול התקציב.
                                     </div>
                                 </div>
                             }
@@ -377,8 +390,8 @@
 
                                                             <button class="modal-close-btn" @onclick="() => filterByTagOverlay = false"><img src="./css/images/close x.svg" /></button>
                                                             <div class="patmentsTitle">
-                                                                <p>אין לך תגיות עדיין.. .</p>
-                                                                <p>ניתן ליצור תגיות חדשות בעמוד הפרופיל.</p>
+                                                                <p>לא מצאנו תגיות שקשורות לתת הקטגוריה הזו.</p>
+                                                                <p>ניתן ליצור תגיות חדשות בעמוד הפרופיל או לשייך את ההזנות לתגיות שלך (אם יש קיימות).</p>
                                                             </div>
                                                         </div>
 
@@ -494,7 +507,7 @@
     if (!noOverdraftOptions && isOverdraft)
     {
         <div class="overlay">
-            <div class="outerOverdraft">
+            <div class="@overdraftClass">
                 <div class="overdraftWindow">
 
                     <div class="outerText">
@@ -506,7 +519,7 @@
                         <div>כדאי להגדיל את התקציב.</div>
                         <div><b>הסכום שאני רוצה להעביר:</b></div>
                         <div class="outerCurrentGap">
-                            <input class="currentGap" type="number" @bind="currentGap" min="@currentGap" />
+                            <input class="currentGap" type="number" @oninput="OverdraftBudgetSumInput" min="@currentGap" maxlength="6" minlength="1" placeholder="@currentGap" />
                             <span class="currency-symbolOverDraft">₪</span>
                             <div class="lineBetweenOverdraft"></div>
                         </div>
@@ -565,7 +578,7 @@
                                     </div>
                                     <div>
                                         עתידי: @(
-                                     chosenSubCategory.monthlyPlannedBudget - currentGap
+                                     chosenSubCategory.monthlyPlannedBudget - budgetSumToMove
                                      )
                                         <span>₪</span>
                                     </div>
@@ -613,7 +626,7 @@
                                     </div>
                                     <div>
                                         עתידי: @(
-                                     closeOverdraftOpts[closeOverdraftOpts.Count - 1].monthlyPlannedBudget + currentGap)
+                                     closeOverdraftOpts[closeOverdraftOpts.Count - 1].monthlyPlannedBudget + budgetSumToMove)
                                         <span>₪</span>
                                     </div>
 
@@ -626,7 +639,11 @@
                     <div class="outerBtns">
                         @if (chosenSubCategory == null)
                         {
-                            <button class="primery-buttonOverDraft" @onclick="manageBudgetsToTranfer" disabled>העברה</button>
+                            <button class="primery-buttonOverDraft" @onclick="manageBudgetsToTranfer" disabled style="opacity:60%">העברה</button>
+                        }
+                        else if (budgetSumToMove > chosenSubCategory.remainingBudget)
+                        {
+                            <button class="primery-buttonOverDraft" @onclick="manageBudgetsToTranfer" disabled style="opacity:60%">העברה</button>
                         }
                         else
                         {
@@ -634,6 +651,25 @@
                         }
 
                         <button class="thirdBtn" @onclick="NotTreatedOverdraft">אטפל בהמשך</button>
+                        @if (chosenSubCategory.remainingBudget > 0)
+                        {
+                            if (budgetSumToMove > chosenSubCategory.remainingBudget)
+                            {
+                                overdraftClass = "outerOverdraftWithErrorMsg";
+
+                                <div style="font-size:0.9rem">
+                                    <span>הסכום שבחרת למשוך מהתקציב הפנוי גדול מהתקציב עצמו.</span>
+                                    <span>כדאי להקטין את הסכום או לנסות למשוך אותו מתקציב פנוי אחר.</span>
+                                </div>
+
+
+                            }
+                        }
+                        else
+                        {
+                             overdraftClass = "outerOverdraft";
+                        }
+
                     </div>
 
                 </div>
@@ -755,6 +791,8 @@
     private int totalPages => (int)Math.Ceiling(subCatTagsList.Count / (double)pageSize);
     string returnToMainPage = "סביבת ההווה";
 
+    string overdraftClass = "outerOverdraft";
+
 
     bool typeByCat = false; //false- expense, true- income
 
@@ -793,7 +831,7 @@
         {
             var catTitleRes = await catTitle.Content.ReadAsStringAsync();
             categoryTitle = catTitleRes;
-            if (categoryTitle == "הכנסות") ;
+            if (categoryTitle == "הכנסות") 
             {
                 categoryTypeIndicator = true;
             }
@@ -1186,7 +1224,7 @@
 
                 }
                 userCategories = tempUserCategories;
-                editSubCatBtnClicked = !editSubCatBtnClicked;
+                //editSubCatBtnClicked = !editSubCatBtnClicked;
             }
             else
             {
@@ -1195,6 +1233,7 @@
         }
         else
         {
+            userCategories = new List<AllUserCategories>();
             AllUserCategories incomeCat = new AllUserCategories()
                 {
                     id = categoryID,
@@ -1252,6 +1291,7 @@
         if (allTransactions == null || allTransactions.Count <= 0)
         {
             Console.WriteLine("no transactions fit selected payment method");
+            await undoFilterAndSort();
         }
         filterByTransTypeOverlay = false;
         filterBtnClicked = false;
@@ -1607,6 +1647,7 @@
                     closeOverdraftOpts = new List<OverBudgetToShow>();
                     closeOverdraftOpts = await overdraftRes.Content.ReadFromJsonAsync<List<OverBudgetToShow>>();
                     currentGap = (closeOverdraftOpts[closeOverdraftOpts.Count - 1].remainingBudget) - (closeOverdraftOpts[closeOverdraftOpts.Count - 1].monthlyPlannedBudget);
+                    budgetSumToMove = currentGap;
 
                     overDraftSubCategory.id = closeOverdraftOpts[closeOverdraftOpts.Count - 1].id;
                     overDraftSubCategory.monthlyPlannedBudget = closeOverdraftOpts[closeOverdraftOpts.Count - 1].monthlyPlannedBudget;
@@ -1626,6 +1667,8 @@
                 else
                 {
                     Console.WriteLine("No overdraft detected");
+                    overdraftStatus = false;
+                    isOverdraft = false;
 
                 }
             }
@@ -1643,6 +1686,12 @@
     List<OverDraftBudgetToEdit> budgetToUpdate = new List<OverDraftBudgetToEdit>();
     public async Task manageBudgetsToTranfer()
     {
+        if (budgetSumToMove > 0)
+        {
+            currentGap = budgetSumToMove;
+        }
+        //currentGap = budgetSumToMove;
+
         budgetToUpdate = new List<OverDraftBudgetToEdit>();
 
         budgetToUpdate.Add(new OverDraftBudgetToEdit
@@ -1673,19 +1722,24 @@
         {
             Console.WriteLine("התקציבים עודכנו בהצלחה :)");
 
-            overdraftStatus = false;
-            overdraftNotTreated = false;
-            isOverdraft = false;
+            await checkOverdraftFunc(subCatID);
 
-            var subCatRes = await Http.GetAsync("api/Present/subCategoryToShow/" + categoryID);
-            if (subCatRes.IsSuccessStatusCode)
+            if (!overdraftStatus && !isOverdraft) //means the overdraft was fixed
             {
-                budget = budgetsToUpdate[1].monthlyPlannedBudget;
+                overdraftNotTreated = false;
+                var subCatRes = await Http.GetAsync("api/Present/subCategoryToShow/" + categoryID);
+                if (subCatRes.IsSuccessStatusCode)
+                {
+                    budget = budgetsToUpdate[1].monthlyPlannedBudget;
+                    currentGap = 0;
+                    budgetSumToMove = 0;
+                }
+                else
+                {
+                    Console.WriteLine("no subcategories found");
+                }
             }
-            else
-            {
-                Console.WriteLine("no subcategories found");
-            }
+
         }
         else
         {
@@ -1710,5 +1764,24 @@
     {
         titleInput = e.Value.ToString();
         titleInputLength = titleInput.Length;
+    }
+
+
+    double budgetSumToMove = 0;
+    private void OverdraftBudgetSumInput(ChangeEventArgs e)
+    {
+        string budgetInTextBox = e.Value.ToString();
+        if (budgetInTextBox.Length > 0)
+        {
+            budgetSumToMove = Double.Parse(budgetInTextBox);
+        }
+        else
+        {
+            budgetSumToMove = currentGap;
+        }
+
+        Console.WriteLine(overdraftClass);
+
+        //titleInputLength = titleInput.Length;
     }
 }
