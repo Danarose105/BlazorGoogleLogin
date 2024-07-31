@@ -50,44 +50,53 @@
                     <span class="tagsValue">@Math.Round(transaction.transValue,2) ₪</span>
                     <div class="outerDotsAndOptionsTrans">
                         <button class="optionsMenu" @onclick="OpetionsBtnClicked"><img src="./css/images/option menu.svg" /></button>
-                       
+
                         @if (isOpetionsBtnClicked)
                         {
-                             <div id="options">
+                            <div id="options">
 
-                            <OptionsMenuComponent deleteBtnClicked="deleteTransPopUp" editBtnClicked="editTransPopUp"></OptionsMenuComponent>
-                        </div>
+                                <OptionsMenuComponent deleteBtnClicked="deleteTransPopUp" editBtnClicked="editTransPopUp"></OptionsMenuComponent>
+                            </div>
                         }
                     </div>
 
                 </div>
                 <div class="outerProp">
 
+                    @if (isValueTypeTooltipOpen)
+                    {
+                        
+                            <span class="bubbleText">@transaction.valueType</span>
+                       
+                    }
+
                     @if (transaction.valueType == "מזומן")
                     {
-                        <div class="paymentMethod">
+                        <div class="paymentMethod" @onclick="explainPaymentIcon">
                             <span><img src="./css/images/cash icon.svg" /></span>
 
                         </div>
                     }
                     else if (transaction.valueType == "אשראי")
                     {
-                        <div class="paymentMethod">
+                        <div class="paymentMethod" @onclick="explainPaymentIcon">
                             <span><img src="./css/images/credit card.svg" /></span>
                         </div>
                     }
                     else if (transaction.valueType == "ביט/פייבוקס")
                     {
-                        <div class="paymentMethod">
+                        <div class="paymentMethod" @onclick="explainPaymentIcon">
                             <span><img src="./css/images/bit-and-paybox.svg" /></span>
                         </div>
                     }
                     else if (transaction.valueType == "אחר")
                     {
-                        <div class="paymentMethod">
+                        <div class="paymentMethod" @onclick="explainPaymentIcon">
                             <span><img src="./css/images/wallet2.svg" /></span>
                         </div>
                     }
+
+
 
                     @if (transaction.fixedMonthly == true)
                     {
@@ -201,6 +210,10 @@
     int transIDtoEdit = 0;
     DateTime date;
 
+    bool isValueTypeTooltipOpen = false;
+
+
+
     protected override async Task OnInitializedAsync()
     {
         if (transaction.parentTransID.HasValue) //checking if the transaction is part of a repeated/split payment
@@ -230,7 +243,7 @@
 
             transIDtoEdit = transaction.id;
 
-            if (transaction.splitPayment==true)
+            if (transaction.splitPayment == true)
             {
                 var repeatedTransValuesRes = await Http.GetAsync("api/Transactions/getPaymentTransToEdit/" + transIDtoEdit);
                 if (repeatedTransValuesRes.IsSuccessStatusCode)
@@ -321,7 +334,7 @@
                     }
                 }
             }
-            else 
+            else
             {
                 Console.WriteLine("בעיה במחיקת הזנה");
             }
@@ -457,5 +470,18 @@
         transIndexInPayments = transPayment[0];
         totalPayments = transPayment[1];
         Console.WriteLine("total payments- " + totalPayments + ", transIndexInPayments- " + transIndexInPayments);
+    }
+
+    public async Task explainPaymentIcon()
+    {
+        isValueTypeTooltipOpen = !isValueTypeTooltipOpen;
+
+        if (isValueTypeTooltipOpen)
+        {
+            await Task.Delay(2000);
+            isValueTypeTooltipOpen = false;
+            StateHasChanged();
+        }
+
     }
 }

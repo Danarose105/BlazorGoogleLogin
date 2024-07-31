@@ -195,3 +195,41 @@
     background: #EDEFF7; /* Soft blue background for selected state */
 }
 
+.savingsProgress {
+    background-color: #6775F4;
+    border-radius: 0.625rem;
+    height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.bubbleText {
+    color: #030942;
+    font-size: 0.95rem;
+    /* z-index: 1; */
+    position: absolute;
+    background-color: #fff;
+    width: 6rem;
+    margin-top: -4.2rem;
+    box-shadow: 0px 7px 15px 0px rgba(48, 63, 176, 0.10);
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    border-radius: 0.3rem;
+    padding: 1vh 0;
+}
+
+    .bubbleText::after {
+        content: "";
+        position: absolute;
+        bottom: -0.5rem;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-top: 10px solid #fff;
+        transform: translateX(-200%);
+    }
