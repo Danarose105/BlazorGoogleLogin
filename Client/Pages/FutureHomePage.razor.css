@@ -17,6 +17,14 @@
     justify-content: center;
 }
 
+.outerProfileAndTitle {
+    display: flex;
+    flex-direction: row-reverse;
+    width: 100%;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-top: 1vh;
+}
 .profileAndStreak {
     position: relative;
     display: inline-block;
@@ -33,15 +41,6 @@
     top: 33%;
     left: 50%;
     width: 111%;
-}
-
-.outerTop {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 94%;
-    padding: 3vh 0 0 0;
 }
 
 .outerColors {
@@ -162,7 +161,7 @@
 
 .pageTitle {
     font-size: 1.3rem;
-    margin-bottom: 5vh;
+    margin-bottom: 2vh;
     font-weight: 600;
 }
 

@@ -111,6 +111,8 @@
     display: flex;
     align-items: center;
     column-gap: 2vh;
+    padding-top: 2vh;
+    justify-content: flex-end;
 }
 
 .divider {
@@ -275,4 +277,120 @@
     font: inherit;
     cursor: pointer;
     outline: inherit;
+}
+
+.outerTitleAndCounter {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.input-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.titleBox {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.counter {
+    position: absolute;
+    bottom: 0;
+    color: #666;
+    font-size: 12px;
+    padding: 2px 6px;
+}
+
+    .counter span {
+        color: inherit; /* Inherit color from parent */
+        color: #636363
+    }
+
+.catTitle {
+
+    font-weight: 500;
+    margin: 0;
+    height: 6vh;
+    border-radius: 0.3125rem;
+    background: #FFF;
+    box-shadow: 0px 85px 24px 0px rgba(171, 173, 191, 0.00), 0px 55px 22px 0px rgba(171, 173, 191, 0.01), 0px 31px 18px 0px rgba(171, 173, 191, 0.05), 0px 14px 14px 0px rgba(171, 173, 191, 0.09), 0px 3px 7px 0px rgba(171, 173, 191, 0.10);
+    border: 1px solid #F9F9F9;
+    position: relative;
+}
+
+
+.outerIconAndTitleToShow {
+    display: flex;
+    align-items: center;
+    column-gap: 2vh;
+    padding-top: 2vh;
+}
+
+.outerIconAndTitleToShowFirst {
+    display: flex;
+    align-items: center;
+    column-gap: 2vh;
+
+}
+
+.outerSavingAmountToEdit {
+    border-radius: 0.5rem;
+    display: flex;
+    background-color: #F9F9F9;
+    padding: 1vh 5vw;
+    font-size: 1.1rem;
+    border: none;
+    width: 6rem;
+}
+
+.outerSavingsAmountAndShekel {
+    display: flex;
+    align-items: center;
+    border-radius: 0.5rem;
+    /* display: flex; */
+    background-color: #F9F9F9;
+    /* font-size: 1.1rem; */
+    border: none;
+    box-shadow: 0px 85px 24px 0px rgba(171, 173, 191, 0.00), 0px 55px 22px 0px rgba(171, 173, 191, 0.01), 0px 31px 18px 0px rgba(171, 173, 191, 0.05), 0px 14px 14px 0px rgba(171, 173, 191, 0.09), 0px 3px 7px 0px rgba(171, 173, 191, 0.10);
+    width: 7.5rem;
+    justify-content: center;
+}
+
+
+
+.lineBetweenToEdit {
+    width: 7rem;
+    background-color: #727272;
+    height: 0.1vh;
+    position: relative;
+    bottom: 11.5vh;
+    z-index: 5;
+    position: absolute;
+}
+
+
+.primery-button {
+    border-radius: 0.25rem;
+    background: #6775F4;
+    color: #6775F4;
+    width: 11rem;
+    height: 2.3rem;
+    flex-shrink: 0;
+    color: #F9F9F9;
+    text-align: center;
+    font-family: Heebo;
+    font-size: 1.2rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    border: none;
+    margin-bottom: 2vh;
 }

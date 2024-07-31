@@ -61,7 +61,7 @@
             {
                 <div @onclick="()=>showSavingDetails(saving)" class="outerSavingsLine">
                     <div class="outerIconTitleAndSum">
-                        <div class="outerIconAndTitle">
+                        <div class="outerIconAndTitleToShowFirst">
                             <span class="emoji-circle">
                                 💰
                             </span>
@@ -103,7 +103,7 @@
                     </div>
                     <div>
                         <div class="outerTitle">
-                            <div class="outerIconAndTitle">
+                            <div class="outerIconAndTitleToShow">
                                 <span class="emoji-circle">
                                     💰
                                 </span>
@@ -139,13 +139,16 @@
 
 
                         <div>
-                            <button class="backArrow" @onclick="()=> isEditSavingClicked = !isEditSavingClicked"><img src="./css/images/close x.svg" /></button>
+                            <button class="backArrow" @onclick="()=> isEditSavingClicked = !isEditSavingClicked"><img src="../css/images/back-repeated.svg" /></button>
                         </div>
 
                     </div>
 
                     <div>
                         <div class="outerTitle">
+
+                            <div class="outerTitleAndCounter">
+                            <div class="input-container">
                             <div> <span><b>עריכת חסכון</b></span></div>
                             <div class="outerIconAndTitle">
 
@@ -154,13 +157,9 @@
                                 </span>
                                 <span>
                                     <input class="catTitle" type="text" maxlength="18" minlength="2" @oninput="titleLengthCounter" @bind="@editedSaving.savingsTitle" />
-                                    </span>
-                            </div>
+                                </span>
 
-                            <div class="outerTitleAndCounter">
-                            <div class="input-container">
-                               
-                                <div class="counter">
+                                    <div class="counter">
                                     @if (editedSaving.savingsTitle == null || editedSaving.savingsTitle == "")
                                     {
                                         <span>0/18</span>
@@ -178,7 +177,10 @@
 
                                         }
                                     }
-                                </div>
+                                    </div>
+                            </div>
+                               
+                                
 
                             </div>
                         </div
@@ -192,10 +194,11 @@
 
 
                           
-                             <div>
-                                    <input class="outerSavingAmount" type="number" @bind="@editedSaving.savingsSum" />
+                             <div class="outerSavingsAmountAndShekel">
+                                    <input class="outerSavingAmountToEdit" type="number" @bind="@editedSaving.savingsSum" />
                                     <span>₪</span>
-                                </div>
+                                  
+                            </div>
                                 
 
                         </div>
@@ -204,7 +207,7 @@
                   
                     <div>      
 
-                         <button class="saveBtn" @onclick="saveUpdatedSaving">שמירת שינויים</button>
+                         <button class="primery-button" @onclick="saveUpdatedSaving">שמירת שינויים</button>
                     </div>
                 </div>
             </div>
