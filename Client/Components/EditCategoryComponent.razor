@@ -305,9 +305,13 @@
         {
             CategoryToEdit updatedCategory = await updateCatRes.Content.ReadFromJsonAsync<CategoryToEdit>();
             categoryToEdit.categroyTitle = updatedCategory.categroyTitle;
-            if (categoryToEdit.icon == null || categoryToEdit.icon == "")
+            if ((categoryToEdit.icon == null || categoryToEdit.icon == "") && categoryToEdit.categroyTitle != "הכנסות")
             {
                 categoryToEdit.icon = "💰";
+            }
+            else if ((categoryToEdit.icon == null || categoryToEdit.icon == "") && categoryToEdit.categroyTitle == "הכנסות")
+            {
+                categoryToEdit.icon = "💵";
             }
             else
             {
