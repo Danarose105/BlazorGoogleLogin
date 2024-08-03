@@ -137,7 +137,7 @@
                                     <div>
                                         @if (newUser.monthStartDate <= 0 || newUser.profilePicOrIcon == null || newUser.profilePicOrIcon=="" || newUser.firstName== null || newUser.firstName=="")
                                         {
-                                            <button class="primery-button" disabled @onclick="@(async () => await createNewUser())">שמירה                                </button>
+                                            <button class="primery-button" disabled style="opacity:60%;">שמירה                                </button>
                                             
                                         }else{
                                             <button class="primery-button" @onclick="@(async () => await createNewUser())">שמירה                                </button>

@@ -139,9 +139,15 @@
                             }
                             else if (titleInput == null || titleInput == "" || titleInput.Length > 18 || titleInput.Length < 2)
                             {
-                                <button class="saveBtn" @onclick="saveUpdatedCat" disabled style="opacity:60%">שמירה וסיום</button>
-                                <br />
-                                <span>לא ניתן לשמור קטגוריה ללא שם.</span>
+                               
+                                if(isTyped)
+                                {
+
+                                    <button class="saveBtn" @onclick="saveUpdatedCat" disabled style="opacity:60%">שמירה וסיום</button>
+                                    <br />
+                                    <span>שם הקטגוריה צריך להיות בין 2-18 תווים.</span>
+                                }
+                                
                             }
                             else
                             {
@@ -161,9 +167,13 @@
                             }
                             else if (titleInput == null || titleInput == "" || titleInput.Length > 18 || titleInput.Length < 2)
                             {
-                                <button class="saveBtn" @onclick="addNewCategory" disabled style="opacity:60%">שמירה וסיום</button>
+                               
+                                if(isTyped)
+                                {
+                                     <button class="saveBtn" @onclick="addNewCategory" disabled style="opacity:60%">שמירה וסיום</button>
                                 <br />
-                                <span>לא ניתן לשמור קטגוריה ללא שם.</span>
+                                <span>שם הקטגוריה צריך להיות בין 2-18 תווים.</span>
+                                }
                             }
                             else
                             {
@@ -215,6 +225,7 @@
 
     bool disabledEditOfIncomeTitle = false;
     string ogCatName = "";
+    string ogEmoji = "";
 
     string titleInput = "";
     int titleInputLength = 0;
@@ -223,7 +234,7 @@
     protected override async Task OnInitializedAsync()
     {
         ogCatName = categoryToEdit.categroyTitle;
-
+        ogEmoji = categoryToEdit.icon;
 
         if (ogCatName == "הכנסות")
         {
@@ -244,6 +255,7 @@
     string hideBtn = "";
     bool noEmojiBtn = false;
     bool isCancleBtnClicked = false;
+    bool isTyped = false;
     public async Task saveUpdatedCat()
     {
         //editedCategory.categroyTitle = categoryToEdit.categroyTitle;
@@ -315,7 +327,11 @@
 
     public void openCategoryOverlay()
     {
-
+        if(categoryToEdit.icon == "" || categoryToEdit.icon == null)
+        {
+            categoryToEdit.icon = ogEmoji;
+        }
+        
         closeOverlay.InvokeAsync(true);
 
     }
@@ -397,6 +413,7 @@
 
     private void titleLengthCounter(ChangeEventArgs e)
     {
+        isTyped = true;
         titleInput = e.Value.ToString();
         titleInputLength = titleInput.Length;
     }

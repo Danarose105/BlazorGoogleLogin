@@ -11,6 +11,6 @@ namespace BlazorGoogleLogin.Shared.Models.present.toShow
         public int id { get; set; }
         public string categroyTitle { get; set; }
         public string? icon { get; set; }
-        public string? color { get; set; }
+        public string color { get; set; }
     }
 }
