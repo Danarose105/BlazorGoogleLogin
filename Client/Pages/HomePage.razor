@@ -9,6 +9,7 @@
 @using Microsoft.AspNetCore.Components.Web
 @inject DateService DateService
 @inject IJSRuntime JSRuntime
+@*@using PSC.Blazor.Components.Tours*@
 
 
 @if (openAddCatOverlay)
@@ -80,7 +81,7 @@ else
                     {
                         @if (streakImgIcon != "")
                         {
-                            <button class="streakBtn"><img src=@streakImgIcon style="width:87%;" @onclick="getStreakDetails"/></button>
+                            <button class="streakBtn"><img src=@streakImgIcon style="width:87%;" @onclick="getStreakDetails" /></button>
 
                         }
                     }
@@ -124,7 +125,7 @@ else
                             }
                             else
                             {
-                              <span> @Math.Round(currentUser.budgetFullValue,2)%</span> 
+                                <span> @Math.Round(currentUser.budgetFullValue,2)%</span>
                             }
 
                             <br />
@@ -180,7 +181,7 @@ else
                                         <span class="likeIcon">👍</span>
                                         <div class="storyTextWrapper">
                                             <h3 class="titleFirstStory">החסכון הגדול ביותר</h3>
-                                            <div>עד כה החודש הוצאת @subCatsTotalsStory[bestSavingIndex].currentMonthTotal₪ על @bestSavingSubCat, @bestSavingValue₪ פחות מחודש שעבר! </div>
+                                            <div>עד כה החודש הוצאת @Math.Round(subCatsTotalsStory[bestSavingIndex].currentMonthTotal)₪ על @bestSavingSubCat, @bestSavingValue₪ פחות מחודש שעבר! </div>
                                         </div>
                                     </div>
                                     <div class="divider"></div>
@@ -189,7 +190,7 @@ else
                                         <div class="storyTextWrapper">
 
                                             <h3 class="titleFirstStory">העלייה הגדולה ביותר</h3>
-                                            <div>עד כה החודש הוצאת @subCatsTotalsStory[worstSavingIndex].currentMonthTotal₪ על @worstSavingSubCat, @worstSavingValue₪ יותר מחודש שעבר! </div>
+                                            <div>עד כה החודש הוצאת @Math.Round(subCatsTotalsStory[worstSavingIndex].currentMonthTotal)₪ על @worstSavingSubCat, @worstSavingValue₪ יותר מחודש שעבר! </div>
                                         </div>
                                     </div>
                                     <div class="imgWrapper">
@@ -266,7 +267,7 @@ else
 
                                     <MonthlyStoryGraphComponent userID="@userID" allUserCategories="@currentUser.categoriesFullList" incomeSumValue="displayTotalIncome"></MonthlyStoryGraphComponent>
 
-                                    @if (incomeSum != null)
+                                    @if (incomeSum != null && incomeSum > 0)
                                     {
 
                                         <div class="titleFirstStory incomeStory">💸 ההכנסות שלך עומדות כרגע על @incomeSum ₪</div>
@@ -392,7 +393,7 @@ else
                     {
                         <p>אופס, לא נמצא תוצאה שמתאימה לחיפוש</p>
                     }
-                    
+
                 }
             }
             else
@@ -505,6 +506,10 @@ else
 
     [CascadingParameter]
     private UserDTO user { get; set; }
+
+    //[Inject]
+    //private ITourService TourService { get; set; }
+
 
     userToShow currentUser;
     UserToAdd newUser = new UserToAdd();
@@ -627,7 +632,7 @@ else
 
         userID = user.Id;
 
-        await Task.Delay(1); // This is just to simulate an async process.
+        await Task.Delay(1000); // This is just to simulate an async process.
 
         int currentMonthNumber = DateTime.Now.Month; // Gets the current month number
         currentMonth = GetHebrewMonthName(currentMonthNumber);
@@ -726,7 +731,7 @@ else
                 streakStatTitle = await getCurrentStatRes.Content.ReadAsStringAsync();
                 if (streakStatTitle != streakStatCheck)
                 {
-                    streakStatTitle=streakStatCheck;
+                    streakStatTitle = streakStatCheck;
 
                     var updateStreakRes = await Http.GetAsync("api/Present/updateStreakStat/" + userID + "/" + streakStatTitle); //updates the status title if necessary
                     if (updateStreakRes.IsSuccessStatusCode)
@@ -791,7 +796,7 @@ else
     {
         if (weekAmount <= 1 && weekAmount < 2)
         {
-            if (weekAmount==0)
+            if (weekAmount == 0)
             {
                 return "";
             }
@@ -905,7 +910,7 @@ else
             if (!isChecked)
             {
                 currentUser.spendingValueFullList += transValue;
-                //Console.WriteLine("isChecked- " + isChecked + ", transValue- " + transValue);
+                Console.WriteLine("isChecked- " + isChecked + ", transValue- " + transValue);
 
                 //refreshing the budget accordingly:
 
@@ -1031,98 +1036,95 @@ else
 
     public async Task getSubCatTotalsForStory()
     {
-       
-        //await Task.Delay(2000);
-        //if (storyPopUpWindow)
-        //{
-            List<SubCategoryToShow> subCategories = new List<SubCategoryToShow>();
-            subCatsTotalsStory = new List<StorySubCategoryTotals>();
-            //first story stuff:
-            if (currentUser.categoriesFullList.Count > 0)
-            {
-                foreach (CategoryToShow cat in currentUser.categoriesFullList)
-                {
-                    var getAllSubCats = await Http.GetAsync("api/Present/subCategoryToShow/" + cat.id);
-                    if (getAllSubCats.IsSuccessStatusCode)
-                    {
-                        List<SubCategoryToShow> subToAddList = getAllSubCats.Content.ReadFromJsonAsync<List<SubCategoryToShow>>().Result;
-                        if (subToAddList.Count > 0)
-                        {
-                            foreach (SubCategoryToShow subToAdd in subToAddList)
-                            {
-                                subCategories.Add(subToAdd);
-                            }
 
-                        }
-                        else
+        List<SubCategoryToShow> subCategories = new List<SubCategoryToShow>();
+        subCatsTotalsStory = new List<StorySubCategoryTotals>();
+        //first story stuff:
+        if (currentUser.categoriesFullList.Count > 0)
+        {
+            foreach (CategoryToShow cat in currentUser.categoriesFullList)
+            {
+                var getAllSubCats = await Http.GetAsync("api/Present/subCategoryToShow/" + cat.id);
+                if (getAllSubCats.IsSuccessStatusCode)
+                {
+                    List<SubCategoryToShow> subToAddList = getAllSubCats.Content.ReadFromJsonAsync<List<SubCategoryToShow>>().Result;
+                    if (subToAddList.Count > 0)
+                    {
+                        foreach (SubCategoryToShow subToAdd in subToAddList)
                         {
-                            Console.WriteLine("couldn't get one of the sub cats for the story- returned null");
+                            subCategories.Add(subToAdd);
                         }
+
                     }
                     else
                     {
-                        Console.WriteLine("couldn't get one of the sub cats for the story- server bad request");
+                        Console.WriteLine("couldn't get one of the sub cats for the story- returned null");
                     }
                 }
-                if (subCategories.Count > 0)
+                else
                 {
-                    foreach (SubCategoryToShow subToCheck in subCategories)
+                    Console.WriteLine("couldn't get one of the sub cats for the story- server bad request");
+                }
+            }
+            if (subCategories.Count > 0)
+            {
+                foreach (SubCategoryToShow subToCheck in subCategories)
+                {
+                    var getSubCatTotals = await Http.GetAsync("api/Present/getBestAndWorstSpendings/" + subToCheck.id);
+                    if (getSubCatTotals.IsSuccessStatusCode)
                     {
-                        var getSubCatTotals = await Http.GetAsync("api/Present/getBestAndWorstSpendings/" + subToCheck.id);
-                        if (getSubCatTotals.IsSuccessStatusCode)
+                        StorySubCategoryTotals requestedSubInfo = await getSubCatTotals.Content.ReadFromJsonAsync<StorySubCategoryTotals>();
+                        if (requestedSubInfo != null)
                         {
-                            StorySubCategoryTotals requestedSubInfo = await getSubCatTotals.Content.ReadFromJsonAsync<StorySubCategoryTotals>();
-                            if (requestedSubInfo != null)
-                            {
-                                subCatsTotalsStory.Add(requestedSubInfo);
-                            }
-                            else
-                            {
-                                Console.WriteLine("couldn't get totals of one of the sub cats for the story- returned null");
-                            }
-
+                            subCatsTotalsStory.Add(requestedSubInfo);
                         }
                         else
                         {
-                            Console.WriteLine("couldn't get totals of one of the sub cats for the story- server bad request");
+                            Console.WriteLine("couldn't get totals of one of the sub cats for the story- returned null");
                         }
+
                     }
-                    if (subCatsTotalsStory.Count > 0)
+                    else
                     {
-                        bestSavingValue = subCatsTotalsStory[0].lastMonthTotal - subCatsTotalsStory[0].currentMonthTotal;
-                        worstSavingValue = subCatsTotalsStory[0].lastMonthTotal - subCatsTotalsStory[0].currentMonthTotal;
-
-                        for (int i = 1; i < subCatsTotalsStory.Count; i++)
-                        {
-                            double gapCheck = subCatsTotalsStory[i].lastMonthTotal - subCatsTotalsStory[i].currentMonthTotal;
-                            if (gapCheck < worstSavingValue)
-                            {
-                                worstSavingValue = gapCheck;
-                                worstSavingIndex = i;
-                            }
-                            if (gapCheck > bestSavingValue)
-                            {
-                                bestSavingValue = gapCheck;
-                                bestSavingIndex = i;
-                            }
-                        }
-
-                        bestSavingSubCat = subCatsTotalsStory[bestSavingIndex].subCategoryTitle;
-                        bestSavingValue = Math.Round(subCatsTotalsStory[bestSavingIndex].lastMonthTotal - subCatsTotalsStory[bestSavingIndex].currentMonthTotal, 2);
-                        if (bestSavingValue < 0)
-                        {
-                            bestSavingValue *= -1;
-                        }
-
-                        worstSavingSubCat = subCatsTotalsStory[worstSavingIndex].subCategoryTitle;
-                        worstSavingValue = Math.Round(subCatsTotalsStory[worstSavingIndex].currentMonthTotal - subCatsTotalsStory[worstSavingIndex].lastMonthTotal, 2);
-                        if (worstSavingValue < 0)
-                        {
-                            worstSavingValue *= -1;
-                        }
+                        Console.WriteLine("couldn't get totals of one of the sub cats for the story- server bad request");
                     }
                 }
-            //}
+                if (subCatsTotalsStory.Count > 0)
+                {
+                    bestSavingValue = subCatsTotalsStory[0].lastMonthTotal - subCatsTotalsStory[0].currentMonthTotal;
+                    worstSavingValue = subCatsTotalsStory[0].lastMonthTotal - subCatsTotalsStory[0].currentMonthTotal;
+
+                    for (int i = 1; i < subCatsTotalsStory.Count; i++)
+                    {
+                        double gapCheck = subCatsTotalsStory[i].lastMonthTotal - subCatsTotalsStory[i].currentMonthTotal;
+                        if (gapCheck < worstSavingValue)
+                        {
+                            worstSavingValue = gapCheck;
+                            worstSavingIndex = i;
+                        }
+                        if (gapCheck > bestSavingValue)
+                        {
+                            bestSavingValue = gapCheck;
+                            bestSavingIndex = i;
+                        }
+                    }
+
+                    bestSavingSubCat = subCatsTotalsStory[bestSavingIndex].subCategoryTitle;
+                    bestSavingValue = Math.Round(subCatsTotalsStory[bestSavingIndex].lastMonthTotal - subCatsTotalsStory[bestSavingIndex].currentMonthTotal, 2);
+                    if (bestSavingValue < 0)
+                    {
+                        bestSavingValue *= -1;
+                    }
+
+                    worstSavingSubCat = subCatsTotalsStory[worstSavingIndex].subCategoryTitle;
+                    worstSavingValue = Math.Round(subCatsTotalsStory[worstSavingIndex].currentMonthTotal - subCatsTotalsStory[worstSavingIndex].lastMonthTotal, 2);
+                    if (worstSavingValue < 0)
+                    {
+                        worstSavingValue *= -1;
+                    }
+                }
+            }
+
             //second story stuff:
             tagsSpendingsList = new List<TagsAndSpendingsToShow>();
             var getUserSpendingsByTags = await Http.GetAsync("api/Present/GetTagsAndSpendings/" + currentUser.id);
@@ -1130,11 +1132,8 @@ else
             {
                 tagsSpendingsList = getUserSpendingsByTags.Content.ReadFromJsonAsync<List<TagsAndSpendingsToShow>>().Result;
             }
-
-            
             storyNav = 1;
-             storyPopUpWindow = !storyPopUpWindow;
-            //StateHasChanged();
+            storyPopUpWindow = !storyPopUpWindow;
         }
         else
         {
@@ -1241,7 +1240,7 @@ else
                             streakOverlay = true;
                         }
                     }
-                    
+
                 }
                 else
                 {

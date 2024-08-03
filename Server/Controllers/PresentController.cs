@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using BlazorGoogleLogin.Data;
-
+using System.Runtime.InteropServices.ObjectiveC;
 
 namespace BlazorGoogleLogin.Server.Controllers
 {
@@ -101,6 +101,8 @@ namespace BlazorGoogleLogin.Server.Controllers
 
             var transactionSumQuery = "SELECT COALESCE(SUM(t.transValue), 0) as transactionSum FROM transactions t JOIN subcategories sc ON t.subCategoryID = sc.id JOIN categories c ON sc.categoryID = c.id JOIN users u ON c.userID = u.id WHERE u.id = @ID AND sc.id = @subCatID AND ((MONTH(CURRENT_DATE()) = MONTH(DATE_ADD(CURRENT_DATE(), INTERVAL 1 MONTH)) AND t.transDate >= DATE_FORMAT(CONCAT(YEAR(CURRENT_DATE()), '-', MONTH(CURRENT_DATE()), '-', u.monthStartDate), '%Y-%m-%d') AND t.transDate <= CURRENT_DATE()) OR (MONTH(CURRENT_DATE()) <> MONTH(DATE_ADD(CURRENT_DATE(), INTERVAL 1 MONTH)) AND t.transDate >= DATE_FORMAT(CONCAT(YEAR(DATE_ADD(CURRENT_DATE(), INTERVAL -1 MONTH)), '-', MONTH(DATE_ADD(CURRENT_DATE(), INTERVAL -1 MONTH)), '-', u.monthStartDate), '%Y-%m-%d') AND t.transDate <= CURRENT_DATE())) AND t.transType = @TransType GROUP BY u.id;";
 
+
+
             // Get user details
             var user = (await _db.GetRecordsAsync<userToShow>(userQuery, new { ID = userID })).FirstOrDefault();
             if (user == null)
@@ -109,6 +111,35 @@ namespace BlazorGoogleLogin.Server.Controllers
             }
             else
             {
+
+                string getMonthStartQuery = "SELECT monthStartDate FROM users where id=@ID";
+                var monthRec= await _db.GetRecordsAsync<int>(getMonthStartQuery, new {ID=user.id});
+                int startMonthDay = monthRec.FirstOrDefault();
+                if (startMonthDay<=0 || startMonthDay==null)
+                {
+                    startMonthDay = 1; 
+                }
+                DateTime today = DateTime.Today;
+                DateTime getTransSumSince;
+                if (today.Day >= startMonthDay)
+                {
+                    getTransSumSince = new DateTime(year: today.Year, month: today.Month, day: startMonthDay);
+                }
+                else
+                {
+                    if (today.Month - 1 == 0) //handles the case where a year has changed
+                    {
+                        int month = 12;
+                        int year = today.Year - 1;
+                        getTransSumSince = new DateTime(year: year, month: month, day: startMonthDay);
+                    }
+                    else
+                    {
+                        getTransSumSince = new DateTime(year: today.Year, month: today.Month - 1, day: startMonthDay);
+                    }
+                }
+
+                string transSumQuery = "SELECT COALESCE(SUM(t.transValue), 0) as transactionSum FROM transactions t JOIN subcategories sc ON t.subCategoryID = sc.id JOIN categories c ON sc.categoryID = c.id JOIN users u ON c.userID = u.id WHERE u.id = @ID AND sc.id = @subCatID and t.transType=@transType and t.transDate between @dateSince and current_date()";
                 // Get categories for the user
                 var categories = (await _db.GetRecordsAsync<CategoryToShow>(categoryQuery, new { ID = user.id })).ToList();
                 if (categories.Any())
@@ -138,11 +169,11 @@ namespace BlazorGoogleLogin.Server.Controllers
 
                             foreach (int subCatID in subCatsList)
                             {
-                                user.spendingValueFullList = (await _db.GetRecordsAsync<double>(transactionSumQuery, new { ID = user.id, subCatID= subCatID, TransType = 1 })).FirstOrDefault();
-                                var overdraftTrans = (await _db.GetRecordsAsync<double>(transactionSumQuery, new { ID = user.id, subCatID = subCatID, TransType = 3 })).FirstOrDefault();
+                                user.spendingValueFullList = (await _db.GetRecordsAsync<double>(transSumQuery, new { ID = user.id, subCatID= subCatID, TransType = 1, dateSince= getTransSumSince})).FirstOrDefault();
+                                var overdraftTrans = (await _db.GetRecordsAsync<double>(transSumQuery, new { ID = user.id, subCatID = subCatID, TransType = 3, dateSince = getTransSumSince })).FirstOrDefault();
                                 totalSpendings += user.spendingValueFullList + overdraftTrans;
                                 //totalSpendings += overdraftTrans;
-                                user.incomeValueFullList = (await _db.GetRecordsAsync<double>(transactionSumQuery, new { ID = user.id, subCatID = subCatID, TransType = 2 })).FirstOrDefault();
+                                user.incomeValueFullList = (await _db.GetRecordsAsync<double>(transSumQuery, new { ID = user.id, subCatID = subCatID, TransType = 2, dateSince = getTransSumSince })).FirstOrDefault();
                                 totalIncome += user.incomeValueFullList;
                             }
                         }
@@ -165,6 +196,39 @@ namespace BlazorGoogleLogin.Server.Controllers
             if (spending == 0 || budget == 0)
                 return 0;
             return Math.Round((spending / budget) * 100, 2);
+        }
+
+        [HttpGet("getUserMonthStartDate/{userID}")]
+        public async Task<IActionResult> getUserMonthStartDate(int userID)
+        {
+            if (userID>0)
+            {
+                string getMonthStartDate = "SELECT monthStartDate FROM users where id=@ID";
+
+                object param = new
+                {
+                    ID = userID
+                };
+
+                var monthStartDayRes = await _db.GetRecordsAsync<int>(getMonthStartDate, param);
+                int monthStartDayRec = monthStartDayRes.FirstOrDefault();
+                if (monthStartDayRec>0)
+                {
+                    return Ok(monthStartDayRec);
+                }
+                else
+                {
+                    string updateMonthStart = "update users set monthStartDate=1 where id=@ID";
+                    var updateStartDay = await _db.SaveDataAsync(updateMonthStart, param);
+                    if (updateStartDay)
+                    {
+                        return Ok(1);
+                    }
+                    return BadRequest("original monthStartDate was invalid and failed to update it to 1");
+                }
+
+            }
+            return BadRequest("invalid userID");
         }
 
         [HttpGet("checkStreak/{userID}")] //checks the amount of weeks a user has input at least 3 transactions- including the current week
