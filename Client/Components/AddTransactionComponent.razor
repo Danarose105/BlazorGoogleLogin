@@ -554,7 +554,11 @@
                             <button class="secondery-button" @onclick="saveAndEndTransactions" disabled>שמירה וסיום</button>
                             @if (titleInput.Length < 2)
                             {
-                                <span>אורך שם ההזנה לא תקין.</span>
+                                if (isTyped)
+                                {
+                                    <span>שם ההזנה צריך להיות בין 2-18 תווים.</span>
+                                }
+                                
                             }
                             else if (newTransaction.transValue <= 0)
                             {
@@ -923,6 +927,8 @@
 
     bool isLoadComplete = false;
     int currentStreak = 0;
+
+    bool isTyped = false;
 
     private int currentPage = 0;
     private int pageSize = 6;
@@ -1317,11 +1323,13 @@
                             Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
                         }
                     }
+                    isTyped = false;
                 }
 
 
                 await saveRepeatedTransactions(transIDtoEdit); //saves the children separately
 
+                isTyped = false;
                 Console.WriteLine("ההזנה נשמרה בהצלחה :)");
                 addTransactionToTotal.InvokeAsync(newTransaction.transValue);
                 transValueToAdd.InvokeAsync(newTransaction.transValue);
@@ -1370,12 +1378,14 @@
                         Console.WriteLine("ההזנה נשמרה בהצלחה :)");
                         addTransactionToTotal.InvokeAsync(newTransaction.transValue);
                         transValueToAdd.InvokeAsync(newTransaction.transValue);
+                        isTyped = false;
                     }
                     else
                     {
                         Console.WriteLine("ההזנה נשמרה בהצלחה :)");
                         addTransactionToTotal.InvokeAsync(newTransaction.transValue);
                         transValueToAdd.InvokeAsync(newTransaction.transValue);
+                        isTyped = false;
                     }
                     //if (!categoryTypeIndicator && i == 0)
                     //{
@@ -1424,7 +1434,7 @@
                             Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
                         }
                     }
-
+                    isTyped = false;
                     Console.WriteLine("ההזנה נשמרה בהצלחה :)");
                 }
 
@@ -1478,11 +1488,13 @@
                             Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
                         }
                     }
+                    isTyped = false;
                 }
 
 
                 await saveRepeatedTransactions(transIDtoEdit); //saves the children separately
 
+                isTyped = false;
                 Console.WriteLine("ההזנה נשמרה בהצלחה :)");
                 addTransactionToTotal.InvokeAsync(newTransaction.transValue);
                 transValueToAdd.InvokeAsync(newTransaction.transValue);
@@ -1530,6 +1542,7 @@
                                 Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
                             }
                         }
+                        isTyped = false;
                         Console.WriteLine("ההזנה נשמרה בהצלחה :)");
                         addTransactionToTotal.InvokeAsync(newTransaction.transValue);
                         transValueToAdd.InvokeAsync(newTransaction.transValue);
@@ -1543,6 +1556,7 @@
             }
             await getStreakDetails();
             titleInput = "";
+            isTyped = false;
             titleInputLength = 0;
             newTransaction = new TransactionToAdd()
                 {
@@ -1567,6 +1581,18 @@
                             Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
                         }
                     }
+                    addTransactionToTotal.InvokeAsync(newTransaction.transValue);
+                    transValueToAdd.InvokeAsync(newTransaction.transValue);
+                    await getStreakDetails();
+                    titleInput = "";
+                    isTyped = false;
+                    titleInputLength = 0;
+                    newTransaction = new TransactionToAdd()
+                        {
+                            transDate = DateTime.Today, // Set the transaction date to today
+                            fixedMonthly = false,
+                            splitPayment = false
+                        };
                     Console.WriteLine("ההזנה נשמרה בהצלחה :)");
                 }
                 else
@@ -1575,6 +1601,7 @@
                     transValueToAdd.InvokeAsync(newTransaction.transValue);
                     await getStreakDetails();
                     titleInput = "";
+                    isTyped = false;
                     titleInputLength = 0;
                     newTransaction = new TransactionToAdd()
                         {
@@ -2010,7 +2037,7 @@
         {
             closeAddTransAfterOverdraft.InvokeAsync();
         }
-      
+
 
 
     }
@@ -2547,6 +2574,7 @@
 
     private void TransTitleLengthCounter(ChangeEventArgs e)
     {
+        isTyped = true;
         titleInput = e.Value.ToString();
         newTransaction.transTitle = titleInput;
         titleInputLength = titleInput.Length;
