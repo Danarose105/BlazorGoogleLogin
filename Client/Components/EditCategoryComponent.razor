@@ -317,6 +317,7 @@
             categoryToEdit.color = updatedCategory.color;
             isCategoryOverlayOpen.InvokeAsync(false);
             closeOverlay.InvokeAsync(true);
+            isTyped = false;
 
             //need to refresh the home page
 
@@ -351,6 +352,7 @@
 
             Console.WriteLine("New category added, ID: " + newCat.id);
             addNewCatToIndex.InvokeAsync(newCat);
+            isTyped = false;
             isCategoryOverlayOpen.InvokeAsync(false);
             newCategory = new CategoryToAdd();
         }
@@ -364,6 +366,7 @@
 
     public void openCategoryOverlay()
     {
+        isTyped = false;
         if(categoryToEdit.icon == "" || categoryToEdit.icon == null)
         {
             categoryToEdit.icon = ogEmoji;

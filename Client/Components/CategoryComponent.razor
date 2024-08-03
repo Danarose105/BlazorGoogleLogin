@@ -536,6 +536,7 @@
 
             newSubCategory = new SubCategoryToAdd();
             titleInput = "";
+            isTyped = false;
             isSubCategoryAddOverlayOpen = false;
         }
         else
@@ -820,6 +821,7 @@
 
     void closeAddSubCatOverlay()
     {
+        isTyped = false;
         isSubCategoryAddOverlayOpen = !isSubCategoryAddOverlayOpen;
         titleInput = "";
         newSubCategory.monthlyPlannedBudget = null;

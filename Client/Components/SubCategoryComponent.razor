@@ -630,7 +630,7 @@
         subCategoryToUpdate.importance = subCatToEdit.importance;
         foreach (AllUserCategories category in userCategories)
         {
-            if (category.categroyTitle == titleInput)
+            if (category.categroyTitle == subCatToEdit.categroyTitle)
             {
                 subCatToEdit.categoryID = category.id;
             }
