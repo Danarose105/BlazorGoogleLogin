@@ -73,7 +73,7 @@
                                     </div>
                                 </div>
 
-                                <div class="outerReBtn">
+                                <div class="outerReBtn" disabled="@splitPayment">
                                     <div class="outerReBtn">
                                         <button class="repeatedBtn" @onclick=@(async () => await repeatingTransOverlay())>@repeatedBtnTitle <img src="./css/images/repeat icon.svg" /></button>
                                         @if (newTransaction.fixedMonthly.Value == true)
@@ -90,7 +90,7 @@
                                     </div>
                                 </div>
 
-                                <div class="outerTitleAndDateAndName">
+                                <div class="outerTitleAndDateAndName" disabled="@fixedMonthly">
 
                                     @if (splitPayment)
                                     {
@@ -789,6 +789,13 @@
         </div>
     }
 
+    @if(fixedMonthly){
+        splitPayment=false;
+    }
+    else
+    {
+        splitPayment=true;
+    }
 }
 
 
@@ -851,6 +858,8 @@
     public EventCallback<string?> updatedStreak { get; set; }
 
 
+
+
     int userStartMonthDay = 0;
     TransactionToAdd newTransaction = new TransactionToAdd(); //if it's a new transaction
     TransactionToEdit ogTransaction = new TransactionToEdit(); //if it's an existing transaction
@@ -874,6 +883,7 @@
     public bool overdraftDetected;
 
     bool splitPayment = false;
+    bool fixedMonthly = false;
     bool isTopDropDownOpen = true;
     bool isButtomDropDownOpen = false;
     bool openTagsMenu = false;
@@ -1208,6 +1218,7 @@
                     if (newTransaction.fixedMonthly == true)
                     {
                         repeatedBtnTitle = "עריכת ההזנה החוזרת";
+                       
 
                         var getRepeatedChildren = await Http.GetAsync("api/Transactions/getRepeatedTransToEdit/" + transIDtoEdit); //gets the fixed children only
                         if (getRepeatedChildren.IsSuccessStatusCode)
@@ -1226,7 +1237,7 @@
 
                     if (newTransaction.splitPayment == true)
                     {
-
+                       
                         splitPayment = true;
                         var repeatedTransValuesRes = await Http.GetAsync("api/Transactions/getPaymentTransToEdit/" + transIDtoEdit);
 
@@ -1269,6 +1280,7 @@
         }
         else
         {
+           
             newTransaction = new TransactionToAdd()
                 {
                     transDate = DateTime.Today, // Set the transaction date to today

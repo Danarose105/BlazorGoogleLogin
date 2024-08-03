@@ -127,21 +127,24 @@
                     <div class="outerTitleAndCounter">
                         <div class="input-container">
                             <label class="titleName" for="amount">שם תת קטגוריה</label>
-                            <input class="titleBox" type="text" id="amount" placeholder="שם תת הקטגוריה" @bind="titleInput" @oninput="SubCatTitleLengthCounter" maxlength="18" minlength="2" />
-                            <div class="counter">
-                                <div class="outerTitleName">
+                            <div>
+                                <input class="titleBox" type="text" id="amount" placeholder="שם תת הקטגוריה" @bind="titleInput" @oninput="SubCatTitleLengthCounter" maxlength="18" minlength="2" />
+                                <div class="counter">
+                                    <div class="outerTitleName">
 
-                                    @if (titleInputLength > 0)
-                                    {
+                                        @if (titleInputLength > 0)
+                                        {
 
-                                        <span>@titleInput.Length/18</span>
-                                    }
-                                    else
-                                    {
-                                        <span>0/18</span>
-                                    }
+                                            <span>@titleInput.Length/18</span>
+                                        }
+                                        else
+                                        {
+                                            <span>0/18</span>
+                                        }
+                                    </div>
                                 </div>
-                            </div>
+                                </div>
+                           
                         </div>
                     </div>
 
@@ -214,20 +217,21 @@
                 {
                     <div class="outerTitleName">
                         <label class="titleName" for="amount">שם תת קטגוריה</label>
-                        <input class="titleBox" type="text" id="amount" placeholder="שם תת הקטגוריה" maxlength="18" minlength="2" @oninput="SubCatTitleLengthCounter" @bind="@titleInput" />
-                        <div class="counter">
-                            @if (titleInput == null || titleInput == "")
-                            {
-                                <span>0/18</span>
-                            }
-                            else
-                            {
+                        <div class="outerTitleAndCounter ">
+                            <input class="titleBox" type="text" id="amount" placeholder="שם תת הקטגוריה" maxlength="18" minlength="2" @oninput="SubCatTitleLengthCounter" @bind="@titleInput" />
+                            <div class="incomeCounter">
+                                @if (titleInput == null || titleInput == "")
+                                {
+                                    <span>0/18</span>
+                                }
+                                else
+                                {
+                                    <span>@titleInputLength/18</span>
 
-
-                                <span>@titleInputLength/18</span>
-
-                            }
-                        </div>
+                                }
+                            </div>
+                            </div>
+                        
                     </div>
                 }
 
