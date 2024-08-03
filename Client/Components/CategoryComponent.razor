@@ -8,7 +8,7 @@
 @if (deleteBtnClicked)
 {
     isOpetionsBtnClicked = false;
-    <GeneralPopUpComponent popupTypeTitle="מחיקת קטגוריה" middleText="@popupBodyText" name="@Category.categroyTitle" action="מחיקה" makeAction=@deleteCategory closePopUp="closeDeletePopUp"></GeneralPopUpComponent>
+    <GeneralPopUpComponent popupTypeTitle="מחיקת קטגוריה" middleText="@popupBodyText" name="" action="מחיקה" makeAction=@deleteCategory closePopUp="closeDeletePopUp"></GeneralPopUpComponent>
 }
 <div>
     <div class="outerEdit">
@@ -385,7 +385,7 @@
     string newSubCatTitle = "";
     string msg = "";
     string popupTitle = "מחיקת קטגוריה";
-    string popupBodyText = "אתה עומד למחוק את קטגוריית ";
+    string popupBodyText = "";
 
 
     int newSubCatID = 0;
@@ -611,7 +611,7 @@
         isOpetionsBtnClicked = false;
         deleteBtnClicked = false;
         closeOverlay.InvokeAsync(true);
-        OpetionsBtnClicked();
+        //OpetionsBtnClicked();
     }
 
     public void OpetionsBtnClicked()
@@ -622,6 +622,7 @@
 
     public void deleteCategoryBtnClciked()
     {
+        popupBodyText= "הקטגוריה '" + Category.categroyTitle + "' עומדת להמחק";
         deleteBtnClicked = !deleteBtnClicked;
         isOpetionsBtnClicked = false;
         editBtnClicked = false;

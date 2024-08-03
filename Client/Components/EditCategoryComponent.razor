@@ -143,11 +143,21 @@
                                 if(isTyped)
                                 {
 
-                                    <button class="saveBtn" @onclick="saveUpdatedCat" disabled style="opacity:60%">שמירה וסיום</button>
+                                    <button class="saveBtn" disabled style="opacity:60%">שמירה וסיום</button>
                                     <br />
                                     <span>שם הקטגוריה צריך להיות בין 2-18 תווים.</span>
                                 }
+                                else
+                                {
+                                      <button class="saveBtn" disabled style="opacity:60%">שמירה וסיום</button>
+                                }
                                 
+                            }
+                            else if(isSameName)
+                            {
+                                <button class="saveBtn" disabled style="opacity:60%">שמירה וסיום</button>
+                                <br />
+                                <span>קיימת קטגוריה בעלת אותו שם</span>
                             }
                             else
                             {
@@ -170,10 +180,20 @@
                                
                                 if(isTyped)
                                 {
-                                     <button class="saveBtn" @onclick="addNewCategory" disabled style="opacity:60%">שמירה וסיום</button>
+                                     <button class="saveBtn" disabled style="opacity:60%">שמירה וסיום</button>
                                 <br />
                                 <span>שם הקטגוריה צריך להיות בין 2-18 תווים.</span>
                                 }
+                                else
+                                {
+                                    <button class="saveBtn" disabled style="opacity:60%">שמירה וסיום</button>
+                                }
+                            }
+                             else if(isSameName)
+                            {
+                                <button class="saveBtn" disabled style="opacity:60%">שמירה וסיום</button>
+                                <br />
+                                <span>קיימת קטגוריה בעלת אותו שם</span>
                             }
                             else
                             {
@@ -189,6 +209,9 @@
 
 
 @code {
+
+    [CascadingParameter]
+    private UserDTO user { get; set; }
 
     [Parameter]
     public string popupTitle { get; set; }
@@ -224,15 +247,20 @@
 
 
     bool disabledEditOfIncomeTitle = false;
+    bool isSameName = false;
     string ogCatName = "";
     string ogEmoji = "";
 
     string titleInput = "";
     int titleInputLength = 0;
+    userToShow currentUser;
+    List<CategoryToShow> userCategories = new List<CategoryToShow>();
 
 
     protected override async Task OnInitializedAsync()
     {
+        userID = user.Id;
+
         ogCatName = categoryToEdit.categroyTitle;
         ogEmoji = categoryToEdit.icon;
 
@@ -246,6 +274,14 @@
         {
             titleInputLength = ogCatName.Length;
             titleInput = categoryToEdit.categroyTitle;
+        }
+
+        var userRes = await Http.GetAsync("api/Present/userToShowByDate/" + userID);
+
+        if (userRes.IsSuccessStatusCode)
+        {
+            currentUser = userRes.Content.ReadFromJsonAsync<userToShow>().Result;      
+            userCategories = currentUser.categoriesFullList;
         }
 
     }
@@ -306,6 +342,7 @@
             newCategory.color = "#6775F4";
         }
 
+
         var CatToAddRes = await Http.PostAsJsonAsync("api/Present/AddCategory/" + userID, newCategory);
         if (CatToAddRes.IsSuccessStatusCode)
         {
@@ -331,7 +368,7 @@
         {
             categoryToEdit.icon = ogEmoji;
         }
-        
+
         closeOverlay.InvokeAsync(true);
 
     }
@@ -411,9 +448,30 @@
         hideBtn = "";
     }
 
-    private void titleLengthCounter(ChangeEventArgs e)
+    async Task titleLengthCounter(ChangeEventArgs e)
     {
         isTyped = true;
+
+        var CatsListRes = await Http.GetAsync("api/Present/userCategoriesList/" + userID);
+        if (CatsListRes.IsSuccessStatusCode)
+        {
+            userCategories = CatsListRes.Content.ReadFromJsonAsync<List<CategoryToShow>>().Result;
+            
+        }
+
+        foreach (CategoryToShow userCat in userCategories)
+        {
+            if(e.Value.ToString() == userCat.categroyTitle)
+            {
+                isSameName = true;
+                break;
+            }
+            else
+            {
+                isSameName = false;
+            }
+       }
+
         titleInput = e.Value.ToString();
         titleInputLength = titleInput.Length;
     }

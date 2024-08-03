@@ -1319,6 +1319,24 @@ namespace BlazorGoogleLogin.Server.Controllers
             return BadRequest("invalid user id");
 
         }
+
+        [HttpGet("userCategoriesList/{userID}")]
+        public async Task<IActionResult> userCategoriesList(int userID)
+        {
+            object param = new { ID = userID };
+            string getUserCategoriesQuery = "SELECT categroyTitle FROM categories WHERE userID = @ID;";
+
+            
+            var categories = (await _db.GetRecordsAsync<CategoryToShow>(getUserCategoriesQuery, param)).ToList();
+
+            
+            if (categories != null)
+            {
+                
+                return Ok(categories);
+            }
+            return BadRequest("user is null");
+        }
     }
 
    
