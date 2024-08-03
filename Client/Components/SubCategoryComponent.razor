@@ -59,7 +59,7 @@
             {
 
                 <button class="budget-progress" @onclick="goToTransactionsPage">
-                    @budget /  @subCatTransTotal ₪
+                    @Math.Round(budget.Value) /  @Math.Round(subCatTransTotal.Value) ₪
                 </button>
 
 
@@ -67,7 +67,7 @@
             else
             {
                 <button class="budget-progress" @onclick="goToTransactionsPage">
-                    @subCatTransTotal ₪
+                    @Math.Round(subCatTransTotal.Value) ₪
                 </button>
 
             }
