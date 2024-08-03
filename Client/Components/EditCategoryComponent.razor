@@ -237,6 +237,16 @@
             titleInput = categoryToEdit.categroyTitle;
         }
 
+        if (categoryColor == null || categoryColor=="" || categoryColor.Length<=0)
+        {
+            categoryColor = "#6775F4";
+            selectedClass = "#6775F4";
+        }
+        else
+        {
+            selectedClass = categoryColor;
+        }
+
     }
 
     string color1Selected = "#F4B367";
