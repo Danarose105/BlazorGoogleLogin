@@ -1643,6 +1643,8 @@
 
     public async Task updateExistingTrans()
     {
+
+        //Console.WriteLine("description state- " + newTransaction.description + ", description length- " + newTransaction.description.Length);
         if (!categoryTypeIndicator)
         {
             newTransaction.transType = 1;
@@ -1652,6 +1654,10 @@
             newTransaction.transType = 2;
         }
 
+        if (newTransaction.description.Length<=0)
+        {
+            newTransaction.description=null;
+        }
         TransactionToEdit transToEdit = new TransactionToEdit()
             {
                 id = transIDtoEdit,
