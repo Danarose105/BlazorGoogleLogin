@@ -199,7 +199,7 @@
                                         <div class="outerRepetedTrans" style="@hiddenReOverlay">
                                             <div class="innerTransOverlay">
                                                 <button class="modal-close-btn" @onclick="backToTrans"><img src="./css/images/back-repeated.svg" /></button>
-                                                <h4>הגדרת '@newTransaction.transTitle' כהוצאה חוזרת על עצמה</h4>
+                                                <h4>הגדרת '@newTransaction.transTitle' כהזנה חוזרת על עצמה</h4>
                                                 <div class="reText">במידה והפעולה חוזרת בסכום שונה, יש להזין את הסכום הרצוי. בחודש בו אינה חוזרת, יש להזין 0.</div>
                                                 <div class="outerMonths">
                                                     @if (resetMonthValues == false)
@@ -320,7 +320,7 @@
                                             @if (returningTrans)
                                             {
                                                 <button class="modal-close-btn" @onclick="backToTrans"><img src="./css/images/back-repeated.svg" /></button>
-                                                <h4>הגדרת @newTransaction.transTitle כהוצאה חוזרת על עצמה</h4>
+                                                <h4>הגדרת @newTransaction.transTitle כהזנה חוזרת על עצמה</h4>
                                                 <div class="reText">במידה והפעולה חוזרת בסכום שונה, יש להזין את הסכום הרצוי. בחודש בו אינה חוזרת, יש להזין 0.</div>
                                                 <div class="outerMonths">
                                                     @if (resetMonthValues == false)
@@ -898,7 +898,7 @@
     double budgetSumToMove = 0;
     string overdraftClass = "outerOverdraft";
     public string overlayTitle = "";
-    public string repeatedBtnTitle = "הגדרת ההוצאה כחוזרת";
+    public string repeatedBtnTitle = "הגדרת ההזנה כחוזרת";
     //string clikckedTag => isTagClicked ? "border: solid,0.1em,black" : "border:none";
     bool returningTrans = false;
 
@@ -1467,8 +1467,12 @@
 
     public async Task saveAndRepeatTransactions()
     {
+        Console.WriteLine("DateTime.Today.Month- " + DateTime.Today.Month);
         newTransaction.subCategoryID = subCategoryIDTOGet;
-
+        if (newTransaction.tagID<=0)
+        {
+            newTransaction.tagID = null;
+        }
         newTransaction.tagID = null;
         if (!categoryTypeIndicator)
         {
@@ -1519,11 +1523,14 @@
                 await getStreakDetails();
                 titleInput = "";
                 titleInputLength = 0;
+
                 newTransaction = new TransactionToAdd()
                     {
                         transDate = DateTime.Today // Set the transaction date to today
                     };
                 //isTransactionOverlayOpen.InvokeAsync(false);
+                isButtomDropDownOpen = false;
+                isTopDropDownOpen = true;
 
             }
             else
@@ -1586,7 +1593,10 @@
                 {
                     transDate = DateTime.Today // Set the transaction date to today
                 };
-            //isTransactionOverlayOpen.InvokeAsync(false);
+
+            isButtomDropDownOpen = false;
+            isTopDropDownOpen = true;
+           
         }
         else //means the trans is not split or fixed
         {
@@ -1620,24 +1630,29 @@
                     }
                     await getStreakDetails();
 
+                    //resetting the trans window:
+                    isButtomDropDownOpen = false;
+                    isTopDropDownOpen = true;
                     titleInput = "";
                     titleInputLength = 0;
                     newTransaction = new TransactionToAdd()
                         {
                             transDate = DateTime.Today, // Set the transaction date to today
                             fixedMonthly = false,
-                            splitPayment = false
+                            splitPayment = false,
+                            transValue=0
                         };
                 }
 
 
-                //isTransactionOverlayOpen.InvokeAsync(false);
+                
             }
             else
             {
                 Console.WriteLine("הזנה נכשלה");
             }
         }
+        
     }
 
 
@@ -2486,7 +2501,7 @@
         fixedTransChildrenToAdd.Clear();
         fixedTransChildrenToAdd = new List<TransactionToAdd>();
         Console.WriteLine("fixedTransChildrenToAdd count- " + fixedTransChildrenToAdd.Count);
-        repeatedBtnTitle = "הגדרת ההוצאה כחוזרת";
+        repeatedBtnTitle = "הגדרת ההזנה כחוזרת";
         returningTrans = false;
         isReapetedBtnClicked = false;
         reapeatedTransValuesList = new List<RepeatedTransToShow>();

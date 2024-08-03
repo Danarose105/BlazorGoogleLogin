@@ -931,12 +931,19 @@ else
     }
 
 
-    public void removeCat(CategoryToShow catallToDelete)
+    public async Task removeCat(CategoryToShow catallToDelete)
     {
         catToDelete = catallToDelete;
         currentUser.categoriesFullList.Remove(catallToDelete);
 
-        Console.WriteLine(catToDelete);
+        for(int i=searchSubCats.Count-1; i>-1; i--){
+            if(searchSubCats[i].categoryID==catToDelete.id){
+                searchSubCats.Remove(searchSubCats[i]);
+            }
+        }
+
+        await OnInitializedAsync();
+       
     }
 
     public async Task changeGivingSubCatBudget(OverDraftBudgetToEdit givingSubCat)

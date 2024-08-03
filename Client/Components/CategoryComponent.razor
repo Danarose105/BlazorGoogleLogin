@@ -433,6 +433,7 @@
 
     public async Task getSubCategories()
     {
+        subCategories = new List<SubCategoryToShow>();
         isAccordionClick = true;
         if (!categoryTypeIndicator)
         {
@@ -637,6 +638,12 @@
         {
 
             deleteCat.InvokeAsync(Category);
+
+            //for (int i=subCategories.Count-1; i>-1; i--)
+            //{
+            //    sub
+            //}
+            isAccordionClick = false;
         }
         else
         {
