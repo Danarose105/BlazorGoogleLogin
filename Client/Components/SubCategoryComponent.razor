@@ -238,11 +238,19 @@
                         if (titleInput == null || titleInput == "" || titleInput.Length <= 0 || subCatToEdit.subCategoryTitle.Length <= 0)
                         {
 
-                            <button class="primery-button" @onclick="EditSubCategoryAndTransaction" disabled>שמירה ויצירת הזנה</button>
-                            <button class="secondery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
-                            <br />
-                            <span>לא ניתן לשמור תת קטגוריה ללא שם.</span>
+                            if (isTyped)
+                            {
 
+                                <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הזנה</button>
+                                <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
+                                <br />
+                                <span>שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
+                            }
+                            else
+                            {
+                                <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הזנה</button>
+                                <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
+                            }
 
                         }
                         else if (subCatToEdit.monthlyPlannedBudget <= 0 || subCatToEdit.monthlyPlannedBudget == null)
@@ -270,10 +278,25 @@
                     {
                         if (titleInput == null || titleInput == "" || titleInput.Length <= 0 || subCatToEdit.subCategoryTitle.Length <= 0)
                         {
-                            <button class="primery-button" @onclick="EditSubCategoryAndTransaction" disabled>שמירה ויצירת הזנה</button>
+
+                            if (isTyped)
+                            {
+
+                                <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הזנה</button>
+                                <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
+                                <br />
+                                <span>שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
+                            }
+                            else
+                            {
+                                <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הזנה</button>
+                                <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
+                            }
+
+                            @*<button class="primery-button" @onclick="EditSubCategoryAndTransaction" disabled>שמירה ויצירת הזנה</button>
                             <button class="secondery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
                             <br />
-                            <span>לא ניתן לשמור תת קטגוריה ללא שם.</span>
+                            <span>לא ניתן לשמור תת קטגוריה ללא שם.</span>*@
                         }
                         else
                         {
@@ -367,6 +390,7 @@
     bool editSubCatBtnClicked = false;
     bool deleteBtnClicked = false;
     bool isOverdraft = false;
+    bool isTyped = false;
     string popupBodyText = "";
     string titleInput = "";
     string convertedColor = "";
@@ -594,7 +618,7 @@
                 userCategories.Add(incomeCat);
             }
         }
-        
+
         editSubCatBtnClicked = !editSubCatBtnClicked;
 
         toggleOptionsMenu();
@@ -731,6 +755,7 @@
 
     private void SubCatTitleLengthCounter(ChangeEventArgs e)
     {
+        isTyped = true;
         titleInput = e.Value.ToString();
         titleInputLength = titleInput.Length;
     }

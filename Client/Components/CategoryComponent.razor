@@ -49,13 +49,13 @@
                 <OptionsMenuComponent editBtnClicked="@showEditCategory" deleteBtnClicked="@deleteCategoryBtnClciked" closeOverlay="closeDeleteOverlay"></OptionsMenuComponent>
             }
         </div>
-        
+
     </div>
     <div class="accordionAndSubCatsWrap">
 
 
         <div class="categoryAccordion" style="background: @categoryColor" @onclick="accordionControl">
-            <button class="options" >
+            <button class="options">
                 <svg width="33" height="12" viewBox="0 0 33 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M1.75 2L16.75 10L30.75 2" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
@@ -248,13 +248,24 @@
                         else
                         {
                             <div class="outerSaveBtns">
-                                <button class="primery-button" disabled @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
-                                <button class="secondery-button" disabled @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
+                                <button class="primery-button" disabled  style="opacity:60%" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
+                                <button class="secondery-button" disabled style="opacity:60%" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
 
                             </div>
+
                             if (titleInput.Length < 2 || titleInput.Length > 18)
                             {
-                                <span>אורך שם תת הקטגוריה לא תקין.</span>
+                                if (isTyped)
+                                {                                 
+                                    <br />
+                                    <span>שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
+                                }
+                                @*else
+                                {
+                                    <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הזנה</button>
+                                    <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
+                                }*@
+
                             }
                             else if (newSubCategory.monthlyPlannedBudget < 0)
                             {
@@ -265,6 +276,8 @@
                                 <span>בחרו עדיפות לתת קטגוריה זו.</span>
 
                             }
+
+                            
                         }
                     }
                     else
@@ -395,6 +408,7 @@
     public bool deleteBtnClicked = false;
     bool openTransactionOverlay = false;
     bool isOpetionsBtnClicked = false;
+    bool isTyped = false;
 
 
     List<SubCategoryToShow> subCategories = new List<SubCategoryToShow>();
@@ -622,7 +636,7 @@
 
     public void deleteCategoryBtnClciked()
     {
-        popupBodyText= "הקטגוריה '" + Category.categroyTitle + "' עומדת להמחק";
+        popupBodyText = "הקטגוריה '" + Category.categroyTitle + "' עומדת להמחק";
         deleteBtnClicked = !deleteBtnClicked;
         isOpetionsBtnClicked = false;
         editBtnClicked = false;
@@ -775,6 +789,7 @@
 
     private void SubCatTitleLengthCounter(ChangeEventArgs e)
     {
+        isTyped = true;
         titleInput = e.Value.ToString();
         titleInputLength = titleInput.Length;
     }
