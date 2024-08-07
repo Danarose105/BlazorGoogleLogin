@@ -10,7 +10,7 @@
     isOpetionsBtnClicked = false;
     <GeneralPopUpComponent popupTypeTitle="מחיקת קטגוריה" middleText="@popupBodyText" name="@Category.categroyTitle" action="מחיקה" makeAction=@deleteCategory closePopUp="closeDeletePopUp"></GeneralPopUpComponent>
 }
-<div>
+<div >
     <div class="outerEdit">
         @if (editBtnClicked)
         {
@@ -21,7 +21,7 @@
         }
     </div>
 
-
+    <div class="outerCategoryWrap">
     <div class="categoryWrap">
         <div id="iconAndCatTitle">
             <span class="emoji-circle">@Category.icon</span>
@@ -65,6 +65,7 @@
             }
         </div>
 
+    </div>
     </div>
     <div class="accordionAndSubCatsWrap">
 
