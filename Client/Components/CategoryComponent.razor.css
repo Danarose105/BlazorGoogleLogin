@@ -1,4 +1,4 @@
-﻿.categoryWrap {
+﻿/*.categoryWrap {
     border-radius: 0.6rem 0.6rem 0rem 0rem;
     background: #FBFBFB;
     width: 88.5vw;
@@ -10,6 +10,28 @@
     flex-wrap: wrap;
     flex-direction: column;
     padding: 6px;
+    box-shadow: 0px 25px 25px 0px rgba(39, 53, 160, 0.09), 0px 6px 14px 0px rgba(39, 53, 160, 0.10);
+}*/
+
+.outerCategoryWrap {
+    display: flex;
+    padding-top: 0.7rem;
+    background-color: #FBFBFB;
+    border-radius: 0.6rem 0.6rem 0rem 0rem;
+}
+
+.categoryWrap {
+    border-radius: 0.6rem 0.6rem 0rem 0rem;
+    background: #FBFBFB;
+    width: 88.5vw;
+    height: 3rem;
+    display: flex;
+    align-content: space-between;
+    justify-content: flex-start;
+    column-gap: 1vh;
+    flex-wrap: wrap;
+    flex-direction: column;
+    padding: 0px 0.6rem;
     box-shadow: 0px 25px 25px 0px rgba(39, 53, 160, 0.09), 0px 6px 14px 0px rgba(39, 53, 160, 0.10);
 }
 
@@ -784,3 +806,51 @@
     cursor: pointer;
     outline: inherit;
 }
+
+.outerOptions {
+    position: absolute;
+    margin: 0;
+   
+    left: 11vw;
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 29%;
+    display: flex;
+    flex-direction: column;
+    
+    border-radius: 0.1875rem;
+    border: 0.2px solid rgba(0, 0, 0, 0.15);
+    background: #FFF;
+    box-shadow: 0px 47px 13px 0px rgba(40, 45, 93, 0.00), 0px 30px 12px 0px rgba(40, 45, 93, 0.01), 0px 17px 10px 0px rgba(40, 45, 93, 0.05), 0px 8px 8px 0px rgba(40, 45, 93, 0.09), 0px 2px 4px 0px rgba(40, 45, 93, 0.10);
+}
+
+.optionButton {
+    width: 100%;
+    padding: 12px 20px;
+    border: none;
+    background-color: transparent;
+    outline: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #333;
+    transition: background-color 0.3s;
+}
+
+    .optionButton .icon {
+        margin-left: 10px; /* Space between text and icon */
+        width: 24px; /* Icon size */
+        height: auto;
+    }

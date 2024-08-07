@@ -73,13 +73,13 @@
                                     </div>
                                 </div>
 
-                                <div class="outerReBtn">
+                                <div class="outerReBtn" disabled="@splitPayment">
                                     <div class="outerReBtn">
                                         <button class="repeatedBtn" @onclick=@(async () => await repeatingTransOverlay())>@repeatedBtnTitle <img src="./css/images/repeat icon.svg" /></button>
                                         @if (newTransaction.fixedMonthly.Value == true)
                                         {
                                             repeatedBtnTitle = "עריכת ההזנה החוזרת";
-                                            <button class="cancleRepeatedBtn" @onclick="()=>undoFixedMonthly(newTransaction.transDate)">ביטול הוצאה חוזרת</button>
+                                            <button class="cancleRepeatedBtn" @onclick="()=>undoFixedMonthly(newTransaction.transDate)">ביטול הזנה חוזרת</button>
 
                                         }
                                         else
@@ -90,7 +90,7 @@
                                     </div>
                                 </div>
 
-                                <div class="outerTitleAndDateAndName">
+                                <div class="outerTitleAndDateAndName" disabled="@fixedMonthly">
 
                                     @if (splitPayment)
                                     {
@@ -199,7 +199,7 @@
                                         <div class="outerRepetedTrans" style="@hiddenReOverlay">
                                             <div class="innerTransOverlay">
                                                 <button class="modal-close-btn" @onclick="backToTrans"><img src="./css/images/back-repeated.svg" /></button>
-                                                <h4>הגדרת '@newTransaction.transTitle' כהוצאה חוזרת על עצמה</h4>
+                                                <h4>הגדרת '@newTransaction.transTitle' כהזנה חוזרת על עצמה</h4>
                                                 <div class="reText">במידה והפעולה חוזרת בסכום שונה, יש להזין את הסכום הרצוי. בחודש בו אינה חוזרת, יש להזין 0.</div>
                                                 <div class="outerMonths">
                                                     @if (resetMonthValues == false)
@@ -320,7 +320,7 @@
                                             @if (returningTrans)
                                             {
                                                 <button class="modal-close-btn" @onclick="backToTrans"><img src="./css/images/back-repeated.svg" /></button>
-                                                <h4>הגדרת @newTransaction.transTitle כהוצאה חוזרת על עצמה</h4>
+                                                <h4>הגדרת @newTransaction.transTitle כהזנה חוזרת על עצמה</h4>
                                                 <div class="reText">במידה והפעולה חוזרת בסכום שונה, יש להזין את הסכום הרצוי. בחודש בו אינה חוזרת, יש להזין 0.</div>
                                                 <div class="outerMonths">
                                                     @if (resetMonthValues == false)
@@ -793,6 +793,13 @@
         </div>
     }
 
+    @if(fixedMonthly){
+        splitPayment=false;
+    }
+    else
+    {
+        splitPayment=true;
+    }
 }
 
 
@@ -854,6 +861,10 @@
     [Parameter]
     public EventCallback<string?> updatedStreak { get; set; }
 
+
+
+
+    int userStartMonthDay = 0;
     TransactionToAdd newTransaction = new TransactionToAdd(); //if it's a new transaction
     TransactionToEdit ogTransaction = new TransactionToEdit(); //if it's an existing transaction
 
@@ -876,6 +887,7 @@
     public bool overdraftDetected;
 
     bool splitPayment = false;
+    bool fixedMonthly = false;
     bool isTopDropDownOpen = true;
     bool isButtomDropDownOpen = false;
     bool openTagsMenu = false;
@@ -900,7 +912,7 @@
     double budgetSumToMove = 0;
     string overdraftClass = "outerOverdraft";
     public string overlayTitle = "";
-    public string repeatedBtnTitle = "הגדרת ההוצאה כחוזרת";
+    public string repeatedBtnTitle = "הגדרת ההזנה כחוזרת";
     //string clikckedTag => isTagClicked ? "border: solid,0.1em,black" : "border:none";
     bool returningTrans = false;
 
@@ -1155,6 +1167,19 @@
 
     protected override async Task OnInitializedAsync()
     {
+        if (userID > 0)
+        {
+            var getStartMonthDate = await Http.GetAsync("api/Present/getUserMonthStartDate/" + userID);
+            if (getStartMonthDate.IsSuccessStatusCode)
+            {
+                userStartMonthDay = await getStartMonthDate.Content.ReadFromJsonAsync<int>();
+            }
+            else
+            {
+                Console.WriteLine("failed to get users start month date, setting it to 1");
+                userStartMonthDay = 1;
+            }
+        }
         if (transIDtoEdit > 0)
         {
             overlayTitle = "עריכת הזנה";
@@ -1199,6 +1224,7 @@
                     if (newTransaction.fixedMonthly == true)
                     {
                         repeatedBtnTitle = "עריכת ההזנה החוזרת";
+                       
 
                         var getRepeatedChildren = await Http.GetAsync("api/Transactions/getRepeatedTransToEdit/" + transIDtoEdit); //gets the fixed children only
                         if (getRepeatedChildren.IsSuccessStatusCode)
@@ -1217,7 +1243,7 @@
 
                     if (newTransaction.splitPayment == true)
                     {
-
+                       
                         splitPayment = true;
                         var repeatedTransValuesRes = await Http.GetAsync("api/Transactions/getPaymentTransToEdit/" + transIDtoEdit);
 
@@ -1260,6 +1286,7 @@
         }
         else
         {
+           
             newTransaction = new TransactionToAdd()
                 {
                     transDate = DateTime.Today, // Set the transaction date to today
@@ -1314,13 +1341,16 @@
                 transIDtoEdit = await transToSaveRes.Content.ReadFromJsonAsync<int>();
                 if (!categoryTypeIndicator)
                 {
-                    await checkOverdraft();
-                    if (overdraftDetected)
+                    if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
                     {
-                        var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
-                        if (transOverdraftRes.IsSuccessStatusCode)
+                        await checkOverdraft();
+                        if (overdraftDetected)
                         {
-                            Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
+                            var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
+                            if (transOverdraftRes.IsSuccessStatusCode)
+                            {
+                                Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
+                            }
                         }
                     }
                     isTyped = false;
@@ -1331,9 +1361,13 @@
 
                 isTyped = false;
                 Console.WriteLine("ההזנה נשמרה בהצלחה :)");
-                addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                transValueToAdd.InvokeAsync(newTransaction.transValue);
+                if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
+                {
+                    addTransactionToTotal.InvokeAsync(newTransaction.transValue);
+                    transValueToAdd.InvokeAsync(newTransaction.transValue);
+                }
                 await getStreakDetails();
+
                 isTransactionOverlayOpen.InvokeAsync(false);
 
             }
@@ -1364,46 +1398,41 @@
                     {
                         if (i == 0)
                         {
-                            await checkOverdraft();
-                            if (overdraftDetected)
+                            if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
                             {
-                                var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
-                                if (transOverdraftRes.IsSuccessStatusCode)
+                                await checkOverdraft();
+                                if (overdraftDetected)
                                 {
-                                    Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
+                                    var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
+                                    if (transOverdraftRes.IsSuccessStatusCode)
+                                    {
+                                        Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
 
+                                    }
                                 }
                             }
                         }
                         Console.WriteLine("ההזנה נשמרה בהצלחה :)");
-                        addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                        transValueToAdd.InvokeAsync(newTransaction.transValue);
+
                         isTyped = false;
+                        if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
+                        {
+                            addTransactionToTotal.InvokeAsync(newTransaction.transValue);
+                            transValueToAdd.InvokeAsync(newTransaction.transValue);
+                        }
+
                     }
                     else
                     {
                         Console.WriteLine("ההזנה נשמרה בהצלחה :)");
-                        addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                        transValueToAdd.InvokeAsync(newTransaction.transValue);
+
                         isTyped = false;
+                        if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
+                        {
+                            addTransactionToTotal.InvokeAsync(newTransaction.transValue);
+                            transValueToAdd.InvokeAsync(newTransaction.transValue);
+                        }
                     }
-                    //if (!categoryTypeIndicator && i == 0)
-                    //{
-                    //    await checkOverdraft();
-                    //    if (overdraftDetected)
-                    //    {
-                    //        var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
-                    //        if (transOverdraftRes.IsSuccessStatusCode)
-                    //        {
-                    //            Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
-                    //        }
-                    //    }
-
-                    //    Console.WriteLine("ההזנה נשמרה בהצלחה :)");
-                    //    addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                    //    transValueToAdd.InvokeAsync(newTransaction.transValue);
-
-                    //}
                 }
                 else
                 {
@@ -1413,6 +1442,8 @@
 
 
             await getStreakDetails();
+
+
             isTransactionOverlayOpen.InvokeAsync(false);
 
 
@@ -1425,21 +1456,27 @@
                 transIDtoEdit = await transToSaveRes.Content.ReadFromJsonAsync<int>();
                 if (!categoryTypeIndicator)
                 {
-                    await checkOverdraft();
-                    if (overdraftDetected)
+                    if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
                     {
-                        var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
-                        if (transOverdraftRes.IsSuccessStatusCode)
+                        await checkOverdraft();
+                        if (overdraftDetected)
                         {
-                            Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
+                            var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
+                            if (transOverdraftRes.IsSuccessStatusCode)
+                            {
+                                Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
+                            }
                         }
                     }
                     isTyped = false;
                     Console.WriteLine("ההזנה נשמרה בהצלחה :)");
                 }
+                if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
+                {
+                    addTransactionToTotal.InvokeAsync(newTransaction.transValue);
+                    transValueToAdd.InvokeAsync(newTransaction.transValue);
 
-                addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                transValueToAdd.InvokeAsync(newTransaction.transValue);
+                }
                 await getStreakDetails();
                 isTransactionOverlayOpen.InvokeAsync(false);
             }
@@ -1454,8 +1491,12 @@
 
     public async Task saveAndRepeatTransactions()
     {
+        Console.WriteLine("DateTime.Today.Month- " + DateTime.Today.Month);
         newTransaction.subCategoryID = subCategoryIDTOGet;
-
+        if (newTransaction.tagID<=0)
+        {
+            newTransaction.tagID = null;
+        }
         newTransaction.tagID = null;
         if (!categoryTypeIndicator)
         {
@@ -1479,13 +1520,16 @@
                 transIDtoEdit = await transToSaveRes.Content.ReadFromJsonAsync<int>();
                 if (!categoryTypeIndicator)
                 {
-                    await checkOverdraft();
-                    if (overdraftDetected)
+                    if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
                     {
-                        var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
-                        if (transOverdraftRes.IsSuccessStatusCode)
+                        await checkOverdraft();
+                        if (overdraftDetected)
                         {
-                            Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
+                            var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
+                            if (transOverdraftRes.IsSuccessStatusCode)
+                            {
+                                Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
+                            }
                         }
                     }
                     isTyped = false;
@@ -1496,16 +1540,23 @@
 
                 isTyped = false;
                 Console.WriteLine("ההזנה נשמרה בהצלחה :)");
-                addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                transValueToAdd.InvokeAsync(newTransaction.transValue);
+                if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
+                {
+                    addTransactionToTotal.InvokeAsync(newTransaction.transValue);
+                    transValueToAdd.InvokeAsync(newTransaction.transValue);
+
+                }
                 await getStreakDetails();
                 titleInput = "";
                 titleInputLength = 0;
+
                 newTransaction = new TransactionToAdd()
                     {
                         transDate = DateTime.Today // Set the transaction date to today
                     };
                 //isTransactionOverlayOpen.InvokeAsync(false);
+                isButtomDropDownOpen = false;
+                isTopDropDownOpen = true;
 
             }
             else
@@ -1533,19 +1584,27 @@
                     transIDtoEdit = await transToSaveRes.Content.ReadFromJsonAsync<int>();
                     if (!categoryTypeIndicator && i == 0)
                     {
-                        await checkOverdraft();
-                        if (overdraftDetected)
+                        if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
                         {
-                            var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
-                            if (transOverdraftRes.IsSuccessStatusCode)
+                            await checkOverdraft();
+                            if (overdraftDetected)
                             {
-                                Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
+                                var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
+                                if (transOverdraftRes.IsSuccessStatusCode)
+                                {
+                                    Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
+                                }
                             }
                         }
                         isTyped = false;
                         Console.WriteLine("ההזנה נשמרה בהצלחה :)");
-                        addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                        transValueToAdd.InvokeAsync(newTransaction.transValue);
+
+                        if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
+                        {
+                            addTransactionToTotal.InvokeAsync(newTransaction.transValue);
+                            transValueToAdd.InvokeAsync(newTransaction.transValue);
+
+                        }
 
                     }
                 }
@@ -1562,7 +1621,10 @@
                 {
                     transDate = DateTime.Today // Set the transaction date to today
                 };
-            //isTransactionOverlayOpen.InvokeAsync(false);
+
+            isButtomDropDownOpen = false;
+            isTopDropDownOpen = true;
+           
         }
         else //means the trans is not split or fixed
         {
@@ -1572,13 +1634,17 @@
                 transIDtoEdit = await transToSaveRes.Content.ReadFromJsonAsync<int>();
                 if (!categoryTypeIndicator)
                 {
-                    await checkOverdraft();
-                    if (overdraftDetected)
+                    if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
                     {
-                        var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
-                        if (transOverdraftRes.IsSuccessStatusCode)
+
+                        await checkOverdraft();
+                        if (overdraftDetected)
                         {
-                            Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
+                            var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
+                            if (transOverdraftRes.IsSuccessStatusCode)
+                            {
+                                Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
+                            }
                         }
                     }
                     addTransactionToTotal.InvokeAsync(newTransaction.transValue);
@@ -1597,9 +1663,16 @@
                 }
                 else
                 {
-                    addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                    transValueToAdd.InvokeAsync(newTransaction.transValue);
+                    if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
+                    {
+                        addTransactionToTotal.InvokeAsync(newTransaction.transValue);
+                        transValueToAdd.InvokeAsync(newTransaction.transValue);
+                    }
                     await getStreakDetails();
+
+                    //resetting the trans window:
+                    isButtomDropDownOpen = false;
+                    isTopDropDownOpen = true;
                     titleInput = "";
                     isTyped = false;
                     titleInputLength = 0;
@@ -1607,23 +1680,27 @@
                         {
                             transDate = DateTime.Today, // Set the transaction date to today
                             fixedMonthly = false,
-                            splitPayment = false
+                            splitPayment = false,
+                            transValue=0
                         };
                 }
 
 
-                //isTransactionOverlayOpen.InvokeAsync(false);
+                
             }
             else
             {
                 Console.WriteLine("הזנה נכשלה");
             }
         }
+        
     }
 
 
     public async Task updateExistingTrans()
     {
+
+        //Console.WriteLine("description state- " + newTransaction.description + ", description length- " + newTransaction.description.Length);
         if (!categoryTypeIndicator)
         {
             newTransaction.transType = 1;
@@ -1633,6 +1710,10 @@
             newTransaction.transType = 2;
         }
 
+        if (newTransaction.description.Length<=0)
+        {
+            newTransaction.description=null;
+        }
         TransactionToEdit transToEdit = new TransactionToEdit()
             {
                 id = transIDtoEdit,
@@ -1682,13 +1763,17 @@
             Console.WriteLine("ההזנה עודכנה בהצלחה :)");
             if (!categoryTypeIndicator)
             {
-                await checkOverdraft();
-                if (overdraftDetected)
+                if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
                 {
-                    var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
-                    if (transOverdraftRes.IsSuccessStatusCode)
+
+                    await checkOverdraft();
+                    if (overdraftDetected)
                     {
-                        Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
+                        var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
+                        if (transOverdraftRes.IsSuccessStatusCode)
+                        {
+                            Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
+                        }
                     }
                 }
 
@@ -1779,7 +1864,9 @@
                     {
                         int currentMonth = now.Month;
                         int monthsPassed = currentMonth - postEditTrans.transDate.Month;
+                        //if(monthsPassed==0){
 
+                        //}
                         DateTime dateOfCurrentSplit = new DateTime(postEditTrans.transDate.Year, currentMonth, postEditTrans.transDate.Day);
 
                         editedTransaction.transDate = dateOfCurrentSplit.ToShortDateString();
@@ -1851,7 +1938,11 @@
                     isTransactionOverlayOpen.InvokeAsync(false); //closes the edit overlay
                 }
 
-                addTransactionAfterEdit.InvokeAsync(editedTransaction);
+                if (postEditTrans.transDate.Month == DateTime.Today.Month && postEditTrans.transDate.Day >= userStartMonthDay)
+                {
+
+                    addTransactionAfterEdit.InvokeAsync(editedTransaction);
+                }
             }
         }
         else
@@ -2075,14 +2166,18 @@
         if (budgetToSaveRes.IsSuccessStatusCode)
         {
             Console.WriteLine("התקציבים עודכנו בהצלחה :)");
-            await checkOverdraft();
-            if (!overdraftDetected)
+            if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
             {
-                currentGap = 0;
-                budgetSumToMove = 0;
-                isTransactionOverlayOpen.InvokeAsync(false);
-                gapsToUpdateBudgets.InvokeAsync(budgetsToUpdate);
+                await checkOverdraft();
+                if (!overdraftDetected)
+                {
+                    currentGap = 0;
+                    budgetSumToMove = 0;
+                    isTransactionOverlayOpen.InvokeAsync(false);
+                    gapsToUpdateBudgets.InvokeAsync(budgetsToUpdate);
+                }
             }
+            
             //overdraftDetected = false;
 
 
@@ -2447,7 +2542,7 @@
         fixedTransChildrenToAdd.Clear();
         fixedTransChildrenToAdd = new List<TransactionToAdd>();
         Console.WriteLine("fixedTransChildrenToAdd count- " + fixedTransChildrenToAdd.Count);
-        repeatedBtnTitle = "הגדרת ההוצאה כחוזרת";
+        repeatedBtnTitle = "הגדרת ההזנה כחוזרת";
         returningTrans = false;
         isReapetedBtnClicked = false;
         reapeatedTransValuesList = new List<RepeatedTransToShow>();

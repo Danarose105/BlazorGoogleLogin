@@ -10,18 +10,18 @@
     isOpetionsBtnClicked = false;
     <GeneralPopUpComponent popupTypeTitle="מחיקת קטגוריה" middleText="@popupBodyText" name="" action="מחיקה" makeAction=@deleteCategory closePopUp="closeDeletePopUp"></GeneralPopUpComponent>
 }
-<div>
+<div >
     <div class="outerEdit">
         @if (editBtnClicked)
         {
 
             popupTitle = "עריכת קטגוריה";
             isOpetionsBtnClicked = false;
-            <EditCategoryComponent categoryToEdit="@Category" isCategoryOverlayOpen="showEditCategory" popupTitle="@popupTitle" closeOverlay="closeEditOverlay" isEmojiExsist=true></EditCategoryComponent>
+            <EditCategoryComponent categoryToEdit="@Category" isCategoryOverlayOpen="showEditCategory" popupTitle="@popupTitle" closeOverlay="closeEditOverlay" isEmojiExsist=true categoryColor="@Category.color"></EditCategoryComponent>
         }
     </div>
 
-
+    <div class="outerCategoryWrap">
     <div class="categoryWrap">
         <div id="iconAndCatTitle">
             <span class="emoji-circle">@Category.icon</span>
@@ -45,11 +45,27 @@
             <button class="options" @onclick="OpetionsBtnClicked"><img src="./css/images/option menu.svg" /></button>
             @if (isOpetionsBtnClicked)
             {
+                if (!categoryTypeIndicator)
+                {
+                    <OptionsMenuComponent editBtnClicked="@showEditCategory" deleteBtnClicked="@deleteCategoryBtnClciked" closeOverlay="closeDeleteOverlay"></OptionsMenuComponent>
+                }
+                else
+                {
+                    <div>
+                        <div class="outerOptions">
+                            <button class="optionButton editButton" @onclick="showEditCategory">
+                                <img src="./css/images/edit_pencil.svg" class="icon" />
+                                עריכה
+                            </button>
+                        </div>
+                    </div>
 
-                <OptionsMenuComponent editBtnClicked="@showEditCategory" deleteBtnClicked="@deleteCategoryBtnClciked" closeOverlay="closeDeleteOverlay"></OptionsMenuComponent>
+                }
+
             }
         </div>
 
+    </div>
     </div>
     <div class="accordionAndSubCatsWrap">
 
@@ -69,13 +85,14 @@
                 {
                     <button class="custom-btn" @onclick="getUserCategories">
                         <div class="btn-content">
+
                             <div class="textAndLine">
                                 <span class="btn-text">תת קטגוריה חדשה</span>
                                 <div class="subCatLine">
                                 </div>
                             </div>
                             <div class="outerPlusBtn">
-                                <div class="btn-icon"><img src="./css/images/+.svg" /></div>
+                                <div class="btn-icon"><img src="./css/images/addSubPlusIcon.svg" /></div>
                             </div>
                         </div>
                     </button>
@@ -91,7 +108,7 @@
                                 </div>
                             </div>
                             <div class="outerPlusBtn">
-                                <div class="btn-icon"><img src="./css/images/+.svg" /></div>
+                                <div class="btn-icon"><img src="./css/images/addSubPlusIcon.svg" /></div>
                             </div>
                         </div>
                     </button>
@@ -447,6 +464,7 @@
 
     public async Task getSubCategories()
     {
+        subCategories = new List<SubCategoryToShow>();
         isAccordionClick = true;
         if (!categoryTypeIndicator)
         {
@@ -653,6 +671,12 @@
         {
 
             deleteCat.InvokeAsync(Category);
+
+            //for (int i=subCategories.Count-1; i>-1; i--)
+            //{
+            //    sub
+            //}
+            isAccordionClick = false;
         }
         else
         {

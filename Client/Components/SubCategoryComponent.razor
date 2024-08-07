@@ -59,7 +59,7 @@
             {
 
                 <button class="budget-progress" @onclick="goToTransactionsPage">
-                    @budget /  @subCatTransTotal ₪
+                    @Math.Round(budget.Value) /  @Math.Round(subCatTransTotal.Value) ₪
                 </button>
 
 
@@ -67,14 +67,14 @@
             else
             {
                 <button class="budget-progress" @onclick="goToTransactionsPage">
-                    @subCatTransTotal ₪
+                    @Math.Round(subCatTransTotal.Value) ₪
                 </button>
 
             }
         </div>
     </div>
 
-    <button class="add-transaction-button" @onclick="openAddTransOverlay"><img src="./css/images/+2.svg" /></button>
+    <button class="add-transaction-button" @onclick="openAddTransOverlay"><img src="./css/images/addTransPlusIcon.svg" /></button>
 </div>
 
 
@@ -127,27 +127,30 @@
                     <div class="outerTitleAndCounter">
                         <div class="input-container">
                             <label class="titleName" for="amount">שם תת קטגוריה</label>
-                            <input class="titleBox" type="text" id="amount" placeholder="שם תת הקטגוריה" @bind="titleInput" @oninput="SubCatTitleLengthCounter" maxlength="18" minlength="2" />
-                            <div class="counter">
-                                <div class="outerTitleName">
+                            <div>
+                                <input class="titleBox" type="text" id="amount" placeholder="שם תת הקטגוריה" @bind="titleInput" @oninput="SubCatTitleLengthCounter" maxlength="18" minlength="2" />
+                                <div class="counter">
+                                    <div class="outerTitleName">
 
-                                    @if (titleInputLength > 0)
-                                    {
+                                        @if (titleInputLength > 0)
+                                        {
 
-                                        <span>@titleInput.Length/18</span>
-                                    }
-                                    else
-                                    {
-                                        <span>0/18</span>
-                                    }
+                                            <span>@titleInput.Length/18</span>
+                                        }
+                                        else
+                                        {
+                                            <span>0/18</span>
+                                        }
+                                    </div>
                                 </div>
-                            </div>
+                                </div>
+                           
                         </div>
                     </div>
 
                     <label class="titleName" for="description">מה התקציב החודשי שלך עבור "@subCatToEdit.subCategoryTitle"?</label>
                     <div class="outerBudget">
-                        <input class="budgetBox" type="number" id="description" placeholder="0" @bind="subCatToEdit.monthlyPlannedBudget" />
+                        <input class="budgetBox" type="number" id="description" @oninput="SubCatBudgetInput" @bind="subCatToEdit.monthlyPlannedBudget"/>
                         <span class="currency-symbol">₪</span>
                         <br />
                         @if (ogBudget < 0)
@@ -214,20 +217,21 @@
                 {
                     <div class="outerTitleName">
                         <label class="titleName" for="amount">שם תת קטגוריה</label>
-                        <input class="titleBox" type="text" id="amount" placeholder="שם תת הקטגוריה" maxlength="18" minlength="2" @oninput="SubCatTitleLengthCounter" @bind="@titleInput" />
-                        <div class="counter">
-                            @if (titleInput == null || titleInput == "")
-                            {
-                                <span>0/18</span>
-                            }
-                            else
-                            {
+                        <div class="outerTitleAndCounter ">
+                            <input class="titleBox" type="text" id="amount" placeholder="שם תת הקטגוריה" maxlength="18" minlength="2" @oninput="SubCatTitleLengthCounter" @bind="@titleInput" />
+                            <div class="incomeCounter">
+                                @if (titleInput == null || titleInput == "")
+                                {
+                                    <span>0/18</span>
+                                }
+                                else
+                                {
+                                    <span>@titleInputLength/18</span>
 
-
-                                <span>@titleInputLength/18</span>
-
-                            }
-                        </div>
+                                }
+                            </div>
+                            </div>
+                        
                     </div>
                 }
 
@@ -425,17 +429,20 @@
 
         }
 
-        if (budget.HasValue && subCatToEdit.monthlyPlannedBudget.HasValue)
+
+
+        if (budget.HasValue)
         {
-            if (budget.Value == subCatToEdit.monthlyPlannedBudget.Value)
-            {
-                ogBudget = 0;
-            }
-            else if (budget.Value > 0 && subCatToEdit.monthlyPlannedBudget.Value > 0)
-            {
-                ogBudget = budget.Value;
-            }
+           
+            subCatToEdit.monthlyPlannedBudget = budget.Value;
+
         }
+        else
+        {
+           
+            subCatToEdit.monthlyPlannedBudget = 0;
+        }
+        Console.WriteLine("budget from cat- " + budget + ", ogBudget- " + ogBudget);
 
         if (subCatColor == null || subCatColor == "")
         {
@@ -693,7 +700,7 @@
 
         Console.WriteLine(subCategoryTitle + ": " + totalSpendings + ", latest trans value- " + transactionValue);
 
-
+        StateHasChanged();
 
     }
 
@@ -725,6 +732,23 @@
     void closeAddTrans()
     {
         openTransOverlay = false;
+    }
+
+    private void SubCatBudgetInput(ChangeEventArgs e)
+    {
+        string tempBudget = e.Value.ToString();
+        if (tempBudget.Length>0 && tempBudget!=" " )
+        {
+            subCatToEdit.monthlyPlannedBudget = double.Parse(tempBudget);
+            calculateBudgetChange();
+        }
+        else
+        {
+            subCatToEdit.monthlyPlannedBudget=0;
+            calculateBudgetChange();
+
+        }
+
     }
 
     public void calculateBudgetChange()

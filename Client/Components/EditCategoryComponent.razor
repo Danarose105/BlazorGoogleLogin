@@ -8,7 +8,6 @@
     <div class="outerLay">
         <div class="BgOverlay"> </div>
         <div class="overlay">
-
             <div class="paddingDiv">
                 <div class="outerTitleAndIcon">
                     <button class="closeOverlay" @onclick="openCategoryOverlay"><img src="./css/images/close x.svg" /></button>
@@ -66,7 +65,7 @@
                                             <button @onclick="deleteSelectedEmoji" class="cancleEmoji">ביטול בחירה</button>
                                             <button @onclick="ToggleKeyboard" class="selectedEmoji">
                                                 <span class="emoji">@categoryToEdit.icon</span>
-                                                <img src="./css/images/+ icon.svg" class="plusIcon" />
+                                                <img src="./css/images/plus icon.svg" class="plusIcon" />
                                             </button>
                                         </div>
 
@@ -282,6 +281,14 @@
         {
             currentUser = userRes.Content.ReadFromJsonAsync<userToShow>().Result;      
             userCategories = currentUser.categoriesFullList;
+        if (categoryColor == null || categoryColor=="" || categoryColor.Length<=0)
+        {
+            categoryColor = "#6775F4";
+            selectedClass = "#6775F4";
+        }
+        else
+        {
+            selectedClass = categoryColor;
         }
 
     }

@@ -111,6 +111,7 @@
     display: flex;
     flex-direction: column;
     row-gap: 3vh;
+    align-items: flex-start;
 }
 
 .keyBoardAndBtn {
@@ -378,4 +379,19 @@
     cursor: pointer;
     outline: inherit;
     font-weight: 600;
+}
+
+.counter {
+    position: absolute;
+    color: #666;
+    font-size: 12px;
+    padding: 8px 6px;
+}
+
+.nameInputAndCounterWrap {
+    display: flex;
+    flex-direction: row;
+    row-gap: 0;
+    align-items: flex-end;
+    justify-content: flex-end;
 }

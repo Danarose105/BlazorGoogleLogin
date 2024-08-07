@@ -474,3 +474,17 @@
     align-items: center;
     margin-bottom: 1rem;
 }
+
+.outerTitleAndCounter {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+.incomeCounter {
+    position: absolute;
+    color: #666;
+    font-size: 12px;
+    padding: 2px 6px;
+}

@@ -39,11 +39,37 @@
                                     <div class="firstLastAndEmoji">
                                         <div class="outerUserDetails">
                                             <span class="titleName">שם פרטי:</span>
-                                            <input class="catTitle" type="text" @bind="@newUser.firstName" maxlength="15" />
+                                            <div class="nameInputAndCounterWrap">
+                                                <input class="catTitle" type="text" @bind="@userFirstName" @oninput="userFnameLengthCounter" maxlength="15" />
+                                                <div class="counter">
+                                                    @if (userFirstName.Length > 0 && userFirstName.Length < 16)
+                                                    {
+                                                        <span>@userFirstName.Length/15</span>
+                                                    }
+                                                    else if (userFirstName.Length <= 0)
+                                                    {
+                                                        <span>0/15</span>
+                                                    }
+                                                </div>
+                                            </div>
+
                                         </div>
+
                                         <div class="outerUserDetails">
                                             <span class="titleName">שם משפחה:</span>
-                                            <input class="catTitle" type="text" @bind="@newUser.lastName" maxlength="15" />
+                                            <div class="nameInputAndCounterWrap">
+                                                <input class="catTitle" type="text" @bind="@userLastName" maxlength="18" @oninput="userLnameLengthCounter" />
+                                                <div class="counter">
+                                                    @if (userLastName.Length > 0 && userLastName.Length < 19)
+                                                    {
+                                                        <span>@userLastName.Length/18</span>
+                                                    }
+                                                    else if (userLastName.Length <= 0)
+                                                    {
+                                                        <span>0/18</span>
+                                                    }
+                                                </div>
+                                            </div>
                                         </div>
 
 
@@ -66,7 +92,7 @@
                                                             <button @onclick="deleteSelectedEmoji" class="cancleEmoji">ביטול בחירה</button>
                                                             <button @onclick="ToggleKeyboard" class="selectedEmoji">
                                                                 <span class="emoji">@newUser.profilePicOrIcon</span>
-                                                                <img src="./css/images/+ icon.svg" class="plusIcon" />
+                                                                <img src="./css/images/plus icon.svg" class="plusIcon" />
                                                             </button>
                                                         </div>
 
@@ -135,8 +161,9 @@
                                         </div>
                                     </div>
                                     <div>
-                                        @if (newUser.monthStartDate <= 0 || newUser.profilePicOrIcon == null || newUser.profilePicOrIcon=="" || newUser.firstName== null || newUser.firstName=="")
+                                        @if (newUser.monthStartDate <= 0 || newUser.profilePicOrIcon == null || newUser.profilePicOrIcon == "" || newUser.firstName == null || newUser.firstName == "")
                                         {
+                                         
                                             <button class="primery-button" disabled style="opacity:60%;">שמירה                                </button>
                                             
                                         }else{
@@ -180,7 +207,7 @@
 
 <style>
 
-    
+
     #body {
         direction: rtl;
         display: flex;
@@ -188,8 +215,8 @@
         justify-content: center;
         background-color: #6775F4;
         padding: 10rem;
-      /*  z-index: 5;
-        position:relative;*/
+        /*  z-index: 5;
+                position:relative;*/
     }
 
 
@@ -292,6 +319,9 @@
 
     string bgColor = "";
 
+    string userFirstName = "";
+    string userLastName = "";
+
     async Task logout()
     {
         await _Auth.Logout();
@@ -336,7 +366,7 @@
     }
     private Dictionary<string, List<string>>
     emojiCategories = new Dictionary<string, List<string>>
-                    {
+                            {
     {"כללי", new List<string> {
     "🏠", "🛏️", "🚿", "💡", "📞", "🖥️", "🚗", "🚌", "🛒", "🍲",
     "🏥", "💊", "👕", "🧹", "🧺", "🍼", "🐶", "🧑‍🔧", "📚", "🧾",
@@ -357,7 +387,7 @@
     "🖋️", "💎", "📜", "🏧",
     "📅", "🖥️", "🖨️", "🔍"
     }},
-                    };
+                            };
 
     private void SelectCategory(string category)
     {
@@ -518,5 +548,17 @@
 
     }
 
+
+    private void userFnameLengthCounter(ChangeEventArgs e)
+    {
+        userFirstName = e.Value.ToString();
+        newUser.firstName = e.Value.ToString();
+    }
+
+    private void userLnameLengthCounter(ChangeEventArgs e)
+    {
+        userLastName = e.Value.ToString();
+        newUser.lastName = e.Value.ToString();
+    }
 }
 
