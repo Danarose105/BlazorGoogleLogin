@@ -422,7 +422,8 @@
 .optionsMenu {
     position: absolute;
     z-index: 3;
-    margin-left: 5vw;
+    /*margin-left: 8rem;*/
+    margin-left:5vw;
 }
 
 .outerTitleAndOverdraft {

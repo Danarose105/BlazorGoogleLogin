@@ -8,7 +8,7 @@
 @if (deleteBtnClicked)
 {
     isOpetionsBtnClicked = false;
-    <GeneralPopUpComponent popupTypeTitle="מחיקת קטגוריה" middleText="@popupBodyText" name="" action="מחיקה" makeAction=@deleteCategory closePopUp="closeDeletePopUp"></GeneralPopUpComponent>
+    <GeneralPopUpComponent popupTypeTitle="מחיקת קטגוריה" middleText="@popupBodyText" name="" action="מחיקה" makeAction=@deleteCategory closePopUp="closeDeletePopUp" ></GeneralPopUpComponent>
 }
 <div >
     <div class="outerEdit">
@@ -47,7 +47,7 @@
             {
                 if (!categoryTypeIndicator)
                 {
-                    <OptionsMenuComponent editBtnClicked="@showEditCategory" deleteBtnClicked="@deleteCategoryBtnClciked" closeOverlay="closeDeleteOverlay"></OptionsMenuComponent>
+                    <OptionsMenuComponent editBtnClicked="@showEditCategory" deleteBtnClicked="@deleteCategoryBtnClciked" closeOverlay="closeDeleteOverlay" isCategory="@isOpetionsBtnClicked"></OptionsMenuComponent>
                 }
                 else
                 {
