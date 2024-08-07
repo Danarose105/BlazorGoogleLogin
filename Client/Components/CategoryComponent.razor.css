@@ -193,6 +193,7 @@
     font-weight: 700;
     text-align: right;
     line-height: 3.4vh;
+    padding-right: 1vh;
 }
 
 @media (max-width: 340px) {

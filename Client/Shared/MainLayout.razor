@@ -1,25 +1,20 @@
 ﻿@inherits LayoutComponentBase
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavManager
-@inject NavigationManager Nav
+
 
 
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
 <div>
-    @*<div class="sidebar">
-    <NavMenu />
-    </div>
-    *@
-
     <main>
         <article>
             @Body
         </article>
         @if (!NavManager.Uri.Contains("LogoutPage"))
         {
-            if (!NavManager.Uri.EndsWith("/"))
+            if (!NavManager.Uri.EndsWith("CountOnIt_MalkaInbalDana/"))
             {
                 <div id="@hideNav" class="bottom-nav" @ref="navBar">
                     <button class="navBtn" style="opacity:60%">מבט לעבר<img src="./css/images/past.svg" /></button>
@@ -31,10 +26,6 @@
             }
         }
         
-
-
-           
-
     </main>
 </div>
 
@@ -80,7 +71,7 @@
         
         currentPresentNavPage = "font - weight:600; color:#6775F4;";
         currentFuturetNavPage = "";
-        Nav.NavigateTo("./HomePage");
+        NavManager.NavigateTo("./HomePage");
     }
     
     public void goToFutureHomePage()
@@ -88,6 +79,6 @@
        
         currentFuturetNavPage = "font - weight:600; color:#6775F4;";
         currentPresentNavPage = "";
-        Nav.NavigateTo("./FutureHomePage");
+        NavManager.NavigateTo("./FutureHomePage");
     }
 }
