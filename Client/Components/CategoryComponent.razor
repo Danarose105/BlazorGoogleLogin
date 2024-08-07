@@ -239,7 +239,7 @@
                             </div>
                         </div>
 
-                        @if (titleInput.Length >= 2 && titleInput.Length < 19 && newSubCategory.monthlyPlannedBudget > 0)
+                        @if (titleInput.Length >= 2 && titleInput.Length < 19 && newSubCategory.monthlyPlannedBudget > 0 && titleInputExists==false)
                         {
                             Console.WriteLine(titleInput.Length + " titleInput.Length");
                             Console.WriteLine(newSubCategory.monthlyPlannedBudget + " newSubCategory.monthlyPlannedBudget");
@@ -279,6 +279,11 @@
                                 }
 
                             }
+                            else if (titleInputExists)
+                            {
+                                <br />
+                                <span> שם תת הקטגוריה כבר קיים.</span>
+                            }
                             else if (newSubCategory.monthlyPlannedBudget < 0)
                             {
                                 <span>תקציב תת קטגוריה צריך להיות גדול מאפס.</span>
@@ -294,21 +299,33 @@
                     }
                     else
                     {
-                        if (titleInput.Length >= 2 && titleInput.Length < 19)
-                        {
-                            <div class="outerSaveBtns">
-                                <button class="primery-button" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
-                                <button class="secondery-button" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
-                            </div>
-                        }
-                        else
+                        if (titleInputExists==true)
                         {
                             <div class="outerSaveBtns">
                                 <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הזנה</button>
                                 <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
-                                <span>אורך שם תת הקטגוריה לא תקין.</span>
+                                <span> שם תת הקטגוריה כבר קיים.</span>
                             </div>
                         }
+                        else
+                        {
+                            if (titleInput.Length >= 2 && titleInput.Length < 19)
+                            {
+                                <div class="outerSaveBtns">
+                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
+                                    <button class="secondery-button" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="outerSaveBtns">
+                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הזנה</button>
+                                    <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
+                                    <span>אורך שם תת הקטגוריה לא תקין.</span>
+                                </div>
+                            }
+                        }
+
                     }
 
                 </div>
@@ -439,11 +456,20 @@
     bool openSubCatsOptions = false;
     OverBudgetToShow chosenSubCategory = new OverBudgetToShow();
 
-    protected override void OnInitialized()
+    List<string> allSubCatTitles = new List<string>();
+    bool titleInputExists = false;
+
+    protected override async Task OnInitializedAsync()
     {
         if (categoryColor == null || categoryColor == "")
         {
             categoryColor = "#678EF4"; //default color
+        }
+
+        var subCatRes = await Http.GetAsync("api/Present/GetAllSubCatsTitles/" + userID);
+        if (subCatRes.IsSuccessStatusCode)
+        {
+            allSubCatTitles =  subCatRes.Content.ReadFromJsonAsync<List<string>>().Result;
         }
     }
 
@@ -812,6 +838,15 @@
         isTyped = true;
         titleInput = e.Value.ToString();
         titleInputLength = titleInput.Length;
+
+        if (allSubCatTitles.Contains(titleInput))
+        {
+            titleInputExists = true;
+        }
+        else
+        {
+            titleInputExists = false;
+        }
     }
     //--------------------//
 

@@ -686,6 +686,30 @@ namespace BlazorGoogleLogin.Server.Controllers
         }
 
 
+
+        [HttpGet("GetAllSubCatsTitles/{userID}")] 
+        public async Task<IActionResult> GetAllSubCatsTitles(int userID)
+        {
+            if (userID>0)
+            {
+                object param = new { ID = userID };
+
+                string GetSubCatsTitlesQuery = "SELECT s.subCategoryTitle FROM users u JOIN categories c ON u.id = c.userID JOIN subcategories s ON c.id = s.categoryID WHERE u.id = @ID;";
+                var recordSubCategoryTitle = await _db.GetRecordsAsync<string>(GetSubCatsTitlesQuery, param);
+                List<string> subCatTitleList = recordSubCategoryTitle.ToList();
+
+                if (subCatTitleList == null || subCatTitleList.Count==0)
+                {
+                    return BadRequest("no sub categories found related to this user");  // Return an empty list if no categories found
+                }
+                return Ok(subCatTitleList);
+            }
+            
+            return BadRequest("couldn't find user");
+        }
+
+
+
         [HttpGet("GetTagsAndSpendings/{userID}")] // שליפת תגיות וסכומים שלהן לעמוד סטורי 2 במצב החודש כרגע
         public async Task<IActionResult> GetTagsAndSpendings(int userID)
         {
