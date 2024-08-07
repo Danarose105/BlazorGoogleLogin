@@ -106,8 +106,8 @@
                             </div>
                             <div class="outerTitleName">
                                 <label class="titleName" for="amount">שם תת קטגוריה</label>
-                                <input class="titleBox" type="text" id="amount" placeholder="שם תת הקטגוריה" @bind="subCatToEdit.subCategoryTitle" maxlength="18" minlength="2" @oninput="SubCatTitleLengthCounter" />
                                 <div class="input-container">
+                                <input class="titleBox" type="text" id="amount" placeholder="שם תת הקטגוריה" @bind="subCatToEdit.subCategoryTitle" maxlength="18" minlength="2" @oninput="SubCatTitleLengthCounter" />
                                     <div class="counter">
                                         @if (titleInput.Length > 2 && titleInput.Length < 19)
                                         {
