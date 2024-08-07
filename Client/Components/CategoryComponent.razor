@@ -209,7 +209,7 @@
                         <label class="titleName" for="description">מה התקציב החודשי שלך עבור @newSubCategory.subCategoryTitle? </label>
 
                         <div class="outerBudget">
-                            <input class="budgetBox" type="number" id="description" placeholder="0" @bind="newSubCategory.monthlyPlannedBudget" />
+                            <input class="budgetBox" type="number" id="description" @bind="newSubCategory.monthlyPlannedBudget" />
                             <span class="currency-symbol">₪</span>
                             <div class="lineBetween"></div>
                         </div>
@@ -277,11 +277,6 @@
                                     <br />
                                     <span>שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
                                 }
-                                @*else
-                                {
-                                    <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הזנה</button>
-                                    <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
-                                }*@
 
                             }
                             else if (newSubCategory.monthlyPlannedBudget < 0)

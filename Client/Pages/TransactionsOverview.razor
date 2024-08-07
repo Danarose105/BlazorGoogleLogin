@@ -1078,7 +1078,7 @@
             if (allTransactions[i].id == transIdToRemove)
             {
                 checkOverdraft -= allTransactions[i].transValue;
-                allTransactions.Remove(allTransactions[i]);
+                allTransactions.RemoveAt(i);
                 //Console.WriteLine("transaction id- " + allTransactions[i].id + " deleted");
             }
         }
@@ -1092,6 +1092,8 @@
             overdraftStatus = false;
             isOverdraft = false;
         }
+
+        
     }
 
     public void OpetionsBtnClicked()

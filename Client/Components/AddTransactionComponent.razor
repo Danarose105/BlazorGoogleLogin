@@ -67,7 +67,7 @@
                                 <div class="outerTitleAndDateAndName">
                                     <span class="titleName">סכום ההזנה</span>
                                     <div class="outerBudget">
-                                        <input class="budgetBox" type="number" id="description" placeholder="0" @bind="newTransaction.transValue" />
+                                        <input class="budgetBox" id="description" type="number" @bind="newTransaction.transValue" />
                                         <span class="currency-symbol">₪</span>
                                         <div class="lineBetween"></div>
                                     </div>
@@ -76,7 +76,7 @@
                                 <div class="outerReBtn" disabled="@splitPayment">
                                     <div class="outerReBtn">
                                         <button class="repeatedBtn" @onclick=@(async () => await repeatingTransOverlay())>@repeatedBtnTitle <img src="./css/images/repeat icon.svg" /></button>
-                                        @if (newTransaction.fixedMonthly.Value == true)
+                                        @if (newTransaction.fixedMonthly.HasValue && newTransaction.fixedMonthly == true)
                                         {
                                             repeatedBtnTitle = "עריכת ההזנה החוזרת";
                                             <button class="cancleRepeatedBtn" @onclick="()=>undoFixedMonthly(newTransaction.transDate)">ביטול הזנה חוזרת</button>
@@ -520,7 +520,7 @@
 
                                 <div class="outerTitleAndDateAndName">
                                     <span class="titleName">פירוט:</span>
-                                    <textarea class="description" @bind="newTransaction.description" maxlength="60" @oninput="TransDescLengthCounter"></textarea>
+                                    <textarea class="description" @bind="descriptionInput" maxlength="60" @oninput="TransDescLengthCounter"></textarea>
                                     @if (descLength > 0)
                                     {
                                         <span>@descLength/60</span>
@@ -793,13 +793,13 @@
         </div>
     }
 
-    @if(fixedMonthly){
+   @* @if(fixedMonthly){
         splitPayment=false;
     }
     else
     {
         splitPayment=true;
-    }
+    }*@
 }
 
 
@@ -959,6 +959,9 @@
 
     string titleInput = "";
     int titleInputLength = 0;
+
+    string descriptionInput = "";
+
 
     private void NextPage()
     {
@@ -1224,7 +1227,7 @@
                     if (newTransaction.fixedMonthly == true)
                     {
                         repeatedBtnTitle = "עריכת ההזנה החוזרת";
-                       
+
 
                         var getRepeatedChildren = await Http.GetAsync("api/Transactions/getRepeatedTransToEdit/" + transIDtoEdit); //gets the fixed children only
                         if (getRepeatedChildren.IsSuccessStatusCode)
@@ -1243,7 +1246,7 @@
 
                     if (newTransaction.splitPayment == true)
                     {
-                       
+
                         splitPayment = true;
                         var repeatedTransValuesRes = await Http.GetAsync("api/Transactions/getPaymentTransToEdit/" + transIDtoEdit);
 
@@ -1286,12 +1289,13 @@
         }
         else
         {
-           
+
             newTransaction = new TransactionToAdd()
                 {
                     transDate = DateTime.Today, // Set the transaction date to today
                     fixedMonthly = false,
-                    splitPayment = false
+                    splitPayment = false,
+
                 };
             overlayTitle = "הוספה לתת קטגוריה";
             isItAnewTrans = true;
@@ -1393,7 +1397,11 @@
                 var transToSaveRes = await Http.PostAsJsonAsync("api/Transactions/AddTransaction", newTransaction);
                 if (transToSaveRes.IsSuccessStatusCode)
                 {
-                    transIDtoEdit = await transToSaveRes.Content.ReadFromJsonAsync<int>();
+                    if (i==0)
+                    {
+
+                        transIDtoEdit = await transToSaveRes.Content.ReadFromJsonAsync<int>();
+                    }
                     if (!categoryTypeIndicator)
                     {
                         if (i == 0)
@@ -1568,6 +1576,8 @@
         else if (newTransaction.splitPayment == true && selectedNumber > 1) //means the trans is split
         {
             double splitValue = newTransaction.transValue / selectedNumber;
+            int initialTransID = transIDtoEdit; // Store the initial transaction ID
+
             for (int i = 0; i < selectedNumber; i++)
             {
                 newTransaction.transValue = splitValue;
@@ -1581,7 +1591,10 @@
                 var transToSaveRes = await Http.PostAsJsonAsync("api/Transactions/AddTransaction", newTransaction);
                 if (transToSaveRes.IsSuccessStatusCode)
                 {
-                    transIDtoEdit = await transToSaveRes.Content.ReadFromJsonAsync<int>();
+                    if(i==0){
+
+                        transIDtoEdit = await transToSaveRes.Content.ReadFromJsonAsync<int>();
+                    }
                     if (!categoryTypeIndicator && i == 0)
                     {
                         if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
@@ -1619,12 +1632,15 @@
             titleInputLength = 0;
             newTransaction = new TransactionToAdd()
                 {
-                    transDate = DateTime.Today // Set the transaction date to today
+                    transDate = DateTime.Today, // Set the transaction date to today
+                    fixedMonthly=false,
+                    splitPayment=false
                 };
-
+            selectedNumber = 1;
+            splitPayment = false;
             isButtomDropDownOpen = false;
             isTopDropDownOpen = true;
-           
+
         }
         else //means the trans is not split or fixed
         {
@@ -1671,8 +1687,7 @@
                     await getStreakDetails();
 
                     //resetting the trans window:
-                    isButtomDropDownOpen = false;
-                    isTopDropDownOpen = true;
+
                     titleInput = "";
                     isTyped = false;
                     titleInputLength = 0;
@@ -1686,14 +1701,26 @@
                 }
 
 
-                
+
             }
             else
             {
                 Console.WriteLine("הזנה נכשלה");
             }
         }
-        
+        newTransaction = new TransactionToAdd()
+            {
+                transDate = DateTime.Today, // Set the transaction date to today
+                fixedMonthly = false,
+                splitPayment = false,
+                transValue = 0,
+                description=null
+            };
+        isButtomDropDownOpen = false;
+        isTopDropDownOpen = true;
+        chosenTag = new TagsToShow();
+        descLength=0;
+        descriptionInput = "";
     }
 
 
@@ -1710,7 +1737,7 @@
             newTransaction.transType = 2;
         }
 
-        if (newTransaction.description.Length<=0 || newTransaction.description=="" )
+        if (newTransaction.description=="" )
         {
             newTransaction.description=null;
         }
@@ -2177,7 +2204,7 @@
                     gapsToUpdateBudgets.InvokeAsync(budgetsToUpdate);
                 }
             }
-            
+
             //overdraftDetected = false;
 
 
@@ -2681,6 +2708,7 @@
     {
         string description = "";
         description = e.Value.ToString();
+        descriptionInput = description;
         newTransaction.description = description;
         descLength = description.Length;
     }
