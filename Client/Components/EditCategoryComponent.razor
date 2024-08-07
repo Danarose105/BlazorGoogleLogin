@@ -97,6 +97,7 @@
                        
                     </div>
                 </div>
+                </div>
                 
 
                 <div class="outerColorsAndBtn">
@@ -203,8 +204,9 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
+        </div>
+ 
+
 
 
 @code {
@@ -279,18 +281,18 @@
 
         if (userRes.IsSuccessStatusCode)
         {
-            currentUser = userRes.Content.ReadFromJsonAsync<userToShow>().Result;      
+            currentUser = userRes.Content.ReadFromJsonAsync<userToShow>().Result;
             userCategories = currentUser.categoriesFullList;
-        if (categoryColor == null || categoryColor=="" || categoryColor.Length<=0)
-        {
-            categoryColor = "#6775F4";
-            selectedClass = "#6775F4";
+            if (categoryColor == null || categoryColor == "" || categoryColor.Length <= 0)
+            {
+                categoryColor = "#6775F4";
+                selectedClass = "#6775F4";
+            }
+            else
+            {
+                selectedClass = categoryColor;
+            }
         }
-        else
-        {
-            selectedClass = categoryColor;
-        }
-
     }
 
     string color1Selected = "#F4B367";
@@ -462,7 +464,7 @@
         hideBtn = "";
     }
 
-    async Task titleLengthCounter(ChangeEventArgs e)
+    private async Task titleLengthCounter(ChangeEventArgs e)
     {
         isTyped = true;
 
@@ -489,4 +491,5 @@
         titleInput = e.Value.ToString();
         titleInputLength = titleInput.Length;
     }
+}
 }
