@@ -13,11 +13,27 @@
 <div class="megaOuterPage">
     <div class="outerPage">
         <div>
-            <button @onclick="backToFutureHomePage" class="backArrow"><img src="../css/images/back-repeated.svg" /></button>
+            <button @onclick="backToFutureHomePage" class="backArrow"><img src="./css/images/back-repeated.svg" /></button>
         </div>
+        <div class="titleProfileAndStreak">
+            <div class="profileAndStreak" @onclick="goToSProfilePage">
 
+                    <div class="streakBtn">
+                        @if (streakStatTitle != null && streakStatTitle != "")
+                        {
+                            if (streakImgIcon != "")
+                            {
+                                <img src=@streakImgIcon style="width:87%;" />
+                            }
+                        }
+                    </div>
+                    <button class="profilePic">@userIcon</button>
+                </div>
+                <div>
         <div class="pageTitle">תכנית עסקית לחלומות</div>
         <div class="secondTitle">החסכונות שלי</div>
+                </div>
+        </div>
 
         <div class="outerSavings">
             <div class="thirdTitle">
@@ -65,7 +81,7 @@
 
                     <div class="outerFirstRow">
                         <div>
-                            <button @onclick="closeSavingDetailsPopUp" class="backArrow"><img src="../css/images/back-repeated.svg" /></button>
+                            <button @onclick="closeSavingDetailsPopUp" class="backArrow"><img src="./css/images/back-repeated.svg" /></button>
                         </div>
 
 
@@ -121,7 +137,7 @@
 
 
                         <div>
-                            <button class="backArrow" @onclick="()=> isEditSavingClicked = !isEditSavingClicked"><img src="../css/images/back-repeated.svg" /></button>
+                            <button class="backArrow" @onclick="()=> isEditSavingClicked = !isEditSavingClicked"><img src="./css/images/back-repeated.svg" /></button>
                         </div>
 
                     </div>
@@ -296,6 +312,10 @@
     string popupBodyText = "";
     int titleInputLength = 0;
 
+    string streakStatTitle = "";
+    string streakImgIcon = "";
+    string userIcon = "";
+
     protected override async Task OnInitializedAsync()
     {
 
@@ -305,6 +325,21 @@
 
         //int currentMonthNumber = DateTime.Now.Month; // Gets the current month number
         StateHasChanged();
+
+        var getUserIcon = await Http.GetAsync("api/Present/getUserIcon/" + userID);
+        if (getUserIcon.IsSuccessStatusCode)
+        {
+            string iconCheck = await getUserIcon.Content.ReadAsStringAsync();
+            userIcon = iconCheck;
+        }
+        else
+        {
+            userIcon = "🌟";
+            var errorContent = await getUserIcon.Content.ReadAsStringAsync();
+            Console.WriteLine("failed to find icon or update it to default because: " + errorContent);
+        }
+
+        await getCurrentStreak();
 
         var userSavingsRes = await Http.GetAsync("api/Future/userFutureSavingsToShow/" + userID);
 
@@ -331,6 +366,11 @@
     void backToFutureHomePage()
     {
         Nav.NavigateTo("./FutureHomePage");
+    }
+
+        public void goToSProfilePage()
+    {
+        Nav.NavigateTo("./ProfilePage/" + userID);
     }
 
     public async Task addNewSaving()
@@ -499,5 +539,57 @@
         isAddSavingOverlayClicked = !isAddSavingOverlayClicked;
         titleInputLength = 0;
         newSaving.savingsSum = 0;
+    }
+
+        private async Task getCurrentStreak()
+    {
+        var getCurrentStatRes = await Http.GetAsync("api/Present/getUserStreakStatus/" + userID);
+        if (getCurrentStatRes.IsSuccessStatusCode)
+        {
+            streakStatTitle = await getCurrentStatRes.Content.ReadAsStringAsync();
+            switch (streakStatTitle) //will fill the related streak image route
+            {
+                case "מטבע ארד":
+
+                    streakImgIcon = "./css/images/bronzeCoin.svg";
+
+                    break;
+                case "מטבע כסף":
+
+                    streakImgIcon = "./css/images/silverCoin.svg";
+
+                    break;
+                case "מטבע זהב":
+
+                    streakImgIcon = "./css/images/goldCoin.svg";
+
+                    break;
+                case "שטר":
+
+                    streakImgIcon = "./css/images/singleCashNote.svg";
+
+                    break;
+                case "שטרות":
+
+                    streakImgIcon = "./css/images/cashNotes.svg";
+
+                    break;
+                case "גביע":
+
+                    streakImgIcon = "./css/images/goblet.svg";
+
+                    break;
+                case "יהלום":
+
+                    streakImgIcon = "./css/images/diamond.svg";
+
+                    break;
+                default:
+                    Console.WriteLine("no picture is associated with this streak");
+                    streakImgIcon = "";
+
+                    break;
+            }
+        }
     }
 }

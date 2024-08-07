@@ -305,61 +305,6 @@
                 </div>
             </div>
 
-            @*<div>
-        <div>הוספת יעד</div>
-        <div>
-        <span>שם היעד</span>
-        <input type="text" @bind="newGoal.goalTitle" />
-        </div>
-        <div>
-        </div>
-        <div>
-        <span>שנת היעד</span>
-        <div>
-        <div @onclick="()=>openYearsOptions =! openYearsOptions">
-        <!-- Fixed malformed tag here -->
-        @if (newGoal.dueYear != null && newGoal.dueYear != 0)
-        {
-        <div class="dropDownTitle">
-        @newGoal.dueYear
-        <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
-        </div>
-        }
-        else
-        {
-        newGoal.dueYear = CurrentYear;
-
-        <div class="dropDownTitle" style="color:#727272">
-        @newGoal.dueYear
-        <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
-        </div>
-        }
-        </div>
-        @if (openYearsOptions)
-        {
-        <div class="outerMonthDayOptions">
-        @for (int i = 0; i < 16; i++)
-        {
-        int currentLoopValue = i;  // Create a temporary variable to capture the loop variable
-        <div @onclick="@(()=>{newGoal.dueYear = (CurrentYear + currentLoopValue); openYearsOptions = false;})">
-        @(CurrentYear + currentLoopValue)
-        </div>
-        <div class="daydivider"></div>
-        }
-        </div>
-        }
-        </div>
-        </div>
-        <div>
-        <span>סכום היעד</span>
-        <input type="number" @bind="newGoal.budget" />
-        </div>
-
-        <div>
-        <button class="primery-button" @onclick="addNewGoal">שמירה וסיום</button>
-        </div>
-        </div>*@
-
         }
         <div class="outerSavingSection">
             <div class="outerRight">
@@ -823,6 +768,9 @@
             }
 
             widthForProgressBar = savingsForProgressBar.ToString() + "%";
+        }else if (sumGoals==0 && sumSavings==0)
+        {
+            widthForProgressBar = "0%";
         }
     }
 
