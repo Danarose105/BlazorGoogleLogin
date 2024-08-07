@@ -239,7 +239,7 @@
                                             <span><b>שם החסכון</b></span>
                                         </div>
                                         <div class="input-containerToAdd">
-                                             <input class="catTitleToAdd" type="text" placeholder="שם החסכון" maxlength="18" minlength="2" @oninput="titleLengthCounter" />
+                                             <input class="catTitleToAdd" type="text" maxlength="18" minlength="2" @oninput="titleLengthCounter" />
                                             <div class="counter">
                                                 @if (newSaving.savingsTitle == null || newSaving.savingsTitle == "")
                                                 {
@@ -266,7 +266,7 @@
                                 <div class="outerSavingToAdd">
                                     <span><b>סכום החסכון</b></span>
                                     <div  class="outerSavingsAmountAndShekel">
-                                         <input class="outerSavingAmountToAdd" type="number" @bind="newSaving.savingsSum" placeholder="סכום החסכון" />
+                                         <input class="outerSavingAmountToAdd" type="number" @bind="newSaving.savingsSum" />
                                          <span>₪</span>
                                     </div>
                                    

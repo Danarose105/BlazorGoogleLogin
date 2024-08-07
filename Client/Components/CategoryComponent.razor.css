@@ -809,26 +809,16 @@
 }
 
 .outerOptions {
-    position: absolute;
-    margin: 0;
-   
-    left: 11vw;
-    background: none;
-    color: inherit;
-    border: none;
-    padding: 0;
-    margin: 0;
-    font: inherit;
-    cursor: pointer;
-    outline: inherit;
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: absolute;
     justify-content: space-between;
-    width: 29%;
+    /* width: 250px; */
+    margin-left: 0.8rem;
     display: flex;
     flex-direction: column;
-    
+    row-gap: 0.4vh;
     border-radius: 0.1875rem;
     border: 0.2px solid rgba(0, 0, 0, 0.15);
     background: #FFF;

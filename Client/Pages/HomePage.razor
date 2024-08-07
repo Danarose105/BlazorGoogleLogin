@@ -412,8 +412,10 @@ else
                         <CategoryComponent Category=category categoryTitle="category.categroyTitle" icon="category.icon" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryColor="@category.color" updateBudget="refreshBudgetsOfSubCats" updateTransSum="refreshTransSumTotals"></CategoryComponent>
 
                     </div>
-
                 }
+
+               @* meant to create a gap under the last category*@
+                <div style="padding: 0.5rem;"></div>
             }
 
 

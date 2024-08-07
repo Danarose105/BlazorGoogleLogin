@@ -1710,7 +1710,7 @@
             newTransaction.transType = 2;
         }
 
-        if (newTransaction.description.Length<=0)
+        if (newTransaction.description.Length<=0 || newTransaction.description=="" )
         {
             newTransaction.description=null;
         }

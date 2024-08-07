@@ -137,7 +137,7 @@
                                     if (goalsDisplayed < 3)
                                     {
                                         // Only display up to the first three goals
-                                        <div style="background-color:@ConvertHexToRGBA(goalPerYearToSend.color, 0.13f); border:1px solid @goalPerYearToSend.color; display: flex; flex-direction: column; row-gap: 1.3vh;" class="goalInTable" @onclick="()=> openGoalsPerYearPopUp(year)">
+                                        <div style="background-color:@ConvertHexToRGBA(goalPerYearToSend.color, 0.13f); border:1px solid @goalPerYearToSend.color; display: flex; flex-direction: column; row-gap: 1.3vh; word-wrap: break-word;" class="goalInTable" @onclick="()=> openGoalsPerYearPopUp(year)">
                                             @goalPerYearToSend.goalTitle
                                         </div>
                                         goalsDisplayed++;
@@ -147,7 +147,7 @@
 
                                 @if (goalsThisYear.Count > 3)
                                 {
-                                    <div style="background-color:#D6D9F1; display: flex; flex-direction: column; row-gap: 1.3vh;" class="goalInTable" @onclick="()=>openGoalsPerYearPopUp(year)">
+                                    <div style="background-color:#D6D9F1; display: flex; flex-direction: column; row-gap: 1.3vh; word-wrap: break-word;" class="goalInTable" @onclick="()=>openGoalsPerYearPopUp(year)">
                                         <span>@(goalsThisYear.Count - 3) יעדים נוספים</span>
                                     </div>
                                 }

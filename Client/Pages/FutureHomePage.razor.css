@@ -340,7 +340,7 @@
     border-radius: 0.25rem 0.25rem 0rem 0rem;
     border: 1px solid #D6D9F1;
     background: #F9F9F9;
-    width: 100%;
+    width: 20%;
     padding: 2vh 0;
     align-items: center;
     height: 25rem;
@@ -355,6 +355,7 @@
     display: flex;
     justify-content: center;
     width: 100%;
+    padding: 0% 0.8vw;
 }
 
 .yearInTable {
