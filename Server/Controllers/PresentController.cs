@@ -95,7 +95,7 @@ namespace BlazorGoogleLogin.Server.Controllers
         public async Task<IActionResult> GetUserDataByDate(int userID)
         {
             // Initialize the SQL queries
-            var userQuery = "SELECT id, firstName, profilePicOrIcon, streakStatus FROM users WHERE id = @ID";
+            var userQuery = "SELECT id, firstName, profilePicOrIcon, streakStatus, passedOnboarding FROM users WHERE id = @ID";
             var categoryQuery = "SELECT id, categroyTitle, icon, color FROM categories WHERE userID = @ID";
             var subCategoryBudgetQuery = "SELECT COALESCE(SUM(monthlyPlannedBudget), 0) FROM subcategories WHERE categoryID = @ID";
 

@@ -138,9 +138,9 @@
                         <button class="profilePic">@currentUser.profilePicOrIcon</button>
                         <div class="myProfileText">@currentUser.firstName @currentUser.lastName</div>
 
-                        
+
                         <div>@user.Mail</div>
-                            
+
                     </div>
                 </div>
 
@@ -254,25 +254,10 @@
 
         <div class="outerDay">
             <div class="outerTagsProfile">
-                @if(currentUser.userTags.Count == 0)
-                {
-                <div>
-                     
-                      <button class="addTagBtn" @onclick="addNewTag">
-                            <div class="addTagText">
-                                הוספת תגית
-                            </div>
-                            <img class="addTagImg" src="./css/images/add-new-tag (1).svg" />
-                        </button>
-                
-                
-                </div>
-                }
-                else
+                @if (currentUser.userTags.Count == 0)
                 {
                     <div>
-                    @if (editBtnClicked)
-                    {
+
                         <button class="addTagBtn" @onclick="addNewTag">
                             <div class="addTagText">
                                 הוספת תגית
@@ -280,107 +265,122 @@
                             <img class="addTagImg" src="./css/images/add-new-tag (1).svg" />
                         </button>
 
-                    }
-                </div>
-                <div class="outerGalleryAndNav">
-                    <div class="outerGallery">
 
-                        @if (currentUser.userTags.Count > 0)
+                    </div>
+                }
+                else
+                {
+                    <div>
+                        @if (editBtnClicked)
                         {
-                            if (editBtnClicked)
-                            {
-                                foreach (TagsToShow tag in GetCurrentPageTags())
-                                {
-
-                                    if (!editBtnClicked)
-                                    {
-                                        var fontWeight = (chosenTag == tag) ? "font-weight: 600;" : "";
-                                        <button class="tag"
-                            @onclick="(() => ChooseTagForTrans(tag))"
-                            style="background-color:@tag.tagColor; @fontWeight">
-                                            @tag.tagTitle
-                                        </button>
-                                    }
-                                    else
-                                    {
-                                        var fontWeight = (chosenTag == tag) ? "font-weight: 400;" : "";
-                                        <div class="outerEditTags" @onclick="()=>chosenTagFunc(tag)">
-                                            <button class="Editedtag"
-                                style="background-color:@tag.tagColor; @fontWeight">
-                                                @tag.tagTitle
-
-                                                <div class="options-container">
-                                                    <button class="options"><img style="height:1rem;" src="./css/images/option menu.svg" /></button>
-                                                </div>
-
-                                            </button>
-                                        </div>
-                                    }
-                                }
-
-
-                                @if (iseditBtnClicked)
-                                {
-                                   openEditOrAddTagOverlay();
-                                    iseditBtnClicked = !iseditBtnClicked;
-                                }
-
-                                @if (isdeleteBtnClicked)
-                                {
-                                    callDeleteWarning();
-                                    isdeleteBtnClicked = !isdeleteBtnClicked;
-                                }
-
-                            }
-                            else
-                            {
-                                foreach (TagsToShow tag in GetCurrentPageTags())
-                                {
-                                    var fontWeight = (chosenTag == tag) ? "font-weight: 600;" : "";
-                                    <button class="tag" style="background-color:@tag.tagColor; @fontWeight">
-                                        @tag.tagTitle
-                                    </button>
-
-                                }
-                            }
-
+                            <button class="addTagBtn" @onclick="addNewTag">
+                                <div class="addTagText">
+                                    הוספת תגית
+                                </div>
+                                <img class="addTagImg" src="./css/images/add-new-tag (1).svg" />
+                            </button>
 
                         }
                     </div>
-                    @if (OptionsBtnClicked)
-                    {
-                        <div class="megaTagsOuterOptions">
-                           
-                            <div class="tagsOuterOptions">
-                                <button class="optionButton editButton" @onclick="(() => iseditBtnClicked = !iseditBtnClicked)">
-                                    <img src="./css/images/edit_pencil.svg" class="icon" />
-                                    עריכה
-                                </button>
-                                <div class="lineBetween"> </div>
-                                <button class="optionButton deleteButton" @onclick="(() => isdeleteBtnClicked = !isdeleteBtnClicked)">
-                                    <img src="./css/images/trash.svg" class="icon" />
-                                    מחיקה
-                                </button>
-                            </div>
-                        </div>
-                    }
-                    <div class="outerBtnAndDots">
-                        <button class="galleryArrow @disBtnStyle" @onclick="PreviousPage"><img src="./css/images/arrow-back.svg" /></button>
-                        <div class="pageDots">
-                            @for (int i = 0; i < totalPages; i++)
+                    <div class="outerGalleryAndNav">
+                        <div class="outerGallery">
+
+                            @if (currentUser.userTags.Count > 0)
                             {
-                                <span class="dot @(i == currentPage ? "active" : "")"></span>
+                                if (editBtnClicked)
+                                {
+                                    foreach (TagsToShow tag in GetCurrentPageTags())
+                                    {
+
+                                        if (!editBtnClicked)
+                                        {
+                                            var fontWeight = (chosenTag == tag) ? "font-weight: 600;" : "";
+                                            <button class="tag"
+                            @onclick="(() => ChooseTagForTrans(tag))"
+                            style="background-color:@tag.tagColor; @fontWeight">
+                                                @tag.tagTitle
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            var fontWeight = (chosenTag == tag) ? "font-weight: 400;" : "";
+                                            <div class="outerEditTags" @onclick="()=>chosenTagFunc(tag)">
+                                                <button class="Editedtag"
+                                style="background-color:@tag.tagColor; @fontWeight">
+                                                    @tag.tagTitle
+
+                                                    <div class="options-container">
+                                                        <button class="options"><img style="height:1rem;" src="./css/images/option menu.svg" /></button>
+                                                    </div>
+
+                                                </button>
+                                            </div>
+                                        }
+                                    }
+
+
+                                    @if (iseditBtnClicked)
+                                    {
+                                        openEditOrAddTagOverlay();
+                                        iseditBtnClicked = !iseditBtnClicked;
+                                    }
+
+                                    @if (isdeleteBtnClicked)
+                                    {
+                                        callDeleteWarning();
+                                        isdeleteBtnClicked = !isdeleteBtnClicked;
+                                    }
+
+                                }
+                                else
+                                {
+                                    foreach (TagsToShow tag in GetCurrentPageTags())
+                                    {
+                                        var fontWeight = (chosenTag == tag) ? "font-weight: 600;" : "";
+                                        <button class="tag" style="background-color:@tag.tagColor; @fontWeight">
+                                            @tag.tagTitle
+                                        </button>
+
+                                    }
+                                }
+
+
                             }
                         </div>
-                        <button class="galleryArrow @disNextBtnStyle" @onclick="NextPage"><img src="./css/images/arrow-next.svg" /></button>
+                        @if (OptionsBtnClicked)
+                        {
+                            <div class="megaTagsOuterOptions">
+
+                                <div class="tagsOuterOptions">
+                                    <button class="optionButton editButton" @onclick="(() => iseditBtnClicked = !iseditBtnClicked)">
+                                        <img src="./css/images/edit_pencil.svg" class="icon" />
+                                        עריכה
+                                    </button>
+                                    <div class="lineBetween"> </div>
+                                    <button class="optionButton deleteButton" @onclick="(() => isdeleteBtnClicked = !isdeleteBtnClicked)">
+                                        <img src="./css/images/trash.svg" class="icon" />
+                                        מחיקה
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                        <div class="outerBtnAndDots">
+                            <button class="galleryArrow @disBtnStyle" @onclick="PreviousPage"><img src="./css/images/arrow-back.svg" /></button>
+                            <div class="pageDots">
+                                @for (int i = 0; i < totalPages; i++)
+                                {
+                                    <span class="dot @(i == currentPage ? "active" : "")"></span>
+                                }
+                            </div>
+                            <button class="galleryArrow @disNextBtnStyle" @onclick="NextPage"><img src="./css/images/arrow-next.svg" /></button>
+
+                        </div>
 
                     </div>
-                   
-                </div>
                 }
-               
-              
-                
+
+
+
             </div>
         </div>
     </div>
@@ -398,8 +398,8 @@
     else
     {
         <div class="outerOn">
-            <div class="outerOnbaordings">
-                <div class="outerDropAndPoly" @onclick="()=> openOnboardings =! openOnboardings">
+            <div class="outerOnbaordings" @onclick="()=> openOnboardings =! openOnboardings">
+                <div class="outerDropAndPoly" >
                     <div>מעבר מחדש על ההדרכה</div>
                     <img src="./css/images/arrow3.svg" />
                 </div>
@@ -460,13 +460,13 @@
                             <div class="outerTitleAndCounter">
                                 <div class="input-container">
                                     <div>שם התגית:</div>
-                                    <input type="text" class="catTitle" @bind="@currentTagName" @oninput="tagTitleLengthCheck" maxlength="8" minlength="2"/>
+                                    <input type="text" class="catTitle" @bind="@currentTagName" @oninput="tagTitleLengthCheck" maxlength="8" minlength="2" />
                                     <div class="counter">
-                                        @if (tagNameLength>0 && tagNameLength<9)
+                                        @if (tagNameLength > 0 && tagNameLength < 9)
                                         {
                                             <span>8/@tagNameLength</span>
                                         }
-                                        else if(tagNameLength<1)
+                                        else if (tagNameLength < 1)
                                         {
                                             <span>0/8</span>
                                         }
@@ -554,7 +554,8 @@
                         {
 
                             <div class="outerSaveBtns">
-                                @if(currentUser.userTags.Count>0){
+                                @if (currentUser.userTags.Count > 0)
+                                {
                                     if ((tagToEdit.tagTitle != "" || tagToEdit.tagTitle != null))
                                     {
                                         <button class="primery-button" @onclick="addTag">שמירה וסיום</button>
@@ -707,41 +708,45 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var userRes = await Http.GetAsync("api/Present/userProfileData/" + userID);
-        if (userRes.IsSuccessStatusCode)
+        if (user != null)
         {
-            currentUser = await userRes.Content.ReadFromJsonAsync<userProfileDataToShow>();
-            if (currentUser.monthStartDate.HasValue)
+            userID = user.Id;
+            var userRes = await Http.GetAsync("api/Present/userProfileData/" + userID);
+            if (userRes.IsSuccessStatusCode)
             {
-                switch (currentUser.monthStartDate)
+                currentUser = await userRes.Content.ReadFromJsonAsync<userProfileDataToShow>();
+                if (currentUser.monthStartDate.HasValue)
                 {
-                    case 1:
-                        startMonthDate = 1;
-                        break;
-                    case 2:
-                        startMonthDate = 2;
-                        break;
-                    case 10:
-                        startMonthDate = 10;
-                        break;
-                    case 15:
-                        startMonthDate = 15;
-                        break;
-                    default:
-                        startMonthDate = 1;
-                        break;
+                    switch (currentUser.monthStartDate)
+                    {
+                        case 1:
+                            startMonthDate = 1;
+                            break;
+                        case 2:
+                            startMonthDate = 2;
+                            break;
+                        case 10:
+                            startMonthDate = 10;
+                            break;
+                        case 15:
+                            startMonthDate = 15;
+                            break;
+                        default:
+                            startMonthDate = 1;
+                            break;
+                    }
                 }
+                else
+                {
+                    startMonthDate = 1;
+                }
+
+                newFirstNameLength = currentUser.firstName.Length;
+                newLastNameLength = currentUser.lastName.Length;
+
+
+                onInitializedOver = true;
             }
-            else
-            {
-                startMonthDate = 1;
-            }
-
-            newFirstNameLength = currentUser.firstName.Length;
-            newLastNameLength = currentUser.lastName.Length;
-
-
-            onInitializedOver = true;
         }
     }
 
@@ -775,7 +780,7 @@
         }
 
         editBtnClicked = false;
-         await JSRuntime.InvokeVoidAsync("navigateBack");
+        await JSRuntime.InvokeVoidAsync("navigateBack");
     }
 
     public void closingLeavingPopUp()
@@ -937,7 +942,7 @@
 
         tagToEdit.id = 0;
         tagTitleInputLength = 0;
-        tagNameLength=0;
+        tagNameLength = 0;
         currentTagName = "";
         ogTagColor = "";
         currentTagColor = "";
@@ -951,8 +956,8 @@
         if (addFirstTagRes.IsSuccessStatusCode)
         {
             Console.WriteLine("first tag updated in db");
-            var firstTagID =  addFirstTagRes.Content.ReadFromJsonAsync<int>().Result;
-            if (firstTagID>0)
+            var firstTagID = addFirstTagRes.Content.ReadFromJsonAsync<int>().Result;
+            if (firstTagID > 0)
             {
                 currentUser.userTags[0].id = firstTagID;
             }
@@ -1216,11 +1221,11 @@
         else
         {
             editedTag = currentUser.userTags.IndexOf(chosenTag);
-            if (editedTag>-1)
+            if (editedTag > -1)
             {
                 currentUser.userTags[editedTag].tagColor = OgColor;
             }
-            
+
 
         }
 
@@ -1239,7 +1244,7 @@
 
     bool deleteBtnClicked;
 
-   
+
     public bool iseditBtnClicked;
     public bool isdeleteBtnClicked;
 

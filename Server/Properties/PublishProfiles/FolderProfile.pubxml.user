@@ -4,8 +4,8 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
 <Project>
   <PropertyGroup>
-    <_PublishTargetUrl>C:\Users\Inbal\Desktop\BlazorGoogleLogin\Server\bin\Release\net6.0\publish\</_PublishTargetUrl>
-    <History>True|2024-07-15T18:04:38.3284916Z;True|2024-07-15T20:57:18.6431768+03:00;True|2024-07-15T20:42:35.9572760+03:00;True|2024-07-15T18:30:54.5185169+03:00;True|2024-07-07T12:52:46.0146186+03:00;</History>
+    <_PublishTargetUrl>C:\Users\97258\OneDrive\Desktop\FinalProject_GithubRepository\CountOnIt_July16th\BlazorGoogleLogin\Server\bin\Release\net6.0\publish\</_PublishTargetUrl>
+    <History>True|2024-08-07T16:56:57.9102321Z;True|2024-07-15T21:04:38.3284916+03:00;True|2024-07-15T20:57:18.6431768+03:00;True|2024-07-15T20:42:35.9572760+03:00;True|2024-07-15T18:30:54.5185169+03:00;True|2024-07-07T12:52:46.0146186+03:00;</History>
     <LastFailureDetails />
   </PropertyGroup>
 </Project>

@@ -1,0 +1,93 @@
+﻿@using BlazorGoogleLogin.Shared.Models.present.toShow
+@using BlazorGoogleLogin.Shared.Models.present.toAdd
+@using BlazorGoogleLogin.Shared.Models.present.toEdit
+@using BlazorGoogleLogin.Client.Components
+@using Microsoft.AspNetCore.Components.Web
+
+<div class="overlay @firstTimeOnboardingClass">
+
+    @if (IsActive && firstOnboarding == false)
+    {
+
+        <div class="highlight" style="@($"left:{HighlightArea.Left}px; top:{HighlightArea.Top}px; width:{HighlightArea.Width}px; height:{HighlightArea.Height}px;")"></div>
+        <div id="guideArrow" style="@($"top:{HighlightArea.Top+100}px; position:absolute;")"><img src="./css/images/onboarding-arrow.svg" /></div>
+        <div id="expBubble" style="@($"top:{HighlightArea.Top+200}px;")">@expContent</div>
+
+    }
+    else if (firstOnboarding)
+    {
+        <p>@expContent @firstTimeOnboardingClass</p>
+    }
+</div>
+
+@if (firstOnboarding)
+{
+    firstTimeOnboardingClass = "firstOnBoarding";
+}
+
+
+
+@code {
+
+    /// <summary>
+    /// is the overlay active
+    /// </summary>
+    [Parameter]
+    public bool IsActive { get; set; }
+
+    /// <summary>
+    /// the borders of the highlighted element
+    /// </summary>
+    [Parameter]
+    public ElementBounds HighlightArea { get; set; }
+
+    /// <summary>
+    /// the id of the element in the page
+    /// </summary>
+    [Parameter]
+    public string elementID { get; set; }
+
+    [Parameter]
+    public bool firstOnboarding { get; set; }
+
+    /// <summary>
+    /// the content in the explanation speech bubble
+    /// </summary>
+    string expContent = "זה כפתור בדיקה משובח, שייך לבדיקת אונבורדינג!";
+
+    string firstTimeOnboardingClass = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (elementID != null && elementID != "")
+        {
+
+            switch (elementID)
+            {
+                case "presentOnBoarding1":
+                    expContent = "זאת סביבת מבט אל ההווה- עמוד הבית של האפליקציה. בה נראה איך עובר החודש, ונכניס את ההוצאות וההכנסות במהלכו.";
+                    break;
+                case "monthStatusBtn":
+                    expContent = "בלחיצה על כפתור 'מצב החודש כרגע' ניתן לראות נקודות חשובות על התזרים החודשי עד כה.";
+                    break;
+                case "presentOnBoarding2":
+                    expContent = "זוהי שורת החיפוש, בה ניתן לחפש על פי קטגוריות.";
+                    break;
+                case "presentOnboarding3":
+                    expContent = "אחד מהמפתחות החשובים ביותר להצלחה הוא התמדה. לכן, כל שבוע בו נזין לפחות הוצאה אחת, השבוע יתווסף לרצף.";
+                    break;
+                case "presentOnboarding4":
+                    expContent = "כל יצירה של תת קטגוריה מלווה בהגדרת תקציב עבורה. התקציב הוא התקרה של ההוצאות באותה תת קטגוריה. הוא יעבור מחודש לחודש ונוכל לערוך אותו במסך 'מבט על' בכל עת.";
+                    break;
+                case "presentOnboarding5":
+                    expContent = "במידה ובוצעה חריגה מהתקציב תוצג ההודעה הזו. היא תציג את סכום החריגה, ותציע להעביר את הסכום הזה או גבוה יותר (במידת הצורך), מתתי הקטגוריות שהוגדרו בעדיפות 'רצון'.";
+                    break;
+            }
+        }
+    }
+
+    public void HideHighlight()
+    {
+        IsActive = false;
+    }
+}

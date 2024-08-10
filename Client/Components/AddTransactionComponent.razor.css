@@ -493,7 +493,7 @@ input:checked + .slider:before {
     outline: inherit;
     text-align: center;
     border-radius: 0.25rem;
-    width: 5.5rem;
+    width: 90%;
     height: 2rem;
     justify-items: center;
 }

@@ -37,7 +37,7 @@
                 <div class="accordionAndTransDetailsWrap">
                     <div class="transDetailsAccordion" @onclick="manageDropDown">
 
-                        <span class="accordionText">פרטי ההזנה שלי</span>
+                        <span class="accordionText">שם ההזנה שלי</span>
                         <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
                     </div>
 
@@ -609,7 +609,7 @@
     {
         <div class="overlay">
             <div class="outerOverdraft">
-                <div class="overdraftWindow">
+                <div class="overdraftWindow" id="presentOnboarding5">
 
                     <div class="outerText">
                         <h3 class="titleText">חרגת...</h3>
@@ -793,13 +793,6 @@
         </div>
     }
 
-   @* @if(fixedMonthly){
-        splitPayment=false;
-    }
-    else
-    {
-        splitPayment=true;
-    }*@
 }
 
 

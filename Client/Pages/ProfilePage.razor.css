@@ -78,7 +78,7 @@
     outline: inherit;
     text-align: center;
     border-radius: 0.25rem;
-    width: 5.5rem;
+    width: 90%;
     height: 2rem;
     justify-items: center;
 }
@@ -440,8 +440,8 @@
     width: 76%;
     padding: 0.8vh 1vw;
     z-index: 2;
-    position: absolute;
-    margin-top: 47%;
+/*    position: absolute;
+    margin-top: 47%;*/
     box-shadow: 0px 31px 9px 0px rgba(0, 0, 0, 0.00), 0px 20px 8px 0px rgba(0, 0, 0, 0.02), 0px 11px 7px 0px rgba(0, 0, 0, 0.06), 0px 5px 5px 0px rgba(0, 0, 0, 0.10), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
 }
 

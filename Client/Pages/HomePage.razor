@@ -27,9 +27,21 @@ else
     }
 }
 
+@if (tutorialActive)
+{
+
+    
+    <TutorialOverlay @ref="tutorialOverlay"
+                 IsActive="@tutorialActive"
+                 HighlightArea="@elementToHighlight"
+                 firstOnboarding="@firstOnboarding" />
+}
+
+@*<button id="tutorialBtn" @onclick="StartTutorial">Start Tutorial</button>*@
+
 @if (streakOverlay) //not the final microcopy for this popup
 {
-    <div class="overlay">
+    <div class="overlay" id="presentOnboarding3">
         <div class="outerStory">
             <div class="wellDonePopUp">
                 <div class="closePopUpBtn">
@@ -72,236 +84,237 @@ else
     <div class="@BgOverlay"></div>
     @if (currentUser != null)
     {
-        <div id="topSectionDiv">
-            <div class="outerTopSection">
+        <div id="presentOnBoarding1">
+            <div id="topSectionDiv">
+                <div class="outerTopSection">
 
-                <div class="profileAndStreak" @onclick="goToSProfilePage">
+                    <div class="profileAndStreak" @onclick="goToSProfilePage">
 
-                    @if (streakStatTitle != null && streakStatTitle != "")
-                    {
-                        @if (streakImgIcon != "")
+                        @if (streakStatTitle != null && streakStatTitle != "")
                         {
-                            <button class="streakBtn"><img src=@streakImgIcon style="width:87%;" @onclick="getStreakDetails" /></button>
+                            @if (streakImgIcon != "")
+                            {
+                                <button class="streakBtn"><img src=@streakImgIcon style="width:87%;" @onclick="getStreakDetails" /></button>
 
+                            }
                         }
-                    }
-                    <button class="profilePic">@currentUser.profilePicOrIcon</button>
-                </div>
-                <div id="topText">
-                    <p id="firstTitle">היי @currentUser.firstName 👋🏼</p>
+                        <button class="profilePic">@currentUser.profilePicOrIcon</button>
+                    </div>
+                    <div id="topText">
+                        <p id="firstTitle">היי @currentUser.firstName 👋🏼</p>
 
-                    <p id="secondTitle">מבט על חודש @currentMonth </p>
-
-                </div>
-            </div>
-
-            <div class="searchWrapper">
-                <div class="search__container">
-                    <img src="./css/images/search btn.svg" @onclick="SearchAfterClick" />
-                    <input class="searchInput" type="text" value="@searchQuery" @oninput="UpdateSearchQuery" @onkeyup="HandleKeyUp" placeholder="חפשו קטגוריה ..." />
-
-                </div>
-            </div>
-        </div>
-
-        <div class="statusContainer">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>הוצאתי</th>
-                        <th id="middleTableCoulmn">הכנסתי</th>
-                        <th>ניצלתי</th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>@Math.Round(currentUser.spendingValueFullList,2) ₪</td>
-                        <td id="middleTableRow">@Math.Round(currentUser.incomeValueFullList,2) ₪</td>
-                        <td id="leftTableRow">
-                            @if (currentUser.spendingValueFullList <= 0 && currentUser.budgetFullValue > 0)
-                            {
-                                <span>0</span>
-                            }
-                            else
-                            {
-                                <span> @Math.Round(currentUser.budgetFullValue,2)%</span>
-                            }
-
-                            <br />
-                            <span id="fromBudget">מהתקציב</span>
-                        </td>
-
-                    </tr>
-                </tbody>
-            </table>
-
-            <button class="primery-button" @onclick="getSubCatTotalsForStory">מצב החודש כרגע</button>
-
-
-
-
-            @if (storyPopUpWindow)
-            {
-                <div class="overlay">
-                    <div class="outerStory">
-                        <div class="storyWindow">
-
-                            <div class="outerPhaseAndClose">
-
-                                <span class="modal-close-btn" @onclick="StoryWindowControl"><img src="./css/images/close x.svg" /></span>
-
-                                <div class="outerStoryPhase">
-                                    <div class="progress-nav-bar">
-
-                                        <button class="storyPhase @(storyNav == 1 ? "active" : "")" @onclick="() => OnStepClicked(1)">
-                                            <div class="step-indicator"></div>
-                                        </button>
-                                        <button class="storyPhase @(storyNav == 2 ? "active" : "")" @onclick="() => OnStepClicked(2)">
-                                            <div class="step-indicator"></div>
-                                        </button>
-                                        <button class="storyPhase @(storyNav == 3 ? "active" : "")" @onclick="() => OnStepClicked(3)">
-                                            <div class="step-indicator"></div>
-                                        </button>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-
-                            @if (storyNav == 1 && subCatsTotalsStory.Count > 0)
-                            {
-                                <div class="outerText">
-                                    <div class="storyTitle">היי @currentUser.firstName! רוצה לראות איך עובר החודש?</div>
-                                    <div>אלה תתי הקטגוריות שהכי בלטו עד כה:</div>
-                                </div>
-                                <div class="outerFirstStory" @onclick="NextStory">
-                                    <div class="firstStoryLike">
-                                        <span class="likeIcon">👍</span>
-                                        <div class="storyTextWrapper">
-                                            <h3 class="titleFirstStory">החסכון הגדול ביותר</h3>
-                                            <div>עד כה החודש הוצאת @Math.Round(subCatsTotalsStory[bestSavingIndex].currentMonthTotal)₪ על @bestSavingSubCat, @bestSavingValue₪ פחות מחודש שעבר! </div>
-                                        </div>
-                                    </div>
-                                    <div class="divider"></div>
-                                    <div class="firstStoryLike">
-                                        <span class="likeIcon">👎</span>
-                                        <div class="storyTextWrapper">
-
-                                            <h3 class="titleFirstStory">העלייה הגדולה ביותר</h3>
-                                            <div>עד כה החודש הוצאת @Math.Round(subCatsTotalsStory[worstSavingIndex].currentMonthTotal)₪ על @worstSavingSubCat, @worstSavingValue₪ יותר מחודש שעבר! </div>
-                                        </div>
-                                    </div>
-                                    <div class="imgWrapper">
-
-                                        <img class="storyImg" src="./css/images/calendar2.svg" />
-                                    </div>
-                                </div>
-                            }
-                            else if (storyNav == 1 && subCatsTotalsStory.Count == 0)
-                            {
-                                <div class="outerSecondStory" @onclick="NextStory">
-
-                                    <h3 class="storyTitle">לא נמצאו הוצאות או הכנסות החודש</h3>
-                                    <div class="noTagsDiv">
-                                    </div>
-                                    <div class="imgWrapper">
-
-                                        <img class="storyImg" src="./css/images/calendar2.svg" />
-                                    </div>
-                                </div>
-                            }
-                            else if (storyNav == 2 && tagsSpendingsList.Count > 0)
-                            {
-                                tagCounter = 0;
-                                <div class="outerSecondStory" @onclick="NextStory">
-
-                                    <h3 class="storyTitle">התגיות עם הכי הרבה הוצאות</h3>
-                                    <ol class="outerStoryTags">
-                                        @foreach (TagsAndSpendingsToShow tag in tagsSpendingsList)
-                                        {
-                                            tagCounter++;
-                                            <div class="outerPerTag">
-                                                <div class="storyTagNum">
-                                                    <div>@tagCounter</div>
-                                                </div>
-
-
-                                                <span>הוצאת על</span>
-                                                <div class="storyTag" style="background-color:@tag.tagColor">
-                                                    @tag.tagTitle
-                                                </div>
-                                                <span class="tagsAmount">@tag.totalValue ₪</span>
-                                            </div>
-                                            <div class="divider"></div>
-                                        }
-                                    </ol>
-                                    <div class="imgWrapper">
-                                        <img class="storyImg" src="./css/images/tags-story.svg" />
-                                    </div>
-                                </div>
-
-                            }
-                            else if (storyNav == 2 && tagsSpendingsList.Count == 0)
-                            {
-
-                                <div class="outerSecondStory" @onclick="NextStory">
-
-                                    <h3 class="storyTitle">לא נמצאו הזנות עם תגיות החודש</h3>
-                                    <div class="noTagsDiv">
-                                    </div>
-                                    <div class="imgWrapper">
-                                        <img class="storyImg" src="./css/images/tags-story.svg" />
-                                    </div>
-                                </div>
-                            }
-                            else if (storyNav == 3)
-                            {
-                                tagCounter = 0;
-                                <div class="outerThirdStory" @onclick="NextStory">
-                                    <h3 class="storyTitle">התזרים שלי עד כה החודש</h3>
-                                    <div class="titleFirstStory">פילוח ההוצאות שלך לפי קטגוריות</div>
-
-
-
-                                    <MonthlyStoryGraphComponent userID="@userID" allUserCategories="@currentUser.categoriesFullList" incomeSumValue="displayTotalIncome"></MonthlyStoryGraphComponent>
-
-                                    @if (incomeSum != null && incomeSum > 0)
-                                    {
-
-                                        <div class="titleFirstStory incomeStory">💸 ההכנסות שלך עומדות כרגע על @incomeSum ₪</div>
-
-                                    }
-                                    else
-                                    {
-                                        <div class="titleFirstStory incomeStory">💸 לא הוזנו הכנסות בחודש זה.</div>
-                                    }
-
-                                </div>
-
-
-                            }
-                        </div>
+                        <p id="secondTitle">מבט על חודש @currentMonth </p>
 
                     </div>
-                    <style>
-                        .storyPhase {
-                            background-color: #D6D9F1;
-                            width: 20px;
-                            height: 20px;
-                        }
-
-                            .storyPhase.active {
-                                background-color: #6874f4;
-                            }
-                    </style>
-
                 </div>
-            }
 
+                <div class="searchWrapper" id="presentOnBoarding2">
+                    <div class="search__container">
+                        <img src="./css/images/search btn.svg" @onclick="SearchAfterClick" />
+                        <input class="searchInput" type="text" value="@searchQuery" @oninput="UpdateSearchQuery" @onkeyup="HandleKeyUp" placeholder="חפשו קטגוריה ..." />
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="statusContainer">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>הוצאתי</th>
+                            <th id="middleTableCoulmn">הכנסתי</th>
+                            <th>ניצלתי</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@Math.Round(currentUser.spendingValueFullList,2) ₪</td>
+                            <td id="middleTableRow">@Math.Round(currentUser.incomeValueFullList,2) ₪</td>
+                            <td id="leftTableRow">
+                                @if (currentUser.spendingValueFullList <= 0 && currentUser.budgetFullValue > 0)
+                                {
+                                    <span>0</span>
+                                }
+                                else
+                                {
+                                    <span> @Math.Round(currentUser.budgetFullValue,2)%</span>
+                                }
+
+                                <br />
+                                <span id="fromBudget">מהתקציב</span>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+
+                <button class="primery-button" id="monthStatusBtn" @onclick="getSubCatTotalsForStory">מצב החודש כרגע</button>
+
+
+
+
+                @if (storyPopUpWindow)
+                {
+                    <div class="overlay">
+                        <div class="outerStory">
+                            <div class="storyWindow">
+
+                                <div class="outerPhaseAndClose">
+
+                                    <span class="modal-close-btn" @onclick="StoryWindowControl"><img src="./css/images/close x.svg" /></span>
+
+                                    <div class="outerStoryPhase">
+                                        <div class="progress-nav-bar">
+
+                                            <button class="storyPhase @(storyNav == 1 ? "active" : "")" @onclick="() => OnStepClicked(1)">
+                                                <div class="step-indicator"></div>
+                                            </button>
+                                            <button class="storyPhase @(storyNav == 2 ? "active" : "")" @onclick="() => OnStepClicked(2)">
+                                                <div class="step-indicator"></div>
+                                            </button>
+                                            <button class="storyPhase @(storyNav == 3 ? "active" : "")" @onclick="() => OnStepClicked(3)">
+                                                <div class="step-indicator"></div>
+                                            </button>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                @if (storyNav == 1 && subCatsTotalsStory.Count > 0)
+                                {
+                                    <div class="outerText">
+                                        <div class="storyTitle">היי @currentUser.firstName! רוצה לראות איך עובר החודש?</div>
+                                        <div>אלה תתי הקטגוריות שהכי בלטו עד כה:</div>
+                                    </div>
+                                    <div class="outerFirstStory" @onclick="NextStory">
+                                        <div class="firstStoryLike">
+                                            <span class="likeIcon">👍</span>
+                                            <div class="storyTextWrapper">
+                                                <h3 class="titleFirstStory">החסכון הגדול ביותר</h3>
+                                                <div>עד כה החודש הוצאת @Math.Round(subCatsTotalsStory[bestSavingIndex].currentMonthTotal)₪ על @bestSavingSubCat, @bestSavingValue₪ פחות מחודש שעבר! </div>
+                                            </div>
+                                        </div>
+                                        <div class="divider"></div>
+                                        <div class="firstStoryLike">
+                                            <span class="likeIcon">👎</span>
+                                            <div class="storyTextWrapper">
+
+                                                <h3 class="titleFirstStory">העלייה הגדולה ביותר</h3>
+                                                <div>עד כה החודש הוצאת @Math.Round(subCatsTotalsStory[worstSavingIndex].currentMonthTotal)₪ על @worstSavingSubCat, @worstSavingValue₪ יותר מחודש שעבר! </div>
+                                            </div>
+                                        </div>
+                                        <div class="imgWrapper">
+
+                                            <img class="storyImg" src="./css/images/calendar2.svg" />
+                                        </div>
+                                    </div>
+                                }
+                                else if (storyNav == 1 && subCatsTotalsStory.Count == 0)
+                                {
+                                    <div class="outerSecondStory" @onclick="NextStory">
+
+                                        <h3 class="storyTitle">לא נמצאו הוצאות או הכנסות החודש</h3>
+                                        <div class="noTagsDiv">
+                                        </div>
+                                        <div class="imgWrapper">
+
+                                            <img class="storyImg" src="./css/images/calendar2.svg" />
+                                        </div>
+                                    </div>
+                                }
+                                else if (storyNav == 2 && tagsSpendingsList.Count > 0)
+                                {
+                                    tagCounter = 0;
+                                    <div class="outerSecondStory" @onclick="NextStory">
+
+                                        <h3 class="storyTitle">התגיות עם הכי הרבה הוצאות</h3>
+                                        <ol class="outerStoryTags">
+                                            @foreach (TagsAndSpendingsToShow tag in tagsSpendingsList)
+                                            {
+                                                tagCounter++;
+                                                <div class="outerPerTag">
+                                                    <div class="storyTagNum">
+                                                        <div>@tagCounter</div>
+                                                    </div>
+
+
+                                                    <span>הוצאת על</span>
+                                                    <div class="storyTag" style="background-color:@tag.tagColor">
+                                                        @tag.tagTitle
+                                                    </div>
+                                                    <span class="tagsAmount">@tag.totalValue ₪</span>
+                                                </div>
+                                                <div class="divider"></div>
+                                            }
+                                        </ol>
+                                        <div class="imgWrapper">
+                                            <img class="storyImg" src="./css/images/tags-story.svg" />
+                                        </div>
+                                    </div>
+
+                                }
+                                else if (storyNav == 2 && tagsSpendingsList.Count == 0)
+                                {
+
+                                    <div class="outerSecondStory" @onclick="NextStory">
+
+                                        <h3 class="storyTitle">לא נמצאו הזנות עם תגיות החודש</h3>
+                                        <div class="noTagsDiv">
+                                        </div>
+                                        <div class="imgWrapper">
+                                            <img class="storyImg" src="./css/images/tags-story.svg" />
+                                        </div>
+                                    </div>
+                                }
+                                else if (storyNav == 3)
+                                {
+                                    tagCounter = 0;
+                                    <div class="outerThirdStory" @onclick="NextStory">
+                                        <h3 class="storyTitle">התזרים שלי עד כה החודש</h3>
+                                        <div class="titleFirstStory">פילוח ההוצאות שלך לפי קטגוריות</div>
+
+
+
+                                        <MonthlyStoryGraphComponent userID="@userID" allUserCategories="@currentUser.categoriesFullList" incomeSumValue="displayTotalIncome"></MonthlyStoryGraphComponent>
+
+                                        @if (incomeSum != null && incomeSum > 0)
+                                        {
+
+                                            <div class="titleFirstStory incomeStory">💸 ההכנסות שלך עומדות כרגע על @incomeSum ₪</div>
+
+                                        }
+                                        else
+                                        {
+                                            <div class="titleFirstStory incomeStory">💸 לא הוזנו הכנסות בחודש זה.</div>
+                                        }
+
+                                    </div>
+
+
+                                }
+                            </div>
+
+                        </div>
+                        <style>
+                            .storyPhase {
+                                background-color: #D6D9F1;
+                                width: 20px;
+                                height: 20px;
+                            }
+
+                                .storyPhase.active {
+                                    background-color: #6874f4;
+                                }
+                        </style>
+
+                    </div>
+                }
+
+            </div>
         </div>
-
 
         <div class="toggleWrap">
 
@@ -414,7 +427,7 @@ else
                     </div>
                 }
 
-               @* meant to create a gap under the last category*@
+                @* meant to create a gap under the last category*@
                 <div style="padding: 0.5rem;"></div>
             }
 
@@ -619,6 +632,14 @@ else
     }}
     };
 
+
+    List<string> onBoardingElementsIDs = new List<string>()
+    {
+        "presentOnBoarding1", "monthStatusBtn", "presentOnBoarding2", "presentOnboarding3", "presentOnboarding4", "presentOnboarding5"
+    };
+    bool firstOnboarding = false;
+
+
     bool overdraftDetected = false;
     bool overdraftOverlayOpen = false;
     bool overdraftNotTreated = false;
@@ -700,6 +721,11 @@ else
                 Console.WriteLine("couldn't find income category that belongs to this user");
             }
 
+            if(currentUser.passedOnboarding==false){
+
+                tutorialActive = true;
+                firstOnboarding = true;
+            }
         }
         else
         {
@@ -938,14 +964,16 @@ else
         catToDelete = catallToDelete;
         currentUser.categoriesFullList.Remove(catallToDelete);
 
-        for(int i=searchSubCats.Count-1; i>-1; i--){
-            if(searchSubCats[i].categoryID==catToDelete.id){
+        for (int i = searchSubCats.Count - 1; i > -1; i--)
+        {
+            if (searchSubCats[i].categoryID == catToDelete.id)
+            {
                 searchSubCats.Remove(searchSubCats[i]);
             }
         }
 
         await OnInitializedAsync();
-       
+
     }
 
     public async Task changeGivingSubCatBudget(OverDraftBudgetToEdit givingSubCat)
@@ -1153,7 +1181,7 @@ else
     public void StoryWindowControl()
     {
         tagCounter = 0;
-        storyPopUpWindow = false;
+        storyPopUpWindow = !storyPopUpWindow;
     }
 
     public void NextStory()
@@ -1333,4 +1361,20 @@ else
         openSubCatsOptions = !openSubCatsOptions;
     }
 
+    private TutorialOverlay tutorialOverlay;
+    private ElementBounds elementToHighlight;
+    private string targetElementId = "";
+    bool tutorialActive = false;
+    private async Task StartTutorial()
+    {
+        var elementBounds = await JSRuntime.InvokeAsync<ElementBounds>("getElementPosition", targetElementId);
+        if (elementBounds != null)
+        {
+            tutorialActive = true;
+            elementToHighlight = elementBounds;
+            //tutorialOverlay.ShowHighlight((double)elementBounds.Left, (double)elementBounds.Top, (double)elementBounds.Width, (double)elementBounds.Height);
+        }
+
+    }
 }
+
