@@ -241,10 +241,34 @@ namespace BlazorGoogleLogin.Server.Controllers
                     ID = userID
                 };
                 string getStreakQuery = "WITH WeeklyTransactions AS (SELECT u.id AS userID, DATE_SUB(t.transDate, INTERVAL (DAYOFWEEK(t.transDate) - 1) DAY) AS weekStartDate, COUNT(*) AS transactionCount FROM transactions t JOIN subcategories sc ON t.subCategoryID = sc.id JOIN categories c ON sc.categoryID = c.id JOIN users u ON c.userID = u.id WHERE u.id = @ID AND t.transDate >= u.signUpDate GROUP BY u.id, weekStartDate) SELECT COUNT(*) AS weekCount FROM WeeklyTransactions WHERE transactionCount >= 3 OR (weekStartDate = DATE_SUB(CURRENT_DATE(), INTERVAL (DAYOFWEEK(CURRENT_DATE()) - 1) DAY) AND transactionCount >= 3);";
-                //gets the amount of weeks where there was a minimum of 3 transactions including the current week
+                //counts the number of weeks in which a user has made at least 3 transactions since their sign-up date. It ensures that if the current week has at least 3 transactions, it will be counted as well. 
 
                 var getStreaks = await _db.GetRecordsAsync<int>(getStreakQuery, param);
                 int weekAmountInStreak = getStreaks.FirstOrDefault();
+                if (weekAmountInStreak != null)
+                {
+                    return Ok(weekAmountInStreak);
+                }
+                return BadRequest("couldn't find streak data for this user");
+            }
+
+            return BadRequest("invalid user id");
+        }
+
+        [HttpGet("checkCurrentStreak/{userID}")] //checks the amount of weeks a user has input at least 3 transactions- including the current week
+        public async Task<IActionResult> checkCurrentStreak(int userID)
+        {
+            if (userID > 0)
+            {
+                object param = new
+                {
+                    ID = userID
+                };
+                string getStreakQuery = "WITH UserWeeklyTransactions AS (SELECT u.id AS userID, DATE_SUB(t.transDate, INTERVAL (DAYOFWEEK(t.transDate) - 1) DAY) AS weekStartDate, COUNT(*) AS transactionCount FROM transactions t JOIN subcategories sc ON t.subCategoryID = sc.id JOIN categories c ON sc.categoryID = c.id JOIN users u ON c.userID = u.id WHERE u.id = @ID AND t.transDate >= DATE_SUB(u.signUpDate, INTERVAL (DAYOFWEEK(u.signUpDate) - 1) DAY) and t.transDate<=current_date() GROUP BY u.id, weekStartDate )SELECT weekStartDate, transactionCount FROM UserWeeklyTransactions ORDER BY weekStartDate;";
+                //counts the number of weeks in which a user has made at least 3 transactions since their sign-up date. It ensures that if the current week has at least 3 transactions, it will be counted as well. 
+
+                var getStreaks = await _db.GetRecordsAsync<TransAmountByWeekToShow>(getStreakQuery, param);
+                var weekAmountInStreak = getStreaks.ToList();
                 if (weekAmountInStreak != null)
                 {
                     return Ok(weekAmountInStreak);

@@ -2575,10 +2575,20 @@
     {
         if (userID > 0)
         {
-            var streakDataRes = await Http.GetAsync("api/Present/checkStreak/" + userID);
+            var streakDataRes = await Http.GetAsync("api/Present/checkCurrentStreak/" + userID);
             if (streakDataRes.IsSuccessStatusCode)
             {
-                currentStreak = await streakDataRes.Content.ReadFromJsonAsync<int>();
+                List<TransAmountByWeekToShow> transCountByWeeksList = new List<TransAmountByWeekToShow>();
+                transCountByWeeksList = streakDataRes.Content.ReadFromJsonAsync<List<TransAmountByWeekToShow>>().Result;
+
+                currentStreak = 0;
+                foreach (TransAmountByWeekToShow week in transCountByWeeksList)
+                {
+                    if (week.transactionCount > 3)
+                    {
+                        currentStreak++;
+                    }
+                }
 
                 if (currentStreak > 0)
                 {

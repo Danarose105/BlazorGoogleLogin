@@ -744,13 +744,25 @@ else
 
 
 
-
+    /// <summary>
+    /// gets the current streeeak when the page loads
+    /// </summary>
+    /// <returns></returns>
     private async Task getCurrentStreak()
     {
-        var streakDataRes = await Http.GetAsync("api/Present/checkStreak/" + userID); //checks the total week amount with minimum 3 transactions- including the current week
+        var streakDataRes = await Http.GetAsync("api/Present/checkCurrentStreak/" + userID); //checks the total week amount with minimum 3 transactions- including the current week
         if (streakDataRes.IsSuccessStatusCode)
         {
-            int weekAmount = await streakDataRes.Content.ReadFromJsonAsync<int>();
+            List<TransAmountByWeekToShow> transCountByWeeksList= new List<TransAmountByWeekToShow>();
+            transCountByWeeksList = streakDataRes.Content.ReadFromJsonAsync<List<TransAmountByWeekToShow>>().Result;
+
+            int weekAmount = 0;
+            foreach (TransAmountByWeekToShow week in transCountByWeeksList )
+            {
+                if(week.transactionCount>3){
+                    weekAmount++;
+                }
+            }
             string streakStatCheck = streakStatusCheck(weekAmount);
 
             var getCurrentStatRes = await Http.GetAsync("api/Present/getUserStreakStatus/" + userID); //gets the current streak status title
@@ -820,6 +832,9 @@ else
 
     }
 
+    /// <summary>
+    /// translates the amount of weeks where a user has added at least 3 transactions to the relevent streak title
+    /// </summary>
     public string streakStatusCheck(int weekAmount)
     {
         if (weekAmount <= 1 && weekAmount < 2)
@@ -1050,6 +1065,7 @@ else
         }
         FilterCatsOrSubCats();
     }
+
     void FilterCatsOrSubCats()
     {
         if (!string.IsNullOrEmpty(searchQuery))
@@ -1207,15 +1223,28 @@ else
         incomeSum = incomeSum_;
     }
 
+    /// <summary>
+    /// checks if a new streak was achieved after adding a transaction. If necessary, opens the streak pop up.
+    /// </summary>
     public async Task getStreakDetails()
     {
         if (userID > 0)
         {
-            var streakDataRes = await Http.GetAsync("api/Present/checkStreak/" + userID);
+            var streakDataRes = await Http.GetAsync("api/Present/checkCurrentStreak/" + userID);
             if (streakDataRes.IsSuccessStatusCode)
             {
+                List<TransAmountByWeekToShow> transCountByWeeksList = new List<TransAmountByWeekToShow>();
+                transCountByWeeksList = streakDataRes.Content.ReadFromJsonAsync<List<TransAmountByWeekToShow>>().Result;
 
-                currentStreak = await streakDataRes.Content.ReadFromJsonAsync<int>();
+                currentStreak = 0;
+                foreach (TransAmountByWeekToShow week in transCountByWeeksList)
+                {
+                    if (week.transactionCount > 3)
+                    {
+                        currentStreak++;
+                    }
+                }
+                
 
                 if (currentStreak > 0)
                 {
@@ -1270,7 +1299,7 @@ else
                                     Console.WriteLine("no picture is associated with this streak");
                                     streakImgSrc = "";
                                     streakImgIcon = "";
-                                    nextStreakStatIn = 0;
+                                    nextStreakStatIn = 3;
                                     break;
                             }
 
@@ -1283,20 +1312,24 @@ else
                 {
                     streakImgSrc = "";
                     streakImgIcon = "";
-                    nextStreakStatIn = 0;
+                    nextStreakStatIn = 3;
                 }
 
             }
         }
     }
 
-    public void updateStreak(string? newStreakStat)
+    /// <summary>
+    /// after adding transactions, updates the streak title in page and calls the function that updates the streak icon in the page and the streak stat in DB.
+    /// </summary>
+    /// <param name="newStreakStat"></param>
+    public async void updateStreak(string? newStreakStat)
     {
         Console.WriteLine("streak status got to present home page, new status is: " + newStreakStat);
         if (newStreakStat != null)
         {
             streakStatTitle = newStreakStat;
-            getStreakDetails();
+            await getStreakDetails();
         }
     }
 

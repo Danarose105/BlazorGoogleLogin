@@ -399,7 +399,7 @@
     {
         <div class="outerOn">
             <div class="outerOnbaordings" @onclick="()=> openOnboardings =! openOnboardings">
-                <div class="outerDropAndPoly" >
+                <div class="outerDropAndPoly">
                     <div>מעבר מחדש על ההדרכה</div>
                     <img src="./css/images/arrow3.svg" />
                 </div>
@@ -464,7 +464,7 @@
                                     <div class="counter">
                                         @if (tagNameLength > 0 && tagNameLength < 9)
                                         {
-                                            <span>8/@tagNameLength</span>
+                                            <span>@tagNameLength/8</span>
                                         }
                                         else if (tagNameLength < 1)
                                         {
@@ -496,7 +496,7 @@
                                         }
                                         else if (tagNameLength < 1)
                                         {
-                                            <span>8/0</span>
+                                            <span>0/8</span>
                                         }
 
                                     </div>
@@ -876,6 +876,7 @@
 
     public async Task saveEditedProfile(userProfileDataToShow updatedUser)
     {
+        OptionsBtnClicked = false;
         if (startMonthDate > 0)
         {
             updatedUser.monthStartDate = startMonthDate;
@@ -928,9 +929,18 @@
         }
         isEdit = true;
         tagToEdit = chosenTag;
-        currentTagName = tagToEdit.tagTitle;
+        currentTagName = "";
+        if (tagToEdit.tagTitle.Length > 0)
+        {
+            for (int i = 0; i < tagToEdit.tagTitle.Length; i++)
+            {
+                currentTagName += tagToEdit.tagTitle[i];
+            }
+        }
+
         tagNameLength = currentTagName.Length;
         Console.WriteLine(chosenTag.tagColor + "!!!!!!!!!!!");
+        OptionsBtnClicked = false;
     }
 
 
@@ -995,7 +1005,22 @@
     {
         if (currentTagColor == "")
         {
-            currentTagColor = "#AEA2F9";
+            TagsToShow editedTag = currentUser.userTags.FirstOrDefault(tag => tag.id == tagToEdit.id);
+            if (editedTag != null)
+            {
+                if (editedTag.tagColor != "" && editedTag.tagColor != null)
+                {
+                    currentTagColor = editedTag.tagColor;
+                }
+                else
+                {
+                    currentTagColor = "#AEA2F9";
+                }
+            }
+            else
+            {
+                currentTagColor = "#AEA2F9";
+            }
         }
 
         tagToEdit.tagColor = currentTagColor;
@@ -1019,13 +1044,16 @@
         tagNameLength = 0;
         editTag = false;
         isEdit = false;
+        OptionsBtnClicked = false;
     }
 
     public void addTag()
     {
         if (currentTagColor == "")
         {
+
             currentTagColor = "#AEA2F9";
+
         }
 
         tagToEdit.tagColor = currentTagColor;
