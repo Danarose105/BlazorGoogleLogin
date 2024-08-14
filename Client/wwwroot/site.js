@@ -1,1 +1,1 @@
-﻿function getElementPosition(id) {    const element = document.getElementById(id);    return element.getBoundingClientRect();}
+﻿function getElementPosition(id) {    const element = document.getElementById(id);    return element.getBoundingClientRect();}

@@ -30,18 +30,25 @@ else
 @if (tutorialActive)
 {
 
-    
     <TutorialOverlay @ref="tutorialOverlay"
                  IsActive="@tutorialActive"
                  HighlightArea="@elementToHighlight"
-                 firstOnboarding="@firstOnboarding" />
+                 firstOnboarding="@firstOnboarding"
+                 elementID="@targetElementId"
+                 continueOnboarding="TutorialPhase" />
 }
 
-@*<button id="tutorialBtn" @onclick="StartTutorial">Start Tutorial</button>*@
-
+@if (tutorialActive)
+{
+    disabledElement = true;
+}
+else
+{
+    disabledElement = false;
+}
 @if (streakOverlay) //not the final microcopy for this popup
 {
-    <div class="overlay" id="presentOnboarding3">
+    <div class="overlay">
         <div class="outerStory">
             <div class="wellDonePopUp">
                 <div class="closePopUpBtn">
@@ -84,17 +91,17 @@ else
     <div class="@BgOverlay"></div>
     @if (currentUser != null)
     {
-        <div id="presentOnBoarding1">
+        <div id="presentOnBoarding1" class="@onBoardingState1">
             <div id="topSectionDiv">
                 <div class="outerTopSection">
 
-                    <div class="profileAndStreak" @onclick="goToSProfilePage">
+                    <div class="profileAndStreak" @onclick="goToSProfilePage" disabled="@disabledElement">
 
                         @if (streakStatTitle != null && streakStatTitle != "")
                         {
                             @if (streakImgIcon != "")
                             {
-                                <button class="streakBtn"><img src=@streakImgIcon style="width:87%;" @onclick="getStreakDetails" /></button>
+                                <button class="streakBtn"><img src=@streakImgIcon style="width:87%;" @onclick="getStreakDetails" disabled="@disabledElement" /></button>
 
                             }
                         }
@@ -108,10 +115,10 @@ else
                     </div>
                 </div>
 
-                <div class="searchWrapper" id="presentOnBoarding2">
+                <div class="searchWrapper @onBoardingState3" id="presentOnBoarding2">
                     <div class="search__container">
                         <img src="./css/images/search btn.svg" @onclick="SearchAfterClick" />
-                        <input class="searchInput" type="text" value="@searchQuery" @oninput="UpdateSearchQuery" @onkeyup="HandleKeyUp" placeholder="חפשו קטגוריה ..." />
+                        <input class="searchInput" type="text" value="@searchQuery" @oninput="UpdateSearchQuery" @onkeyup="HandleKeyUp" placeholder="חפשו קטגוריה ..." disabled="@disabledElement" />
 
                     </div>
                 </div>
@@ -149,7 +156,7 @@ else
                     </tbody>
                 </table>
 
-                <button class="primery-button" id="monthStatusBtn" @onclick="getSubCatTotalsForStory">מצב החודש כרגע</button>
+                <button class="primery-button @onBoardingState2" id="monthStatusBtn" disabled="@disabledElement" @onclick="getSubCatTotalsForStory">מצב החודש כרגע</button>
 
 
 
@@ -316,7 +323,7 @@ else
             </div>
         </div>
 
-        <div class="toggleWrap">
+        <div class="toggleWrap" id="presentOnboarding3" style="@toggleLayer">
 
             @if (isChecked)
             {
@@ -325,7 +332,7 @@ else
 
                     <label class="switch">
                         <span class="knob"></span>
-                        <input type="checkbox" @bind="isChecked">
+                        <input type="checkbox" @bind="isChecked" disabled="@disabledElement">
                         <span class="slider"></span>
                     </label>
 
@@ -340,7 +347,7 @@ else
 
                     <label class="switchSpendings">
                         <span class="knob"></span>
-                        <input type="checkbox" class="hidden-checkbox" @bind="isChecked">
+                        <input type="checkbox" class="hidden-checkbox" @bind="isChecked" disabled="@disabledElement">
                         <span class="slider"></span>
                     </label>
 
@@ -355,9 +362,10 @@ else
         }
         @if (!isChecked) // עובר להוצאות
         {
+            //add cat button:
             if (currentUser.categoriesFullList.Count < 13)
             {
-                <button @onclick="openCategoryOverlay" id="AddNewCat">
+                <button @onclick="openCategoryOverlay" id="AddNewCat" disabled="@disabledElement">
                     <div class="emoji-circle">
                         📁
                     </div>
@@ -484,8 +492,10 @@ else
 
                     if (relevantSubCats.Count > 0 && category != null)
                     {
-                        <div class="fullCategory">
-                            <CategoryComponent Category=category
+                        if (currentUser.categoriesFullList[0].id==category.id)
+                        {
+                            <div class="fullCategory" disabled="@disabledElement" id="firstCatOnboarding">
+                                <CategoryComponent Category=category
                            categoryTitle="@category.categroyTitle"
                            icon="@category.icon"
                            categoryColor="@category.color"
@@ -496,15 +506,45 @@ else
                            givingSubCatBudget="@changeGivingSubCatBudget"
                            givingSubCat="@givingSubCatToUpdate"
                            searchedSubCats="@relevantSubCats"
-                           isSubCatSearched="@makeSearchAgain" categoryTypeIndicator="@isChecked"
+                           isSubCatSearched="@makeSearchAgain"
+                           categoryTypeIndicator="@isChecked"
+                           closeOverlay="openEditCategoryOverlay"
+                           closeEdit="closeEdit"
+                           closeDelete="closeDelete"
+                           updatedStreakStat="updateStreak"
+                           updateBudget="refreshBudgetsOfSubCats"
+                           updateTransSum="refreshTransSumTotals"
+                           openAccordionOnboarding="@openCatAccordion"
+                           >
+                                </CategoryComponent>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="fullCategory" disabled="@disabledElement">
+                                <CategoryComponent Category=category
+                           categoryTitle="@category.categroyTitle"
+                           icon="@category.icon"
+                           categoryColor="@category.color"
+                           doRefresh="@doRefresh"
+                           userID="@userID"
+                           deleteCat="@removeCat"
+                           subCatRefreshed="@accordionRefresh"
+                           givingSubCatBudget="@changeGivingSubCatBudget"
+                           givingSubCat="@givingSubCatToUpdate"
+                           searchedSubCats="@relevantSubCats"
+                           isSubCatSearched="@makeSearchAgain"
+                           categoryTypeIndicator="@isChecked"
                            closeOverlay="openEditCategoryOverlay"
                            closeEdit="closeEdit"
                            closeDelete="closeDelete"
                            updatedStreakStat="updateStreak"
                            updateBudget="refreshBudgetsOfSubCats"
                            updateTransSum="refreshTransSumTotals">
-                            </CategoryComponent>
-                        </div>
+                                </CategoryComponent>
+                            </div>
+                        }
+
 
                     }
                 }
@@ -633,11 +673,7 @@ else
     };
 
 
-    List<string> onBoardingElementsIDs = new List<string>()
-    {
-        "presentOnBoarding1", "monthStatusBtn", "presentOnBoarding2", "presentOnboarding3", "presentOnboarding4", "presentOnboarding5"
-    };
-    bool firstOnboarding = false;
+
 
 
     bool overdraftDetected = false;
@@ -648,6 +684,8 @@ else
     OverBudgetToShow overDraftSubCategory = new OverBudgetToShow();
     List<OverBudgetToShow> closeOverdraftOpts = new List<OverBudgetToShow>();
     double currentGap = 0;
+
+
 
 
     protected override async Task OnInitializedAsync()
@@ -721,10 +759,13 @@ else
                 Console.WriteLine("couldn't find income category that belongs to this user");
             }
 
-            if(currentUser.passedOnboarding==false){
+            if (currentUser.passedOnboarding == false)
+            {
 
                 tutorialActive = true;
                 firstOnboarding = true;
+                disabledElement = true;
+                Console.WriteLine("disabledElement- " + disabledElement);
             }
         }
         else
@@ -753,13 +794,14 @@ else
         var streakDataRes = await Http.GetAsync("api/Present/checkCurrentStreak/" + userID); //checks the total week amount with minimum 3 transactions- including the current week
         if (streakDataRes.IsSuccessStatusCode)
         {
-            List<TransAmountByWeekToShow> transCountByWeeksList= new List<TransAmountByWeekToShow>();
+            List<TransAmountByWeekToShow> transCountByWeeksList = new List<TransAmountByWeekToShow>();
             transCountByWeeksList = streakDataRes.Content.ReadFromJsonAsync<List<TransAmountByWeekToShow>>().Result;
 
             int weekAmount = 0;
-            foreach (TransAmountByWeekToShow week in transCountByWeeksList )
+            foreach (TransAmountByWeekToShow week in transCountByWeeksList)
             {
-                if(week.transactionCount>3){
+                if (week.transactionCount > 3)
+                {
                     weekAmount++;
                 }
             }
@@ -1244,7 +1286,7 @@ else
                         currentStreak++;
                     }
                 }
-                
+
 
                 if (currentStreak > 0)
                 {
@@ -1398,14 +1440,103 @@ else
     private ElementBounds elementToHighlight;
     private string targetElementId = "";
     bool tutorialActive = false;
-    private async Task StartTutorial()
+    List<string> onBoardingElementsIDs = new List<string>()
     {
+        "presentOnBoarding1", "monthStatusBtn", "presentOnBoarding2", "presentOnboarding3","firstCatOnboarding", "presentOnboarding4", "presentOnboarding5"
+    };
+    bool firstOnboarding = true;
+    bool disabledElement = false;
+    string onBoardingState1 = "";
+    string onBoardingState2 = "";
+    string onBoardingState3 = "";
+    string onBoardingState4 = "";
+    string onBoardingState5 = "";
+    string onBoardingState6 = "";
+    string toggleLayer = "";
+    bool openCatAccordion = false;
+    private async Task TutorialPhase(string elementID)
+    {
+        Console.WriteLine("received ID- " + elementID + ", current ID in page- " + targetElementId);
+        tutorialActive = false;
+        targetElementId = elementID;
+        switch (targetElementId)
+        {
+            case "presentOnBoarding1":
+                onBoardingState1 = "highlighted";
+                onBoardingState2 = "";
+                onBoardingState3 = "";
+                onBoardingState4 = "";
+                onBoardingState5 = "";
+                onBoardingState6 = "";
+                openCatAccordion = false;
+                break;
+            case "monthStatusBtn":
+                onBoardingState1 = "";
+                onBoardingState2 = "highlighted";
+                onBoardingState3 = "";
+                onBoardingState4 = "";
+                onBoardingState5 = "";
+                onBoardingState6 = "";
+                openCatAccordion = false;
+                break;
+            case "presentOnBoarding2":
+                onBoardingState1 = "";
+                onBoardingState2 = "";
+                onBoardingState3 = "highlighted";
+                onBoardingState4 = "";
+                onBoardingState5 = "";
+                onBoardingState6 = "";
+                openCatAccordion = false;
+                break;
+            case "presentOnboarding3":
+                toggleLayer = "z-index:4;";
+                onBoardingState1 = "";
+                onBoardingState2 = "";
+                onBoardingState3 = "";
+                onBoardingState4 = "highlighted";
+                onBoardingState5 = "";
+                onBoardingState6 = "";
+                openCatAccordion = false;
+                break;
+            case "presentOnboarding4":
+                onBoardingState1 = "";
+                onBoardingState2 = "";
+                onBoardingState3 = "";
+                onBoardingState4 = "";
+                onBoardingState5 = "highlighted";
+                onBoardingState6 = "";
+                openCatAccordion = false;
+                break;
+            case "presentOnboarding5":
+                onBoardingState1 = "";
+                onBoardingState2 = "";
+                onBoardingState3 = "";
+                onBoardingState4 = "";
+                onBoardingState5 = "";
+                onBoardingState6 = "highlighted";
+                openCatAccordion = false;
+                break;
+            case "firstCatOnboarding":
+                onBoardingState1 = "";
+                onBoardingState2 = "";
+                onBoardingState3 = "";
+                onBoardingState4 = "";
+                onBoardingState5 = "";
+                onBoardingState6 = "highlighted";
+                openCatAccordion = true;
+                Console.WriteLine("openCatAccordion- " + openCatAccordion);
+                break;
+
+        }
         var elementBounds = await JSRuntime.InvokeAsync<ElementBounds>("getElementPosition", targetElementId);
         if (elementBounds != null)
         {
+
             tutorialActive = true;
             elementToHighlight = elementBounds;
+            firstOnboarding = false;
             //tutorialOverlay.ShowHighlight((double)elementBounds.Left, (double)elementBounds.Top, (double)elementBounds.Width, (double)elementBounds.Height);
+
         }
 
     }

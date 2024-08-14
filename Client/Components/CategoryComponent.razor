@@ -423,6 +423,9 @@
     [Parameter]
     public EventCallback<double> updateTransSum { get; set; } //updates transaction sums in main status table
 
+    [Parameter]
+    public bool openAccordionOnboarding { get; set; }
+
     public bool isAccordionClick = false;
 
     string selectedCategoryForNewSubCat = "";
@@ -472,6 +475,11 @@
         if (subCatRes.IsSuccessStatusCode)
         {
             allSubCatTitles =  subCatRes.Content.ReadFromJsonAsync<List<string>>().Result;
+        }
+
+        if (openAccordionOnboarding)
+        {
+            await accordionControl();
         }
     }
 

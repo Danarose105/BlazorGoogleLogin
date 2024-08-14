@@ -4,26 +4,34 @@
 @using BlazorGoogleLogin.Client.Components
 @using Microsoft.AspNetCore.Components.Web
 
-<div class="overlay @firstTimeOnboardingClass">
+<div class="overlay @firstTimeOnboardingClass" @onclick="getElementBounds">
 
     @if (IsActive && firstOnboarding == false)
     {
 
         <div class="highlight" style="@($"left:{HighlightArea.Left}px; top:{HighlightArea.Top}px; width:{HighlightArea.Width}px; height:{HighlightArea.Height}px;")"></div>
-        <div id="guideArrow" style="@($"top:{HighlightArea.Top+100}px; position:absolute;")"><img src="./css/images/onboarding-arrow.svg" /></div>
-        <div id="expBubble" style="@($"top:{HighlightArea.Top+200}px;")">@expContent</div>
-
+        <div style="@($"top:{HighlightArea.Top+100}px; position:{positionAttr};")">
+            <div id="guideArrow"><img src="./css/images/onboarding-arrow.svg" /></div>
+            <div id="expBubble" style="top: 6rem;">@expContent</div>
+        </div>
     }
     else if (firstOnboarding)
     {
-        <p>@expContent @firstTimeOnboardingClass</p>
+        <div class="firstIntroduction">
+            <div style="font-weight: 600;">אז איך מתמצאים פה?</div>
+            <div>
+                <span>נתחיל בסיור שלנו :)</span>
+                <br />
+                <span>אפשר להתקדם בלחיצה על המסך.</span>
+            </div>
+            <div style="text-align: center; margin-top: 25vh;">
+                <img src="./css/images/one-finger-tap.svg" style="height:10vh" />
+            </div>
+        </div>
     }
 </div>
 
-@if (firstOnboarding)
-{
-    firstTimeOnboardingClass = "firstOnBoarding";
-}
+
 
 
 
@@ -50,44 +58,98 @@
     [Parameter]
     public bool firstOnboarding { get; set; }
 
+    [Parameter]
+    public EventCallback<string> continueOnboarding { get; set; }
+
     /// <summary>
     /// the content in the explanation speech bubble
     /// </summary>
-    string expContent = "זה כפתור בדיקה משובח, שייך לבדיקת אונבורדינג!";
+    string expContent = "";
 
     string firstTimeOnboardingClass = "";
 
+    List<string> onBoardingElementsIDs = new List<string>()
+    {
+        "presentOnBoarding1", "monthStatusBtn", "presentOnBoarding2", "presentOnboarding3","firstCatOnboarding", "presentOnboarding4", "presentOnboarding5"
+    };
+
+    string positionAttr = "absolute";
+
+
     protected override async Task OnInitializedAsync()
     {
-        if (elementID != null && elementID != "")
+        Console.WriteLine("Tutorial OnInitializedAsync- " + elementID);
+        if (firstOnboarding == true)
         {
-
-            switch (elementID)
-            {
-                case "presentOnBoarding1":
-                    expContent = "זאת סביבת מבט אל ההווה- עמוד הבית של האפליקציה. בה נראה איך עובר החודש, ונכניס את ההוצאות וההכנסות במהלכו.";
-                    break;
-                case "monthStatusBtn":
-                    expContent = "בלחיצה על כפתור 'מצב החודש כרגע' ניתן לראות נקודות חשובות על התזרים החודשי עד כה.";
-                    break;
-                case "presentOnBoarding2":
-                    expContent = "זוהי שורת החיפוש, בה ניתן לחפש על פי קטגוריות.";
-                    break;
-                case "presentOnboarding3":
-                    expContent = "אחד מהמפתחות החשובים ביותר להצלחה הוא התמדה. לכן, כל שבוע בו נזין לפחות הוצאה אחת, השבוע יתווסף לרצף.";
-                    break;
-                case "presentOnboarding4":
-                    expContent = "כל יצירה של תת קטגוריה מלווה בהגדרת תקציב עבורה. התקציב הוא התקרה של ההוצאות באותה תת קטגוריה. הוא יעבור מחודש לחודש ונוכל לערוך אותו במסך 'מבט על' בכל עת.";
-                    break;
-                case "presentOnboarding5":
-                    expContent = "במידה ובוצעה חריגה מהתקציב תוצג ההודעה הזו. היא תציג את סכום החריגה, ותציע להעביר את הסכום הזה או גבוה יותר (במידת הצורך), מתתי הקטגוריות שהוגדרו בעדיפות 'רצון'.";
-                    break;
-            }
+            firstTimeOnboardingClass = "firstOnBoarding";
+        }
+        else
+        {
+            ContinueTutorialPhase(elementID);
         }
     }
+
+    public async Task getElementBounds()
+    {
+        Console.WriteLine("clicked next");
+        int elementIndex = onBoardingElementsIDs.IndexOf(elementID);
+
+        string currentElement = "";
+
+        if (elementIndex <= -1)
+        {
+            currentElement = onBoardingElementsIDs[0];
+
+        }
+        else if (elementIndex > -1 && elementIndex < onBoardingElementsIDs.Count)
+        {
+            currentElement = onBoardingElementsIDs[elementIndex + 1];
+            firstOnboarding = false;
+            firstTimeOnboardingClass = "";
+        }
+        HideHighlight();
+        continueOnboarding.InvokeAsync(currentElement);
+    }
+
 
     public void HideHighlight()
     {
         IsActive = false;
+    }
+
+    public void ContinueTutorialPhase(string currentElement)
+    {
+        IsActive = true;
+        firstOnboarding = false;
+        switch (currentElement)
+        {
+            case "presentOnBoarding1":
+                expContent = "זאת סביבת מבט אל ההווה- עמוד הבית של האפליקציה. בה נראה איך עובר החודש, ונכניס את ההוצאות וההכנסות במהלכו.";
+                positionAttr = "relative";
+                break;
+            case "monthStatusBtn":
+                expContent = "בלחיצה על כפתור 'מצב החודש כרגע' ניתן לראות נקודות חשובות על התזרים החודשי עד כה.";
+                break;
+            case "presentOnBoarding2":
+                expContent = "זוהי שורת החיפוש, בה ניתן לחפש על פי קטגוריות.";
+                break;
+            case "presentOnboarding3":
+                expContent = "עבור כל חודש, נוכל לעבור בין הוצאות להכנסות.";
+                break;
+
+            case "presentOnboarding4":
+                expContent = "כל יצירה של תת קטגוריה מלווה בהגדרת תקציב עבורה. התקציב הוא התקרה של ההוצאות באותה תת קטגוריה. הוא יעבור מחודש לחודש ונוכל לערוך אותו במסך 'מבט על' בכל עת.";
+                break;
+            case "presentOnboarding5":
+                expContent = "במידה ובוצעה חריגה מהתקציב תוצג ההודעה הזו. היא תציג את סכום החריגה, ותציע להעביר את הסכום הזה או גבוה יותר (במידת הצורך), מתתי הקטגוריות שהוגדרו בעדיפות 'רצון'.";
+                break;
+            case "presentOnboarding10":
+                expContent = "אחד מהמפתחות החשובים ביותר להצלחה הוא התמדה. לכן, כל שבוע בו נזין לפחות הוצאה אחת, השבוע יתווסף לרצף.";
+                break;
+            case "firstCatOnboarding":
+                expContent = "זאת קטגוריה, היא בעצם תחום גדול וכולל בחיים, אליו קשורות הוצאות או הכנסות. יצרנו כמה קטגוריות שסביר להניח שתשתמשו בהן (ואם לא תמיד אפשר למחוק ;)";
+                break;
+        }
+
     }
 }

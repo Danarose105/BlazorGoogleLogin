@@ -36,7 +36,16 @@ body {
     word-wrap: break-word;
 }
 
-.firstOnBoarding{
-    z-index:5;
-    position:relative;
+.firstOnBoarding {
+    z-index: 5;
+}
+
+.firstIntroduction {
+    width: 90%;
+    height: 83%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1.5vh;
+    color: white;
+    font-size: 1.3rem;
 }
