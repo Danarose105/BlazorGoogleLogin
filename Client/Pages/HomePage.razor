@@ -429,10 +429,23 @@ else
                             <span>חריגה⚠️</span>
                         }
                     }
-                    <div class="fullCategory">
-                        <CategoryComponent Category=category categoryTitle="category.categroyTitle" icon="category.icon" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryColor="@category.color" updateBudget="refreshBudgetsOfSubCats" updateTransSum="refreshTransSumTotals"></CategoryComponent>
 
-                    </div>
+                    if (category == currentUser.categoriesFullList[0]) //for onboarding purposes:
+                    {
+                        <div class="fullCategory" disabled="@disabledElement" id="firstCatOnboarding" style="@catZindex">
+                            <CategoryComponent @ref="categoryComp" Category=category categoryTitle="category.categroyTitle" icon="category.icon" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryColor="@category.color" updateBudget="refreshBudgetsOfSubCats" updateTransSum="refreshTransSumTotals" openAccordionOnboarding="@openCatAccordion"></CategoryComponent>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="fullCategory">
+                            <CategoryComponent Category=category categoryTitle="category.categroyTitle" icon="category.icon" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryColor="@category.color" updateBudget="refreshBudgetsOfSubCats" updateTransSum="refreshTransSumTotals" openAccordionOnboarding="@openCatAccordion"></CategoryComponent>
+
+                        </div>
+                    }
+
+
                 }
 
                 @* meant to create a gap under the last category*@
@@ -492,37 +505,8 @@ else
 
                     if (relevantSubCats.Count > 0 && category != null)
                     {
-                        if (currentUser.categoriesFullList[0].id==category.id)
-                        {
-                            <div class="fullCategory" disabled="@disabledElement" id="firstCatOnboarding">
-                                <CategoryComponent Category=category
-                           categoryTitle="@category.categroyTitle"
-                           icon="@category.icon"
-                           categoryColor="@category.color"
-                           doRefresh="@doRefresh"
-                           userID="@userID"
-                           deleteCat="@removeCat"
-                           subCatRefreshed="@accordionRefresh"
-                           givingSubCatBudget="@changeGivingSubCatBudget"
-                           givingSubCat="@givingSubCatToUpdate"
-                           searchedSubCats="@relevantSubCats"
-                           isSubCatSearched="@makeSearchAgain"
-                           categoryTypeIndicator="@isChecked"
-                           closeOverlay="openEditCategoryOverlay"
-                           closeEdit="closeEdit"
-                           closeDelete="closeDelete"
-                           updatedStreakStat="updateStreak"
-                           updateBudget="refreshBudgetsOfSubCats"
-                           updateTransSum="refreshTransSumTotals"
-                           openAccordionOnboarding="@openCatAccordion"
-                           >
-                                </CategoryComponent>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="fullCategory" disabled="@disabledElement">
-                                <CategoryComponent Category=category
+                        <div class="fullCategory">
+                            <CategoryComponent Category=category
                            categoryTitle="@category.categroyTitle"
                            icon="@category.icon"
                            categoryColor="@category.color"
@@ -541,10 +525,8 @@ else
                            updatedStreakStat="updateStreak"
                            updateBudget="refreshBudgetsOfSubCats"
                            updateTransSum="refreshTransSumTotals">
-                                </CategoryComponent>
-                            </div>
-                        }
-
+                            </CategoryComponent>
+                        </div>
 
                     }
                 }
@@ -1454,6 +1436,11 @@ else
     string onBoardingState6 = "";
     string toggleLayer = "";
     bool openCatAccordion = false;
+    string catZindex = "";
+
+    private CategoryComponent categoryComp;
+
+
     private async Task TutorialPhase(string elementID)
     {
         Console.WriteLine("received ID- " + elementID + ", current ID in page- " + targetElementId);
@@ -1462,6 +1449,7 @@ else
         switch (targetElementId)
         {
             case "presentOnBoarding1":
+                toggleLayer = "";
                 onBoardingState1 = "highlighted";
                 onBoardingState2 = "";
                 onBoardingState3 = "";
@@ -1471,6 +1459,7 @@ else
                 openCatAccordion = false;
                 break;
             case "monthStatusBtn":
+                toggleLayer = "";
                 onBoardingState1 = "";
                 onBoardingState2 = "highlighted";
                 onBoardingState3 = "";
@@ -1480,6 +1469,7 @@ else
                 openCatAccordion = false;
                 break;
             case "presentOnBoarding2":
+                toggleLayer = "";
                 onBoardingState1 = "";
                 onBoardingState2 = "";
                 onBoardingState3 = "highlighted";
@@ -1499,6 +1489,7 @@ else
                 openCatAccordion = false;
                 break;
             case "presentOnboarding4":
+                toggleLayer = "";
                 onBoardingState1 = "";
                 onBoardingState2 = "";
                 onBoardingState3 = "";
@@ -1508,6 +1499,7 @@ else
                 openCatAccordion = false;
                 break;
             case "presentOnboarding5":
+                toggleLayer = "";
                 onBoardingState1 = "";
                 onBoardingState2 = "";
                 onBoardingState3 = "";
@@ -1517,13 +1509,16 @@ else
                 openCatAccordion = false;
                 break;
             case "firstCatOnboarding":
+                toggleLayer = "";
                 onBoardingState1 = "";
                 onBoardingState2 = "";
                 onBoardingState3 = "";
                 onBoardingState4 = "";
                 onBoardingState5 = "";
+                catZindex = "z-index:6;";
                 onBoardingState6 = "highlighted";
                 openCatAccordion = true;
+                categoryComp.accordionControl();
                 Console.WriteLine("openCatAccordion- " + openCatAccordion);
                 break;
 
@@ -1535,10 +1530,12 @@ else
             tutorialActive = true;
             elementToHighlight = elementBounds;
             firstOnboarding = false;
+            //await JSRuntime.InvokeVoidAsync("scrollToElement", targetElementId);
             //tutorialOverlay.ShowHighlight((double)elementBounds.Left, (double)elementBounds.Top, (double)elementBounds.Width, (double)elementBounds.Height);
 
         }
 
     }
+
 }
 

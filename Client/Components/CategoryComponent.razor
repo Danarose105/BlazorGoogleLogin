@@ -5,12 +5,13 @@
 @inject HttpClient Http
 
 
+
 @if (deleteBtnClicked)
 {
     isOpetionsBtnClicked = false;
-    <GeneralPopUpComponent popupTypeTitle="מחיקת קטגוריה" middleText="@popupBodyText" name="" action="מחיקה" makeAction=@deleteCategory closePopUp="closeDeletePopUp" ></GeneralPopUpComponent>
+    <GeneralPopUpComponent popupTypeTitle="מחיקת קטגוריה" middleText="@popupBodyText" name="" action="מחיקה" makeAction=@deleteCategory closePopUp="closeDeletePopUp"></GeneralPopUpComponent>
 }
-<div >
+<div class="@onBoardingState6">
     <div class="outerEdit">
         @if (editBtnClicked)
         {
@@ -22,52 +23,52 @@
     </div>
 
     <div class="outerCategoryWrap">
-    <div class="categoryWrap">
-        <div id="iconAndCatTitle">
-            <span class="emoji-circle">@Category.icon</span>
-            <h2 class="CatTitle">@Category.categroyTitle</h2>
-        </div>
+        <div class="categoryWrap">
+            <div id="iconAndCatTitle">
+                <span class="emoji-circle">@Category.icon</span>
+                <h2 class="CatTitle">@Category.categroyTitle</h2>
+            </div>
 
-        @foreach (SubCategoryToShow overDraftsubcategory in subCategories)
-        {
-
-            if (overDraftsubcategory.transactionsValue > overDraftsubcategory.monthlyPlannedBudget && categoryTypeIndicator == false)
+            @foreach (SubCategoryToShow overDraftsubcategory in subCategories)
             {
-                <div class="overdraftBtn">
-                    <span>חריגה</span>
-                    <img src="./css/images/overdtaft.svg" />
-                </div>
-                break;
-            }
-        }
 
-        <div class="closedAndOpenMenu">
-            <button class="options" @onclick="OpetionsBtnClicked"><img src="./css/images/option menu.svg" /></button>
-            @if (isOpetionsBtnClicked)
-            {
-                if (!categoryTypeIndicator)
+                if (overDraftsubcategory.transactionsValue > overDraftsubcategory.monthlyPlannedBudget && categoryTypeIndicator == false)
                 {
-                    <OptionsMenuComponent editBtnClicked="@showEditCategory" deleteBtnClicked="@deleteCategoryBtnClciked" closeOverlay="closeDeleteOverlay" isCategory="@isOpetionsBtnClicked"></OptionsMenuComponent>
-                }
-                else
-                {
-                    <div>
-                        <div class="outerOptions">
-                            <button class="optionButton editButton" @onclick="showEditCategory">
-                                <img src="./css/images/edit_pencil.svg" class="icon" />
-                                עריכה
-                            </button>
-                        </div>
+                    <div class="overdraftBtn">
+                        <span>חריגה</span>
+                        <img src="./css/images/overdtaft.svg" />
                     </div>
+                    break;
+                }
+            }
+
+            <div class="closedAndOpenMenu">
+                <button class="options" @onclick="OpetionsBtnClicked"><img src="./css/images/option menu.svg" /></button>
+                @if (isOpetionsBtnClicked)
+                {
+                    if (!categoryTypeIndicator)
+                    {
+                        <OptionsMenuComponent editBtnClicked="@showEditCategory" deleteBtnClicked="@deleteCategoryBtnClciked" closeOverlay="closeDeleteOverlay" isCategory="@isOpetionsBtnClicked"></OptionsMenuComponent>
+                    }
+                    else
+                    {
+                        <div>
+                            <div class="outerOptions">
+                                <button class="optionButton editButton" @onclick="showEditCategory">
+                                    <img src="./css/images/edit_pencil.svg" class="icon" />
+                                    עריכה
+                                </button>
+                            </div>
+                        </div>
+
+                    }
 
                 }
+            </div>
 
-            }
         </div>
-
     </div>
-    </div>
-    <div class="accordionAndSubCatsWrap">
+    <div class="accordionAndSubCatsWrap" >
 
 
         <div class="categoryAccordion" style="background: @categoryColor" @onclick="accordionControl">
@@ -207,13 +208,13 @@
                     @if (!categoryTypeIndicator)
                     {
                         <div id="presentOnboarding4">
-                        <label class="titleName" for="description">מה התקציב החודשי שלך עבור @newSubCategory.subCategoryTitle? </label>
+                            <label class="titleName" for="description">מה התקציב החודשי שלך עבור @newSubCategory.subCategoryTitle? </label>
 
-                        <div class="outerBudget">
-                            <input class="budgetBox" type="number" id="description" @bind="newSubCategory.monthlyPlannedBudget" />
-                            <span class="currency-symbol">₪</span>
-                            <div class="lineBetween"></div>
-                        </div>
+                            <div class="outerBudget">
+                                <input class="budgetBox" type="number" id="description" @bind="newSubCategory.monthlyPlannedBudget" />
+                                <span class="currency-symbol">₪</span>
+                                <div class="lineBetween"></div>
+                            </div>
 
                         </div>
                         <div class="outerImportance">
@@ -241,7 +242,7 @@
                             </div>
                         </div>
 
-                        @if (titleInput.Length >= 2 && titleInput.Length < 19 && newSubCategory.monthlyPlannedBudget > 0 && titleInputExists==false)
+                        @if (titleInput.Length >= 2 && titleInput.Length < 19 && newSubCategory.monthlyPlannedBudget > 0 && titleInputExists == false)
                         {
                             Console.WriteLine(titleInput.Length + " titleInput.Length");
                             Console.WriteLine(newSubCategory.monthlyPlannedBudget + " newSubCategory.monthlyPlannedBudget");
@@ -267,7 +268,7 @@
                         else
                         {
                             <div class="outerSaveBtns">
-                                <button class="primery-button" disabled  style="opacity:60%" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
+                                <button class="primery-button" disabled style="opacity:60%" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
                                 <button class="secondery-button" disabled style="opacity:60%" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
 
                             </div>
@@ -275,7 +276,7 @@
                             if (titleInput.Length < 2 || titleInput.Length > 18)
                             {
                                 if (isTyped)
-                                {                                 
+                                {
                                     <br />
                                     <span>שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
                                 }
@@ -296,12 +297,12 @@
 
                             }
 
-                            
+
                         }
                     }
                     else
                     {
-                        if (titleInputExists==true)
+                        if (titleInputExists == true)
                         {
                             <div class="outerSaveBtns">
                                 <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הזנה</button>
@@ -346,6 +347,7 @@
     isAccordionClick = true;
     getSearchedSubCat();
 }
+
 
 
 @code {
@@ -463,6 +465,8 @@
 
     List<string> allSubCatTitles = new List<string>();
     bool titleInputExists = false;
+    string onBoardingState6 = "";
+    //string zIndexCat = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -474,14 +478,19 @@
         var subCatRes = await Http.GetAsync("api/Present/GetAllSubCatsTitles/" + userID);
         if (subCatRes.IsSuccessStatusCode)
         {
-            allSubCatTitles =  subCatRes.Content.ReadFromJsonAsync<List<string>>().Result;
+            allSubCatTitles = subCatRes.Content.ReadFromJsonAsync<List<string>>().Result;
         }
 
         if (openAccordionOnboarding)
         {
-            await accordionControl();
+            Console.WriteLine("category accordion- "+openAccordionOnboarding);
+            onBoardingState6 = "highlighted";
+            StateHasChanged();
+
         }
     }
+
+
 
     public async Task accordionControl()
     {
