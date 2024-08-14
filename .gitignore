@@ -1,6 +1,6 @@
 .vscode
-.vs/
+.vs
 bin
 obj
 *.db
-Server/appsettings.json
+appsettings.json
