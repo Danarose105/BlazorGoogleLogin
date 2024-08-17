@@ -137,7 +137,7 @@
 
 
                         <div>
-                            <button class="backArrow" @onclick="()=> isEditSavingClicked = !isEditSavingClicked"><img src="./css/images/back-repeated.svg" /></button>
+                            <button class="backArrow" @onclick="closeEditAndDeleteOpt"><img src="./css/images/back-repeated.svg" /></button>
                         </div>
 
                     </div>
@@ -411,6 +411,7 @@
     void showSavingDetails(AllUserSavingsToShow savingFullDetails)
     {
         OpenSavingDetails = true;
+         isOpetionsBtnClicked = false;
         savingDetailsToShow = savingFullDetails;
     }
 
@@ -539,6 +540,12 @@
         isAddSavingOverlayClicked = !isAddSavingOverlayClicked;
         titleInputLength = 0;
         newSaving.savingsSum = 0;
+    }
+
+    void closeEditAndDeleteOpt()
+    {
+        isOpetionsBtnClicked = false;
+        isEditSavingClicked = !isEditSavingClicked;
     }
 
         private async Task getCurrentStreak()

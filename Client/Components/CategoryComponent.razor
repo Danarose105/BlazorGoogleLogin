@@ -69,7 +69,7 @@
 
         </div>
     </div>
-    <div class="accordionAndSubCatsWrap" >
+    <div class="accordionAndSubCatsWrap">
 
 
         <div class="categoryAccordion" style="background: @categoryColor" @onclick="accordionControl">
@@ -272,32 +272,32 @@
                                 <button class="primery-button" disabled style="opacity:60%" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
                                 <button class="secondery-button" disabled style="opacity:60%" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
 
-                            </div>
 
-                            if (titleInput.Length < 2 || titleInput.Length > 18)
-                            {
-                                if (isTyped)
+                                @if (titleInput.Length < 2 || titleInput.Length > 18)
                                 {
-                                    <br />
-                                    <span>שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
+                                    if (isTyped)
+                                    {
+                                        
+                                        <span>שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
+                                    }
+
+                                }
+                                else if (titleInputExists)
+                                {
+                                    
+                                    <span>קיימת תת קטגוריה בעלת אותו שם</span>
+                                }
+                                else if (newSubCategory.monthlyPlannedBudget < 0)
+                                {
+                                    <span>תקציב תת קטגוריה צריך להיות גדול מאפס.</span>
+                                }
+                                else if (newSubCategory.importance < 0 && !categoryTypeIndicator || newSubCategory.importance > 2 && !categoryTypeIndicator)
+                                {
+                                    <span>בחרו עדיפות לתת קטגוריה זו.</span>
+
                                 }
 
-                            }
-                            else if (titleInputExists)
-                            {
-                                <br />
-                                <span> שם תת הקטגוריה כבר קיים.</span>
-                            }
-                            else if (newSubCategory.monthlyPlannedBudget < 0)
-                            {
-                                <span>תקציב תת קטגוריה צריך להיות גדול מאפס.</span>
-                            }
-                            else if (newSubCategory.importance < 0 && !categoryTypeIndicator || newSubCategory.importance > 2 && !categoryTypeIndicator)
-                            {
-                                <span>בחרו עדיפות לתת קטגוריה זו.</span>
-
-                            }
-
+                            </div>
 
                         }
                     }
@@ -484,7 +484,7 @@
 
         if (openAccordionOnboarding)
         {
-            Console.WriteLine("category accordion- "+openAccordionOnboarding);
+            Console.WriteLine("category accordion- " + openAccordionOnboarding);
             onBoardingState6 = "highlighted";
             StateHasChanged();
 
