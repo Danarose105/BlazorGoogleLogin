@@ -13,7 +13,7 @@
         <div style="width: 100%;display: flex;justify-content: space-around;">
 
             <div style="@($"top:{HighlightArea.Top+HighlightArea.Height+20}px; position:{positionAttr};") width: 70%;display: flex;flex-direction: row;column-gap: 4vw;align-items: center;justify-content: space-around;">
-                @*<div>*@<img id="guideArrow" src="./css/images/onboarding-arrow.svg" style="width: 9vw;" />@*</div>*@
+                <img id="guideArrow" src="./css/images/onboarding-arrow.svg" style="width: 9vw;" />
                 <div id="expBubble">@expContent</div>
             </div>
         </div>
@@ -74,7 +74,7 @@
 
     List<string> onBoardingElementsIDs = new List<string>()
     {
-        "presentOnBoarding1", "monthStatusBtn", "presentOnBoarding2", "presentOnboarding3","firstCatOnboarding", "AddNewCat", "catOptBtn","addNewSubCat"
+        "presentOnBoarding1", "monthStatusBtn", "presentOnBoarding2", "presentOnboarding3","firstCatOnboarding", "AddNewCat", "catOptBtn","addNewSubCat","existingSubCat"
     };
 
     string positionAttr = "absolute";
@@ -172,6 +172,9 @@
                 break;
             case "addNewSubCat":
                 expContent = "לחיצה על ״תת קטגוריה חדשה״- תיצור אותה.";
+                break;
+            case "existingSubCat":
+                expContent = "אלו הן תתי הקטגוריות, תת קטגוריה היא תחום ספציפי יותר תחת הקטגוריה הכללית, ואליה נוכל לשייך הוצאות והכנסות באמצעות לחיצה על ה+. גם כאן, יצרנו מראש תתי קטגוריות כדי להקל(גם אותן אפשר למחוק). ";
                 break;
         }
 

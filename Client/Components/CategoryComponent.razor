@@ -143,7 +143,8 @@
                             subcategory.monthlyPlannedBudget = 0;
                         }
 
-                        <div class="budget-card @(isFirstItem ? "first" : "")">
+
+                        <div class="budget-card @(isFirstItem ? "first" : "") @onBoardingState8" id="@(isFirstItem ? "existingSubCat":"")">
                             <SubCategoryComponent subCategoryTitle="@subcategory.subCategoryTitle" totalSpendings="@subcategory.transactionsValue" budget="@subcategory.monthlyPlannedBudget" subCategoryIDToGet="@subcategory.id" userID="@userID" subCatTakenBudget="updateTakenSubCatBudget" refreshSubCats="getSubCategories" updateEditedSubCat="updateEditedSubCat" categoryID="@Category.id" subCatDeleted="deleteSubCat" categoryTitle="@Category.categroyTitle" categoryTypeIndicator="@categoryTypeIndicator" updatedStreakStat="updateStreak" subCatColor="@categoryColor" updateTransactionSum="updatePresentTable"></SubCategoryComponent>
                         </div>
 
@@ -486,6 +487,7 @@
     bool titleInputExists = false;
     string onBoardingState6 = "";
     string onBoardingState7 = "";
+    string onBoardingState8 = "";
     string previousReqID = "";
     //string zIndexCat = "";
 
@@ -521,6 +523,7 @@
     }
 
     public ElementReference optBtn;
+    public SubCategoryComponent subCatBudgetOnboarding;
 
     public async Task onboardingIDs()
     {
@@ -533,6 +536,11 @@
             case "addNewSubCat":
                 onBoardingState6 = "";
                 onBoardingState7 = "highlighted";
+                break;
+            case "existingSubCat":
+                onBoardingState6 = "";
+                onBoardingState7 = "";
+                onBoardingState8 = "highlighted";
                 break;
         }
 
