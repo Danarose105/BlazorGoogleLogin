@@ -1225,3 +1225,23 @@ input:disabled, button:disabled {
     cursor: pointer;
     outline: inherit;
 }
+
+.outerDesAndCounter {
+    position: relative;
+    width: 100%;
+}
+
+.counter {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    top: 1.9rem;
+    color: #666;
+    font-size: 12px;
+    padding: 0vh 2vw;
+}
+
+    .counter span {
+        color: inherit; /* Inherit color from parent */
+        color: #636363
+    }
