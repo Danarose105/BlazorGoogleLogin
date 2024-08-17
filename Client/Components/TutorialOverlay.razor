@@ -9,10 +9,13 @@
     @if (IsActive && firstOnboarding == false)
     {
 
-        <div class="highlight" style="@($"left:{HighlightArea.Left}px; top:{HighlightArea.Top}px; width:{HighlightArea.Width}px; height:{HighlightArea.Height}px;")"></div>
-        <div style="@($"top:{HighlightArea.Top+100}px; position:{positionAttr};")">
-            <div id="guideArrow"><img src="./css/images/onboarding-arrow.svg" /></div>
-            <div id="expBubble" style="top: 6rem;">@expContent</div>
+        @*        <div class="@highlightClass" style="@($"left:{HighlightArea.Left}; top:{HighlightArea.Top}; width:{HighlightArea.Width}; height:{HighlightArea.Height};")"></div>*@
+        <div style="width: 100%;display: flex;justify-content: space-around;">
+
+            <div style="@($"top:{HighlightArea.Top+HighlightArea.Height+20}px; position:{positionAttr};") width: 70%;display: flex;flex-direction: row;column-gap: 4vw;align-items: center;justify-content: space-around;">
+                @*<div>*@<img id="guideArrow" src="./css/images/onboarding-arrow.svg" style="width: 9vw;" />@*</div>*@
+                <div id="expBubble">@expContent</div>
+            </div>
         </div>
     }
     else if (firstOnboarding)
@@ -67,10 +70,11 @@
     string expContent = "";
 
     string firstTimeOnboardingClass = "";
+    string highlightClass = "highlight";
 
     List<string> onBoardingElementsIDs = new List<string>()
     {
-        "presentOnBoarding1", "monthStatusBtn", "presentOnBoarding2", "presentOnboarding3","firstCatOnboarding", "presentOnboarding4", "presentOnboarding5"
+        "presentOnBoarding1", "monthStatusBtn", "presentOnBoarding2", "presentOnboarding3","firstCatOnboarding", "AddNewCat", "presentOnboarding5"
     };
 
     string positionAttr = "absolute";
@@ -121,33 +125,47 @@
     {
         IsActive = true;
         firstOnboarding = false;
+        Console.WriteLine("Highlighted area bounds- w: " + HighlightArea.Width + ", h:" + HighlightArea.Height + ", t: " + HighlightArea.Top + ", L: " + HighlightArea.Left);
         switch (currentElement)
         {
             case "presentOnBoarding1":
                 expContent = "זאת סביבת מבט אל ההווה- עמוד הבית של האפליקציה. בה נראה איך עובר החודש, ונכניס את ההוצאות וההכנסות במהלכו.";
                 positionAttr = "relative";
+                highlightClass = "highlight";
                 break;
             case "monthStatusBtn":
                 expContent = "בלחיצה על כפתור 'מצב החודש כרגע' ניתן לראות נקודות חשובות על התזרים החודשי עד כה.";
+                highlightClass = "highlight";
                 break;
             case "presentOnBoarding2":
                 expContent = "זוהי שורת החיפוש, בה ניתן לחפש על פי קטגוריות.";
+                highlightClass = "highlight";
                 break;
             case "presentOnboarding3":
                 expContent = "עבור כל חודש, נוכל לעבור בין הוצאות להכנסות.";
+                highlightClass = "highlight";
                 break;
 
             case "presentOnboarding4":
                 expContent = "כל יצירה של תת קטגוריה מלווה בהגדרת תקציב עבורה. התקציב הוא התקרה של ההוצאות באותה תת קטגוריה. הוא יעבור מחודש לחודש ונוכל לערוך אותו במסך 'מבט על' בכל עת.";
+                highlightClass = "highlight";
                 break;
             case "presentOnboarding5":
                 expContent = "במידה ובוצעה חריגה מהתקציב תוצג ההודעה הזו. היא תציג את סכום החריגה, ותציע להעביר את הסכום הזה או גבוה יותר (במידת הצורך), מתתי הקטגוריות שהוגדרו בעדיפות 'רצון'.";
+                highlightClass = "highlight";
                 break;
             case "presentOnboarding10":
                 expContent = "אחד מהמפתחות החשובים ביותר להצלחה הוא התמדה. לכן, כל שבוע בו נזין לפחות הוצאה אחת, השבוע יתווסף לרצף.";
+                highlightClass = "highlight";
                 break;
             case "firstCatOnboarding":
-                expContent = "זאת קטגוריה, היא בעצם תחום גדול וכולל בחיים, אליו קשורות הוצאות או הכנסות. יצרנו כמה קטגוריות שסביר להניח שתשתמשו בהן (ואם לא תמיד אפשר למחוק ;)";
+                expContent = "זאת קטגוריה, היא בעצם תחום גדול וכולל בחיים, אליו קשורות הוצאות או הכנסות.";
+                highlightClass = "";
+
+                break;
+
+            case "AddNewCat":
+                expContent = "לחיצה על “קטגוריה חדשה” - תיצור אותה.";
                 break;
         }
 

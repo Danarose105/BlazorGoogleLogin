@@ -365,7 +365,7 @@ else
             //add cat button:
             if (currentUser.categoriesFullList.Count < 13)
             {
-                <button @onclick="openCategoryOverlay" id="AddNewCat" disabled="@disabledElement">
+                <button @onclick="openCategoryOverlay" id="AddNewCat" class="@onBoardingState5" disabled="@disabledElement">
                     <div class="emoji-circle">
                         📁
                     </div>
@@ -374,7 +374,7 @@ else
             }
             else
             {
-                <button @onclick="openCategoryOverlay" id="AddNewCat" disabled style="opacity:60%">
+                <button @onclick="openCategoryOverlay" id="AddNewCat" class="@onBoardingState5" disabled style="opacity:60%">
                     <div class="emoji-circle">
                         📁
                     </div>
@@ -432,7 +432,7 @@ else
 
                     if (category == currentUser.categoriesFullList[0]) //for onboarding purposes:
                     {
-                        <div class="fullCategory" disabled="@disabledElement" id="firstCatOnboarding" style="@catZindex">
+                        <div class="fullCategory @onBoardingState4" disabled="@disabledElement" id="firstCatOnboarding" style="@catZindex">
                             <CategoryComponent @ref="categoryComp" Category=category categoryTitle="category.categroyTitle" icon="category.icon" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryColor="@category.color" updateBudget="refreshBudgetsOfSubCats" updateTransSum="refreshTransSumTotals" openAccordionOnboarding="@openCatAccordion"></CategoryComponent>
 
                         </div>
@@ -535,6 +535,16 @@ else
         }
     }
 </div>
+
+
+@if (tutorialActive)
+{
+    <style>
+        body {
+            overflow: hidden;
+        }
+    </style>
+}
 
 @code {
 
@@ -1424,13 +1434,17 @@ else
     bool tutorialActive = false;
     List<string> onBoardingElementsIDs = new List<string>()
     {
-        "presentOnBoarding1", "monthStatusBtn", "presentOnBoarding2", "presentOnboarding3","firstCatOnboarding", "presentOnboarding4", "presentOnboarding5"
+        "presentOnBoarding1", "monthStatusBtn", "presentOnBoarding2", "presentOnboarding3","firstCatOnboarding", "AddNewCat", "presentOnboarding5"
     };
     bool firstOnboarding = true;
     bool disabledElement = false;
+    //present home page top section:
     string onBoardingState1 = "";
+    //month status btn:
     string onBoardingState2 = "";
+    //search bar in present home page:
     string onBoardingState3 = "";
+    //income/expense toggle:
     string onBoardingState4 = "";
     string onBoardingState5 = "";
     string onBoardingState6 = "";
@@ -1448,6 +1462,7 @@ else
         targetElementId = elementID;
         switch (targetElementId)
         {
+            //present home page top section:
             case "presentOnBoarding1":
                 toggleLayer = "";
                 onBoardingState1 = "highlighted";
@@ -1457,7 +1472,9 @@ else
                 onBoardingState5 = "";
                 onBoardingState6 = "";
                 openCatAccordion = false;
+                catZindex = "";
                 break;
+            //month status btn:
             case "monthStatusBtn":
                 toggleLayer = "";
                 onBoardingState1 = "";
@@ -1467,7 +1484,9 @@ else
                 onBoardingState5 = "";
                 onBoardingState6 = "";
                 openCatAccordion = false;
+                catZindex = "";
                 break;
+            //search bar in present home page:
             case "presentOnBoarding2":
                 toggleLayer = "";
                 onBoardingState1 = "";
@@ -1477,18 +1496,38 @@ else
                 onBoardingState5 = "";
                 onBoardingState6 = "";
                 openCatAccordion = false;
+                catZindex = "";
                 break;
+            //income/expense toggle:
             case "presentOnboarding3":
-                toggleLayer = "z-index:4;";
+                toggleLayer = "z-index:4; padding:1%; box-shadow: 0 0 20px 12px rgba(248, 248, 248, 0.25);";
                 onBoardingState1 = "";
                 onBoardingState2 = "";
                 onBoardingState3 = "";
-                onBoardingState4 = "highlighted";
+                onBoardingState4 = "";
                 onBoardingState5 = "";
                 onBoardingState6 = "";
                 openCatAccordion = false;
+                catZindex = "";
                 break;
-            case "presentOnboarding4":
+            //first category accordion:
+            case "firstCatOnboarding":
+                catZindex = "z-index:6;"; //needs to be reset in other places and post onboarding
+                onBoardingState4 = "highlighted";
+                await categoryComp.accordionControl();
+                await scrollToElement();
+                toggleLayer = "";
+                onBoardingState1 = "";
+                onBoardingState2 = "";
+                onBoardingState3 = "";
+                onBoardingState5 = "";
+                onBoardingState6 = "";
+                openCatAccordion = true;
+                Console.WriteLine("openCatAccordion- " + openCatAccordion);
+                break;
+            case "AddNewCat":
+                await categoryComp.accordionControl();
+                await scrollToElement();
                 toggleLayer = "";
                 onBoardingState1 = "";
                 onBoardingState2 = "";
@@ -1497,6 +1536,7 @@ else
                 onBoardingState5 = "highlighted";
                 onBoardingState6 = "";
                 openCatAccordion = false;
+                catZindex = "";
                 break;
             case "presentOnboarding5":
                 toggleLayer = "";
@@ -1507,22 +1547,12 @@ else
                 onBoardingState5 = "";
                 onBoardingState6 = "highlighted";
                 openCatAccordion = false;
-                break;
-            case "firstCatOnboarding":
-                toggleLayer = "";
-                onBoardingState1 = "";
-                onBoardingState2 = "";
-                onBoardingState3 = "";
-                onBoardingState4 = "";
-                onBoardingState5 = "";
-                catZindex = "z-index:6;";
-                onBoardingState6 = "highlighted";
-                openCatAccordion = true;
-                categoryComp.accordionControl();
-                Console.WriteLine("openCatAccordion- " + openCatAccordion);
+                catZindex = "";
                 break;
 
         }
+
+
         var elementBounds = await JSRuntime.InvokeAsync<ElementBounds>("getElementPosition", targetElementId);
         if (elementBounds != null)
         {
@@ -1537,5 +1567,10 @@ else
 
     }
 
+
+    private async Task scrollToElement()
+    {
+        await JSRuntime.InvokeVoidAsync("scrollToElement", targetElementId);
+    }
 }
 
