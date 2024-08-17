@@ -19,7 +19,7 @@
         </article>
         @if (!NavManager.Uri.Contains("LogoutPage"))
         {
-            if (!NavManager.Uri.EndsWith("/"))
+            if (!NavManager.Uri.EndsWith("/") || !NavManager.Uri.EndsWith("MalkaInbalDana"))
             {
                 <div id="@hideNav" class="bottom-nav" @ref="navBar">
                     <button class="navBtn" style="opacity:60%">מבט לעבר<img src="./css/images/past.svg" /></button>
