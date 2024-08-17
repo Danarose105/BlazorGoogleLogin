@@ -11,7 +11,7 @@
     isOpetionsBtnClicked = false;
     <GeneralPopUpComponent popupTypeTitle="מחיקת קטגוריה" middleText="@popupBodyText" name="" action="מחיקה" makeAction=@deleteCategory closePopUp="closeDeletePopUp"></GeneralPopUpComponent>
 }
-<div class="@onBoardingState6">
+<div>
     <div class="outerEdit">
         @if (editBtnClicked)
         {
@@ -42,13 +42,22 @@
                 }
             }
 
-            <div class="closedAndOpenMenu">
-                <button class="options" @onclick="OpetionsBtnClicked"><img src="./css/images/option menu.svg" /></button>
+            <div class="closedAndOpenMenu @onBoardingState6">
+                @if(catIDinPage==Category.id){
+                    //relevent to the onboarding only
+                    <button class="options" @onclick="OpetionsBtnClicked" id="catOptBtn" @ref="optBtn"><img src="./css/images/option menu.svg" /></button>
+                }
+                else
+                {
+                    <button class="options" @onclick="OpetionsBtnClicked"><img src="./css/images/option menu.svg" /></button>
+                }
                 @if (isOpetionsBtnClicked)
                 {
                     if (!categoryTypeIndicator)
                     {
+
                         <OptionsMenuComponent editBtnClicked="@showEditCategory" deleteBtnClicked="@deleteCategoryBtnClciked" closeOverlay="closeDeleteOverlay" isCategory="@isOpetionsBtnClicked"></OptionsMenuComponent>
+                       
                     }
                     else
                     {
@@ -68,7 +77,7 @@
 
         </div>
     </div>
-    <div class="accordionAndSubCatsWrap" >
+    <div class="accordionAndSubCatsWrap">
 
 
         <div class="categoryAccordion" style="background: @categoryColor" @onclick="accordionControl">
@@ -84,7 +93,7 @@
             <div class="subCatsWrap">
                 @if (subCategories.Count < 13)
                 {
-                    <button class="custom-btn" @onclick="getUserCategories">
+                    <button class="custom-btn @onBoardingState7" @onclick="getUserCategories" id="addNewSubCat">
                         <div class="btn-content">
 
                             <div class="textAndLine">
@@ -101,7 +110,7 @@
                 else
                 {
                     @*     לשנות את טקסט הכפתור אחרי שנוסיף עיצוב dis*@
-                    <button class="custom-btn" @onclick="getUserCategories" disabled style="opacity:60%;">
+                    <button class="custom-btn @onBoardingState7" @onclick="getUserCategories" disabled style="opacity:60%;" id="addNewSubCat">
                         <div class="btn-content">
                             <div class="textAndLine">
                                 <span class="btn-text">תת קטגוריה חדשה </span>
@@ -428,6 +437,16 @@
     [Parameter]
     public bool openAccordionOnboarding { get; set; }
 
+    [Parameter]
+    public string onboardingStage { get; set; }
+
+    [Parameter]
+    public int catIDinPage {get;set;}
+    //[Parameter]
+    //public EventCallback<string> releventOnboardingID { get; set; }
+
+    //public OptionsMenuComponent optMenu { get; set; }
+
     public bool isAccordionClick = false;
 
     string selectedCategoryForNewSubCat = "";
@@ -466,6 +485,8 @@
     List<string> allSubCatTitles = new List<string>();
     bool titleInputExists = false;
     string onBoardingState6 = "";
+    string onBoardingState7 = "";
+    string previousReqID = "";
     //string zIndexCat = "";
 
     protected override async Task OnInitializedAsync()
@@ -481,16 +502,42 @@
             allSubCatTitles = subCatRes.Content.ReadFromJsonAsync<List<string>>().Result;
         }
 
-        if (openAccordionOnboarding)
-        {
-            Console.WriteLine("category accordion- "+openAccordionOnboarding);
-            onBoardingState6 = "highlighted";
-            StateHasChanged();
 
+        previousReqID = onboardingStage;
+        //if (openAccordionOnboarding)
+        //{
+        //    Console.WriteLine("category accordion- " + openAccordionOnboarding);
+        //    onBoardingState6 = "highlighted";
+        //    StateHasChanged();
+        //}
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (previousReqID != onboardingStage)
+        {
+            await onboardingIDs();
         }
     }
 
+    public ElementReference optBtn;
 
+    public async Task onboardingIDs()
+    {
+        switch (onboardingStage)
+        {
+            case "catOptBtn":
+                onBoardingState6 = "highlighted";
+                onBoardingState7 = "";
+                break;
+            case "addNewSubCat":
+                onBoardingState6 = "";
+                onBoardingState7 = "highlighted";
+                break;
+        }
+
+        previousReqID = onboardingStage;
+    }
 
     public async Task accordionControl()
     {

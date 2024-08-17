@@ -433,7 +433,7 @@ else
                     if (category == currentUser.categoriesFullList[0]) //for onboarding purposes:
                     {
                         <div class="fullCategory @onBoardingState4" disabled="@disabledElement" id="firstCatOnboarding" style="@catZindex">
-                            <CategoryComponent @ref="categoryComp" Category=category categoryTitle="category.categroyTitle" icon="category.icon" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryColor="@category.color" updateBudget="refreshBudgetsOfSubCats" updateTransSum="refreshTransSumTotals" openAccordionOnboarding="@openCatAccordion"></CategoryComponent>
+                            <CategoryComponent @ref="categoryComp" Category=category catIDinPage="category.id" categoryTitle="category.categroyTitle" icon="category.icon" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryColor="@category.color" updateBudget="refreshBudgetsOfSubCats" updateTransSum="refreshTransSumTotals" openAccordionOnboarding="@openCatAccordion" onboardingStage="@targetElementId"></CategoryComponent>
 
                         </div>
                     }
@@ -1434,7 +1434,7 @@ else
     bool tutorialActive = false;
     List<string> onBoardingElementsIDs = new List<string>()
     {
-        "presentOnBoarding1", "monthStatusBtn", "presentOnBoarding2", "presentOnboarding3","firstCatOnboarding", "AddNewCat", "presentOnboarding5"
+        "presentOnBoarding1", "monthStatusBtn", "presentOnBoarding2", "presentOnboarding3","firstCatOnboarding", "AddNewCat", "catOptBtn","addNewSubCat"
     };
     bool firstOnboarding = true;
     bool disabledElement = false;
@@ -1457,7 +1457,7 @@ else
 
     private async Task TutorialPhase(string elementID)
     {
-        Console.WriteLine("received ID- " + elementID + ", current ID in page- " + targetElementId);
+        //Console.WriteLine("received ID- " + elementID + ", current ID in page- " + targetElementId);
         tutorialActive = false;
         targetElementId = elementID;
         switch (targetElementId)
@@ -1538,7 +1538,8 @@ else
                 openCatAccordion = false;
                 catZindex = "";
                 break;
-            case "presentOnboarding5":
+            case "catOptBtn":
+                await scrollToElement();
                 toggleLayer = "";
                 onBoardingState1 = "";
                 onBoardingState2 = "";
@@ -1546,6 +1547,19 @@ else
                 onBoardingState4 = "";
                 onBoardingState5 = "";
                 onBoardingState6 = "highlighted";
+                openCatAccordion = false;
+                catZindex = "";
+                break;
+            case "addNewSubCat":
+                await categoryComp.accordionControl();
+                await scrollToElement();
+                toggleLayer = "";
+                onBoardingState1 = "";
+                onBoardingState2 = "";
+                onBoardingState3 = "";
+                onBoardingState4 = "";
+                onBoardingState5 = "";
+                onBoardingState6 = "";
                 openCatAccordion = false;
                 catZindex = "";
                 break;
@@ -1560,8 +1574,6 @@ else
             tutorialActive = true;
             elementToHighlight = elementBounds;
             firstOnboarding = false;
-            //await JSRuntime.InvokeVoidAsync("scrollToElement", targetElementId);
-            //tutorialOverlay.ShowHighlight((double)elementBounds.Left, (double)elementBounds.Top, (double)elementBounds.Width, (double)elementBounds.Height);
 
         }
 
