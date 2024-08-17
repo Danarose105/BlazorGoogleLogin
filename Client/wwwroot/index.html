@@ -31,9 +31,25 @@
         function navigateBack() {
             window.history.back();
         }
-
-
     </script>
+
+    <script>
+        window.scrollToElement = (elementId) => {
+            var element = document.getElementById(elementId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        };
+    </script>
+    <script>
+        function setElementStyle(elementId, styleProperty, value) {
+            var element = document.getElementById(elementId);
+            if (element) {
+                element.style[styleProperty] = value;
+            }
+        }
+    </script>
+
 </head>
 
 <body style="font-family: 'Heebo', sans-serif; font-weight: 400; color: #030942; height: 100%; background-color: #EDEFF7; width: 100%; ">
