@@ -4,7 +4,7 @@
 @using BlazorGoogleLogin.Client.Components
 @using Microsoft.AspNetCore.Components.Web
 
-<div class="overlay @firstTimeOnboardingClass" @onclick="getElementBounds">
+<div class="overlay @firstTimeOnboardingClass" @onclick="getElementBounds" id="tutorialOverlay">
 
     @if (IsActive && firstOnboarding == false)
     {
@@ -40,6 +40,9 @@
 
 @code {
 
+
+    [Parameter]
+    public int userID { get; set; }
     /// <summary>
     /// is the overlay active
     /// </summary>
@@ -64,6 +67,9 @@
     [Parameter]
     public EventCallback<string> continueOnboarding { get; set; }
 
+    [Parameter]
+    public EventCallback<bool> onboardingDone { get; set; }
+
     /// <summary>
     /// the content in the explanation speech bubble
     /// </summary>
@@ -74,7 +80,7 @@
 
     List<string> onBoardingElementsIDs = new List<string>()
     {
-        "presentOnBoarding1", "monthStatusBtn", "presentOnBoarding2", "presentOnboarding3","firstCatOnboarding", "AddNewCat", "catOptBtn","addNewSubCat","existingSubCat"
+        "presentOnBoarding1", "monthStatusBtn", "presentOnBoarding2", "presentOnboarding3","firstCatOnboarding", "AddNewCat", "catOptBtn","addNewSubCat","existingSubCat","editOrAddSubCatWindow","importanceExp"
     };
 
     string positionAttr = "absolute";
@@ -95,14 +101,16 @@
 
     public async Task getElementBounds()
     {
-        Console.WriteLine("clicked next");
         int elementIndex = onBoardingElementsIDs.IndexOf(elementID);
 
         string currentElement = "";
 
+
         if (elementIndex <= -1)
         {
             currentElement = onBoardingElementsIDs[0];
+            HideHighlight();
+            continueOnboarding.InvokeAsync(currentElement);
 
         }
         else if (elementIndex > -1 && elementIndex < onBoardingElementsIDs.Count)
@@ -110,9 +118,16 @@
             currentElement = onBoardingElementsIDs[elementIndex + 1];
             firstOnboarding = false;
             firstTimeOnboardingClass = "";
+            HideHighlight();
+            continueOnboarding.InvokeAsync(currentElement);
         }
-        HideHighlight();
-        continueOnboarding.InvokeAsync(currentElement);
+        else if (elementIndex >= onBoardingElementsIDs.Count)
+        {
+            HideHighlight();
+            onboardingDone.InvokeAsync(true);
+            //will update the DB that the user has passed his onboarding
+        }
+
     }
 
 
@@ -121,11 +136,14 @@
         IsActive = false;
     }
 
+    /// <summary>
+    /// changes the explanation text
+    /// </summary>
     public void ContinueTutorialPhase(string currentElement)
     {
         IsActive = true;
         firstOnboarding = false;
-        Console.WriteLine("Highlighted area bounds- w: " + HighlightArea.Width + ", h:" + HighlightArea.Height + ", t: " + HighlightArea.Top + ", L: " + HighlightArea.Left);
+        Console.WriteLine(currentElement+": Highlighted area bounds- w: " + HighlightArea.Width + ", h:" + HighlightArea.Height + ", t: " + HighlightArea.Top + ", L: " + HighlightArea.Left);
         switch (currentElement)
         {
             case "presentOnBoarding1":
@@ -175,6 +193,12 @@
                 break;
             case "existingSubCat":
                 expContent = "אלו הן תתי הקטגוריות, תת קטגוריה היא תחום ספציפי יותר תחת הקטגוריה הכללית, ואליה נוכל לשייך הוצאות והכנסות באמצעות לחיצה על ה+. גם כאן, יצרנו מראש תתי קטגוריות כדי להקל(גם אותן אפשר למחוק). ";
+                break;
+            case "editOrAddSubCatWindow":
+                expContent = "לאחר לחיצה על ";
+                break;
+            case "importanceExp":
+                expContent = "לאחר לחיצה על ";
                 break;
         }
 

@@ -1228,6 +1228,11 @@
                         chosenTag.tagTitle = newTransaction.tagTitle;
                         chosenTag.tagColor = newTransaction.tagColor;
                     }
+                    if (newTransaction.description!=null && newTransaction.description.Length>0 )
+                    {
+                        descriptionInput = newTransaction.description;
+                        descLength=newTransaction.description.Length;
+                    }
 
                     Console.WriteLine(newTransaction.tagTitle + "התגית שלי היא");
 

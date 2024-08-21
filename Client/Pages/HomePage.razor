@@ -35,17 +35,27 @@ else
                  HighlightArea="@elementToHighlight"
                  firstOnboarding="@firstOnboarding"
                  elementID="@targetElementId"
-                 continueOnboarding="TutorialPhase" />
+                 continueOnboarding="TutorialPhase" 
+                 userID="@userID"
+                 />
 }
 
 @if (tutorialActive)
 {
     disabledElement = true;
+
+    //disables scrolling:
+        <style>
+        body {
+            overflow: hidden;
+        }
+    </style>
 }
 else
 {
     disabledElement = false;
 }
+
 @if (streakOverlay) //not the final microcopy for this popup
 {
     <div class="overlay">
@@ -433,7 +443,7 @@ else
                     if (category == currentUser.categoriesFullList[0]) //for onboarding purposes:
                     {
                         <div class="fullCategory @onBoardingState4" disabled="@disabledElement" id="firstCatOnboarding" style="@catZindex">
-                            <CategoryComponent @ref="categoryComp" Category=category catIDinPage="category.id" categoryTitle="category.categroyTitle" icon="category.icon" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryColor="@category.color" updateBudget="refreshBudgetsOfSubCats" updateTransSum="refreshTransSumTotals" openAccordionOnboarding="@openCatAccordion" onboardingStage="@targetElementId"></CategoryComponent>
+                            <CategoryComponent @ref="categoryComp" Category=category catIDinPage="category.id" categoryTitle="category.categroyTitle" icon="category.icon" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryColor="@category.color" updateBudget="refreshBudgetsOfSubCats" updateTransSum="refreshTransSumTotals" openAccordionOnboarding="@openCatAccordion" onboardingStage="@targetElementId" nextOnboardingPhase="TutorialPhase"></CategoryComponent>
 
                         </div>
                     }
@@ -537,14 +547,7 @@ else
 </div>
 
 
-@if (tutorialActive)
-{
-    <style>
-        body {
-            overflow: hidden;
-        }
-    </style>
-}
+
 
 @code {
 
@@ -1242,6 +1245,7 @@ else
             storyNav++;
         }
     }
+
     private async Task OnStepClicked(int step)
     {
         tagCounter = 0;
@@ -1356,7 +1360,7 @@ else
     /// <summary>
     /// after adding transactions, updates the streak title in page and calls the function that updates the streak icon in the page and the streak stat in DB.
     /// </summary>
-    /// <param name="newStreakStat"></param>
+
     public async void updateStreak(string? newStreakStat)
     {
         Console.WriteLine("streak status got to present home page, new status is: " + newStreakStat);
@@ -1434,7 +1438,7 @@ else
     bool tutorialActive = false;
     List<string> onBoardingElementsIDs = new List<string>()
     {
-        "presentOnBoarding1", "monthStatusBtn", "presentOnBoarding2", "presentOnboarding3","firstCatOnboarding", "AddNewCat", "catOptBtn","addNewSubCat","existingSubCat"
+        "presentOnBoarding1", "monthStatusBtn", "presentOnBoarding2", "presentOnboarding3","firstCatOnboarding", "AddNewCat", "catOptBtn","addNewSubCat","existingSubCat","editOrAddSubCatWindow","importanceExp"
     };
     bool firstOnboarding = true;
     bool disabledElement = false;
@@ -1563,10 +1567,43 @@ else
                 openCatAccordion = false;
                 catZindex = "";
                 break;
-
+            case "existingSubCat":
+                toggleLayer = "";
+                onBoardingState1 = "";
+                onBoardingState2 = "";
+                onBoardingState3 = "";
+                onBoardingState4 = "";
+                onBoardingState5 = "";
+                onBoardingState6 = "";
+                //openCatAccordion = false;
+                catZindex = "";
+                break;
+            case "editOrAddSubCatWindow":
+                toggleLayer = "";
+                onBoardingState1 = "";
+                onBoardingState2 = "";
+                onBoardingState3 = "";
+                onBoardingState4 = "";
+                onBoardingState5 = "";
+                onBoardingState6 = "";
+                //openCatAccordion = false;
+                await categoryComp.accordionControl();
+                catZindex = "";
+                break;
+            case "importanceExp":
+                toggleLayer = "";
+                onBoardingState1 = "";
+                onBoardingState2 = "";
+                onBoardingState3 = "";
+                onBoardingState4 = "";
+                onBoardingState5 = "";
+                onBoardingState6 = "";
+                openCatAccordion = false;
+                catZindex = "";
+                break;
         }
 
-
+       
         var elementBounds = await JSRuntime.InvokeAsync<ElementBounds>("getElementPosition", targetElementId);
         if (elementBounds != null)
         {

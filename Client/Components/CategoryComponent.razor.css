@@ -491,6 +491,7 @@
     border-radius: 0.375rem;
     box-shadow: 0 0 20px 12px rgba(248, 248, 248, 0.25);
 }
+
 .overlay {
     position: fixed; /* Fixed position to cover the whole screen */
     top: 0;

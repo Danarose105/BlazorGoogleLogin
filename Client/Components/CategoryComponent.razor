@@ -42,7 +42,7 @@
                 }
             }
 
-            <div class="closedAndOpenMenu @onBoardingState6">
+            <div class="closedAndOpenMenu @onBoardingState6" disabled="@isDisabled">
                 @if(catIDinPage==Category.id){
                     //relevent to the onboarding only
                     <button class="options" @onclick="OpetionsBtnClicked" id="catOptBtn" @ref="optBtn"><img src="./css/images/option menu.svg" /></button>
@@ -143,14 +143,20 @@
                             subcategory.monthlyPlannedBudget = 0;
                         }
 
-                     @*   ElementReference? tempSubCat = null;
-                        if (subcategory == subCategories[0])
+                        int subCatIndex= subCategories.IndexOf(subcategory);
+                        if (subCatIndex==0)
                         {
-                            tempSubCat = subCatBudgetOnboarding;
-                        }*@
+                            <div id="@(isFirstItem ? "existingSubCat":"")" class="budget-card @(isFirstItem ? "first" : "") @onBoardingState8" disabled="@isDisabled">
+                            <SubCategoryComponent subCategoryTitle="@subcategory.subCategoryTitle" totalSpendings="@subcategory.transactionsValue" budget="@subcategory.monthlyPlannedBudget" subCategoryIDToGet="@subcategory.id" userID="@userID" subCatTakenBudget="updateTakenSubCatBudget" refreshSubCats="getSubCategories" updateEditedSubCat="updateEditedSubCat" categoryID="@Category.id" subCatDeleted="deleteSubCat" categoryTitle="@Category.categroyTitle" categoryTypeIndicator="@categoryTypeIndicator" updatedStreakStat="updateStreak" subCatColor="@categoryColor" updateTransactionSum="updatePresentTable" @ref="subCatBudgetOnboarding" ></SubCategoryComponent>
+                        </div>
+                        }
+                        else
+                        {
+                            
                         <div id="@(isFirstItem ? "existingSubCat":"")" class="budget-card @(isFirstItem ? "first" : "") @onBoardingState8" >
                             <SubCategoryComponent subCategoryTitle="@subcategory.subCategoryTitle" totalSpendings="@subcategory.transactionsValue" budget="@subcategory.monthlyPlannedBudget" subCategoryIDToGet="@subcategory.id" userID="@userID" subCatTakenBudget="updateTakenSubCatBudget" refreshSubCats="getSubCategories" updateEditedSubCat="updateEditedSubCat" categoryID="@Category.id" subCatDeleted="deleteSubCat" categoryTitle="@Category.categroyTitle" categoryTypeIndicator="@categoryTypeIndicator" updatedStreakStat="updateStreak" subCatColor="@categoryColor" updateTransactionSum="updatePresentTable"  ></SubCategoryComponent>
                         </div>
+                        }
 
                         isFirstItem = false;
                     }
@@ -169,8 +175,9 @@
     @if (isSubCategoryAddOverlayOpen)
     {
         <div class="overlay">
-            <div class="outerSubCatOverlay">
-                <div class="innerSubCatOverlay">
+            @*@onclick="@(onboardingStage == "editOrAddSubCatWindow" ? moveToImportanceExp : null)"*@
+            <div class="outerSubCatOverlay" >
+                <div class="innerSubCatOverlay" id="editOrAddSubCatWindow" disabled="@isDisabled">
                     <button class="modal-close-btn" @onclick="closeAddSubCatOverlay"><img src="./css/images/close x.svg" /></button>
                     <h2>הוספת תת קטגוריה</h2>
 
@@ -183,17 +190,13 @@
                                 {
                                     foreach (AllUserCategories userCategory in userCategories)
                                     {
-
                                         <option class="catsOptions" value=@userCategory.categroyTitle> @userCategory.categroyTitle</option>
-
-
                                     }
                                 }
                                 else
                                 {
                                     <option class="catsOptions" value=@Category.categroyTitle> @Category.categroyTitle</option>
                                 }
-
                             </select>
                         }
                     </div>
@@ -231,6 +234,7 @@
                             </div>
 
                         </div>
+                        <div id="importanceExp" class="@onBoardingState9">
                         <div class="outerImportance">
                             <label class="titleName" for="importance">עדיפות תת הקטגוריה</label>
                             <div class="outerBtns">
@@ -254,6 +258,7 @@
                                 <span class="example">לדוגמה:</span>
                                 לק - רצון, דלק - צורך, שכ״ד - חובה. העדיפות משפיעה על הטיפים לייעול התקציב.
                             </div>
+                        </div>
                         </div>
 
                         @if (titleInput.Length >= 2 && titleInput.Length < 19 && newSubCategory.monthlyPlannedBudget > 0 && titleInputExists == false)
@@ -447,11 +452,10 @@
 
     [Parameter]
     public int catIDinPage {get;set;}
-    //[Parameter]
-    //public EventCallback<string> releventOnboardingID { get; set; }
 
-    //public OptionsMenuComponent optMenu { get; set; }
-
+    //currently onlt relevent to the add sub cat onboarding overlay
+    [Parameter]
+    public EventCallback<string> nextOnboardingPhase { get; set; }
 
 
     public bool isAccordionClick = false;
@@ -494,6 +498,8 @@
     string onBoardingState6 = "";
     string onBoardingState7 = "";
     string onBoardingState8 = "";
+    string onBoardingState9 = "";
+    bool isDisabled = false;
     string previousReqID = "";
     //string zIndexCat = "";
 
@@ -512,12 +518,6 @@
 
 
         previousReqID = onboardingStage;
-        //if (openAccordionOnboarding)
-        //{
-        //    Console.WriteLine("category accordion- " + openAccordionOnboarding);
-        //    onBoardingState6 = "highlighted";
-        //    StateHasChanged();
-        //}
     }
 
     protected override async Task OnParametersSetAsync()
@@ -531,8 +531,11 @@
     public ElementReference optBtn;
     public SubCategoryComponent subCatBudgetOnboarding;
 
+
     public async Task onboardingIDs()
     {
+        Console.WriteLine(onboardingStage);
+        isDisabled = true; //needs to change to false on the last element in the tutorial
         switch (onboardingStage)
         {
             case "catOptBtn":
@@ -548,10 +551,30 @@
                 onBoardingState7 = "";
                 onBoardingState8 = "highlighted";
                 break;
+            case "editOrAddSubCatWindow":
+                isSubCategoryAddOverlayOpen = true;
+                onBoardingState6 = "";
+                onBoardingState7 = "";
+                onBoardingState8 = "";
+                onBoardingState9 = "";
+                break;
+            case "importanceExp":
+                
+                onBoardingState6 = "";
+                onBoardingState7 = "";
+                onBoardingState8 = "";
+                onBoardingState9 = "";
+                break;
         }
 
         previousReqID = onboardingStage;
     }
+
+    //public async void moveToImportanceExp()
+    //{
+    //    Console.WriteLine("onboardingStage clicked");
+    //    nextOnboardingPhase.InvokeAsync("importanceExp");
+    //}
 
     public async Task accordionControl()
     {
@@ -941,16 +964,6 @@
         Console.WriteLine("trans reached cat component");
     }
 
-    //public void updateTransSumTotal(Dictionary<int,double> subcatToUpdate)
-    //{
-    //    foreach (SubCategoryToShow sub in subCategories)
-    //    {
-    //        if (sub.id==subcatToUpdate[0])
-    //        {
-    //            sub.transactionsValue += subcatToUpdate[1];
-    //        }
-    //    }
-    //}
 
 
     void closeAddSubCatOverlay()
