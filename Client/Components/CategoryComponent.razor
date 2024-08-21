@@ -263,23 +263,34 @@
 
                         @if (titleInput.Length >= 2 && titleInput.Length < 19 && newSubCategory.monthlyPlannedBudget > 0 && titleInputExists == false)
                         {
-                            Console.WriteLine(titleInput.Length + " titleInput.Length");
-                            Console.WriteLine(newSubCategory.monthlyPlannedBudget + " newSubCategory.monthlyPlannedBudget");
+                            
                             <div class="outerSaveBtns">
                                 @if (!categoryTypeIndicator && newSubCategory.importance >= 0 || !categoryTypeIndicator && newSubCategory.importance < 3)
                                 {
-
-                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
-                                    <button class="secondery-button" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
+                                    if (categoryTypeIndicator)
+                                    {
+                                        <button class="primery-button" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הכנסה</button>
+                                        <button class="secondery-button" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="primery-button" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הוצאה</button>
+                                        <button class="secondery-button" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
+                                    }
 
                                 }
                                 else
                                 {
-                                    <div class="outerSaveBtns">
-                                        <button class="primery-button" disabled @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
-                                        <button class="secondery-button" disabled @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
-
-                                    </div>
+                                   if (categoryTypeIndicator)
+                                    {
+                                        <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הכנסה</button>
+                                        <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הוצאה</button>
+                                        <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
+                                    }
                                 }
                             </div>
 
@@ -287,9 +298,16 @@
                         else
                         {
                             <div class="outerSaveBtns">
-                                <button class="primery-button" disabled style="opacity:60%" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
-                                <button class="secondery-button" disabled style="opacity:60%" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
-
+                                if (categoryTypeIndicator)
+                                {
+                                <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הכנסה</button>
+                                <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
+                                }
+                                else
+                                {
+                                <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הוצאה</button>
+                                <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
+                                }
                             </div>
 
                             if (titleInput.Length < 2 || titleInput.Length > 18)
@@ -323,25 +341,37 @@
                     {
                         if (titleInputExists == true)
                         {
-                            <div class="outerSaveBtns">
-                                <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הזנה</button>
+                            if (categoryTypeIndicator)
+                            {
+                                                            <div class="outerSaveBtns">
+                                <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הכנסה</button>
                                 <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
                                 <span> שם תת הקטגוריה כבר קיים.</span>
-                            </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="outerSaveBtns">
+                                <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הוצאה</button>
+                                <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
+                                <span> שם תת הקטגוריה כבר קיים.</span>
+                                </div>
+                            }
+
                         }
                         else
                         {
                             if (titleInput.Length >= 2 && titleInput.Length < 19)
                             {
                                 <div class="outerSaveBtns">
-                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
+                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הכנסה</button>
                                     <button class="secondery-button" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
                                 </div>
                             }
                             else
                             {
                                 <div class="outerSaveBtns">
-                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הזנה</button>
+                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הוצאה</button>
                                     <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
                                     <span>אורך שם תת הקטגוריה לא תקין.</span>
                                 </div>

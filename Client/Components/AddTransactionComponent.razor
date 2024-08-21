@@ -36,8 +36,15 @@
 
                 <div class="accordionAndTransDetailsWrap">
                     <div class="transDetailsAccordion" @onclick="manageDropDown">
+                        @if (categoryTypeIndicator)
+                        {
+                            <span class="accordionText">שם ההכנסה שלי</span>
+                        }
+                        else
+                        {
+                            <span class="accordionText">שם ההוצאה שלי</span>
+                        }
 
-                        <span class="accordionText">שם ההזנה שלי</span>
                         <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
                     </div>
 
@@ -69,7 +76,15 @@
 
                                 @*   ---- TRANS SUM  ----*@
                                 <div class="outerTitleAndDateAndName">
-                                    <span class="titleName">סכום ההזנה</span>
+                                    @if (categoryTypeIndicator)
+                                    {
+                                        <span class="titleName">סכום ההכנסה</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="titleName">סכום ההוצאה</span>
+                                    }
+
                                     <div class="outerBudget">
                                         <input class="budgetBox" id="description" type="number" @bind="newTransaction.transValue" />
                                         <span class="currency-symbol">₪</span>
@@ -84,13 +99,29 @@
                                         <button class="repeatedBtn" @onclick=@(async () => await repeatingTransOverlay())>@repeatedBtnTitle <img src="./css/images/repeat icon.svg" /></button>
                                         @if (newTransaction.fixedMonthly.HasValue && newTransaction.fixedMonthly == true)
                                         {
-                                            repeatedBtnTitle = "עריכת ההזנה החוזרת";
-                                            <button class="cancleRepeatedBtn" @onclick="undoFixedMonthly">ביטול הזנה חוזרת</button>
 
+                                            if (categoryTypeIndicator)
+                                            {
+                                                repeatedBtnTitle = "עריכת ההכנסה החוזרת";
+                                                <button class="cancleRepeatedBtn" @onclick="undoFixedMonthly">ביטול הכנסה חוזרת</button>
+                                            }
+                                            else
+                                            {
+                                                repeatedBtnTitle = "עריכת ההוצאה החוזרת";
+                                                <button class="cancleRepeatedBtn" @onclick="undoFixedMonthly">ביטול הוצאה חוזרת</button>
+                                            }
                                         }
                                         else
                                         {
-                                            repeatedBtnTitle = "הגדרת ההזנה כחוזרת";
+                                            if (categoryTypeIndicator)
+                                            {
+                                                repeatedBtnTitle = "הגדרת ההכנסה כחוזרת";
+
+                                            }
+                                            else
+                                            {
+                                                repeatedBtnTitle = "הגדרת ההוצאה כחוזרת";
+                                            }
                                         }
 
                                     </div>
@@ -102,7 +133,15 @@
                                     @if (splitPayment)
                                     {
                                         <div class="splitToggle">
-                                            <span class="titleName">ההזנה בתשלומים?</span>
+                                            @if (categoryTypeIndicator)
+                                            {
+                                                <span class="titleName">ההכנסה בתשלומים?</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="titleName">ההוצאה בתשלומים?</span>
+                                            }
+
                                             <label class="switchSpendings">
                                                 <span class="knobYes"></span>
                                                 <input type="checkbox" class="hidden-checkbox" @bind="splitPayment">
@@ -159,7 +198,14 @@
                                     else
                                     {
                                         <div class="splitToggle" disabled="@fixedMonthly">
-                                            <span class="titleName">ההזנה בתשלומים?</span>
+                                            @if (categoryTypeIndicator)
+                                            {
+                                                <span class="titleName">ההכנסה בתשלומים?</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="titleName">ההוצאה בתשלומים?</span>
+                                            }
                                             <label class="switch">
                                                 <span class="knob"></span>
                                                 <input type="checkbox" class="hidden-checkbox" @bind="splitPayment">
@@ -168,7 +214,6 @@
                                         </div>
                                     }
                                     @{
-
                                         newTransaction.splitPayment = splitPayment;
                                         if (splitPayment == false)
                                         {
@@ -207,8 +252,17 @@
                                         <div class="outerRepetedTrans" style="@hiddenReOverlay">
                                             <div class="innerTransOverlay">
                                                 <button class="modal-close-btn" @onclick="backToTrans"><img src="./css/images/back-repeated.svg" /></button>
-                                                <h4>הגדרת '@newTransaction.transTitle' כהזנה חוזרת על עצמה</h4>
-                                                <div class="reText">במידה והפעולה חוזרת בסכום שונה, יש להזין את הסכום הרצוי. בחודש בו אינה חוזרת, יש להזין 0.</div>
+                                                @if (categoryTypeIndicator)
+                                                {
+                                                    <h4>הגדרת '@newTransaction.transTitle' כהכנסה חוזרת על עצמה</h4>
+                                                    <div class="reText">במידה וההכנסה חוזרת בסכום שונה, יש להזין את הסכום הרצוי. בחודש בו אינה חוזרת, יש להזין 0.</div>
+                                                }
+                                                else
+                                                {
+                                                    <h4>הגדרת '@newTransaction.transTitle' כהוצאה חוזרת על עצמה</h4>
+                                                    <div class="reText">במידה וההוצאה חוזרת בסכום שונה, יש להזין את הסכום הרצוי. בחודש בו אינה חוזרת, יש להזין 0.</div>
+                                                }
+
                                                 <div class="outerMonths">
                                                     @if (resetMonthValues == false)
                                                     {
@@ -328,8 +382,17 @@
                                             @if (returningTrans)
                                             {
                                                 <button class="modal-close-btn" @onclick="backToTrans"><img src="./css/images/back-repeated.svg" /></button>
-                                                <h4>הגדרת @newTransaction.transTitle כהזנה חוזרת על עצמה</h4>
-                                                <div class="reText">במידה והפעולה חוזרת בסכום שונה, יש להזין את הסכום הרצוי. בחודש בו אינה חוזרת, יש להזין 0.</div>
+                                                @if (categoryTypeIndicator)
+                                                {
+                                                    <h4>הגדרת '@newTransaction.transTitle' כהכנסה חוזרת על עצמה</h4>
+                                                    <div class="reText">במידה וההכנסה חוזרת בסכום שונה, יש להזין את הסכום הרצוי. בחודש בו אינה חוזרת, יש להזין 0.</div>
+                                                }
+                                                else
+                                                {
+                                                    <h4>הגדרת '@newTransaction.transTitle' כהוצאה חוזרת על עצמה</h4>
+                                                    <div class="reText">במידה וההוצאה חוזרת בסכום שונה, יש להזין את הסכום הרצוי. בחודש בו אינה חוזרת, יש להזין 0.</div>
+                                                }
+
                                                 <div class="outerMonths">
                                                     @if (resetMonthValues == false)
                                                     {
@@ -553,26 +616,54 @@
                     if (titleInput.Length >= 2 && titleInput.Length < 19 && newTransaction.transValue > 0 && newTransaction.valueType != null)
                     {
                         <div class="outerSaveBtns">
-                            <button class="primery-button" @onclick="saveAndRepeatTransactions">שמירה והזנה נוספת</button>
+                            @if (categoryTypeIndicator)
+                            {
+                                <button class="primery-button" @onclick="saveAndRepeatTransactions">שמירה והכנסה נוספת</button>
+                            }
+                            else
+                            {
+                                <button class="primery-button" @onclick="saveAndRepeatTransactions">שמירה והוצאה נוספת</button>
+                            }
+
+
                             <button class="secondery-button" @onclick="saveAndEndTransactions">שמירה וסיום</button>
                         </div>
                     }
                     else
                     {
                         <div class="outerSaveBtns">
-                            <button class="primery-button" @onclick="saveAndRepeatTransactions" disabled>שמירה והזנה נוספת</button>
+                            @if (categoryTypeIndicator)
+                            {
+                                <button class="primery-button" @onclick="saveAndRepeatTransactions" disabled>שמירה והכנסה נוספת</button>
+                            }
+                            else
+                            {
+                                <button class="primery-button" @onclick="saveAndRepeatTransactions" disabled>שמירה והוצאה נוספת</button>
+                            }
                             <button class="secondery-button" @onclick="saveAndEndTransactions" disabled>שמירה וסיום</button>
                             @if (titleInput.Length < 2)
                             {
                                 if (isTyped)
                                 {
-                                    <span>שם ההזנה צריך להיות בין 2-18 תווים.</span>
+                                    if (categoryTypeIndicator)
+                                    {
+                                         <span>שם ההכנסה צריך להיות בין 2-18 תווים.</span>
+                                    }else{
+                                         <span>שם ההוצאה צריך להיות בין 2-18 תווים.</span>
+                                    }
+                                   
                                 }
 
                             }
                             else if (newTransaction.transValue <= 0)
                             {
-                                <span>סך ההזנה לא תקין.</span>
+                                  if (categoryTypeIndicator)
+                                    {
+                                          <span>סך ההכנסה לא תקין.</span>
+                                    }else{
+                                         <span>סך ההוצאה לא תקין.</span>
+                                    }
+                               
                             }
                             else if (newTransaction.valueType == "" || newTransaction.valueType == null)
                             {
@@ -596,11 +687,23 @@
                             <button class="primery-button" @onclick="updateExistingTrans" disabled>שמירה וסיום</button>
                             @if (titleInput.Length < 2)
                             {
-                                <span>אורך שם ההזנה לא תקין.</span>
+                                if (categoryTypeIndicator)
+                                {
+                                     <span>אורך שם ההוצאה לא תקין.</span>
+                                }else{
+                                     <span>אורך שם ההכנסה לא תקין.</span>
+                                }
+                               
                             }
                             else if (newTransaction.transValue <= 0)
                             {
-                                <span>סך ההזנה לא תקין.</span>
+                                   if (categoryTypeIndicator)
+                                {
+                                     <span>סך ההוצאה לא תקין.</span>
+                                }else{
+                                   <span>סך ההכנסה לא תקין.</span>
+                                }
+                                
                             }
                             else if (newTransaction.valueType == "" || newTransaction.valueType == null)
                             {
@@ -1197,7 +1300,15 @@
         }
         if (transIDtoEdit > 0)
         {
-            overlayTitle = "עריכת הזנה";
+            if (categoryTypeIndicator)
+            {
+                overlayTitle = "עריכת הכנסה";
+            }
+            else
+            {
+                overlayTitle = "עריכת הוצאה";
+            }
+
             isItAnewTrans = false;
             var transEditRes = await Http.GetAsync("api/Transactions/getSplitParent/" + transIDtoEdit); //doesn't necessarily mean that the transaction is a split parent/child, this gets the entire data of a specific transaction by its ID
             if (transEditRes.IsSuccessStatusCode)
@@ -1228,10 +1339,10 @@
                         chosenTag.tagTitle = newTransaction.tagTitle;
                         chosenTag.tagColor = newTransaction.tagColor;
                     }
-                    if (newTransaction.description!=null && newTransaction.description.Length>0 )
+                    if (newTransaction.description != null && newTransaction.description.Length > 0)
                     {
                         descriptionInput = newTransaction.description;
-                        descLength=newTransaction.description.Length;
+                        descLength = newTransaction.description.Length;
                     }
 
                     Console.WriteLine(newTransaction.tagTitle + "התגית שלי היא");
@@ -1243,7 +1354,15 @@
 
                     if (newTransaction.fixedMonthly == true)
                     {
-                        repeatedBtnTitle = "עריכת ההזנה החוזרת";
+                        if (categoryTypeIndicator)
+                        {
+                           repeatedBtnTitle = "עריכת ההכנסה החוזרת";
+                        }
+                        else
+                        {
+                            repeatedBtnTitle = "עריכת ההוצאה החוזרת";
+                        }
+                        
                         fixedMonthly = true;
 
                         var getRepeatedChildren = await Http.GetAsync("api/Transactions/getRepeatedTransToEdit/" + transIDtoEdit); //gets the fixed children only
@@ -1293,7 +1412,14 @@
 
                     if (newTransaction.fixedMonthly == false)
                     {
-                        repeatedBtnTitle = "הגדרת ההזנה כחוזרת";
+                        if (categoryTypeIndicator)
+                        {
+                            repeatedBtnTitle = "הגדרת ההכנסה החוזרת";
+                        }
+                        else
+                        {
+                            repeatedBtnTitle = "הגדרת ההוצאה החוזרת";
+                        }
                     }
 
                     if (newTransaction.splitPayment == false)
@@ -1367,6 +1493,16 @@
             isItAnewTrans = true;
             //isLoadComplete = true;
             Console.WriteLine("transaction value type is- " + categoryTypeIndicator);
+            
+                if (categoryTypeIndicator)
+                {
+                    repeatedBtnTitle = "הגדרת ההכנסה החוזרת";
+                }
+                else
+                {
+                    repeatedBtnTitle = "הגדרת ההוצאה החוזרת";
+                }
+            
         }
 
         //if (newTransaction.tagID > 0)
@@ -1786,7 +1922,7 @@
         chosenTag = new TagsToShow();
         descLength = 0;
         descriptionInput = "";
-        fixedTransChildrenToAdd= new List<TransactionToAdd>();
+        fixedTransChildrenToAdd = new List<TransactionToAdd>();
         reapeatedTransValuesList = new List<RepeatedTransToShow>();
 
     }
