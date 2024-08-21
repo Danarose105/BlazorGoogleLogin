@@ -12,5 +12,6 @@ namespace BlazorGoogleLogin.Shared.Models.future.toAdd
         public int userID { get; set; }
         public string savingsTitle { get; set; }
         public int savingsSum { get; set; }
+        public string? savingLocation { get; set; }
     }
 }
