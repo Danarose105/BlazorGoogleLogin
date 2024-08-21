@@ -298,7 +298,7 @@
                         else
                         {
                             <div class="outerSaveBtns">
-                                if (categoryTypeIndicator)
+                                @if (categoryTypeIndicator)
                                 {
                                 <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הכנסה</button>
                                 <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
@@ -310,7 +310,7 @@
                                 }
                             </div>
 
-                            if (titleInput.Length < 2 || titleInput.Length > 18)
+                            @if (titleInput.Length < 2 || titleInput.Length > 18)
                             {
                                 if (isTyped)
                                 {
