@@ -81,15 +81,15 @@
 
 
                     <div class="outerIAndBubble">
-                        <span @onclick="()=>openISaving = !openISaving"><img src="./css/images/i-future.svg" /></span>
+                        <span @onclick="@(()=>expBubbleToolTip("FutureHomePage"))"><img src="./css/images/q-with-shadow.svg" /></span>
                         @if (openISaving)
                         {
-
-                            <span class="iBubbleText">
+                            <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+@*                            <span class="iBubbleText">
                                 הסכום מחושב
                                 לפי 4% ריבית
 
-                            </span>
+                            </span>*@
                         }
                     </div>
                 </div>
@@ -97,7 +97,7 @@
                 <div class="outerCurrentSavings">
                     <div class="outerDatesAndDivider">
                         <div class="outerDateAndAmount">
-                            <div>בחודש</div>
+                            <div>החודש</div>
 
                             <span><b> <span>@monthlySavings</span> <span class="ShekelSign">₪</span></b></span>
                         </div>
@@ -105,7 +105,7 @@
                         <div class="savingDivider"></div>
 
                         <div class="outerDateAndAmount">
-                            <div>בשנה</div>
+                            <div>בשנת @CurrentYear</div>
                             <span><b><span>@sumNeededSavingsPerYear </span> <span class="ShekelSign">₪</span> </b></span>
 
                         </div>
@@ -743,18 +743,7 @@
 
         }
         earliestDate = FindEarliestDateInCurrentYear(allGoals);
-        //savingsForProgressBar = 0;
-        //if(sumGoals > 0)
-        //{
-        //    savingsForProgressBar = (sumSavings / sumGoals) * 100;
 
-        //    if(savingsForProgressBar > 100)
-        //    {
-        //        savingsForProgressBar = 100;
-        //    }
-
-        //    widthForProgressBar = savingsForProgressBar.ToString() + "%";
-        //}
 
         savingsForProgressBar = 0;
         if (sumGoals > 0)
@@ -1186,9 +1175,24 @@
         selectedClass = "";
     }
 
-     private void SetYearAndClose(int year)
+    private void SetYearAndClose(int year)
     {
         newGoal.dueYear = year;
         openYearsOptions = false;
+    }
+
+    string elementToExp = "";
+    public void expBubbleToolTip(string elementName)
+    {
+        openISaving = !openISaving;
+        if (openISaving)
+        {
+            elementToExp = elementName;
+        }
+    }
+
+    public void closeExpOverlay()
+    {
+        openISaving = false;
     }
 }

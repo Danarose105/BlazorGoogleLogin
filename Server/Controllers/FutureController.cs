@@ -97,9 +97,10 @@ namespace BlazorGoogleLogin.Server.Controllers
                 savingTitle = UserSavingToAdd.savingsTitle,
                 savingsSum = UserSavingToAdd.savingsSum,
                 interestRate = 0.4,
-                userID = userID
+                userID = userID,
+                savingLocation=UserSavingToAdd.savingLocation
             };
-            string insertSavingQuery = "insert into savings(savingsTitle, savingsSum, interestRate, userID) values (@savingTitle, @savingsSum,@interestRate, @userID)";
+            string insertSavingQuery = "insert into savings(savingsTitle, savingsSum, interestRate, userID, savingLocation) values (@savingTitle, @savingsSum,@interestRate, @userID, @savingLocation)";
 
             int wasSavingAdded = await _db.InsertReturnIdAsync(insertSavingQuery, newSavingParam);
             if (wasSavingAdded > 0)
@@ -125,11 +126,12 @@ namespace BlazorGoogleLogin.Server.Controllers
             {
                 ID = savingToUpdate.id,
                 savingsTitle = savingToUpdate.savingsTitle,
-                savingsSum = savingToUpdate.savingsSum
+                savingsSum = savingToUpdate.savingsSum,
+                savingLocation= savingToUpdate.savingLocation
 
             };
 
-            string UpdateSavingQuery = "UPDATE savings set savingsTitle = @savingsTitle, savingsSum = @savingsSum where id =@ID";
+            string UpdateSavingQuery = "UPDATE savings set savingsTitle = @savingsTitle, savingsSum = @savingsSum, savingLocation=@savingLocation where id =@ID";
             bool isUpdate = await _db.SaveDataAsync(UpdateSavingQuery, savingUpdateParam);
 
             if (isUpdate)

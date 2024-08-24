@@ -56,12 +56,13 @@
     column-gap: 1vh;
     font-weight: 500;
     font-size: 1.3rem;
+    flex-wrap: wrap;
 }
 
 .outerTitleAndDivider {
     display: flex;
     flex-direction: column;
-    width: 88.5vw;
+    word-wrap: break-word;
 }
 
 .divider {
@@ -1245,3 +1246,10 @@ input:disabled, button:disabled {
         color: inherit; /* Inherit color from parent */
         color: #636363
     }
+.expAndTitle {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}

@@ -395,30 +395,7 @@
         </div>
 
     }
-    else
-    {
-        <div class="outerOn">
-            <div class="outerOnbaordings" @onclick="()=> openOnboardings =! openOnboardings">
-                <div class="outerDropAndPoly">
-                    <div>מעבר מחדש על ההדרכה</div>
-                    <img src="./css/images/arrow3.svg" />
-                </div>
-            </div>
-            @if (openOnboardings)
-            {
-                <div class="onBoardings">
-                    <button class="dropDownOptionBtn" @onclick="(() => chosenOnboarding = firstOn)">סביבת ‘מבט אל העבר’</button>
-                    <div class="divider"></div>
-                    <button class="dropDownOptionBtn" @onclick="(() => chosenOnboarding = secondOn)">סביבת ‘מבט אל ההווה’</button>
-                    <div class="divider"></div>
-                    <button class="dropDownOptionBtn" @onclick="(() => chosenOnboarding = thirdOn)">סביבת ‘מבט אל העתיד’</button>
-                </div>
-            }
-
-
-        </div>
-    }
-
+   
 </div>
 @if (!editBtnClicked)
 {

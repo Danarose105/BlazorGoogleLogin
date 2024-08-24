@@ -107,7 +107,7 @@
                             <div class="outerTitleName">
                                 <label class="titleName" for="amount">שם תת קטגוריה</label>
                                 <div class="input-container">
-                                <input class="titleBox" type="text" id="amount" placeholder="שם תת הקטגוריה" @bind="subCatToEdit.subCategoryTitle" maxlength="18" minlength="2" @oninput="SubCatTitleLengthCounter" />
+                                    <input class="titleBox" type="text" id="amount" placeholder="שם תת הקטגוריה" @bind="subCatToEdit.subCategoryTitle" maxlength="18" minlength="2" @oninput="SubCatTitleLengthCounter" />
                                     <div class="counter">
                                         @if (titleInput.Length > 2 && titleInput.Length < 19)
                                         {
@@ -252,7 +252,16 @@
             <div class="searchWrapper">
                 <div class="search__container">
                     <img src="./css/images/search btn.svg" @onclick="SearchAfterClick" />
-                    <input class="searchInput" type="text" value="@searchQuery" @oninput="UpdateSearchQuery" @onkeyup="HandleKeyUp" placeholder="חפשו הוצאה..." />
+                    @if (categoryTypeIndicator)
+                    {
+
+                        <input class="searchInput" type="text" value="@searchQuery" @oninput="UpdateSearchQuery" @onkeyup="HandleKeyUp" placeholder="חפשו הכנסה..." />
+                    }
+                    else
+                    {
+
+                        <input class="searchInput" type="text" value="@searchQuery" @oninput="UpdateSearchQuery" @onkeyup="HandleKeyUp" placeholder="חפשו הוצאה..." />
+                    }
 
                 </div>
             </div>
@@ -278,7 +287,15 @@
                                     <div class="filterDivider"></div>
                                     <button class="dropDownOptionBtn" @onclick="filterByTagsOverlayControl">תגית</button>
                                     <div class="filterDivider"></div>
-                                    <button class="dropDownOptionBtn" @onclick="filterByRepeatedTrans">הוצאה חוזרת</button>
+                                    @if (categoryTypeIndicator)
+                                    {
+                                        <button class="dropDownOptionBtn" @onclick="filterByRepeatedTrans">הכנסה חוזרת</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="dropDownOptionBtn" @onclick="filterByRepeatedTrans">הוצאה חוזרת</button>
+                                    }
+
                                     <div class="filterDivider"></div>
                                     <button class="dropDownOptionBtn" @onclick="filterBySplitPayment">תשלומים</button>
                                 </div>
@@ -432,11 +449,24 @@
                                             <input class="sortBtn" type="radio" id="תאריך (מהישן לחדש)" name="transSorting" @onchange="@(()=> SortingOptions("dateAsc"))" />
                                             <label for="תאריך (מהישן לחדש)">תאריך (מהישן לחדש)</label>
                                             <div class="sortDivider"></div>
-                                            <input class="sortBtn" type="radio" id="סכום הוצאה (מהגבוה לנמוך)" name="transSorting" @onchange="@(()=> SortingOptions("sumDes"))" />
-                                            <label for="סכום הוצאה (מהגבוה לנמוך)">סכום הוצאה (מהגבוה לנמוך)</label>
-                                            <div class="sortDivider"></div>
-                                            <input class="sortBtn" type="radio" id="סכום הוצאה (מהנמוך לגבוה)" name="transSorting" @onchange="@(()=> SortingOptions("sumAsc"))" />
-                                            <label for="סכום הוצאה (מהנמוך לגבוה)">סכום הוצאה (מהנמוך לגבוה)</label>
+                                            @if (categoryTypeIndicator)
+                                            {
+
+                                                <input class="sortBtn" type="radio" id="סכום הכנסה (מהגבוה לנמוך)" name="transSorting" @onchange="@(()=> SortingOptions("sumDes"))" />
+                                                <label for="סכום הוצאה (מהגבוה לנמוך)">סכום הכנסה (מהגבוה לנמוך)</label>
+                                                <div class="sortDivider"></div>
+                                                <input class="sortBtn" type="radio" id="סכום הכנסה (מהנמוך לגבוה)" name="transSorting" @onchange="@(()=> SortingOptions("sumAsc"))" />
+                                                <label for="סכום הוצאה (מהנמוך לגבוה)">סכום הכנסה (מהנמוך לגבוה)</label>
+                                            }
+                                            else
+                                            {
+                                                <input class="sortBtn" type="radio" id="סכום הוצאה (מהגבוה לנמוך)" name="transSorting" @onchange="@(()=> SortingOptions("sumDes"))" />
+                                                <label for="סכום הוצאה (מהגבוה לנמוך)">סכום הוצאה (מהגבוה לנמוך)</label>
+                                                <div class="sortDivider"></div>
+                                                <input class="sortBtn" type="radio" id="סכום הוצאה (מהנמוך לגבוה)" name="transSorting" @onchange="@(()=> SortingOptions("sumAsc"))" />
+                                                <label for="סכום הוצאה (מהנמוך לגבוה)">סכום הוצאה (מהנמוך לגבוה)</label>
+                                            }
+
                                         </div>
                                     </fieldset>
                                 </div>
@@ -470,11 +500,11 @@
 
                     }
                 }
-                else if (allTransactions.Count <= 0 && isOnInitializedOver )
+                else if (allTransactions.Count <= 0 && isOnInitializedOver)
                 {
-                
-                        <p>@failedFilterError</p>
-                  
+
+                    <p>@failedFilterError</p>
+
 
                 }
                 else
@@ -1093,7 +1123,7 @@
             isOverdraft = false;
         }
 
-        
+
     }
 
     public void OpetionsBtnClicked()
@@ -1514,7 +1544,7 @@
             filterByReturnTrans = false;
         }
 
-        filterByTagOverlay=false;
+        filterByTagOverlay = false;
         filterByTransTypeOverlay = false;
 
     }

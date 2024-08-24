@@ -11,8 +11,7 @@
     isOpetionsBtnClicked = false;
     <GeneralPopUpComponent popupTypeTitle="מחיקת קטגוריה" middleText="@popupBodyText" name="" action="מחיקה" makeAction=@deleteCategory closePopUp="closeDeletePopUp"></GeneralPopUpComponent>
 }
-
-<div class="@onBoardingState6">
+<div>
     <div class="outerEdit">
         @if (editBtnClicked)
         {
@@ -44,12 +43,16 @@
             }
 
             <div class="closedAndOpenMenu">
+
                 <button class="options" @onclick="OpetionsBtnClicked"><img src="./css/images/option menu.svg" /></button>
+
                 @if (isOpetionsBtnClicked)
                 {
                     if (!categoryTypeIndicator)
                     {
+
                         <OptionsMenuComponent editBtnClicked="@showEditCategory" deleteBtnClicked="@deleteCategoryBtnClciked" closeOverlay="closeDeleteOverlay" isCategory="@isOpetionsBtnClicked"></OptionsMenuComponent>
+
                     }
                     else
                     {
@@ -135,9 +138,20 @@
                             subcategory.monthlyPlannedBudget = 0;
                         }
 
-                        <div class="budget-card @(isFirstItem ? "first" : "")">
-                            <SubCategoryComponent subCategoryTitle="@subcategory.subCategoryTitle" totalSpendings="@subcategory.transactionsValue" budget="@subcategory.monthlyPlannedBudget" subCategoryIDToGet="@subcategory.id" userID="@userID" subCatTakenBudget="updateTakenSubCatBudget" refreshSubCats="getSubCategories" updateEditedSubCat="updateEditedSubCat" categoryID="@Category.id" subCatDeleted="deleteSubCat" categoryTitle="@Category.categroyTitle" categoryTypeIndicator="@categoryTypeIndicator" updatedStreakStat="updateStreak" subCatColor="@categoryColor" updateTransactionSum="updatePresentTable"></SubCategoryComponent>
-                        </div>
+                        int subCatIndex = subCategories.IndexOf(subcategory);
+                        if (subCatIndex == 0)
+                        {
+                            <div id="@(isFirstItem ? "existingSubCat":"")" class="budget-card @(isFirstItem ? "first" : "")">
+                                <SubCategoryComponent subCategoryTitle="@subcategory.subCategoryTitle" totalSpendings="@subcategory.transactionsValue" budget="@subcategory.monthlyPlannedBudget" subCategoryIDToGet="@subcategory.id" userID="@userID" subCatTakenBudget="updateTakenSubCatBudget" refreshSubCats="getSubCategories" updateEditedSubCat="updateEditedSubCat" categoryID="@Category.id" subCatDeleted="deleteSubCat" categoryTitle="@Category.categroyTitle" categoryTypeIndicator="@categoryTypeIndicator" updatedStreakStat="updateStreak" subCatColor="@categoryColor" updateTransactionSum="updatePresentTable"></SubCategoryComponent>
+                            </div>
+                        }
+                        else
+                        {
+
+                            <div id="@(isFirstItem ? "existingSubCat":"")" class="budget-card @(isFirstItem ? "first" : "")">
+                                <SubCategoryComponent subCategoryTitle="@subcategory.subCategoryTitle" totalSpendings="@subcategory.transactionsValue" budget="@subcategory.monthlyPlannedBudget" subCategoryIDToGet="@subcategory.id" userID="@userID" subCatTakenBudget="updateTakenSubCatBudget" refreshSubCats="getSubCategories" updateEditedSubCat="updateEditedSubCat" categoryID="@Category.id" subCatDeleted="deleteSubCat" categoryTitle="@Category.categroyTitle" categoryTypeIndicator="@categoryTypeIndicator" updatedStreakStat="updateStreak" subCatColor="@categoryColor" updateTransactionSum="updatePresentTable"></SubCategoryComponent>
+                            </div>
+                        }
 
                         isFirstItem = false;
                     }
@@ -156,8 +170,9 @@
     @if (isSubCategoryAddOverlayOpen)
     {
         <div class="overlay">
+
             <div class="outerSubCatOverlay">
-                <div class="innerSubCatOverlay">
+                <div class="innerSubCatOverlay" id="editOrAddSubCatWindow">
                     <button class="modal-close-btn" @onclick="closeAddSubCatOverlay"><img src="./css/images/close x.svg" /></button>
                     <h2>הוספת תת קטגוריה</h2>
 
@@ -170,17 +185,13 @@
                                 {
                                     foreach (AllUserCategories userCategory in userCategories)
                                     {
-
                                         <option class="catsOptions" value=@userCategory.categroyTitle> @userCategory.categroyTitle</option>
-
-
                                     }
                                 }
                                 else
                                 {
                                     <option class="catsOptions" value=@Category.categroyTitle> @Category.categroyTitle</option>
                                 }
-
                             </select>
                         }
                     </div>
@@ -209,6 +220,7 @@
                     @if (!categoryTypeIndicator)
                     {
                         <div id="presentOnboarding4">
+
                             <label class="titleName" for="description">מה התקציב החודשי שלך עבור @newSubCategory.subCategoryTitle? </label>
 
                             <div class="outerBudget">
@@ -217,51 +229,76 @@
                                 <div class="lineBetween"></div>
                             </div>
 
+
                         </div>
-                        <div class="outerImportance">
-                            <label class="titleName" for="importance">עדיפות תת הקטגוריה</label>
-                            <div class="outerBtns">
-                                <div class="importanceBtns">
-                                    <input type="radio" id="wants" name="importance" @onchange="@(() => newSubCategory.importance = 0)" />
-                                    <label for="wants">רצון</label>
-                                    <span class="divider"></span>
+                        <div id="importanceExp">
+                            <div class="outerImportance">
+                            
+                                <div class="outerExp">
+                                    <div id="expDiv">
+                                <div id="expBtn" @onclick="@(()=>expBubbleToolTip("addSubCat"))"><img src="./css/images/q-with-shadow.svg" style="height: 3rem;" /></div>
+                                @if (expBubbleOpen)
+                                {
 
-                                    <input type="radio" id="needs" name="importance" @onchange="@(() => newSubCategory.importance = 1)" />
-                                    <label for="needs">צורך</label>
-                                    <span class="divider"></span>
+                                    <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+                                }
+                            </div>
+                                <label class="titleName" for="importance">עדיפות תת הקטגוריה</label>
+                                </div>
+                                <div class="outerBtns">
+                                    <div class="importanceBtns">
+                                        <input type="radio" id="wants" name="importance" @onchange="@(() => newSubCategory.importance = 0)" />
+                                        <label for="wants">רצון</label>
+                                        <span class="divider"></span>
 
-                                    <input type="radio" id="must" name="importance" @onchange="@(() => newSubCategory.importance = 2)" />
-                                    <label for="must">חובה</label>
+                                        <input type="radio" id="needs" name="importance" @onchange="@(() => newSubCategory.importance = 1)" />
+                                        <label for="needs">צורך</label>
+                                        <span class="divider"></span>
+
+                                        <input type="radio" id="must" name="importance" @onchange="@(() => newSubCategory.importance = 2)" />
+                                        <label for="must">חובה</label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="outerExample">
-                            <div>
-                                <span class="example">לדוגמה:</span>
-                                לק - רצון, דלק - צורך, שכ״ד - חובה. העדיפות משפיעה על הטיפים לייעול התקציב.
+                            <div class="outerExample">
+                                <div>
+                                    <span class="example">לדוגמה:</span>
+                                    לק - רצון, דלק - צורך, שכ״ד - חובה. העדיפות משפיעה על הטיפים לייעול התקציב.
+                                </div>
                             </div>
                         </div>
 
                         @if (titleInput.Length >= 2 && titleInput.Length < 19 && newSubCategory.monthlyPlannedBudget > 0 && titleInputExists == false)
                         {
-                            Console.WriteLine(titleInput.Length + " titleInput.Length");
-                            Console.WriteLine(newSubCategory.monthlyPlannedBudget + " newSubCategory.monthlyPlannedBudget");
+
                             <div class="outerSaveBtns">
                                 @if (!categoryTypeIndicator && newSubCategory.importance >= 0 || !categoryTypeIndicator && newSubCategory.importance < 3)
                                 {
-
-                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
-                                    <button class="secondery-button" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
+                                    if (categoryTypeIndicator)
+                                    {
+                                        <button class="primery-button" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הכנסה</button>
+                                        <button class="secondery-button" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="primery-button" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הוצאה</button>
+                                        <button class="secondery-button" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
+                                    }
 
                                 }
                                 else
                                 {
-                                    <div class="outerSaveBtns">
-                                        <button class="primery-button" disabled @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
-                                        <button class="secondery-button" disabled @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
-
-                                    </div>
+                                    if (categoryTypeIndicator)
+                                    {
+                                        <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הכנסה</button>
+                                        <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הוצאה</button>
+                                        <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
+                                    }
                                 }
                             </div>
 
@@ -269,11 +306,21 @@
                         else
                         {
                             <div class="outerSaveBtns">
-                                <button class="primery-button" disabled style="opacity:60%" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
-                                <button class="secondery-button" disabled style="opacity:60%" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
+                                @if (categoryTypeIndicator)
+                                {
+                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הכנסה</button>
+                                    <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
+                                }
+                                else
+                                {
+                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הוצאה</button>
+                                    <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
+                                }
+                            </div>
 
-
-                                @if (titleInput.Length < 2 || titleInput.Length > 18)
+                            @if (titleInput.Length < 2 || titleInput.Length > 18)
+                            {
+                                if (isTyped)
                                 {
                                     if (isTyped)
                                     {
@@ -305,25 +352,37 @@
                     {
                         if (titleInputExists == true)
                         {
-                            <div class="outerSaveBtns">
-                                <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הזנה</button>
-                                <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
-                                <span> שם תת הקטגוריה כבר קיים.</span>
-                            </div>
+                            if (categoryTypeIndicator)
+                            {
+                                <div class="outerSaveBtns">
+                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הכנסה</button>
+                                    <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
+                                    <span> שם תת הקטגוריה כבר קיים.</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="outerSaveBtns">
+                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הוצאה</button>
+                                    <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
+                                    <span> שם תת הקטגוריה כבר קיים.</span>
+                                </div>
+                            }
+
                         }
                         else
                         {
                             if (titleInput.Length >= 2 && titleInput.Length < 19)
                             {
                                 <div class="outerSaveBtns">
-                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
+                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הכנסה</button>
                                     <button class="secondery-button" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
                                 </div>
                             }
                             else
                             {
                                 <div class="outerSaveBtns">
-                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הזנה</button>
+                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הוצאה</button>
                                     <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
                                     <span>אורך שם תת הקטגוריה לא תקין.</span>
                                 </div>
@@ -426,8 +485,7 @@
     [Parameter]
     public EventCallback<double> updateTransSum { get; set; } //updates transaction sums in main status table
 
-    [Parameter]
-    public bool openAccordionOnboarding { get; set; }
+
 
     public bool isAccordionClick = false;
 
@@ -457,17 +515,13 @@
 
     string titleInput = "";
     int titleInputLength = 0;
+    bool titleInputExists = false;
 
-    //bool overdraftDetected = false;
-    //bool overdraftOverlayOpen = false;
-    //bool overdraftNotTreated = false;
     bool openSubCatsOptions = false;
     OverBudgetToShow chosenSubCategory = new OverBudgetToShow();
 
     List<string> allSubCatTitles = new List<string>();
-    bool titleInputExists = false;
-    string onBoardingState6 = "";
-    //string zIndexCat = "";
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -482,15 +536,7 @@
             allSubCatTitles = subCatRes.Content.ReadFromJsonAsync<List<string>>().Result;
         }
 
-        if (openAccordionOnboarding)
-        {
-            Console.WriteLine("category accordion- " + openAccordionOnboarding);
-            onBoardingState6 = "highlighted";
-            StateHasChanged();
-
-        }
     }
-
 
 
     public async Task accordionControl()
@@ -502,6 +548,22 @@
         }
     }
 
+
+    bool expBubbleOpen = false;
+    string elementToExp = "";
+    public void expBubbleToolTip(string elementName)
+    {
+        expBubbleOpen = !expBubbleOpen;
+        if (expBubbleOpen)
+        {
+            elementToExp = elementName;
+        }
+    }
+
+    public void closeExpOverlay()
+    {
+        expBubbleOpen = false;
+    }
 
     public async Task getSubCategories()
     {
@@ -881,16 +943,6 @@
         Console.WriteLine("trans reached cat component");
     }
 
-    //public void updateTransSumTotal(Dictionary<int,double> subcatToUpdate)
-    //{
-    //    foreach (SubCategoryToShow sub in subCategories)
-    //    {
-    //        if (sub.id==subcatToUpdate[0])
-    //        {
-    //            sub.transactionsValue += subcatToUpdate[1];
-    //        }
-    //    }
-    //}
 
 
     void closeAddSubCatOverlay()

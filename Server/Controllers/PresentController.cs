@@ -231,6 +231,28 @@ namespace BlazorGoogleLogin.Server.Controllers
             return BadRequest("invalid userID");
         }
 
+        [HttpGet("passOnboarding/{userID}")]
+        public async Task<IActionResult> userPassOnboarding(int userID)
+        {
+            if (userID>0)
+            {
+                object param = new
+                {
+                    ID = userID
+                };
+
+                string updateOnboardingStatusQuery = "update users set passedOnboarding=true where ID=@ID";
+                bool isUpdate = await _db.SaveDataAsync(updateOnboardingStatusQuery, param);
+
+                if (isUpdate)
+                {
+                    return Ok("user passed onboarding successfully");
+                }
+                return BadRequest("failed to update user to passed onboarding =true");
+            }
+            return BadRequest("invalid userID");
+        }
+
         [HttpGet("checkStreak/{userID}")] //checks the amount of weeks a user has input at least 3 transactions- including the current week
         public async Task<IActionResult> CheckUserStreak(int userID)
         {

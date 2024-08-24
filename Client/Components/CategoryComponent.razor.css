@@ -483,6 +483,13 @@
     font-weight: 500;
     line-height: normal;
 }
+.highlighted {
+    z-index: 4;
+    background-color: #EDEFF7;
+    padding: 1%;
+    border-radius: 0.375rem;
+    box-shadow: 0 0 20px 12px rgba(248, 248, 248, 0.25);
+}
 
 .overlay {
     position: fixed; /* Fixed position to cover the whole screen */
@@ -850,3 +857,15 @@
         width: 24px; /* Icon size */
         height: auto;
     }
+
+.outerExp {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#expDiv {
+    display: flex;
+    flex-direction: column-reverse;
+}

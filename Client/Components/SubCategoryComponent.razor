@@ -147,8 +147,17 @@
 
                         </div>
                     </div>
+                    <div class="outerExp">
+                            <div id="expDiv">
+                                <div id="expBtn" @onclick="@(()=>expBubbleToolTip("editSubCat"))"><img src="./css/images/q-with-shadow.svg" style="height: 3rem;" /></div>
+                                @if (expBubbleOpen)
+                                {
 
+                                    <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+                                }
+                            </div>
                     <label class="titleName" for="description">מה התקציב החודשי שלך עבור "@subCatToEdit.subCategoryTitle"?</label>
+                        </div>
                     <div class="outerBudget">
                         <input class="budgetBox" type="number" id="description" @oninput="SubCatBudgetInput" @bind="subCatToEdit.monthlyPlannedBudget" />
                         <span class="currency-symbol">₪</span>
@@ -173,7 +182,8 @@
 
 
                     <div class="outerImportance">
-                        <label class="titleName" for="importance">עדיפות תת הקטגוריה</label>
+                        
+                            <label class="titleName" for="importance">עדיפות תת הקטגוריה</label>
                         <div class="outerBtns">
                             <div class="importanceBtns">
                                 @if (subCatToEdit.importance == 0)
@@ -248,23 +258,50 @@
 
                             if (isTyped)
                             {
+                                if (categoryTypeIndicator)
+                                {
+                                    <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הכנסה</button>
+                                    <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
+                                }
+                                else
+                                {
 
-                                <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הזנה</button>
-                                <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
+
+                                    <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הוצאה</button>
+                                    <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
+                                }
                                 <br />
                                 <span>שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
                             }
                             else
                             {
-                                <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הזנה</button>
-                                <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
+                                if (categoryTypeIndicator)
+                                {
+                                    <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הכנסה</button>
+                                    <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
+                                }
+                                else
+                                {
+
+                                    <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הוצאה</button>
+                                    <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
+                                }
                             }
 
                         }
                         else if (subCatToEdit.monthlyPlannedBudget <= 0 || subCatToEdit.monthlyPlannedBudget == null)
                         {
-                            <button class="primery-button" @onclick="EditSubCategoryAndTransaction" disabled>שמירה ויצירת הזנה</button>
-                            <button class="secondery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
+                            if (categoryTypeIndicator)
+                            {
+                                <button class="primery-button" @onclick="EditSubCategoryAndTransaction" disabled>שמירה ויצירת הכנסה</button>
+                                <button class="secondery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
+                            }
+                            else
+                            {
+                                <button class="primery-button" @onclick="EditSubCategoryAndTransaction" disabled>שמירה ויצירת הוצאה</button>
+                                <button class="secondery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
+                            }
+
                             <br />
                             <span>לא ניתן לשמור תת קטגוריה ללא תקציב .</span>
                         }
@@ -280,15 +317,31 @@
                         }
                         else if (subCatToEdit.importance > 2 || subCatToEdit.importance < 0)
                         {
-                            <button class="primery-button" @onclick="EditSubCategoryAndTransaction" disabled>שמירה ויצירת הזנה</button>
-                            <button class="secondery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
+                            if (categoryTypeIndicator)
+                            {
+                                <button class="primery-button" @onclick="EditSubCategoryAndTransaction" disabled>שמירה ויצירת הכנסה</button>
+                                <button class="secondery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
+                            }
+                            else
+                            {
+                                <button class="primery-button" @onclick="EditSubCategoryAndTransaction" disabled>שמירה ויצירת הוצאה</button>
+                                <button class="secondery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
+                            }
                             <br />
                             <span>לא ניתן לשמור תת קטגוריה ללא הגדרת עדיפות .</span>
                         }
                         else
                         {
-                            <button class="primery-button" @onclick="EditSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
-                            <button class="secondery-button" @onclick="saveUpdatedSubCat">שמירה וסיום</button>
+                            if (categoryTypeIndicator)
+                            {
+                                <button class="primery-button" @onclick="EditSubCategoryAndTransaction">שמירה ויצירת הכנסה</button>
+                                <button class="secondery-button" @onclick="saveUpdatedSubCat">שמירה וסיום</button>
+                            }
+                            else
+                            {
+                                <button class="primery-button" @onclick="EditSubCategoryAndTransaction">שמירה ויצירת הוצאה</button>
+                                <button class="secondery-button" @onclick="saveUpdatedSubCat">שמירה וסיום</button>
+                            }
 
                         }
                     }
@@ -300,22 +353,48 @@
                             if (isTyped)
                             {
 
-                                <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הזנה</button>
-                                <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
+                                if (categoryTypeIndicator)
+                                {
+                                    <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הכנסה</button>
+                                    <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
+                                }
+                                else
+                                {
+
+
+                                    <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הוצאה</button>
+                                    <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
+                                }
                                 <br />
                                 <span>שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
                             }
                             else
                             {
-                                <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הזנה</button>
-                                <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
+                                if (categoryTypeIndicator)
+                                {
+                                    <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הכנסה</button>
+                                    <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
+                                }
+                                else
+                                {
+
+
+                                    <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הוצאה</button>
+                                    <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
+                                }
                             }
                         }
                         else
                         {
-                            <button class="primery-button" @onclick="EditSubCategoryAndTransaction">שמירה ויצירת הזנה</button>
-                            <button class="secondery-button" @onclick="saveUpdatedSubCat">שמירה וסיום</button>
-
+                            if (categoryTypeIndicator)
+                            {
+                                 <button class="primery-button" @onclick="EditSubCategoryAndTransaction">שמירה ויצירת הכנסה</button>
+                                <button class="secondery-button" @onclick="saveUpdatedSubCat">שמירה וסיום</button>
+                                
+                            }else{
+                                <button class="primery-button" @onclick="EditSubCategoryAndTransaction">שמירה ויצירת הוצאה</button>
+                                <button class="secondery-button" @onclick="saveUpdatedSubCat">שמירה וסיום</button>
+                            }
 
                         }
 
@@ -828,4 +907,21 @@
         titleInput = subCategoryTitle;
 
     }
+
+    bool expBubbleOpen = false;
+    string elementToExp = "";
+    public void expBubbleToolTip(string elementName)
+    {
+        expBubbleOpen = !expBubbleOpen;
+        if (expBubbleOpen)
+        {
+            elementToExp = elementName;
+        }
+    }
+
+    public void closeExpOverlay()
+    {
+        expBubbleOpen = false;
+    }
+
 }

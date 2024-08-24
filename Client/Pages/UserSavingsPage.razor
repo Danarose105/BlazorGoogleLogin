@@ -18,21 +18,21 @@
         <div class="titleProfileAndStreak">
             <div class="profileAndStreak" @onclick="goToSProfilePage">
 
-                    <div class="streakBtn">
-                        @if (streakStatTitle != null && streakStatTitle != "")
+                <div class="streakBtn">
+                    @if (streakStatTitle != null && streakStatTitle != "")
+                    {
+                        if (streakImgIcon != "")
                         {
-                            if (streakImgIcon != "")
-                            {
-                                <img src=@streakImgIcon style="width:87%;" />
-                            }
+                            <img src=@streakImgIcon style="width:87%;" />
                         }
-                    </div>
-                    <button class="profilePic">@userIcon</button>
+                    }
                 </div>
-                <div>
-        <div class="pageTitle">תכנית עסקית לחלומות</div>
-        <div class="secondTitle">החסכונות שלי</div>
-                </div>
+                <button class="profilePic">@userIcon</button>
+            </div>
+            <div>
+                <div class="pageTitle">תכנית עסקית לחלומות</div>
+                <div class="secondTitle">החסכונות שלי</div>
+            </div>
         </div>
 
         <div class="outerSavings">
@@ -52,7 +52,7 @@
             </button>
         </div>
 
-        
+
 
         <div class="outerSavingsLines">
             @foreach (AllUserSavingsToShow saving in allSavings)
@@ -121,6 +121,18 @@
 
 
                         </div>
+                        @if (savingDetailsToShow.savingLocation!=null && savingDetailsToShow.savingLocation.Length>0)
+                        {
+                            
+                        <div class="outerSaving">
+                            <span><b>איפה החסכון שלי נמצא?</b></span>
+
+
+                            <span class="outerSavingAmount"><b> @savingDetailsToShow.savingLocation</b></span>
+
+
+                        </div>
+                        }
                     </div>
 
                 </div>
@@ -146,42 +158,40 @@
                         <div class="outerTitle">
 
                             <div class="outerTitleAndCounter">
-                            <div class="input-container">
-                            <div> <span><b>עריכת חסכון</b></span></div>
-                            <div class="outerIconAndTitle">
+                                <div class="input-container">
+                                    <div> <span><b>עריכת חסכון</b></span></div>
+                                    <div class="outerIconAndTitle">
 
-                                <span class="emoji-circle">
-                                    💰
-                                </span>
-                                <span>
-                                    <input class="catTitle" type="text" maxlength="18" minlength="2" @oninput="titleLengthCounter" @bind="@editedSaving.savingsTitle" />
-                                </span>
+                                        <span class="emoji-circle">
+                                            💰
+                                        </span>
+                                        <span>
+                                            <input class="catTitle" type="text" maxlength="18" minlength="2" @oninput="titleLengthCounter" @bind="@editedSaving.savingsTitle" />
+                                        </span>
 
-                                    <div class="counter">
-                                    @if (editedSaving.savingsTitle == null || editedSaving.savingsTitle == "")
-                                    {
-                                        <span>0/18</span>
-                                    }
-                                    else
-                                    {
-                                        if (editedSaving.savingsTitle.Length < 2 || editedSaving.savingsTitle.Length > 18)
-                                        {
+                                        <div class="counter">
+                                            @if (editedSaving.savingsTitle == null || editedSaving.savingsTitle == "")
+                                            {
+                                                <span>0/18</span>
+                                            }
+                                            else
+                                            {
+                                                if (editedSaving.savingsTitle.Length < 2 || editedSaving.savingsTitle.Length > 18)
+                                                {
 
-                                            <span>@titleInputLength/18</span>
-                                        }
-                                        else
-                                        {
-                                            <span>@titleInputLength/18</span>
+                                                    <span>@titleInputLength/18</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@titleInputLength/18</span>
 
-                                        }
-                                    }
+                                                }
+                                            }
+                                        </div>
                                     </div>
-                            </div>
-                               
-                                
 
+                                </div>
                             </div>
-                        </div
                             <div class="lineBetween"></div>
                         </div>
 
@@ -191,98 +201,148 @@
                             <span><b>סכום חסכון</b></span>
 
 
-                          
-                             <div class="outerSavingsAmountAndShekel">
-                                    <input class="outerSavingAmountToEdit" type="number" @bind="@editedSaving.savingsSum" />
-                                    <span>₪</span>
-                                  
+
+                            <div class="outerSavingsAmountAndShekel">
+                                <input class="outerSavingAmountToEdit" type="number" @bind="@editedSaving.savingsSum" />
+                                <span>₪</span>
+
                             </div>
-                                
+
 
                         </div>
+                        <div>
+                            <div> <span><b>איפה החסכון שלי נמצא?</b></span></div>
+                            <span>
+                                <input class="catTitle" type="text" maxlength="45" minlength="2" @bind="@saveLocation" @oninput="savingLocationLengthCounter" />
+                            </span>
+                            <div class="counter">
+                                @if (saveLocation == null || saveLocation == "")
+                                {
+                                    <span>0/45</span>
+                                }
+                                else
+                                {
+                                    if (saveLocation.Length < 2 || saveLocation.Length > 45)
+                                    {
+
+                                        <span>@locationLength/45</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@locationLength/45</span>
+
+                                    }
+                                }
+                            </div>
+                        </div>
+
                     </div>
 
-                  
-                    <div>      
 
-                         <button class="primery-button" @onclick="saveUpdatedSaving">שמירת שינויים</button>
+                    <div>
+
+                        <button class="primery-button" @onclick="saveUpdatedSaving">שמירת שינויים</button>
                     </div>
                 </div>
             </div>
-}
+        }
 
 
         @if (deleteBtnClicked)
         {
             isOpetionsBtnClicked = false;
-    <GeneralPopUpComponent popupTypeTitle="מחיקת חסכון" middleText="@popupBodyText" action="מחיקה" makeAction="deleteSaving" closePopUp="closeDeletePopUp"></GeneralPopUpComponent>
+            <GeneralPopUpComponent popupTypeTitle="מחיקת חסכון" middleText="@popupBodyText" action="מחיקה" makeAction="deleteSaving" closePopUp="closeDeletePopUp"></GeneralPopUpComponent>
         }
 
     </div>
 </div>
 
 @if (isAddSavingOverlayClicked)
-        {
+{
 
-            <div class="megaOuterLay">
-                <div class="outerLay">
-                    <div class="BgOverlay"> </div>
-                        <div class="addSavingOverlay">
+    <div class="megaOuterLay">
+        <div class="outerLay">
+            <div class="BgOverlay"> </div>
+            <div class="addSavingOverlay">
 
-                          <div class="paddingDiv">
-                                <div class="outerTitleAndIcon">
-                                    <button class="closeOverlay" @onclick="closeAddSavingOverlay"><img src="./css/images/close x.svg" /></button>
-                                    <h3 class="popupTitle">הוספת חסכון</h3>
-                                <div class="titleAndIconToAdd">
-                                    <div class="outerTitleAndCounterToAdd">
-                                        <div>
-                                            <span><b>שם החסכון</b></span>
-                                        </div>
-                                        <div class="input-containerToAdd">
-                                             <input class="catTitleToAdd" type="text" maxlength="18" minlength="2" @oninput="titleLengthCounter" />
-                                            <div class="counter">
-                                                @if (newSaving.savingsTitle == null || newSaving.savingsTitle == "")
-                                                {
-                                                    <span>0/18</span>
-                                                }
-                                                else
-                                                {
-                                                    if (newSaving.savingsTitle.Length < 2 || newSaving.savingsTitle.Length > 18)
-                                                    {
-
-                                                        <span>@titleInputLength/18</span>
-                                                    }
-                                                    else
-                                                    {
-                                                    <span>@titleInputLength/18</span>
-
-                                                    }
-                                                }
-                                            </div>
-                                    
-                                        </div>
-                                    </div>
+                <div class="paddingDiv">
+                    <div class="outerTitleAndIcon">
+                        <button class="closeOverlay" @onclick="closeAddSavingOverlay"><img src="./css/images/close x.svg" /></button>
+                        <h3 class="popupTitle">הוספת חסכון</h3>
+                        <div class="titleAndIconToAdd">
+                            <div class="outerTitleAndCounterToAdd">
+                                <div>
+                                    <span><b>שם החסכון</b></span>
                                 </div>
-                                <div class="outerSavingToAdd">
-                                    <span><b>סכום החסכון</b></span>
-                                    <div  class="outerSavingsAmountAndShekel">
-                                         <input class="outerSavingAmountToAdd" type="number" @bind="newSaving.savingsSum" />
-                                         <span>₪</span>
-                                    </div>
-                                   
-                                </div>
+                                <div class="input-containerToAdd">
+                                    <input class="catTitleToAdd" type="text" maxlength="18" minlength="2" @oninput="titleLengthCounter" />
+                                    <div class="counter">
+                                        @if (newSaving.savingsTitle == null || newSaving.savingsTitle == "")
+                                        {
+                                            <span>0/18</span>
+                                        }
+                                        else
+                                        {
+                                            if (newSaving.savingsTitle.Length < 2 || newSaving.savingsTitle.Length > 18)
+                                            {
 
-                                
-                              
-                                 
+                                                <span>@titleInputLength/18</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@titleInputLength/18</span>
+
+                                            }
+                                        }
+                                    </div>
+
+                                </div>
                             </div>
-                         </div>
-                           <div class="outerSaveSaving">
-                                    <button class="primery-button" @onclick="addNewSaving">שמירה וסיום</button>
+                        </div>
+                        <div class="outerSavingToAdd">
+                            <span><b>סכום החסכון</b></span>
+                            <div class="outerSavingsAmountAndShekel">
+                                <input class="outerSavingAmountToAdd" type="number" @bind="newSaving.savingsSum" />
+                                <span>₪</span>
                             </div>
+
+                        </div>
+                        <div class="outerSavingToAdd">
+                            <div> <span><b>איפה החסכון שלי נמצא?</b></span></div>
+                            <span class="outerSavingsAmountAndShekel">
+                                <input class="outerSavingAmountToAdd" type="text" maxlength="45" minlength="2" @bind="@saveLocation" @oninput="savingLocationLengthCounter" />
+                            </span>
+                            <div class="counter">
+                                @if (saveLocation == null || saveLocation == "")
+                                {
+                                    <span>0/45</span>
+                                }
+                                else
+                                {
+                                    if (saveLocation.Length < 2 || saveLocation.Length > 45)
+                                    {
+
+                                        <span>@locationLength/45</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@locationLength/45</span>
+
+                                    }
+                                }
+                            </div>
+                        </div>
+
+
+
                     </div>
                 </div>
+                <div class="outerSaveSaving">
+                    <button class="primery-button" @onclick="addNewSaving">שמירה וסיום</button>
+                </div>
             </div>
+        </div>
+    </div>
 
 }
 
@@ -368,7 +428,7 @@
         Nav.NavigateTo("./FutureHomePage");
     }
 
-        public void goToSProfilePage()
+    public void goToSProfilePage()
     {
         Nav.NavigateTo("./ProfilePage/" + userID);
     }
@@ -393,7 +453,8 @@
 
         isAddSavingOverlayClicked = false;
         titleInputLength = 0;
-
+        saveLocation = "";
+        locationLength = 0;
         sumSavings = 0;
         @foreach (AllUserSavingsToShow saving in allSavings)
         {
@@ -412,6 +473,8 @@
     {
         OpenSavingDetails = true;
          isOpetionsBtnClicked = false;
+        saveLocation = "";
+        locationLength = 0;
         savingDetailsToShow = savingFullDetails;
     }
 
@@ -427,6 +490,13 @@
         editedSaving.savingsTitle = savingDetailsToShow.savingsTitle;
         editedSaving.savingsSum = savingDetailsToShow.savingsSum;
         editedSaving.id = savingDetailsToShow.id;
+        editedSaving.savingLocation = savingDetailsToShow.savingLocation;
+        if (savingDetailsToShow.savingLocation!=null)
+        {
+        saveLocation = savingDetailsToShow.savingLocation;
+        locationLength = savingDetailsToShow.savingLocation.Length;
+            
+        }
 
     }
 
@@ -451,7 +521,8 @@
     void closeDeleteOverlay()
     {
         OpetionsBtnClicked();
-
+        saveLocation = "";
+        locationLength = 0;
     }
 
     private void titleLengthCounter(ChangeEventArgs e)
@@ -459,6 +530,23 @@
         titleInput = e.Value.ToString();
         newSaving.savingsTitle = titleInput;
         titleInputLength = titleInput.Length;
+    }
+
+    string saveLocation = "";
+    int locationLength = 0;
+    private void savingLocationLengthCounter(ChangeEventArgs e)
+    {
+        saveLocation = e.Value.ToString();
+        if (isAddSavingOverlayClicked)
+        {
+            newSaving.savingLocation = saveLocation;
+        }
+        else
+        {
+            editedSaving.savingLocation = saveLocation;
+        }
+
+        locationLength = saveLocation.Length;
     }
 
     public async Task saveUpdatedSaving()
@@ -471,10 +559,13 @@
             SavingToEdit updatedSaving = await updateSavingRes.Content.ReadFromJsonAsync<SavingToEdit>();
             savingDetailsToShow.savingsTitle = editedSaving.savingsTitle;
             savingDetailsToShow.savingsSum = editedSaving.savingsSum;
+            savingDetailsToShow.savingLocation = editedSaving.savingLocation;
             isEditSavingClicked = false;
             OpenSavingDetails = false;
             OpetionsBtnClicked();
 
+            saveLocation = "";
+            locationLength = 0;
             sumSavings = 0;
             @foreach (AllUserSavingsToShow saving in allSavings)
             {
@@ -531,7 +622,8 @@
     {
         // Remove the goal from allGoals
         allSavings.RemoveAll(saving => saving.id == editedSaving.id);
-
+        saveLocation = "";
+        locationLength = 0;
         return true;
     }
 
@@ -540,6 +632,8 @@
         isAddSavingOverlayClicked = !isAddSavingOverlayClicked;
         titleInputLength = 0;
         newSaving.savingsSum = 0;
+        saveLocation="";
+        locationLength = 0;
     }
 
     void closeEditAndDeleteOpt()
@@ -549,6 +643,7 @@
     }
 
         private async Task getCurrentStreak()
+    private async Task getCurrentStreak()
     {
         var getCurrentStatRes = await Http.GetAsync("api/Present/getUserStreakStatus/" + userID);
         if (getCurrentStatRes.IsSuccessStatusCode)
