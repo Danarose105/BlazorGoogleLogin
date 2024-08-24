@@ -42,15 +42,10 @@
                 }
             }
 
-            <div class="closedAndOpenMenu @onBoardingState6" disabled="@isDisabled">
-                @if(catIDinPage==Category.id){
-                    //relevent to the onboarding only
-                    <button class="options" @onclick="OpetionsBtnClicked" id="catOptBtn" @ref="optBtn"><img src="./css/images/option menu.svg" /></button>
-                }
-                else
-                {
+            <div class="closedAndOpenMenu" >
+             
                     <button class="options" @onclick="OpetionsBtnClicked"><img src="./css/images/option menu.svg" /></button>
-                }
+                
                 @if (isOpetionsBtnClicked)
                 {
                     if (!categoryTypeIndicator)
@@ -93,7 +88,7 @@
             <div class="subCatsWrap">
                 @if (subCategories.Count < 13)
                 {
-                    <button class="custom-btn @onBoardingState7" @onclick="getUserCategories" id="addNewSubCat">
+                    <button class="custom-btn" @onclick="getUserCategories">
                         <div class="btn-content">
 
                             <div class="textAndLine">
@@ -110,7 +105,7 @@
                 else
                 {
                     @*     לשנות את טקסט הכפתור אחרי שנוסיף עיצוב dis*@
-                    <button class="custom-btn @onBoardingState7" @onclick="getUserCategories" disabled style="opacity:60%;" id="addNewSubCat">
+                    <button class="custom-btn" @onclick="getUserCategories" disabled style="opacity:60%;">
                         <div class="btn-content">
                             <div class="textAndLine">
                                 <span class="btn-text">תת קטגוריה חדשה </span>
@@ -146,14 +141,14 @@
                         int subCatIndex= subCategories.IndexOf(subcategory);
                         if (subCatIndex==0)
                         {
-                            <div id="@(isFirstItem ? "existingSubCat":"")" class="budget-card @(isFirstItem ? "first" : "") @onBoardingState8" disabled="@isDisabled">
-                            <SubCategoryComponent subCategoryTitle="@subcategory.subCategoryTitle" totalSpendings="@subcategory.transactionsValue" budget="@subcategory.monthlyPlannedBudget" subCategoryIDToGet="@subcategory.id" userID="@userID" subCatTakenBudget="updateTakenSubCatBudget" refreshSubCats="getSubCategories" updateEditedSubCat="updateEditedSubCat" categoryID="@Category.id" subCatDeleted="deleteSubCat" categoryTitle="@Category.categroyTitle" categoryTypeIndicator="@categoryTypeIndicator" updatedStreakStat="updateStreak" subCatColor="@categoryColor" updateTransactionSum="updatePresentTable" @ref="subCatBudgetOnboarding" ></SubCategoryComponent>
+                            <div id="@(isFirstItem ? "existingSubCat":"")" class="budget-card @(isFirstItem ? "first" : "")">
+                            <SubCategoryComponent subCategoryTitle="@subcategory.subCategoryTitle" totalSpendings="@subcategory.transactionsValue" budget="@subcategory.monthlyPlannedBudget" subCategoryIDToGet="@subcategory.id" userID="@userID" subCatTakenBudget="updateTakenSubCatBudget" refreshSubCats="getSubCategories" updateEditedSubCat="updateEditedSubCat" categoryID="@Category.id" subCatDeleted="deleteSubCat" categoryTitle="@Category.categroyTitle" categoryTypeIndicator="@categoryTypeIndicator" updatedStreakStat="updateStreak" subCatColor="@categoryColor" updateTransactionSum="updatePresentTable" ></SubCategoryComponent>
                         </div>
                         }
                         else
                         {
                             
-                        <div id="@(isFirstItem ? "existingSubCat":"")" class="budget-card @(isFirstItem ? "first" : "") @onBoardingState8" >
+                        <div id="@(isFirstItem ? "existingSubCat":"")" class="budget-card @(isFirstItem ? "first" : "")">
                             <SubCategoryComponent subCategoryTitle="@subcategory.subCategoryTitle" totalSpendings="@subcategory.transactionsValue" budget="@subcategory.monthlyPlannedBudget" subCategoryIDToGet="@subcategory.id" userID="@userID" subCatTakenBudget="updateTakenSubCatBudget" refreshSubCats="getSubCategories" updateEditedSubCat="updateEditedSubCat" categoryID="@Category.id" subCatDeleted="deleteSubCat" categoryTitle="@Category.categroyTitle" categoryTypeIndicator="@categoryTypeIndicator" updatedStreakStat="updateStreak" subCatColor="@categoryColor" updateTransactionSum="updatePresentTable"  ></SubCategoryComponent>
                         </div>
                         }
@@ -175,9 +170,9 @@
     @if (isSubCategoryAddOverlayOpen)
     {
         <div class="overlay">
-            @*@onclick="@(onboardingStage == "editOrAddSubCatWindow" ? moveToImportanceExp : null)"*@
+
             <div class="outerSubCatOverlay" >
-                <div class="innerSubCatOverlay" id="editOrAddSubCatWindow" disabled="@isDisabled">
+                <div class="innerSubCatOverlay" id="editOrAddSubCatWindow">
                     <button class="modal-close-btn" @onclick="closeAddSubCatOverlay"><img src="./css/images/close x.svg" /></button>
                     <h2>הוספת תת קטגוריה</h2>
 
@@ -234,7 +229,7 @@
                             </div>
 
                         </div>
-                        <div id="importanceExp" class="@onBoardingState9">
+                        <div id="importanceExp">
                         <div class="outerImportance">
                             <label class="titleName" for="importance">עדיפות תת הקטגוריה</label>
                             <div class="outerBtns">
@@ -343,7 +338,7 @@
                         {
                             if (categoryTypeIndicator)
                             {
-                                                            <div class="outerSaveBtns">
+                                <div class="outerSaveBtns">
                                 <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הכנסה</button>
                                 <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
                                 <span> שם תת הקטגוריה כבר קיים.</span>
@@ -474,18 +469,6 @@
     [Parameter]
     public EventCallback<double> updateTransSum { get; set; } //updates transaction sums in main status table
 
-    [Parameter]
-    public bool openAccordionOnboarding { get; set; }
-
-    [Parameter]
-    public string onboardingStage { get; set; }
-
-    [Parameter]
-    public int catIDinPage {get;set;}
-
-    //currently onlt relevent to the add sub cat onboarding overlay
-    [Parameter]
-    public EventCallback<string> nextOnboardingPhase { get; set; }
 
 
     public bool isAccordionClick = false;
@@ -516,22 +499,13 @@
 
     string titleInput = "";
     int titleInputLength = 0;
+    bool titleInputExists = false;
 
-    //bool overdraftDetected = false;
-    //bool overdraftOverlayOpen = false;
-    //bool overdraftNotTreated = false;
     bool openSubCatsOptions = false;
     OverBudgetToShow chosenSubCategory = new OverBudgetToShow();
 
     List<string> allSubCatTitles = new List<string>();
-    bool titleInputExists = false;
-    string onBoardingState6 = "";
-    string onBoardingState7 = "";
-    string onBoardingState8 = "";
-    string onBoardingState9 = "";
-    bool isDisabled = false;
-    string previousReqID = "";
-    //string zIndexCat = "";
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -546,65 +520,8 @@
             allSubCatTitles = subCatRes.Content.ReadFromJsonAsync<List<string>>().Result;
         }
 
-
-        previousReqID = onboardingStage;
     }
 
-    protected override async Task OnParametersSetAsync()
-    {
-        if (previousReqID != onboardingStage)
-        {
-            await onboardingIDs();
-        }
-    }
-
-    public ElementReference optBtn;
-    public SubCategoryComponent subCatBudgetOnboarding;
-
-
-    public async Task onboardingIDs()
-    {
-        Console.WriteLine(onboardingStage);
-        isDisabled = true; //needs to change to false on the last element in the tutorial
-        switch (onboardingStage)
-        {
-            case "catOptBtn":
-                onBoardingState6 = "highlighted";
-                onBoardingState7 = "";
-                break;
-            case "addNewSubCat":
-                onBoardingState6 = "";
-                onBoardingState7 = "highlighted";
-                break;
-            case "existingSubCat":
-                onBoardingState6 = "";
-                onBoardingState7 = "";
-                onBoardingState8 = "highlighted";
-                break;
-            case "editOrAddSubCatWindow":
-                isSubCategoryAddOverlayOpen = true;
-                onBoardingState6 = "";
-                onBoardingState7 = "";
-                onBoardingState8 = "";
-                onBoardingState9 = "";
-                break;
-            case "importanceExp":
-                
-                onBoardingState6 = "";
-                onBoardingState7 = "";
-                onBoardingState8 = "";
-                onBoardingState9 = "";
-                break;
-        }
-
-        previousReqID = onboardingStage;
-    }
-
-    //public async void moveToImportanceExp()
-    //{
-    //    Console.WriteLine("onboardingStage clicked");
-    //    nextOnboardingPhase.InvokeAsync("importanceExp");
-    //}
 
     public async Task accordionControl()
     {
