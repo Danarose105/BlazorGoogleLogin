@@ -147,8 +147,17 @@
 
                         </div>
                     </div>
+                    <div class="outerExp">
+                            <div id="expDiv">
+                                <div id="expBtn" @onclick="@(()=>expBubbleToolTip("editSubCat"))"><img src="./css/images/q-with-shadow.svg" style="height: 3rem;" /></div>
+                                @if (expBubbleOpen)
+                                {
 
+                                    <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+                                }
+                            </div>
                     <label class="titleName" for="description">מה התקציב החודשי שלך עבור "@subCatToEdit.subCategoryTitle"?</label>
+                        </div>
                     <div class="outerBudget">
                         <input class="budgetBox" type="number" id="description" @oninput="SubCatBudgetInput" @bind="subCatToEdit.monthlyPlannedBudget" />
                         <span class="currency-symbol">₪</span>
@@ -169,7 +178,8 @@
                     </div>
 
                     <div class="outerImportance">
-                        <label class="titleName" for="importance">עדיפות תת הקטגוריה</label>
+                        
+                            <label class="titleName" for="importance">עדיפות תת הקטגוריה</label>
                         <div class="outerBtns">
                             <div class="importanceBtns">
                                 @if (subCatToEdit.importance == 0)
@@ -856,4 +866,21 @@
         titleInput = subCategoryTitle;
 
     }
+
+    bool expBubbleOpen = false;
+    string elementToExp = "";
+    public void expBubbleToolTip(string elementName)
+    {
+        expBubbleOpen = !expBubbleOpen;
+        if (expBubbleOpen)
+        {
+            elementToExp = elementName;
+        }
+    }
+
+    public void closeExpOverlay()
+    {
+        expBubbleOpen = false;
+    }
+
 }

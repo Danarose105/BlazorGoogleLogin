@@ -858,3 +858,15 @@
         width: 24px; /* Icon size */
         height: auto;
     }
+
+.outerExp {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#expDiv {
+    display: flex;
+    flex-direction: column-reverse;
+}

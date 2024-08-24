@@ -209,7 +209,7 @@ main {
     width: 13%;
     position: fixed;
     bottom: 4rem;
-    z-index: 1000;
+    z-index: 998;
     border: none;
     align-items: flex-end;
     right: 19rem;
