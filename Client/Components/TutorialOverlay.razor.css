@@ -37,8 +37,13 @@ body {
     top:2rem;
 }
 
-.firstOnBoarding {
+.OnBoardingLayer {
     z-index: 5;
+    background-color: #F9F9F9;
+    position: relative;
+    border-radius: 0.375rem;
+    display:flex;
+    flex-direction:column;
 }
 
 .firstIntroduction {
