@@ -95,8 +95,11 @@
     background-color: rgba(249, 249, 249, 1);
     border-radius: 0.3rem;
     padding: 1vh;
+    margin-left: 0.5rem;
     font-size: 1.15rem;
     font-weight: 500;
+    width: 50%;
+    text-align: center;
 }
 
 .outerLowerPart {
@@ -473,7 +476,7 @@
     outline: inherit;
     text-align: center;
     border-radius: 0.25rem;
-    width: 5.5rem;
+    width: 90%;
     height: 2rem;
     justify-items: center;
 }

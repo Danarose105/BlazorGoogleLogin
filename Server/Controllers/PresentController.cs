@@ -95,7 +95,7 @@ namespace BlazorGoogleLogin.Server.Controllers
         public async Task<IActionResult> GetUserDataByDate(int userID)
         {
             // Initialize the SQL queries
-            var userQuery = "SELECT id, firstName, profilePicOrIcon, streakStatus FROM users WHERE id = @ID";
+            var userQuery = "SELECT id, firstName, profilePicOrIcon, streakStatus, passedOnboarding FROM users WHERE id = @ID";
             var categoryQuery = "SELECT id, categroyTitle, icon, color FROM categories WHERE userID = @ID";
             var subCategoryBudgetQuery = "SELECT COALESCE(SUM(monthlyPlannedBudget), 0) FROM subcategories WHERE categoryID = @ID";
 
@@ -231,6 +231,28 @@ namespace BlazorGoogleLogin.Server.Controllers
             return BadRequest("invalid userID");
         }
 
+        [HttpGet("passOnboarding/{userID}")]
+        public async Task<IActionResult> userPassOnboarding(int userID)
+        {
+            if (userID>0)
+            {
+                object param = new
+                {
+                    ID = userID
+                };
+
+                string updateOnboardingStatusQuery = "update users set passedOnboarding=true where ID=@ID";
+                bool isUpdate = await _db.SaveDataAsync(updateOnboardingStatusQuery, param);
+
+                if (isUpdate)
+                {
+                    return Ok("user passed onboarding successfully");
+                }
+                return BadRequest("failed to update user to passed onboarding =true");
+            }
+            return BadRequest("invalid userID");
+        }
+
         [HttpGet("checkStreak/{userID}")] //checks the amount of weeks a user has input at least 3 transactions- including the current week
         public async Task<IActionResult> CheckUserStreak(int userID)
         {
@@ -241,10 +263,34 @@ namespace BlazorGoogleLogin.Server.Controllers
                     ID = userID
                 };
                 string getStreakQuery = "WITH WeeklyTransactions AS (SELECT u.id AS userID, DATE_SUB(t.transDate, INTERVAL (DAYOFWEEK(t.transDate) - 1) DAY) AS weekStartDate, COUNT(*) AS transactionCount FROM transactions t JOIN subcategories sc ON t.subCategoryID = sc.id JOIN categories c ON sc.categoryID = c.id JOIN users u ON c.userID = u.id WHERE u.id = @ID AND t.transDate >= u.signUpDate GROUP BY u.id, weekStartDate) SELECT COUNT(*) AS weekCount FROM WeeklyTransactions WHERE transactionCount >= 3 OR (weekStartDate = DATE_SUB(CURRENT_DATE(), INTERVAL (DAYOFWEEK(CURRENT_DATE()) - 1) DAY) AND transactionCount >= 3);";
-                //gets the amount of weeks where there was a minimum of 3 transactions including the current week
+                //counts the number of weeks in which a user has made at least 3 transactions since their sign-up date. It ensures that if the current week has at least 3 transactions, it will be counted as well. 
 
                 var getStreaks = await _db.GetRecordsAsync<int>(getStreakQuery, param);
                 int weekAmountInStreak = getStreaks.FirstOrDefault();
+                if (weekAmountInStreak != null)
+                {
+                    return Ok(weekAmountInStreak);
+                }
+                return BadRequest("couldn't find streak data for this user");
+            }
+
+            return BadRequest("invalid user id");
+        }
+
+        [HttpGet("checkCurrentStreak/{userID}")] //checks the amount of weeks a user has input at least 3 transactions- including the current week
+        public async Task<IActionResult> checkCurrentStreak(int userID)
+        {
+            if (userID > 0)
+            {
+                object param = new
+                {
+                    ID = userID
+                };
+                string getStreakQuery = "WITH UserWeeklyTransactions AS (SELECT u.id AS userID, DATE_SUB(t.transDate, INTERVAL (DAYOFWEEK(t.transDate) - 1) DAY) AS weekStartDate, COUNT(*) AS transactionCount FROM transactions t JOIN subcategories sc ON t.subCategoryID = sc.id JOIN categories c ON sc.categoryID = c.id JOIN users u ON c.userID = u.id WHERE u.id = @ID AND t.transDate >= DATE_SUB(u.signUpDate, INTERVAL (DAYOFWEEK(u.signUpDate) - 1) DAY) and t.transDate<=current_date() GROUP BY u.id, weekStartDate )SELECT weekStartDate, transactionCount FROM UserWeeklyTransactions ORDER BY weekStartDate;";
+                //counts the number of weeks in which a user has made at least 3 transactions since their sign-up date. It ensures that if the current week has at least 3 transactions, it will be counted as well. 
+
+                var getStreaks = await _db.GetRecordsAsync<TransAmountByWeekToShow>(getStreakQuery, param);
+                var weekAmountInStreak = getStreaks.ToList();
                 if (weekAmountInStreak != null)
                 {
                     return Ok(weekAmountInStreak);
@@ -684,6 +730,30 @@ namespace BlazorGoogleLogin.Server.Controllers
 
             return BadRequest("couldn't find user start month date");
         }
+
+
+
+        [HttpGet("GetAllSubCatsTitles/{userID}")] 
+        public async Task<IActionResult> GetAllSubCatsTitles(int userID)
+        {
+            if (userID>0)
+            {
+                object param = new { ID = userID };
+
+                string GetSubCatsTitlesQuery = "SELECT s.subCategoryTitle FROM users u JOIN categories c ON u.id = c.userID JOIN subcategories s ON c.id = s.categoryID WHERE u.id = @ID;";
+                var recordSubCategoryTitle = await _db.GetRecordsAsync<string>(GetSubCatsTitlesQuery, param);
+                List<string> subCatTitleList = recordSubCategoryTitle.ToList();
+
+                if (subCatTitleList == null || subCatTitleList.Count==0)
+                {
+                    return BadRequest("no sub categories found related to this user");  // Return an empty list if no categories found
+                }
+                return Ok(subCatTitleList);
+            }
+            
+            return BadRequest("couldn't find user");
+        }
+
 
 
         [HttpGet("GetTagsAndSpendings/{userID}")] // שליפת תגיות וסכומים שלהן לעמוד סטורי 2 במצב החודש כרגע

@@ -15,6 +15,7 @@ namespace BlazorGoogleLogin.Shared.Models.present.toShow
         public double incomeValueFullList { get; set; }
         public double budgetFullValue { get; set; }
         public string? streakStatus { get; set; }
+        public bool passedOnboarding { get; set; }
         public List<CategoryToShow> categoriesFullList { get; set; }
     }
 }

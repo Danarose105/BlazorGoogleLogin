@@ -1,0 +1,1 @@
+﻿function getElementPosition(id) {    const element = document.getElementById(id);    return element.getBoundingClientRect();}//function scrollToElement(id) {//    var element = document.getElementById(id);//    if (element) {//        element.scrollIntoView({ behavior: 'smooth', block: 'start' });//    }//}

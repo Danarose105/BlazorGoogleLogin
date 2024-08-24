@@ -97,6 +97,7 @@
                        
                     </div>
                 </div>
+                </div>
                 
 
                 <div class="outerColorsAndBtn">
@@ -203,8 +204,9 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
+        </div>
+ 
+
 
 
 @code {
@@ -462,7 +464,7 @@
         hideBtn = "";
     }
 
-    async Task titleLengthCounter(ChangeEventArgs e)
+    private async Task titleLengthCounter(ChangeEventArgs e)
     {
         isTyped = true;
 
@@ -489,4 +491,5 @@
         titleInput = e.Value.ToString();
         titleInputLength = titleInput.Length;
     }
+}
 }

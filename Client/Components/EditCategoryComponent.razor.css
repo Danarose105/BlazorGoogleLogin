@@ -20,7 +20,7 @@
 
 .BgOverlay {
     background-color: rgba(1, 5, 43, 0.28);
-    z-index: 3;
+    z-index: 6;
 }
 
 .titleAndIcon {
@@ -284,7 +284,10 @@
     flex-direction: column;
     flex-wrap: wrap;
     align-items: center;
-    row-gap:3vh;
+    row-gap: 3vh;
+    width: 90%;
+
+    padding-top: 0.5rem;
 }
 .emoji-keyboard {
     border: 1px solid #ccc;

@@ -202,3 +202,21 @@ main {
     justify-content: center;
     row-gap: 0.4vh;
 }
+
+#expDiv {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 13%;
+    position: fixed;
+    bottom: 4rem;
+    z-index: 998;
+    border: none;
+    align-items: flex-end;
+    right: 19rem;
+}
+
+/*#expBtn {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}*/

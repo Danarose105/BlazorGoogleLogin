@@ -20,6 +20,8 @@ namespace BlazorGoogleLogin.Shared.Models.present.toShow
         public int? monthStartDate { get; set; }
         public string? streakStatus { get; set; }
 
+        public bool passedOnboarding { get; set; }
+
         public List<TagsToShow> userTags { get; set; }
     }
 }

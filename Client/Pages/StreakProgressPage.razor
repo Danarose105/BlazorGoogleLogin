@@ -126,6 +126,7 @@
 
 
 
+    List<TransAmountByWeekToShow> transCountByWeeksList = new List<TransAmountByWeekToShow>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -141,11 +142,20 @@
                 userIcon = "🌟";
             }
 
-            var streakDataRes = await Http.GetAsync("api/Present/checkStreak/" + userID);
+            var streakDataRes = await Http.GetAsync("api/Present/checkCurrentStreak/" + userID);
             if (streakDataRes.IsSuccessStatusCode)
             {
-                currentStreak = await streakDataRes.Content.ReadFromJsonAsync<int>();
-                //Console.WriteLine("streak status is -" + currentStreak.AllWeeksValid);
+                transCountByWeeksList = new List<TransAmountByWeekToShow>();
+                transCountByWeeksList = streakDataRes.Content.ReadFromJsonAsync<List<TransAmountByWeekToShow>>().Result;
+
+                currentStreak = 0;
+                foreach (TransAmountByWeekToShow week in transCountByWeeksList)
+                {
+                    if (week.transactionCount > 3)
+                    {
+                        currentStreak++;
+                    }
+                }
 
                 string streakStatus = streakStatusCheck(currentStreak); //new streak in page
                 if (currentStreak > 0)
@@ -252,6 +262,8 @@
     public string streakStatusCheck(int weekAmount)
     {
         int rankMinTransCount = 3;
+
+       
         if (weekAmount <= 1 && weekAmount < 2)
         {
             string streakTitle = "";

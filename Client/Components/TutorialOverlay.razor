@@ -1,0 +1,141 @@
+﻿@using BlazorGoogleLogin.Shared.Models.present.toShow
+@using BlazorGoogleLogin.Shared.Models.present.toAdd
+@using BlazorGoogleLogin.Shared.Models.present.toEdit
+@using BlazorGoogleLogin.Client.Components
+@using Microsoft.AspNetCore.Components.Web
+
+
+
+    
+<div class="OnBoardingLayer" style="@styleAdjustments">
+    <div id="tutorialTitle">
+        <span>@tutorialTitle</span>
+        @if (elementID == "odTransOverview")
+        {
+            <img src="./css/images/overdraft-warning.svg" style="padding-right: 2vw;
+    height: 2vh;" />
+        }
+    </div>
+    <div id="expBubble">
+        <span>@expContent</span>
+        @if (expContent2!="")
+        {
+            <span>@expContent2</span>
+        }
+        @if (expContent3!="")
+        {
+            <span>@expContent3</span>
+        }
+    </div>
+</div>
+
+
+
+
+
+
+@code {
+
+    /// <summary>
+    /// the id of the element in the page
+    /// </summary>
+    [Parameter]
+    public string elementID { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> closeOverlay { get; set; }
+
+    /// <summary>
+    /// the content in the explanation speech bubble
+    /// </summary>
+    string expContent = "";
+    string expContent2 = "";
+    string expContent3 = "";
+    string tutorialTitle = "";
+
+    string styleAdjustments = "";
+
+    //present home page: ----DONE----
+    //profile button
+    //month status button
+    //sub cat to transactions overview page btn
+
+    //edit/add sub cat:  ----DONE----
+    //default budget
+    //importance
+
+    //profile page  ----DONE----
+    //to streak page btn
+    // add/edit/delete tags
+
+    //add transaction component  ----DONE----
+    //fixedmonthly overlay
+    //create/add tags
+
+    //overdraft overlay
+
+
+    //Transactions overview ----DONE----
+    //overdraft overlay btn
+
+    //future homepage
+    //explain how saving sum is calculated
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (elementID.Length > 0)
+        {
+            switch (elementID) //tootltip content will change accordingly
+            {
+                case "presentHomePage":
+                    tutorialTitle = " עמוד הבית של סביבת ההווה";
+                    expContent = "לחיצה על האייקון בראש העמוד, תוביל לעמוד הפרופיל.";
+                    expContent2 = "לחיצה על הכפתור 'מצב החודש כרגע' תציג נקודות עיקריות בתזרים החודשי בנקודת הזמן הנוכחית.";
+                    expContent3 = "לחיצה על הכפתור המכיל סכומים בכל תת קטגוריה, תוביל לעמוד 'מבט על' המציג את כלל ההוצאות/ההכנסות בה.";
+                    styleAdjustments = "";
+                    break;
+
+                case "addSubCat":
+                    tutorialTitle = "הוספת תת קטגוריה";
+                    expContent = "העדיפות תגדיר את תתי הקטגוריות מהן ניתן להעביר תקציב בעת חריגה- רק תתי קטגוריות שיוגדרו בעדיפות 'רצון' יהוו אופציה.";
+                    styleAdjustments = "";
+                    break;
+                case "editSubCat":
+                    tutorialTitle = "עריכת תת קטגוריה";
+                    expContent = "שימו לב- עבור תתי הקטגוריות המובנות הוגדר תקציב ברירת מחדל, ניתן לערוך אותו כאן.";
+                    expContent2 = "העדיפות תגדיר את תתי הקטגוריות מהן ניתן להעביר תקציב בעת חריגה- רק תתי קטגוריות שיוגדרו בעדיפות 'רצון' יהוו אופציה.";
+                    styleAdjustments = "bottom:12vh;";
+                    break;
+                case "ProfilePage":
+                    tutorialTitle = "עמוד הפרופיל";
+                    expContent = "לחיצה על כפתור 'צפייה בהתקדמות שלי' תוביל לעמוד המציג את התקדמותך האישית.";
+                    expContent2 = "כאן ניתן ליצור, לערוך ולמחוק תגיות. בדומה לקטגוריות ולתתי קטגוריות, תגיות הן אמצעי לסיווג הוצאות או הכנסות ללא תלות בקטגוריה מסוימת, והן יכולות לחזור על עצמן. לדוגמה, בני משפחה יכולים להיות תגיות נפלאות :)";
+                    styleAdjustments = "";
+                    break;
+                case "Trans":
+                    tutorialTitle = "הוספת הוצאה/הכנסה";
+                    expContent = "במידה וההוצאה או ההכנסה חוזרת על עצמה, לאחר לחיצה על 'הגדרת ההוצאה/ההכנסה כחוזרת' ניתן להגדיר את החודש והסכום בהם חוזרת.";
+                    expContent2 = "בהגדרות מתקדמות נוכל להגדיר ו/או ליצור תגית עבור ההוצאה או ההכנסה ולכתוב פירוט. תמיד ניתן לראות ולערוך את כלל התגיות בעמוד הפרופיל.";
+                    styleAdjustments = "";
+                    break;
+
+                case "odTransOverview":
+                    tutorialTitle = "הודעת חריגה";
+                    expContent = "במידה וישנה חריגה מהתקציב של תת הקטגוריה, לחיצה על אייקון האזהרה האדום בראש העמוד תפתח חלונית בה ניתן לטפל בה.";
+                    styleAdjustments = "";
+                    break;
+                case "FutureHomePage":
+                    tutorialTitle = "עמוד הבית של סביבת העתיד";
+                    expContent = "הסכומים לחסכון מחושבים עם 4% ריבית.";
+                    expContent2 = "הסכום שיש לחסוך תחת 'החודש' מחושב לפי סך היעדים חלקי שארית החודשים בשנה הנוכחית, כולל החודש הנוכחי.";
+                    expContent3 = "לדוגמה, במידה והחודש הינו אוגוסט, הסכום סך היעדים יחולק בחמשת החודשים שנותרו (כולל אוגוסט) עד סוף השנה הנוכחית.";
+                    styleAdjustments = "left: 1.4rem;margin-top: 4vh;";
+                    break;
+            }
+        }
+    }
+
+
+
+}

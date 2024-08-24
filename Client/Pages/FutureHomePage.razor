@@ -81,15 +81,15 @@
 
 
                     <div class="outerIAndBubble">
-                        <span @onclick="()=>openISaving = !openISaving"><img src="./css/images/i-future.svg" /></span>
+                        <span @onclick="@(()=>expBubbleToolTip("FutureHomePage"))"><img src="./css/images/q-with-shadow.svg" /></span>
                         @if (openISaving)
                         {
-
-                            <span class="iBubbleText">
+                            <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+@*                            <span class="iBubbleText">
                                 הסכום מחושב
                                 לפי 4% ריבית
 
-                            </span>
+                            </span>*@
                         }
                     </div>
                 </div>
@@ -97,7 +97,7 @@
                 <div class="outerCurrentSavings">
                     <div class="outerDatesAndDivider">
                         <div class="outerDateAndAmount">
-                            <div>בחודש</div>
+                            <div>החודש</div>
 
                             <span><b> <span>@monthlySavings</span> <span class="ShekelSign">₪</span></b></span>
                         </div>
@@ -105,7 +105,7 @@
                         <div class="savingDivider"></div>
 
                         <div class="outerDateAndAmount">
-                            <div>בשנה</div>
+                            <div>בשנת @CurrentYear</div>
                             <span><b><span>@sumNeededSavingsPerYear </span> <span class="ShekelSign">₪</span> </b></span>
 
                         </div>
@@ -137,7 +137,7 @@
                                     if (goalsDisplayed < 3)
                                     {
                                         // Only display up to the first three goals
-                                        <div style="background-color:@ConvertHexToRGBA(goalPerYearToSend.color, 0.13f); border:1px solid @goalPerYearToSend.color; display: flex; flex-direction: column; row-gap: 1.3vh;" class="goalInTable" @onclick="()=> openGoalsPerYearPopUp(year)">
+                                        <div style="background-color:@ConvertHexToRGBA(goalPerYearToSend.color, 0.13f); border:1px solid @goalPerYearToSend.color; display: flex; flex-direction: column; row-gap: 1.3vh; word-wrap: break-word;" class="goalInTable" @onclick="()=> openGoalsPerYearPopUp(year)">
                                             @goalPerYearToSend.goalTitle
                                         </div>
                                         goalsDisplayed++;
@@ -147,7 +147,7 @@
 
                                 @if (goalsThisYear.Count > 3)
                                 {
-                                    <div style="background-color:#D6D9F1; display: flex; flex-direction: column; row-gap: 1.3vh;" class="goalInTable" @onclick="()=>openGoalsPerYearPopUp(year)">
+                                    <div style="background-color:#D6D9F1; display: flex; flex-direction: column; row-gap: 1.3vh; word-wrap: break-word;" class="goalInTable" @onclick="()=>openGoalsPerYearPopUp(year)">
                                         <span>@(goalsThisYear.Count - 3) יעדים נוספים</span>
                                     </div>
                                 }
@@ -164,9 +164,6 @@
 
             </div>
 
-
-            @* <button @onclick="PreviousYears" disabled="@IsPreviousDisabled">Previous</button>
-            <button @onclick="NextYears" disabled="@IsNextDisabled">Next</button>*@
         </div>
 
 
@@ -305,61 +302,6 @@
                 </div>
             </div>
 
-            @*<div>
-        <div>הוספת יעד</div>
-        <div>
-        <span>שם היעד</span>
-        <input type="text" @bind="newGoal.goalTitle" />
-        </div>
-        <div>
-        </div>
-        <div>
-        <span>שנת היעד</span>
-        <div>
-        <div @onclick="()=>openYearsOptions =! openYearsOptions">
-        <!-- Fixed malformed tag here -->
-        @if (newGoal.dueYear != null && newGoal.dueYear != 0)
-        {
-        <div class="dropDownTitle">
-        @newGoal.dueYear
-        <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
-        </div>
-        }
-        else
-        {
-        newGoal.dueYear = CurrentYear;
-
-        <div class="dropDownTitle" style="color:#727272">
-        @newGoal.dueYear
-        <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
-        </div>
-        }
-        </div>
-        @if (openYearsOptions)
-        {
-        <div class="outerMonthDayOptions">
-        @for (int i = 0; i < 16; i++)
-        {
-        int currentLoopValue = i;  // Create a temporary variable to capture the loop variable
-        <div @onclick="@(()=>{newGoal.dueYear = (CurrentYear + currentLoopValue); openYearsOptions = false;})">
-        @(CurrentYear + currentLoopValue)
-        </div>
-        <div class="daydivider"></div>
-        }
-        </div>
-        }
-        </div>
-        </div>
-        <div>
-        <span>סכום היעד</span>
-        <input type="number" @bind="newGoal.budget" />
-        </div>
-
-        <div>
-        <button class="primery-button" @onclick="addNewGoal">שמירה וסיום</button>
-        </div>
-        </div>*@
-
         }
         <div class="outerSavingSection">
             <div class="outerRight">
@@ -446,7 +388,7 @@
                     <div class="outerFirstRow">
                         <div>
                             <button @onclick="closeGoalDetailsPopUp" class="backArrow">
-                                <img src="../css/images/back-repeated.svg" />
+                                <img src="./css/images/back-repeated.svg" />
                             </button>
                         </div>
                         <div>
@@ -504,7 +446,7 @@
                     <div class="outerFirstRow">
                         <div>
                             <button @onclick="closeEditGoalPopup" class="backArrow">
-                                <img src="../css/images/back-repeated.svg" />
+                                <img src="./css/images/back-repeated.svg" />
                             </button>
                         </div>
 
@@ -799,18 +741,7 @@
 
         }
         earliestDate = FindEarliestDateInCurrentYear(allGoals);
-        //savingsForProgressBar = 0;
-        //if(sumGoals > 0)
-        //{
-        //    savingsForProgressBar = (sumSavings / sumGoals) * 100;
 
-        //    if(savingsForProgressBar > 100)
-        //    {
-        //        savingsForProgressBar = 100;
-        //    }
-
-        //    widthForProgressBar = savingsForProgressBar.ToString() + "%";
-        //}
 
         savingsForProgressBar = 0;
         if (sumGoals > 0)
@@ -823,6 +754,9 @@
             }
 
             widthForProgressBar = savingsForProgressBar.ToString() + "%";
+        }else if (sumGoals==0 && sumSavings==0)
+        {
+            widthForProgressBar = "0%";
         }
     }
 
@@ -1236,9 +1170,24 @@
         selectedClass = "";
     }
 
-     private void SetYearAndClose(int year)
+    private void SetYearAndClose(int year)
     {
         newGoal.dueYear = year;
         openYearsOptions = false;
+    }
+
+    string elementToExp = "";
+    public void expBubbleToolTip(string elementName)
+    {
+        openISaving = !openISaving;
+        if (openISaving)
+        {
+            elementToExp = elementName;
+        }
+    }
+
+    public void closeExpOverlay()
+    {
+        openISaving = false;
     }
 }
