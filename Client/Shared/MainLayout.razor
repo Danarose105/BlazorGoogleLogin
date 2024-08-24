@@ -17,7 +17,7 @@
         {
             if (!NavManager.Uri.EndsWith("CountOnIt_MalkaInbalDana/"))
             {
-                @if (NavManager.Uri.EndsWith("CountOnIt_MalkaInbalDana/HomePage") || NavManager.Uri.EndsWith("HomePage") && !NavManager.Uri.Contains("FutureHomePage"))
+                if (NavManager.Uri.EndsWith("CountOnIt_MalkaInbalDana/HomePage") || NavManager.Uri.EndsWith("HomePage") && !NavManager.Uri.Contains("FutureHomePage"))
                 {
                     <div id="expDiv">
 
@@ -31,6 +31,21 @@
 
                     </div>
                 }
+
+                if (NavManager.Uri.Contains("ProfilePage"))
+                {
+                    <div id="expDiv">
+
+                        <div id="expBtn" @onclick="@(()=>expBubbleToolTip("ProfilePage"))"><img src="./css/images/q-with-shadow.svg" style="height: 3rem;" /></div>
+                        @if (expBubbleOpen)
+                        {
+
+                            <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+                        }
+
+                    </div>
+                }
+
                 <div id="@hideNav" class="bottom-nav" @ref="navBar">
                     <button class="navBtn" style="opacity:60%">מבט לעבר<img src="./css/images/past.svg" /></button>
                     <div class="NavLines"> </div>
@@ -58,6 +73,7 @@
 
     bool expBubbleOpen=false;
     string elementToExp = "";
+    string styleAdjustment = "";
 
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -78,6 +94,7 @@
 
         currentPresentNavPage = "font-weight:600; color:#6775F4;";
         currentFuturetNavPage = "";
+        closeExpOverlay();
         NavManager.NavigateTo("./HomePage");
     }
 
@@ -86,6 +103,7 @@
 
         currentFuturetNavPage = "font-weight:600; color:#6775F4;";
         currentPresentNavPage = "";
+        closeExpOverlay();
         NavManager.NavigateTo("./FutureHomePage");
     }
 
@@ -95,6 +113,10 @@
         if (expBubbleOpen)
         {
             elementToExp = elementName;
+            if (elementToExp == "ProfilePage")
+            {
+                styleAdjustment = "right:0";
+            }
         }
     }
 
