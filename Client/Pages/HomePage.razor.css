@@ -1252,3 +1252,21 @@ ol li::marker {
     position:relative;
 
 }
+
+#expDiv {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    width: 100%;
+    padding-right: 0.5rem;
+    row-gap: 0.4rem;
+    z-index: 2;
+    position: relative;
+    float: right;
+}
+
+#expBtn {
+    display: flex;
+    justify-content: flex-start;
+    width: 90%;
+}

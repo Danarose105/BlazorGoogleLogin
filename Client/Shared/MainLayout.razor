@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavManager
+@using BlazorGoogleLogin.Client.Components
 
 
 
@@ -16,6 +17,20 @@
         {
             if (!NavManager.Uri.EndsWith("CountOnIt_MalkaInbalDana/"))
             {
+                @if (NavManager.Uri.EndsWith("CountOnIt_MalkaInbalDana/HomePage") || NavManager.Uri.EndsWith("HomePage") && !NavManager.Uri.Contains("FutureHomePage"))
+                {
+                    <div id="expDiv">
+
+
+                        <div id="expBtn" @onclick="@(()=>expBubbleToolTip("presentHomePage"))"><img src="./css/images/q-with-shadow.svg" style="height: 3rem;" /></div>
+                        @if (expBubbleOpen)
+                        {
+
+                            <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+                        }
+
+                    </div>
+                }
                 <div id="@hideNav" class="bottom-nav" @ref="navBar">
                     <button class="navBtn" style="opacity:60%">מבט לעבר<img src="./css/images/past.svg" /></button>
                     <div class="NavLines"> </div>
@@ -25,7 +40,7 @@
                 </div>
             }
         }
-        
+
     </main>
 </div>
 
@@ -37,21 +52,13 @@
     bool isScrollingDown = false;
     string hideNav => isScrollingDown ? "nav-hidden" : "bottomNav";
     string currentPresentNavPage = "font-weight:600; color:#6775F4;";
-    string currentFuturetNavPage = "" ;
+    string currentFuturetNavPage = "";
 
     private ElementReference navBar;
 
-    //protected override async Task OnInitializedAsync()
-    //{
-    //    @if (NavManager.Uri.Contains("HomePage/"))
-    //    { 
-    //        currentPresentNavPage = "font - weight:600; color:#6775F4;";
-    //    }
-    //    else
-    //    {
-    //        currentFuturetNavPage = "font - weight:600; color:#6775F4;";
-    //    }
-    //}
+    bool expBubbleOpen=false;
+    string elementToExp = "";
+
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -68,17 +75,31 @@
 
     public void goToPresentHomePage()
     {
-        
+
         currentPresentNavPage = "font-weight:600; color:#6775F4;";
         currentFuturetNavPage = "";
         NavManager.NavigateTo("./HomePage");
     }
-    
+
     public void goToFutureHomePage()
     {
-       
+
         currentFuturetNavPage = "font-weight:600; color:#6775F4;";
         currentPresentNavPage = "";
         NavManager.NavigateTo("./FutureHomePage");
+    }
+
+    public void expBubbleToolTip(string elementName)
+    {
+        expBubbleOpen = !expBubbleOpen;
+        if (expBubbleOpen)
+        {
+            elementToExp = elementName;
+        }
+    }
+
+    public void closeExpOverlay()
+    {
+        expBubbleOpen = false;
     }
 }

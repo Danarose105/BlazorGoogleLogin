@@ -539,6 +539,18 @@ else
             }
 
         }
+
+       @* <div id="expDiv" @onclick="@(()=>expBubbleToolTip("presentHomePage"))">
+
+
+            <div id="expBtn"><img src="./css/images/question_no_fill.svg" style="height: 2rem;" /></div>
+            @if (expBubbleOpen)
+            {
+                
+            <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+            }
+            
+        </div>*@
     }
 </div>
 
@@ -677,9 +689,9 @@ else
     double currentGap = 0;
 
     bool isDisabled = false;
-
     bool tutorialActive = false;
-
+    bool expBubbleOpen = false;
+    string elementToExp = "";
 
 
 
@@ -758,7 +770,7 @@ else
             {
 
                 tutorialActive = true;
-                
+
                 isDisabled = true;
 
             }
@@ -777,7 +789,9 @@ else
 
     }
 
-
+    /// <summary>
+    /// Happens when the user clicks okay in the onboarding overlay
+    /// </summary>
     private async Task PassOnboarding()
     {
         var userPassReq = await Http.GetAsync("api/Present/passOnboarding/" + userID);
@@ -786,6 +800,20 @@ else
             isDisabled=false;
             tutorialActive = false;
         }
+    }
+
+    public void expBubbleToolTip(string elementName)
+    {
+        expBubbleOpen= !expBubbleOpen;
+        if (expBubbleOpen)
+        {
+            elementToExp = elementName;
+        }
+    }
+
+    public void closeExpOverlay()
+    {
+        expBubbleOpen = false;
     }
 
     /// <summary>
