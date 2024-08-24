@@ -7,7 +7,7 @@
 
 
     
-<div class="OnBoardingLayer">
+<div class="OnBoardingLayer" style="@styleAdjustments">
     <div id="tutorialTitle">
         <span>@tutorialTitle</span>
     </div>
@@ -48,6 +48,7 @@
     string expContent3 = "";
     string tutorialTitle = "";
 
+    string styleAdjustments = "";
 
     //present home page: ----DONE----
     //profile button
@@ -87,16 +88,19 @@
                     expContent = "לחיצה על האייקון בראש העמוד, תוביל לעמוד הפרופיל.";
                     expContent2 = "לחיצה על הכפתור 'מצב החודש כרגע' תציג נקודות עיקריות בתזרים החודשי בנקודת הזמן הנוכחית.";
                     expContent3 = "לחיצה על הכפתור המכיל סכומים בכל תת קטגוריה, תוביל לעמוד 'מבט על' המציג את כלל ההוצאות/ההכנסות בה.";
+                    styleAdjustments = "";
                     break;
 
                 case "addSubCat":
                     tutorialTitle = "הוספת תת קטגוריה";
                     expContent = "העדיפות שתבחר תגדיר את תתי הקטגוריות שמהן ניתן להעביר תקציב בעת חריגה- רק תתי קטגוריות שיוגדרו בעדיפות 'רצון' יהוו אופציה.";
+                    styleAdjustments = "";
                     break;
                 case "editSubCat":
                     tutorialTitle = "עריכת תת קטגוריה";
                     expContent = "שימו לב- עבור תתי הקטגוריות המובנות הוגדר תקציב ברירת מחדל, ניתן לערוך אותו כאן.";
                     expContent2 = "העדיפות שתבחר תגדיר את תתי הקטגוריות שמהן ניתן להעביר תקציב בעת חריגה- רק תתי קטגוריות שיוגדרו בעדיפות 'רצון' יהוו אופציה.";
+                    styleAdjustments = "bottom:12vh;";
                     break;
             }
         }
