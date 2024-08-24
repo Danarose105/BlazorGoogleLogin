@@ -354,6 +354,8 @@
                             }
                             else
                             {
+                                
+
                                 @foreach (AllUserGoalsToShow goalPerYear in goalsPerYearList)
                                 {
                                     @if (goalPerYear.dueYear == goalsYearToShow)
@@ -781,6 +783,7 @@
 
     void openGoalsPerYearPopUp(int goalsYear)
     {
+        goalsPerYearList.Clear();
         showYearlyGoals = true;
         goalsYearToShow = goalsYear;
         @foreach (AllUserGoalsToShow goal in allGoals)
@@ -808,6 +811,7 @@
 
     void showGoalDetails(AllUserGoalsToShow goalFullDetails)
     {
+        isOpetionsBtnClicked = false;
         isGoalFullDetails = true;
         goalDetailsToShow = goalFullDetails;
     }
@@ -827,6 +831,7 @@
 
             allGoals.Add(newGoalToAddToList);
             newGoal = new GoalToAdd();
+            openGoalsPerYearPopUp(newGoalToAddToList.dueYear);
             await OnInitializedAsync();
 
         }
@@ -962,7 +967,7 @@
         }
 
         isEditGoalClicked = false;
-        showYearlyGoals = false;
+        //showYearlyGoals = false;
         selectedClass = "";
 
         savingsForProgressBar = 0;
@@ -982,7 +987,7 @@
 
     public async Task deleteGoal()
     {
-        showYearlyGoals = false;
+        //showYearlyGoals = false;
         deleteBtnClicked = false;
         isGoalFullDetails = false;
         userID = user.Id;

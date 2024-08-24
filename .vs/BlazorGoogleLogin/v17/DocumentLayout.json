@@ -1,0 +1,157 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Neta\\OneDrive - Holon Institute of Technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\BlazorGoogleLogin\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A36166C7-2CFA-4460-84D4-98971D8E6FBA}|Server\\BlazorGoogleLogin.Server.csproj|c:\\users\\neta\\onedrive - holon institute of technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\blazorgooglelogin\\server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A36166C7-2CFA-4460-84D4-98971D8E6FBA}|Server\\BlazorGoogleLogin.Server.csproj|solutionrelative:server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A36166C7-2CFA-4460-84D4-98971D8E6FBA}|Server\\BlazorGoogleLogin.Server.csproj|c:\\users\\neta\\onedrive - holon institute of technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\blazorgooglelogin\\server\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A36166C7-2CFA-4460-84D4-98971D8E6FBA}|Server\\BlazorGoogleLogin.Server.csproj|solutionrelative:server\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A36166C7-2CFA-4460-84D4-98971D8E6FBA}|Server\\BlazorGoogleLogin.Server.csproj|c:\\users\\neta\\onedrive - holon institute of technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\blazorgooglelogin\\server\\controllers\\googlecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A36166C7-2CFA-4460-84D4-98971D8E6FBA}|Server\\BlazorGoogleLogin.Server.csproj|solutionrelative:server\\controllers\\googlecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B95479AB-CA44-4E5A-A1F7-59D056B8FA8E}|Client\\BlazorGoogleLogin.Client.csproj|c:\\users\\neta\\onedrive - holon institute of technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\blazorgooglelogin\\client\\pages\\index.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B95479AB-CA44-4E5A-A1F7-59D056B8FA8E}|Client\\BlazorGoogleLogin.Client.csproj|solutionrelative:client\\pages\\index.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B95479AB-CA44-4E5A-A1F7-59D056B8FA8E}|Client\\BlazorGoogleLogin.Client.csproj|c:\\users\\neta\\onedrive - holon institute of technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\blazorgooglelogin\\client\\pages\\usersonly.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B95479AB-CA44-4E5A-A1F7-59D056B8FA8E}|Client\\BlazorGoogleLogin.Client.csproj|solutionrelative:client\\pages\\usersonly.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B95479AB-CA44-4E5A-A1F7-59D056B8FA8E}|Client\\BlazorGoogleLogin.Client.csproj|c:\\users\\neta\\onedrive - holon institute of technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\blazorgooglelogin\\client\\app.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B95479AB-CA44-4E5A-A1F7-59D056B8FA8E}|Client\\BlazorGoogleLogin.Client.csproj|solutionrelative:client\\app.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B95479AB-CA44-4E5A-A1F7-59D056B8FA8E}|Client\\BlazorGoogleLogin.Client.csproj|c:\\users\\neta\\onedrive - holon institute of technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\blazorgooglelogin\\client\\helpers\\authstateprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B95479AB-CA44-4E5A-A1F7-59D056B8FA8E}|Client\\BlazorGoogleLogin.Client.csproj|solutionrelative:client\\helpers\\authstateprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B95479AB-CA44-4E5A-A1F7-59D056B8FA8E}|Client\\BlazorGoogleLogin.Client.csproj|c:\\users\\neta\\onedrive - holon institute of technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\blazorgooglelogin\\client\\helpers\\authenticationservice .cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B95479AB-CA44-4E5A-A1F7-59D056B8FA8E}|Client\\BlazorGoogleLogin.Client.csproj|solutionrelative:client\\helpers\\authenticationservice .cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{2c59525e-9c14-4bfd-bc18-3a5ae7eb7dbd}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "GoogleController.cs",
+              "DocumentMoniker": "C:\\Users\\Neta\\OneDrive - Holon Institute of Technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\BlazorGoogleLogin\\Server\\Controllers\\GoogleController.cs",
+              "RelativeDocumentMoniker": "Server\\Controllers\\GoogleController.cs",
+              "ToolTip": "C:\\Users\\Neta\\OneDrive - Holon Institute of Technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\BlazorGoogleLogin\\Server\\Controllers\\GoogleController.cs",
+              "RelativeToolTip": "Server\\Controllers\\GoogleController.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-07T09:52:10.459Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Neta\\OneDrive - Holon Institute of Technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\BlazorGoogleLogin\\Server\\appsettings.json",
+              "RelativeDocumentMoniker": "Server\\appsettings.json",
+              "ToolTip": "C:\\Users\\Neta\\OneDrive - Holon Institute of Technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\BlazorGoogleLogin\\Server\\appsettings.json",
+              "RelativeToolTip": "Server\\appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-07-07T09:38:56.175Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UsersController.cs",
+              "DocumentMoniker": "C:\\Users\\Neta\\OneDrive - Holon Institute of Technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\BlazorGoogleLogin\\Server\\Controllers\\UsersController.cs",
+              "RelativeDocumentMoniker": "Server\\Controllers\\UsersController.cs",
+              "ToolTip": "C:\\Users\\Neta\\OneDrive - Holon Institute of Technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\BlazorGoogleLogin\\Server\\Controllers\\UsersController.cs",
+              "RelativeToolTip": "Server\\Controllers\\UsersController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-07T09:02:33.587Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "UsersOnly.razor",
+              "DocumentMoniker": "C:\\Users\\Neta\\OneDrive - Holon Institute of Technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\BlazorGoogleLogin\\Client\\Pages\\UsersOnly.razor",
+              "RelativeDocumentMoniker": "Client\\Pages\\UsersOnly.razor",
+              "ToolTip": "C:\\Users\\Neta\\OneDrive - Holon Institute of Technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\BlazorGoogleLogin\\Client\\Pages\\UsersOnly.razor",
+              "RelativeToolTip": "Client\\Pages\\UsersOnly.razor",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAANAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-07T08:53:14.88Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "App.razor",
+              "DocumentMoniker": "C:\\Users\\Neta\\OneDrive - Holon Institute of Technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\BlazorGoogleLogin\\Client\\App.razor",
+              "RelativeDocumentMoniker": "Client\\App.razor",
+              "ToolTip": "C:\\Users\\Neta\\OneDrive - Holon Institute of Technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\BlazorGoogleLogin\\Client\\App.razor",
+              "RelativeToolTip": "Client\\App.razor",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB0AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-07T08:50:30.623Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "AuthStateProvider.cs",
+              "DocumentMoniker": "C:\\Users\\Neta\\OneDrive - Holon Institute of Technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\BlazorGoogleLogin\\Client\\Helpers\\AuthStateProvider.cs",
+              "RelativeDocumentMoniker": "Client\\Helpers\\AuthStateProvider.cs",
+              "ToolTip": "C:\\Users\\Neta\\OneDrive - Holon Institute of Technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\BlazorGoogleLogin\\Client\\Helpers\\AuthStateProvider.cs",
+              "RelativeToolTip": "Client\\Helpers\\AuthStateProvider.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-07T08:50:29.565Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AuthenticationService .cs",
+              "DocumentMoniker": "C:\\Users\\Neta\\OneDrive - Holon Institute of Technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\BlazorGoogleLogin\\Client\\Helpers\\AuthenticationService .cs",
+              "RelativeDocumentMoniker": "Client\\Helpers\\AuthenticationService .cs",
+              "ToolTip": "C:\\Users\\Neta\\OneDrive - Holon Institute of Technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\BlazorGoogleLogin\\Client\\Helpers\\AuthenticationService .cs",
+              "RelativeToolTip": "Client\\Helpers\\AuthenticationService .cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-07T08:50:29.048Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Index.razor",
+              "DocumentMoniker": "C:\\Users\\Neta\\OneDrive - Holon Institute of Technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\BlazorGoogleLogin\\Client\\Pages\\Index.razor",
+              "RelativeDocumentMoniker": "Client\\Pages\\Index.razor",
+              "ToolTip": "C:\\Users\\Neta\\OneDrive - Holon Institute of Technology (1)\\\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8\u05D9\u05DD \u05DE\u05D4\u05DE\u05D7\u05E9\u05D1 \u05E9\u05DC \u05E0\u05D8\u05E2\\BlazorGoogleLogin\\Client\\Pages\\Index.razor",
+              "RelativeToolTip": "Client\\Pages\\Index.razor",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACMAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-07T08:50:13.524Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

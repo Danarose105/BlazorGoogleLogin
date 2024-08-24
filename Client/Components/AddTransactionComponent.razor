@@ -609,15 +609,19 @@
                                 @*   ---- DESCRIPTION TEXTBOX ----*@
                                 <div class="outerTitleAndDateAndName">
                                     <span class="titleName">פירוט:</span>
-                                    <textarea class="description" @bind="descriptionInput" maxlength="60" @oninput="TransDescLengthCounter"></textarea>
-                                    @if (descLength > 0)
-                                    {
-                                        <span>@descLength/60</span>
-                                    }
-                                    else
-                                    {
-                                        <span>0/60</span>
-                                    }
+                                    <div class="outerDesAndCounter">
+                                        <textarea class="description" @bind="descriptionInput" maxlength="60" @oninput="TransDescLengthCounter"></textarea>
+                                        <div class="counter">
+                                            @if (descLength > 0)
+                                            {
+                                                <span>@descLength/60</span>
+                                            }
+                                            else
+                                            {
+                                                <span>0/60</span>
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
 
                             </div>
