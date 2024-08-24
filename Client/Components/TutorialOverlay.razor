@@ -10,6 +10,11 @@
 <div class="OnBoardingLayer" style="@styleAdjustments">
     <div id="tutorialTitle">
         <span>@tutorialTitle</span>
+        @if (elementID == "odTransOverview")
+        {
+            <img src="./css/images/overdraft-warning.svg" style="padding-right: 2vw;
+    height: 2vh;" />
+        }
     </div>
     <div id="expBubble">
         <span>@expContent</span>
@@ -59,18 +64,18 @@
     //default budget
     //importance
 
-    //profile page
+    //profile page  ----DONE----
     //to streak page btn
     // add/edit/delete tags
 
-    //add transaction component
+    //add transaction component  ----DONE----
     //fixedmonthly overlay
     //create/add tags
 
     //overdraft overlay
-    //streak overlay
 
-    //Transactions overview
+
+    //Transactions overview ----DONE----
     //overdraft overlay btn
 
     //future homepage
@@ -106,6 +111,18 @@
                     tutorialTitle = "עמוד הפרופיל";
                     expContent = "לחיצה על כפתור 'צפייה בהתקדמות שלי' תוביל לעמוד המציג את התקדמותך האישית.";
                     expContent2 = "כאן ניתן ליצור, לערוך ולמחוק תגיות. בדומה לקטגוריות ולתתי קטגוריות, תגיות הן אמצעי לסיווג הוצאות או הכנסות ללא תלות בקטגוריה מסוימת, והן יכולות לחזור על עצמן. לדוגמא, בני משפחה יכולים להיות תגיות נפלאות :)";
+                    styleAdjustments = "";
+                    break;
+                case "Trans":
+                    tutorialTitle = "הוספת הוצאה/הכנסה";
+                    expContent = "במידה וההוצאה או ההכנסה חוזרת על עצמה, לאחר לחיצה על 'הגדרת ההוצאה/ההכנסה כחוזרת' ניתן להגדיר את החודש והסכום.";
+                    expContent2 = "בהגדרות מתקדמות נוכל להגדיר ו/או ליצור תגית עבור ההוצאה או ההכנסה ולכתוב פירוט. תמיד ניתן לראות את כלל התגיות בעמוד הפרופיל.";
+                    styleAdjustments = "";
+                    break;
+
+                case "odTransOverview":
+                    tutorialTitle = "הודעת חריגה";
+                    expContent = "במידה וישנה חריגה מהתקציב של תת הקטגוריה, לחיצה על אייקון האזהרה האדום בראש העמוד יפתח חלונית בה ניתן לטפל בה.";
                     styleAdjustments = "";
                     break;
             }
