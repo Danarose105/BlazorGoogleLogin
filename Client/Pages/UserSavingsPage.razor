@@ -635,6 +635,12 @@
         locationLength = 0;
     }
 
+    void closeEditAndDeleteOpt()
+    {
+        isOpetionsBtnClicked = false;
+        isEditSavingClicked = !isEditSavingClicked;
+    }
+
     private async Task getCurrentStreak()
     {
         var getCurrentStatRes = await Http.GetAsync("api/Present/getUserStreakStatus/" + userID);
