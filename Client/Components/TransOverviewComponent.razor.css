@@ -204,10 +204,10 @@
     justify-content: center;
 }
 
-.bubbleText {
+.bubbleTextPayMethod {
     color: #030942;
     font-size: 0.95rem;
-    /* z-index: 1; */
+     z-index: 1; 
     position: absolute;
     background-color: #fff;
     width: 6rem;
@@ -219,9 +219,42 @@
     justify-content: center;
     border-radius: 0.3rem;
     padding: 1vh 0;
+
+    
 }
 
-    .bubbleText::after {
+    .bubbleTextPayMethod::after {
+        content: "";
+        position: absolute;
+        bottom: -0.5rem;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-top: 10px solid #fff;
+        transform: translateX(-200%);
+    }
+
+.bubbleTextPayType {
+    color: #030942;
+    font-size: 0.95rem;
+    /* z-index: 1; */
+    position: absolute;
+    background-color: #fff;
+    width: 6rem;
+    margin-top: -4.2rem;
+    box-shadow: 0px 7px 15px 0px rgba(48, 63, 176, 0.10);
+    display: flex;
+    align-items: center;
+    text-align: center;
+    right: 11.5rem;
+    justify-content: center;
+    border-radius: 0.3rem;
+    padding: 1vh 0;
+}
+
+    .bubbleTextPayType::after {
         content: "";
         position: absolute;
         bottom: -0.5rem;
