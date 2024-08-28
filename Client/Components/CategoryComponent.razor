@@ -229,7 +229,6 @@
                                 <div class="lineBetween"></div>
                             </div>
 
-
                         </div>
                         <div id="importanceExp">
                             <div class="outerImportance">
@@ -260,6 +259,7 @@
                                     </div>
                                 </div>
                             </div>
+                        
 
                             <div class="outerExample">
                                 <div>
@@ -320,15 +320,12 @@
 
                             @if (titleInput.Length < 2 || titleInput.Length > 18)
                             {
-                                if (isTyped)
-                                {
                                     if (isTyped)
                                     {
 
                                         <span>שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
                                     }
 
-                                }
                                 else if (titleInputExists)
                                 {
 
@@ -343,8 +340,6 @@
                                     <span>בחרו עדיפות לתת קטגוריה זו.</span>
 
                                 }
-
-                            
 
                             }
                         }
