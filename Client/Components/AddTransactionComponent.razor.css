@@ -1297,10 +1297,11 @@ input:disabled, button:disabled {
     background: none;
     border: 2px dashed #6775F4;
     border-radius: 0.25rem;
-    width: 8.3em;
-    height: 3em;
+    width: 90%;
+    height: 2.25em;
     color: #6775F4;
     font-weight: 500;
+    font-size: 0.89rem;
 }
 
 
