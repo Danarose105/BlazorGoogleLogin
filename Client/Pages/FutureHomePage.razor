@@ -8,7 +8,7 @@
 @using BlazorGoogleLogin.Shared.Models.future.toEdit
 @using BlazorGoogleLogin.Client.Components
 @using Microsoft.AspNetCore.Components.Web
-@*@inject DateService DateService*@
+
 @inject IJSRuntime JSRuntime
 
 <div class="megaOuterPage">
@@ -62,7 +62,7 @@
             @if (earliestDate.HasValue)
             {
                 numberOfMonthesToDivide = (12 - earliestDate.Value.Month) + 1;
-                @*<div>The earliest date in the current year is @earliestDate.Value.ToShortDateString().</div>*@
+               
                 @if (numberOfMonthesToDivide > 0)
                 {
                     monthlySavings = sumNeededSavingsPerYear / numberOfMonthesToDivide;
@@ -85,7 +85,11 @@
                         @if (openISaving)
                         {
                             <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+@*                            <span class="iBubbleText">
+                                הסכום מחושב
+                                לפי 4% ריבית
 
+                            </span>*@
                         }
                     </div>
                 </div>
@@ -354,6 +358,8 @@
                             }
                             else
                             {
+                                
+
                                 @foreach (AllUserGoalsToShow goalPerYear in goalsPerYearList)
                                 {
                                     @if (goalPerYear.dueYear == goalsYearToShow)
@@ -781,6 +787,7 @@
 
     void openGoalsPerYearPopUp(int goalsYear)
     {
+        goalsPerYearList.Clear();
         showYearlyGoals = true;
         goalsYearToShow = goalsYear;
         @foreach (AllUserGoalsToShow goal in allGoals)
@@ -808,6 +815,7 @@
 
     void showGoalDetails(AllUserGoalsToShow goalFullDetails)
     {
+        isOpetionsBtnClicked = false;
         isGoalFullDetails = true;
         goalDetailsToShow = goalFullDetails;
     }
@@ -827,6 +835,7 @@
 
             allGoals.Add(newGoalToAddToList);
             newGoal = new GoalToAdd();
+            openGoalsPerYearPopUp(newGoalToAddToList.dueYear);
             await OnInitializedAsync();
 
         }
@@ -962,7 +971,7 @@
         }
 
         isEditGoalClicked = false;
-        showYearlyGoals = false;
+        //showYearlyGoals = false;
         selectedClass = "";
 
         savingsForProgressBar = 0;
@@ -982,7 +991,7 @@
 
     public async Task deleteGoal()
     {
-        showYearlyGoals = false;
+        //showYearlyGoals = false;
         deleteBtnClicked = false;
         isGoalFullDetails = false;
         userID = user.Id;
