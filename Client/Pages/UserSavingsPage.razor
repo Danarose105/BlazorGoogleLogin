@@ -125,10 +125,10 @@
                         {
                             
                         <div class="outerSaving">
-                            <span><b>איפה החסכון שלי נמצא?</b></span>
+                            <span><b>מקום החסכון</b></span>
 
 
-                            <span class="outerSavingAmount"><b> @savingDetailsToShow.savingLocation</b></span>
+                                <span class="outerSavingAmount" style="word-break: break-word;"><b> @savingDetailsToShow.savingLocation</b></span>
 
 
                         </div>
@@ -154,7 +154,7 @@
 
                     </div>
 
-                    <div>
+                    <div class="innerDiv">
                         <div class="outerTitle">
 
                             <div class="outerTitleAndCounter">
@@ -210,30 +210,33 @@
 
 
                         </div>
-                        <div>
-                            <div> <span><b>איפה החסכון שלי נמצא?</b></span></div>
-                            <span>
-                                <input class="catTitle" type="text" maxlength="45" minlength="2" @bind="@saveLocation" @oninput="savingLocationLengthCounter" />
-                            </span>
-                            <div class="counter">
+                        <div class="outerSaving">
+                            <div> <span><b>מקום החסכון</b></span></div>
+                            <div style="display: flex;
+    justify-content: flex-end;">
+                                <div class="counter" style="bottom: 13.7vh;
+    z-index: 1;">
                                 @if (saveLocation == null || saveLocation == "")
                                 {
                                     <span>0/45</span>
                                 }
                                 else
                                 {
-                                    if (saveLocation.Length < 2 || saveLocation.Length > 45)
+                                    if (saveLocation.Length < 2 || saveLocation.Length > 18)
                                     {
 
-                                        <span>@locationLength/45</span>
+                                        <span>@locationLength/18</span>
                                     }
                                     else
                                     {
-                                        <span>@locationLength/45</span>
+                                        <span>@locationLength/18</span>
 
                                     }
                                 }
                             </div>
+                                <input class="catTitle" type="text" maxlength="18" minlength="2" @bind="@saveLocation" @oninput="savingLocationLengthCounter" />
+                            </div>
+                            
                         </div>
 
                     </div>
