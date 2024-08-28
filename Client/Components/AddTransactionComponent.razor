@@ -559,9 +559,9 @@
                                         </button>
 
                                     }
-                                    else
+                                    else //existing trans
                                     {
-                                        if (chosenTag.id > 0)
+                                        if (chosenTag.id > 0) //existing tag
                                         {
                                             <button class="addTagBtn" @onclick="() => openTagsMenu = !openTagsMenu">
 
@@ -620,11 +620,11 @@
                                     <textarea class="description" @bind="descriptionInput" maxlength="60" @oninput="TransDescLengthCounter"></textarea>
                                     @if (descLength > 0)
                                     {
-                                        <span>@descLength/60</span>
+                                        <span class="descSpan">@descLength/60</span>
                                     }
                                     else
                                     {
-                                        <span>0/60</span>
+                                        <span class="descSpan">0/60</span>
                                     }
                                 </div>
 
