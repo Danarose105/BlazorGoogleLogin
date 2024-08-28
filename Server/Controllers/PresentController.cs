@@ -1401,7 +1401,7 @@ namespace BlazorGoogleLogin.Server.Controllers
             int wasTagAdded = await _db.InsertReturnIdAsync(insertTagQuery, newTagParam);
             if (wasTagAdded>0)
             {
-                return Ok();
+                return Ok(wasTagAdded);
             }
             return BadRequest("failed to add tag");
         }

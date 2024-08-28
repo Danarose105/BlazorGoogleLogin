@@ -4,6 +4,7 @@ using BlazorGoogleLogin.Shared.Models.present.toShow;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using BlazorGoogleLogin.Data;
+using Blazorise;
 
 namespace BlazorGoogleLogin.Server.Controllers
 {
@@ -191,50 +192,50 @@ namespace BlazorGoogleLogin.Server.Controllers
             return BadRequest("Couldn't find this sub cat's budget");
         }
 
-//        [HttpGet("getAllTransactions/{subCatID}")]
-//        public async Task<IActionResult> getAllTransactions(int userID, int subCatID)
-//        {
+        //        [HttpGet("getAllTransactions/{subCatID}")]
+        //        public async Task<IActionResult> getAllTransactions(int userID, int subCatID)
+        //        {
 
-//            object param = new
-//            {
-//                ID = subCatID,
-//                StartOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1),
-//                EndOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))
-//            };
+        //            object param = new
+        //            {
+        //                ID = subCatID,
+        //                StartOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1),
+        //                EndOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))
+        //            };
 
-//            string getAllSubCatTransactionsQuery = @"
-//        SELECT 
-//    transactions.id, 
-//    transactions.transType, 
-//    transactions.transValue, 
-//    transactions.valueType, 
-//    DATE_FORMAT(transactions.transDate, '%d/%m/%Y') AS transDate, 
-//    transactions.description, 
-//    transactions.fixedMonthly, 
-//    transactions.tagID, 
-//    transactions.transTitle, 
-//    transactions.parentTransID,
-//    transactions.splitPayment,
-//    tags.tagTitle,
-//    tags.tagColor
-//FROM transactions 
-//LEFT JOIN tags ON transactions.tagID = tags.id
-//WHERE transactions.subCategoryID = @ID
-//AND transactions.transDate >= @StartOfMonth
-//AND transactions.transDate <= @EndOfMonth
-//AND (transactions.transType = 1 OR transactions.transType = 3)
-//ORDER BY transactions.transDate DESC;";
+        //            string getAllSubCatTransactionsQuery = @"
+        //        SELECT 
+        //    transactions.id, 
+        //    transactions.transType, 
+        //    transactions.transValue, 
+        //    transactions.valueType, 
+        //    DATE_FORMAT(transactions.transDate, '%d/%m/%Y') AS transDate, 
+        //    transactions.description, 
+        //    transactions.fixedMonthly, 
+        //    transactions.tagID, 
+        //    transactions.transTitle, 
+        //    transactions.parentTransID,
+        //    transactions.splitPayment,
+        //    tags.tagTitle,
+        //    tags.tagColor
+        //FROM transactions 
+        //LEFT JOIN tags ON transactions.tagID = tags.id
+        //WHERE transactions.subCategoryID = @ID
+        //AND transactions.transDate >= @StartOfMonth
+        //AND transactions.transDate <= @EndOfMonth
+        //AND (transactions.transType = 1 OR transactions.transType = 3)
+        //ORDER BY transactions.transDate DESC;";
 
-//            var recordSubCatCurrentTrans = await _db.GetRecordsAsync<TransactionOverviewToShow>(getAllSubCatTransactionsQuery, param);
-//            var subCatTransactions = recordSubCatCurrentTrans.ToList();
+        //            var recordSubCatCurrentTrans = await _db.GetRecordsAsync<TransactionOverviewToShow>(getAllSubCatTransactionsQuery, param);
+        //            var subCatTransactions = recordSubCatCurrentTrans.ToList();
 
-//            if (subCatTransactions != null)
-//            {
-//                return Ok(subCatTransactions);
-//            }
+        //            if (subCatTransactions != null)
+        //            {
+        //                return Ok(subCatTransactions);
+        //            }
 
-//            return BadRequest("Couldn't find this sub cat's transactions");
-//        }
+        //            return BadRequest("Couldn't find this sub cat's transactions");
+        //        }
 
         [HttpGet("getAllTransactionsByDate/{userID}/{subCatID}")]
         public async Task<IActionResult> getAllTransactionsByDate(int userID, int subCatID)
@@ -315,6 +316,7 @@ ORDER BY transactions.transDate DESC;";
 
             return BadRequest("Couldn't find this sub cat's transactions");
         }
+
         [HttpDelete("deleteTransaction/{TransIdToDelete}")] // מחיקת הזנה
         public async Task<IActionResult> DeleteTransaction(int TransIdToDelete)
         {
@@ -328,9 +330,6 @@ ORDER BY transactions.transDate DESC;";
 
             return BadRequest("Failed to delete transaction");
         }
-
-
-
 
 
         [HttpPost("editTransaction")]
@@ -489,15 +488,15 @@ ORDER BY transactions.transDate DESC;";
             //{
 
             object updateTransParam = new
-                {
-                    ID = reTrans.id,
-                    transValue = reTrans.transValue,
-                    transDate = reTrans.transDate,
+            {
+                ID = reTrans.id,
+                transValue = reTrans.transValue,
+                transDate = reTrans.transDate,
 
-                };
+            };
 
-                string TransToUpdateQuery = "UPDATE transactions set transValue = @transValue, transDate=@transDate WHERE id =@ID";
-                isTransUpdate = await _db.SaveDataAsync(TransToUpdateQuery, updateTransParam);
+            string TransToUpdateQuery = "UPDATE transactions set transValue = @transValue, transDate=@transDate WHERE id =@ID";
+            isTransUpdate = await _db.SaveDataAsync(TransToUpdateQuery, updateTransParam);
 
             //}
 
@@ -625,8 +624,8 @@ ORDER BY transactions.transDate DESC;";
 
             return BadRequest("this transactions category isn't הכנסות");
         }
-    }
 
+    }
 
 }
 

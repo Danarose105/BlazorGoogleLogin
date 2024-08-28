@@ -1234,3 +1234,224 @@ input:disabled, button:disabled {
     align-items: center;
     width: 100%;
 }
+
+.BgOverlay {
+    background-color: rgba(1, 5, 43, 0.28);
+    z-index: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.AddTagoverlay {
+    border-radius: 1.75rem 1.4375rem 0rem 0rem;
+    background-color: #F9F9F9;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    padding: 2vh 0 2vh 0;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    z-index: 3;
+}
+
+.paddingDiv {
+    display: flex;
+    flex-direction: column;
+    row-gap: 2vh;
+    width: 90%;
+}
+
+.outerTitleAndIcon {
+    display: flex;
+    width: 90%;
+    align-items: flex-start;
+    flex-direction: column;
+    row-gap: 2vh;
+}
+
+.closeOverlay {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+}
+
+.tagOVtitleName {
+    font-weight: 600;
+    width: 94%;
+}
+
+.createTagBtn {
+    background: none;
+    border: 2px dashed #6775F4;
+    border-radius: 0.25rem;
+    width: 8.3em;
+    height: 3em;
+    color: #6775F4;
+    font-weight: 500;
+}
+
+
+
+.outerTitleAndCounter {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.catTitle {
+    width: 60vw;
+    height: 6vh;
+    border-radius: 0.3125rem;
+    background: #FFF;
+    box-shadow: 0px 85px 24px 0px rgba(171, 173, 191, 0.00), 0px 55px 22px 0px rgba(171, 173, 191, 0.01), 0px 31px 18px 0px rgba(171, 173, 191, 0.05), 0px 14px 14px 0px rgba(171, 173, 191, 0.09), 0px 3px 7px 0px rgba(171, 173, 191, 0.10);
+    border: none;
+    top: -1vh;
+    position: relative;
+}
+
+.tagTitleInput {
+    position: relative;
+    width: 67%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 2vh;
+}
+
+.tagTitleCounter {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    color: #666;
+    font-size: 12px;
+    padding: 3px 6px;
+    margin-bottom: 0.3rem;
+}
+
+.outerColors {
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.5rem;
+    background: #EDEFF7;
+    row-gap: 1.7vh;
+    align-items: center;
+    padding: 0.8vh 0;
+    width: 100%;
+}
+
+.colorsContainer {
+    width: 90%;
+    row-gap: 1.7vh;
+    display: flex;
+    row-gap: 1.7vh;
+    flex-direction: column;
+}
+
+.colorsRow {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.color-selected {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 0.16em solid #6775F4;
+}
+
+#\#F4B367 {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #F4B367;
+}
+
+#\#AEA2F9 {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #AEA2F9;
+}
+
+#\#F467AB {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #F467AB;
+}
+
+#\#F47867 {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #F47867;
+}
+
+#\#6775F4 {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #6775F4;
+}
+
+#\#8DE4BF {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #8DE4BF;
+}
+
+#\#67CAF4 {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #67CAF4;
+}
+
+#\#FCE884 {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #FCE884;
+}
+
+#\#F9D3C2 {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #F9D3C2;
+}
+
+#\#09AE73 {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #16A78D;
+}
+
+#\#8C8B8B {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #696969;
+}
+
+#\#DADADA {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #DADADA;
+}
