@@ -233,17 +233,17 @@
                         </div>
                         <div id="importanceExp">
                             <div class="outerImportance">
-                            
+
                                 <div class="outerExp">
                                     <div id="expDiv">
-                                <div id="expBtn" @onclick="@(()=>expBubbleToolTip("addSubCat"))"><img src="./css/images/q-with-shadow.svg" style="height: 3rem;" /></div>
-                                @if (expBubbleOpen)
-                                {
+                                        <div id="expBtn" @onclick="@(()=>expBubbleToolTip("addSubCat"))"><img src="./css/images/q-with-shadow.svg" style="height: 3rem;" /></div>
+                                        @if (expBubbleOpen)
+                                        {
 
-                                    <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
-                                }
-                            </div>
-                                <label class="titleName" for="importance">עדיפות תת הקטגוריה</label>
+                                            <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+                                        }
+                                    </div>
+                                    <label class="titleName" for="importance">עדיפות תת הקטגוריה</label>
                                 </div>
                                 <div class="outerBtns">
                                     <div class="importanceBtns">
@@ -324,14 +324,14 @@
                                 {
                                     if (isTyped)
                                     {
-                                        
+
                                         <span>שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
                                     }
 
                                 }
                                 else if (titleInputExists)
                                 {
-                                    
+
                                     <span>קיימת תת קטגוריה בעלת אותו שם</span>
                                 }
                                 else if (newSubCategory.monthlyPlannedBudget < 0)
@@ -344,8 +344,9 @@
 
                                 }
 
-                            </div>
+                            
 
+                            }
                         }
                     }
                     else
@@ -354,19 +355,19 @@
                         {
                             if (categoryTypeIndicator)
                             {
-                                <div class="outerSaveBtns">
-                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הכנסה</button>
-                                    <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
-                                    <span> שם תת הקטגוריה כבר קיים.</span>
-                                </div>
+                            <div class="outerSaveBtns">
+                                <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הכנסה</button>
+                                <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
+                                <span> שם תת הקטגוריה כבר קיים.</span>
+                            </div>
                             }
                             else
                             {
-                                <div class="outerSaveBtns">
-                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הוצאה</button>
-                                    <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
-                                    <span> שם תת הקטגוריה כבר קיים.</span>
-                                </div>
+                            <div class="outerSaveBtns">
+                                <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הוצאה</button>
+                                <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
+                                <span> שם תת הקטגוריה כבר קיים.</span>
+                            </div>
                             }
 
                         }
@@ -374,31 +375,31 @@
                         {
                             if (titleInput.Length >= 2 && titleInput.Length < 19)
                             {
-                                <div class="outerSaveBtns">
-                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הכנסה</button>
-                                    <button class="secondery-button" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
-                                </div>
+                            <div class="outerSaveBtns">
+                                <button class="primery-button" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הכנסה</button>
+                                <button class="secondery-button" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
+                            </div>
                             }
                             else
                             {
-                                <div class="outerSaveBtns">
-                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הוצאה</button>
-                                    <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
-                                    <span>אורך שם תת הקטגוריה לא תקין.</span>
-                                </div>
+                            <div class="outerSaveBtns">
+                                <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הוצאה</button>
+                                <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
+                                <span>אורך שם תת הקטגוריה לא תקין.</span>
+                            </div>
                             }
                         }
 
                     }
 
-                </div>
             </div>
         </div>
+    </div>
     }
 
     @if (openTransactionOverlay)
     {
-        <AddTransactionComponent subCategoryTitle="@newSubCatTitle" subCategoryIDTOGet="@newSubCatID" isTransactionOverlayOpen="AddTransOverlay" userID="@userID" updatedStreak="updateStreak"></AddTransactionComponent>
+    <AddTransactionComponent subCategoryTitle="@newSubCatTitle" subCategoryIDTOGet="@newSubCatID" isTransactionOverlayOpen="AddTransOverlay" userID="@userID" updatedStreak="updateStreak"></AddTransactionComponent>
     }
 </div>
 
