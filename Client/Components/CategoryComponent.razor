@@ -561,6 +561,8 @@
     List<string> allSubCatTitles = new List<string>();
 
 
+
+
     protected override async Task OnInitializedAsync()
     {
         if (categoryColor == null || categoryColor == "")
@@ -788,10 +790,14 @@
         //OpetionsBtnClicked();
     }
 
-    public void OpetionsBtnClicked()
+    public async Task OpetionsBtnClicked()
     {
         isOpetionsBtnClicked = !isOpetionsBtnClicked;
-
+        if (isOpetionsBtnClicked)
+        {
+            await Task.Delay(4000);
+            isOpetionsBtnClicked = false;
+        }
     }
 
     public void deleteCategoryBtnClciked()
@@ -969,9 +975,9 @@
         }
     }
 
-     private void SubCatAmount(ChangeEventArgs e)
+    private void SubCatAmount(ChangeEventArgs e)
     {
-        
+
         string sumInput = e.Value.ToString();
 
         if(sumInput.Length == 0)
@@ -982,7 +988,7 @@
         {
             isSumTyped = false;
         }
-        
+
     }
     //--------------------//
 
@@ -1007,5 +1013,12 @@
         newSubCategory.monthlyPlannedBudget = null;
         newSubCategory.subCategoryTitle = "";
 
+    }
+
+    int subCatOptBtnID = 0;
+    bool subCatOptBool = false;
+    void subCatOptBtnControl(int subID)
+    {
+        subCatOptBtnID = subID;
     }
 }
