@@ -8,7 +8,10 @@
 @if (isLoadComplete)
 {
     <div class="overlay">
-        <div class="outerTransOverlay">
+        @{
+            string displayStyle = (transDisplay == false) ? "none" : "flex";
+        }
+        <div class="outerTransOverlay" style="display:@displayStyle">
             <div class="innerTransOverlay">
                 <button class="modal-close-btn" @onclick="transOverlayControl"><img src="./css/images/close x.svg" /></button>
                 <div class="expAndTitle">
@@ -36,13 +39,13 @@
                         </div>
                     }
 
-                    <div >
+                    <div>
 
-                        <div  @onclick="@(()=>expBubbleToolTip("Trans"))"><img src="./css/images/q-with-shadow.svg" style="height: 3rem;" /></div>
-                        @if (expBubbleOpen)
+                        <div @onclick="@(()=>expBubbleToolTip("Trans"))"><img src="./css/images/q-with-shadow.svg" style="height: 3rem;" /></div>
+                        @if (topExpBubbleOpen)
                         {
 
-                            <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+                            <TutorialOverlay elementID="Trans" closeOverlay="closeExpOverlay"></TutorialOverlay>
                         }
 
                     </div>
@@ -50,14 +53,17 @@
                 </div>
 
                 <div class="accordionAndTransDetailsWrap">
+
                     <div class="transDetailsAccordion" @onclick="manageDropDown">
                         @if (categoryTypeIndicator)
                         {
-                            <span class="accordionText">שם ההכנסה שלי</span>
+                            nameInputPlaceholder = "שם ההכנסה שלי";
+                            <span class="accordionText">ההכנסה שלי</span>
                         }
                         else
                         {
-                            <span class="accordionText">שם ההוצאה שלי</span>
+                            nameInputPlaceholder = "שם ההוצאה שלי";
+                            <span class="accordionText">ההוצאה שלי</span>
                         }
 
                         <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
@@ -65,6 +71,7 @@
 
                     @if (isTopDropDownOpen)
                     {
+
                         <div class="outerDetails">
                             <div class="innerPaddingDiv">
                                 <div class="outerTitleAndDate">
@@ -72,7 +79,7 @@
                                         <div class="input-container">
 
                                             @*   ---- TRANS TITLE & COUNTER  ----*@
-                                            <input class="titleBox" type="text" @bind="titleInput" @oninput="TransTitleLengthCounter" maxlength="18" minlength="2" />
+                                            <input class="titleBox" type="text" @bind="titleInput" @oninput="TransTitleLengthCounter" maxlength="18" minlength="2" placeholder="@nameInputPlaceholder" />
                                             <div class="counter">
                                                 @if (titleInput.Length > 2 && titleInput.Length < 19)
                                                 {
@@ -532,53 +539,29 @@
                         <div class="outerDetails">
                             <div class="innerPaddingDiv">
                                 <div class="outerTitleAndDateAndName">
-
+                                    <div id="tagTitleAndExp">
                                     <span class="titleName">תגית</span>
-                                    @if (isItAnewTrans || newTransaction.tagID == null)
-                                    {
-                                        <button class="addTagBtn" @onclick="() => openTagsMenu = !openTagsMenu">
-                                            @if (chosenTag.id > 0)
-                                            {
-                                                <img src="./css/images/after-tag.svg" />
-                                                <span class="tag tagLabel" style="background-color:@chosenTag.tagColor">@chosenTag.tagTitle</span>
-                                            }
-                                            else
-                                            {
-                                                <img src="./css/images/addtag.svg" />
-                                            }
-
-
-                                        </button>
-
+                                    <img src="./css/images/q-with-shadow.svg" style="height: 3rem;" @onclick="@(()=>expBubbleToolTip("TransTag"))" />
+                                    @if(bottomExpBubbleOpen){
+                                            <TutorialOverlay elementID="TransTag" closeOverlay="closeExpOverlay"></TutorialOverlay>
                                     }
-                                    else
-                                    {
-                                        if (chosenTag.id > 0)
+                                    </div>
+                                    
+                                  
+                                        @if (chosenTag.id > 0) //existing tag
                                         {
-                                            <button class="addTagBtn" @onclick="() => openTagsMenu = !openTagsMenu">
+                                            <div class="addTagBtn">
 
                                                 <img src="./css/images/after-tag.svg" />
                                                 <span class="tag tagLabel" style="background-color:@chosenTag.tagColor">@chosenTag.tagTitle</span>
 
-                                            </button>
+                                            </div>
                                         }
-                                        else
-                                        {
-
-                                            <button class="addTagBtn" @onclick="() => openTagsMenu = !openTagsMenu">
-
-                                                <img src="./css/images/addtag.svg" />
-
-                                            </button>
-                                        }
-                                    }
 
                                     @*   ---- TAG GALLERY ----*@
-                                    @if (openTagsMenu)
-                                    {
-
                                         <div class="outerGalleryAndNav">
                                             <div class="outerGallery">
+                                                        <button class="createTagBtn" @onclick="tagCreationOverlay">תגית חדשה</button>
                                                 @foreach (var tag in GetCurrentPageTags())
                                                 {
                                                     Console.WriteLine(tag);
@@ -603,25 +586,21 @@
 
                                             </div>
                                         </div>
-                                    }
+                                   
                                 </div>
 
                                 @*   ---- DESCRIPTION TEXTBOX ----*@
                                 <div class="outerTitleAndDateAndName">
                                     <span class="titleName">פירוט:</span>
-                                    <div class="outerDesAndCounter">
-                                        <textarea class="description" @bind="descriptionInput" maxlength="60" @oninput="TransDescLengthCounter"></textarea>
-                                        <div class="counter">
-                                            @if (descLength > 0)
-                                            {
-                                                <span>@descLength/60</span>
-                                            }
-                                            else
-                                            {
-                                                <span>0/60</span>
-                                            }
-                                        </div>
-                                    </div>
+                                    <textarea class="description" @bind="descriptionInput" maxlength="60" @oninput="TransDescLengthCounter"></textarea>
+                                    @if (descLength > 0)
+                                    {
+                                        <span class="descSpan">@descLength/60</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="descSpan">0/60</span>
+                                    }
                                 </div>
 
                             </div>
@@ -754,7 +733,7 @@
                     <div id="expDiv">
 
                         <div id="expBtn" @onclick="@(()=>expBubbleToolTip("Overdraft"))"><img src="./css/images/q-with-shadow.svg" style="height: 3rem;" /></div>
-                        @if (expBubbleOpen)
+                        @if (topExpBubbleOpen)
                         {
 
                             <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
@@ -943,7 +922,89 @@
         </div>
     }
 
+
 }
+@*---- CREATE TAG POPUP ----*@
+@if (createTagOverlay)
+{
+
+    <div class="outerTransOverlay">
+        <div class="megaOuterLay">
+            <div class="outerLay">
+                <div class="BgOverlay">
+                    <div class="AddTagoverlay">
+                        <div class="paddingDiv">
+                            <div class="outerTitleAndIcon">
+                                <button class="closeOverlay" @onclick="tagCreationOverlay"><img src="./css/images/close x.svg" /></button>
+                                <h3 class="tagOVtitleName" style="font-size: 1.2rem;">יצירת תגית</h3>
+                            </div>
+                            <div class="outerTitleAndCounter">
+                                <div class="tagTitleInput">
+                                    <div>שם התגית:</div>
+                                    <input type="text" class="catTitle" @bind="@currentTagName" @oninput="tagTitleLengthCheck" maxlength="8" minlength="2" />
+                                    <div class="tagTitleCounter">
+                                        @if (tagNameLength > 0 && tagNameLength < 9)
+                                        {
+                                            <span>@tagNameLength/8</span>
+                                        }
+                                        else if (tagNameLength < 1)
+                                        {
+                                            <span>0/8</span>
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="outerNameAndColor">
+                                <div>צבע התגית:</div>
+                                <div class="outerColors">
+
+                                    <div class="colorsContainer">
+                                        <div class="colorsRow">
+
+                                            @foreach (var color in new[] { "#F4B367", "#AEA2F9", "#F467AB", "#F47867", "#6775F4", "#8DE4BF" })
+                                            {
+
+                                                <div id="@(color)" class="@(selectedClass == color ? "color-selected" : "")">
+                                                    <input style="opacity:0;" type="radio" name="categoryColors" value="@color"
+                                                   @onclick="() => UpdateTagColor(color)" />
+
+                                                </div>
+                                            }
+                                        </div>
+                                        <div class="colorsRow">
+                                            @foreach (var color in new[] { "#67CAF4", "#FCE884", "#F9D3C2", "#09AE73", "#8C8B8B", "#DADADA" })
+                                            {
+                                                <div id="@(color)" class="@(selectedClass == color ? "color-selected" : "")">
+                                                    <input style="opacity:0;" type="radio" name="categoryColors" value="@color"
+                                                   @onclick="() => UpdateTagColor(color)" />
+
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+
+                            <div class="outerSaveBtns">
+                                @if (tagNameLength > 0 && tagNameLength < 9)
+                                {
+                                    <button class="primery-button" @onclick="@(async ()=> await tagCreation())">שמירה וחזרה</button>
+                                }
+                                else
+                                {
+                                    <button class="primery-button" @onclick="@(async ()=> await tagCreation())" style="opacity:60%" disabled>שמירה וסיום</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 
 
 
@@ -1094,7 +1155,7 @@
     bool isTyped = false;
 
     private int currentPage = 0;
-    private int pageSize = 6;
+    private int pageSize = 5;
     private int totalPages => (int)Math.Ceiling(allUserTags.Count / (double)pageSize);
 
     private List<TagsToShow> GetTags()
@@ -1113,6 +1174,12 @@
 
     string descriptionInput = "";
 
+    bool createTagOverlay = false;
+    bool transDisplay = true;
+    TagsToShow createdTag = new TagsToShow();
+    string currentTagName = "";
+    int tagNameLength = 0;
+    string nameInputPlaceholder = "";
 
     private void NextPage()
     {
@@ -1340,6 +1407,7 @@
             if (categoryTypeIndicator)
             {
                 overlayTitle = "עריכת הכנסה";
+
             }
             else
             {
@@ -1534,10 +1602,12 @@
             if (categoryTypeIndicator)
             {
                 repeatedBtnTitle = "הגדרת ההכנסה החוזרת";
+                nameInputPlaceholder = "שם ההכנסה שלי";
             }
             else
             {
                 repeatedBtnTitle = "הגדרת ההוצאה החוזרת";
+                nameInputPlaceholder = "שם ההוצאה שלי";
             }
 
         }
@@ -2552,6 +2622,165 @@
         }
     }
 
+    public void tagCreationOverlay()
+    {
+        createTagOverlay = !createTagOverlay;
+        transDisplay = !transDisplay;
+        currentTagName = "";
+        currentTagColor = "";
+        tagNameLength = 0;
+        selectedClass = "";
+        createdTag = new TagsToShow();
+
+    }
+
+    public async Task tagCreation()
+    {
+        if (userID > 0 && createdTag.tagTitle != "")
+        {
+            if (createdTag.tagColor == "")
+            {
+                createdTag.tagColor = "rgba(103, 142, 244, 0.13)";
+            }
+
+            var addTagInDBreq = await Http.PostAsJsonAsync("api/Present/addTag/" + userID, createdTag);
+            if (addTagInDBreq.IsSuccessStatusCode)
+            {
+                int newTagID = addTagInDBreq.Content.ReadFromJsonAsync<int>().Result;
+                createdTag.id = newTagID;
+                allUserTags.Add(createdTag);
+                tagCreationOverlay();
+            }
+        }
+    }
+
+    private void tagTitleLengthCheck(ChangeEventArgs e)
+    {
+        currentTagName = e.Value.ToString();
+
+        tagNameLength = currentTagName.Length;
+        createdTag.tagTitle = currentTagName;
+
+    }
+
+    bool isColorClicked = false;
+    string selectedClass = "";
+    string currentTagColor = "";
+
+    private void UpdateTagColor(string color)
+    {
+        isColorClicked = true;
+
+        if (selectedClass == color)
+        {
+            // If the color is already selected, unselect it
+            selectedClass = ""; // Reset the selected color
+            createdTag.tagColor = ""; // Assuming you want to clear the selected color
+
+        }
+        else
+        {
+            Console.WriteLine(color + "color");
+            // Otherwise, update to the new selected color
+            currentTagColor = color;
+            selectedClass = color;
+            createdTag.tagColor = color;
+            convertTagColors(color);
+        }
+    }
+
+    public void convertTagColors(string tagColor)
+    {
+        Console.WriteLine(tagColor + "tagColor");
+        string convertedColor = "";
+        string outlineColor = "";
+        if (tagColor.Contains('#'))
+        {
+            selectedClass = tagColor;
+        }
+        else
+        {
+
+            switch (tagColor)
+            {
+                case "rgba(244, 179, 103, 0.4)": //mustard
+                    convertedColor = "rgba(244, 179, 103, 0.13)";
+                    outlineColor = "#F4B367";
+                    Console.WriteLine("cat color is mustard");
+                    break;
+                case "rgba(174, 162, 249, 0.4)": //purple
+                    convertedColor = "rgba(174, 162, 249, 0.13)";
+                    outlineColor = "#AEA2F9";
+                    Console.WriteLine("cat color is dark purple");
+                    break;
+                case "rgba(244, 103, 171, 0.4)": //dark pink
+                    convertedColor = "rgba(244, 103, 171, 0.13)";
+                    outlineColor = "#F467AB";
+                    Console.WriteLine("cat color is dark pink");
+                    break;
+                case "rgba(244, 120, 103, 0.4)": //salmon pink
+                    convertedColor = "rgba(244, 120, 103, 0.13)";
+                    outlineColor = "#F47867";
+                    Console.WriteLine("cat color is salmon pink");
+                    break;
+                case "rgba(103, 142, 244, 0.4)": //defualt
+                    convertedColor = "rgba(103, 142, 244, 0.13)";
+                    outlineColor = "#678EF4";
+                    Console.WriteLine("cat color is default");
+                    break;
+                case "rgba(141, 228, 191, 0.4)": //light green
+                    convertedColor = "rgba(141, 228, 191, 0.13)";
+                    outlineColor = "#8DE4BF";
+                    Console.WriteLine("cat color is light green");
+                    break;
+                case "rgba(103, 202, 244, 0.4)": //light blue
+                    convertedColor = "rgba(103, 202, 244, 0.13)";
+                    outlineColor = "#67CAF4";
+                    Console.WriteLine("cat color is light blue");
+                    break;
+                case "rgba(255, 239, 157, 0.4)": //banana
+                    convertedColor = "rgba(255, 239, 157, 0.13)";
+                    outlineColor = "#FCE884";
+                    Console.WriteLine("cat color is banana");
+                    break;
+                case "rgba(249, 211, 194, 0.4)": //cream
+                    convertedColor = "rgba(249, 211, 194, 0.13)";
+                    outlineColor = "#F9D3C2";
+                    Console.WriteLine("cat color is cream");
+                    break;
+                case "rgba(9, 174, 115, 0.4)": //dark green
+                    convertedColor = "rgba(9, 174, 115, 0.13)";
+                    outlineColor = "#09AE73";
+                    Console.WriteLine("cat color is dark green");
+                    break;
+                case "rgba(140, 139, 139, 0.4)": //dark gray
+                    convertedColor = "rgba(140, 139, 139, 0.25)";
+                    outlineColor = "#8C8B8B";
+                    Console.WriteLine("cat color is dark gray");
+                    break;
+                case "rgba(218, 218, 218, 0.4)": //gray
+                    convertedColor = "rgba(218, 218, 218, 0.13)";
+                    outlineColor = "#DADADA";
+                    Console.WriteLine("cat color is light gray");
+                    break;
+                default:
+                    convertedColor = "rgba(103, 142, 244, 0.13)";
+                    outlineColor = "#AEA2F9";
+                    Console.WriteLine("cat color is default");
+                    break;
+            };
+
+            selectedClass = outlineColor;
+
+
+        }
+
+
+        Console.WriteLine(selectedClass + "צבע תגית");
+        //isTagColor = false;
+    }
+
+
     private DateTime parsedDate;
     private bool attemptedParsing = false;
 
@@ -2969,22 +3198,37 @@
         descLength = description.Length;
     }
 
-    bool expBubbleOpen = false;
+    bool topExpBubbleOpen = false;
+    bool bottomExpBubbleOpen = false;
     string elementToExp = "";
     string styleAdjustment = "";
 
     public void expBubbleToolTip(string elementName)
     {
-        expBubbleOpen = !expBubbleOpen;
-        if (expBubbleOpen)
+        elementToExp = elementName;
+        
+        if(elementName=="Trans"){
+            topExpBubbleOpen = !topExpBubbleOpen;
+        }
+        else if(elementName=="TransTag")
         {
-            elementToExp = elementName;
+            bottomExpBubbleOpen=!bottomExpBubbleOpen;
+        }
+
+        if (topExpBubbleOpen)
+        {
+            bottomExpBubbleOpen = false;
+        }
+
+        if (bottomExpBubbleOpen)
+        {
+            topExpBubbleOpen = false;
         }
     }
 
     public void closeExpOverlay()
     {
-        expBubbleOpen = false;
+        topExpBubbleOpen = false;
     }
 
 }

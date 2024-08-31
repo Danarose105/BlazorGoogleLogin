@@ -162,24 +162,20 @@
                         <input class="budgetBox" type="number" id="description" @oninput="SubCatBudgetInput" @bind="subCatToEdit.monthlyPlannedBudget" />
                         <span class="currency-symbol">₪</span>
                         <br />
+                        @if (ogBudget < 0)
+                        {
+                            <span>הקטנת את התקציב ב- @(Math.Round((ogBudget * -1), 2))%.</span>
+                            <br />
+                        }
+                        else if (ogBudget > 0)
+                        {
+                            <span>הגדלת את התקציב ב- @(Math.Round(ogBudget, 2))%.</span>
+                            <br />
+                        }
+
 
                         <div class="lineBetween"></div>
-
-                        <div>
-                            @if (ogBudget < 0)
-                            {
-                                <span>הקטנת את התקציב ב- @(Math.Round((ogBudget * -1), 2))%.</span>
-                                <br />
-                            }
-                            else if (ogBudget > 0)
-                            {
-                                <span>הגדלת את התקציב ב- @(Math.Round(ogBudget, 2))%.</span>
-                                <br />
-                            }
-                        </div>
                     </div>
-
-
 
                     <div class="outerImportance">
                         
@@ -304,16 +300,6 @@
 
                             <br />
                             <span>לא ניתן לשמור תת קטגוריה ללא תקציב .</span>
-                        }
-                        else if (isSameName)
-                        {
-
-
-                            <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הזנה</button>
-                            <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
-                            
-                            <span>קיימת תת קטגוריה בעלת אותו שם</span>
-
                         }
                         else if (subCatToEdit.importance > 2 || subCatToEdit.importance < 0)
                         {
@@ -477,7 +463,6 @@
     SubCategoryToUpdate subCategoryToUpdate = new SubCategoryToUpdate();
 
     List<AllUserCategories> userCategories = new List<AllUserCategories>();
-    List<SubCategoryToShow> userSubCategories = new List<SubCategoryToShow>();
 
     bool isOptBtnClicked = false; //the options button
     bool editSubCatBtnClicked = false;
@@ -495,9 +480,6 @@
 
     double ogBudget = 0;
     double? subCatTransTotal = 0;
-
-    bool isSameName = false;
-    string ogSubCatName = "";
 
     private string _previousColor = "##INITIAL##";
 
@@ -869,32 +851,9 @@
         isOptBtnClicked = !isOptBtnClicked;
     }
 
-
-    private async Task SubCatTitleLengthCounter(ChangeEventArgs e)
+    private void SubCatTitleLengthCounter(ChangeEventArgs e)
     {
         isTyped = true;
-
-
-        var subCatsListRes = await Http.GetAsync("api/Present/userSubCategoriesList/" + categoryID);
-        if (subCatsListRes.IsSuccessStatusCode)
-        {
-            userSubCategories = subCatsListRes.Content.ReadFromJsonAsync<List<SubCategoryToShow>>().Result;
-
-        }
-
-        foreach (SubCategoryToShow userSubCat in userSubCategories)
-        {
-            if (e.Value.ToString() == userSubCat.subCategoryTitle)
-            {
-                isSameName = true;
-                break;
-            }
-            else
-            {
-                isSameName = false;
-            }
-        }
-
         titleInput = e.Value.ToString();
         titleInputLength = titleInput.Length;
     }

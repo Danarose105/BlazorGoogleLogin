@@ -66,10 +66,11 @@
                     @if (isValueTypeTooltipOpen)
                     {
 
-                        <span class="bubbleText">@transaction.valueType</span>
+                        <span class="bubbleTextPayMethod">@transaction.valueType</span>
 
-                    }
+                    } 
 
+                   @* value type too tip content:*@
                     @if (transaction.valueType == "מזומן")
                     {
                         <div class="paymentMethod" @onclick="explainPaymentIcon">
@@ -100,14 +101,38 @@
 
                     @if (transaction.fixedMonthly == true)
                     {
-                        <div class="paymentMethod">
+                        <div class="paymentMethod" @onclick="explainFixedTrans">
+                        @if (isFixedTooltipOpen)
+                        {
+                            if (typeByCat)
+                            {
+                                    <span class="bubbleTextPayType">הכנסה חוזרת</span>
+                            }
+                            else
+                            {
+                                    <span class="bubbleTextPayType">הוצאה חוזרת</span>
+
+                            }
+                        }
 
                             <span><img src="./css/images/repeat iconrestart.svg" /></span>
                         </div>
                     }
                     else if (transaction.splitPayment == true || childOfSplit == true)
                     {
-                        <div class="paymentMethod">
+                        <div class="paymentMethod" @onclick="explainSplitTrans">
+                        @if (isSplitTooltipOpen)
+                        {
+                            if (typeByCat)
+                            {
+                                    <span class="bubbleTextPayType">הכנסה בתשלומים</span>
+                            }
+                            else
+                            {
+                                <span class="bubbleTextPayType">הוצאה בתשלומים</span>
+
+                            }
+                        }
                             <span><img src="./css/images/payments.svg" /></span>
                         </div>
                         <span>תשלום @transIndexInPayments/@totalPayments </span>
@@ -211,6 +236,8 @@
     DateTime date;
 
     bool isValueTypeTooltipOpen = false;
+    bool isFixedTooltipOpen = false;
+    bool isSplitTooltipOpen = false;
 
 
 
@@ -478,11 +505,41 @@
     public async Task explainPaymentIcon()
     {
         isValueTypeTooltipOpen = !isValueTypeTooltipOpen;
+        isFixedTooltipOpen= false;
+        isSplitTooltipOpen = false;
 
         if (isValueTypeTooltipOpen)
         {
             await Task.Delay(2000);
             isValueTypeTooltipOpen = false;
+            StateHasChanged();
+        }
+
+    }
+
+    public async Task explainFixedTrans()
+    {
+        isFixedTooltipOpen = !isFixedTooltipOpen;
+        isValueTypeTooltipOpen=false;
+        isSplitTooltipOpen = false;
+        if (isFixedTooltipOpen)
+        {
+            await Task.Delay(2000);
+            isFixedTooltipOpen = false;
+            StateHasChanged();
+        }
+
+    }
+
+    public async Task explainSplitTrans()
+    {
+        isSplitTooltipOpen = !isSplitTooltipOpen;
+        isValueTypeTooltipOpen = false;
+        isFixedTooltipOpen = false;
+        if (isSplitTooltipOpen)
+        {
+            await Task.Delay(2000);
+            isSplitTooltipOpen = false;
             StateHasChanged();
         }
 

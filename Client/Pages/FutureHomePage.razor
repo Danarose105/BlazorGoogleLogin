@@ -8,7 +8,7 @@
 @using BlazorGoogleLogin.Shared.Models.future.toEdit
 @using BlazorGoogleLogin.Client.Components
 @using Microsoft.AspNetCore.Components.Web
-@*@inject DateService DateService*@
+
 @inject IJSRuntime JSRuntime
 
 <div class="megaOuterPage">
@@ -62,7 +62,7 @@
             @if (earliestDate.HasValue)
             {
                 numberOfMonthesToDivide = (12 - earliestDate.Value.Month) + 1;
-                @*<div>The earliest date in the current year is @earliestDate.Value.ToShortDateString().</div>*@
+               
                 @if (numberOfMonthesToDivide > 0)
                 {
                     monthlySavings = sumNeededSavingsPerYear / numberOfMonthesToDivide;
