@@ -104,6 +104,18 @@
                                         <span>@newFirstNameLength/15</span>
                                     }
                                 </div>
+
+                            </div>
+
+                            <div>
+                                @if (currentUser.firstName == null || currentUser.firstName == "")
+                                {
+                                    if (emptyFirstName)
+                                    {
+                                        <span style="color:#F95050">שם פרטי צריך להיות בין 2-15 תווים</span>
+                                    }
+
+                                }
                             </div>
                         </div>
 
@@ -122,6 +134,15 @@
                                         <span>@newLastNameLength/15</span>
                                     }
                                 </div>
+                            </div>
+                            <div>
+                                @if (currentUser.lastName == null || currentUser.lastName == "")
+                                {
+                                    if (emptyLastName)
+                                    {
+                                        <span style="color:#F95050">שם משפחה צריך להיות בין 2-15 תווים</span>
+                                    }
+                                }
                             </div>
                         </div>
 
@@ -390,9 +411,18 @@
 <div class="megaOuterOn">
     @if (editBtnClicked)
     {
-        <div class="outerSaveBtns">
-            <button class="primery-button" @onclick="(()=>saveEditedProfile(currentUser))">שמירה וחזרה</button>
-        </div>
+        if (currentUser.firstName == null || currentUser.firstName == "" || currentUser.lastName == null || currentUser.lastName == "")
+        {
+            <div class="outerSaveBtns">
+                <button class="primery-button" style="opacity:0.6">שמירה וחזרה</button>
+            </div>
+        }
+        else
+        {
+            <div class="outerSaveBtns">
+                <button class="primery-button" @onclick="(()=>saveEditedProfile(currentUser))">שמירה וחזרה</button>
+            </div>
+        }
 
     }
 
@@ -533,11 +563,11 @@
                             <br />
                         </div>
 
-                        @if(emptyTagName)
+                        @if (emptyTagName)
                         {
-                            
+
                             <div class="outerSaveBtns">
-                            <button class="primery-button" style="opacity:60%" disabled>שמירה וסיום</button>
+                                <button class="primery-button" style="opacity:60%" disabled>שמירה וסיום</button>
                             </div>
                         }
                         else if (isEdit)
@@ -547,12 +577,12 @@
                                 {
                                     <button class="primery-button" @onclick="updateTag">שמירה וסיום</button>
                                 }
-                               
+
                             </div>
 
 
                         }
-                        else 
+                        else
                         {
 
                             <div class="outerSaveBtns">
@@ -648,6 +678,8 @@
     bool isEdit = false;
     bool isColorClicked = false;
     bool emptyTagName = false;
+    bool emptyFirstName = false;
+    bool emptyLastName = false;
     string OgColor = "";
     string disBtnStyle => disBtn ? "disBtn" : "";
     string disNextBtnStyle => disNextBtn ? "disBtn" : "";
@@ -1152,12 +1184,29 @@
     private void firstNameLengthCheck(ChangeEventArgs e)
     {
         newFirstName = e.Value.ToString();
+
+        if (newFirstName.Length == 0)
+        {
+            emptyFirstName = true;
+        }
+        else
+        {
+            emptyFirstName = false;
+        }
         newFirstNameLength = newFirstName.Length;
     }
 
     private void lastNameLengthCheck(ChangeEventArgs e)
     {
         newLastName = e.Value.ToString();
+        if(newLastName.Length == 0)
+        {
+            emptyLastName = true;
+        }
+        else
+        {
+            emptyLastName = false;
+        }
         newLastNameLength = newLastName.Length;
     }
 
