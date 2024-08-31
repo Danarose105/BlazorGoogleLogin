@@ -95,6 +95,22 @@
                                     </div>
                                     <input type="date" @bind="newTransaction.transDate" class="custom-date-input" />
                                 </div>
+                                <div>
+                                    @if (titleInput.Length < 2)
+                                    {
+                                        if (isTyped)
+                                        {
+                                            if (categoryTypeIndicator)
+                                            {
+                                                <span style="color:#F95050">שם ההכנסה צריך להיות בין 2-18 תווים.</span>
+                                            }
+                                            else
+                                            {
+                                                <span style="color:#F95050">שם ההוצאה צריך להיות בין 2-18 תווים.</span>
+                                            }
+                                        }
+                                    }
+                                </div>
 
                                 @*   ---- TRANS SUM  ----*@
                                 <div class="outerTitleAndDateAndName">
@@ -108,10 +124,33 @@
                                     }
 
                                     <div class="outerBudget">
-                                        <input class="budgetBox" id="description" type="number" @bind="newTransaction.transValue" />
+                                        <input class="budgetBox" id="description" type="number" @bind="newTransaction.transValue" @oninput="transAmount" />
                                         <span class="currency-symbol">₪</span>
                                         <div class="lineBetween"></div>
+                                         <div>
+                                        @if (newTransaction.transValue <= 0)
+                                        {
+                                            if (categoryTypeIndicator)
+                                            {
+                                                if(isTransSumTyped)
+                                                {
+                                                    <span style="color:#F95050">סך ההכנסה לא תקין.</span>
+                                                }
+                                                
+                                            }
+                                            else
+                                            {
+                                                if(isTransSumTyped)
+                                                {
+                                                    <span style="color:#F95050">סך ההוצאה לא תקין.</span>
+                                                }
+                                                
+                                            }
+
+                                        }
                                     </div>
+                                    </div>
+                                   
                                 </div>
 
 
@@ -264,6 +303,12 @@
                                             <option value="אחר">אחר</option>
 
                                         </select>
+                                    </div>
+                                    <div>
+                                        @if (newTransaction.valueType == "" || newTransaction.valueType == null)
+                                        {
+                                            <span style="color:#F95050">לא נבחר אמצעי תשלום.</span>
+                                        }
                                     </div>
                                 </div>
 
@@ -540,53 +585,54 @@
                             <div class="innerPaddingDiv">
                                 <div class="outerTitleAndDateAndName">
                                     <div id="tagTitleAndExp">
-                                    <span class="titleName">תגית</span>
-                                    <img src="./css/images/q-with-shadow.svg" style="height: 3rem;" @onclick="@(()=>expBubbleToolTip("TransTag"))" />
-                                    @if(bottomExpBubbleOpen){
-                                            <TutorialOverlay elementID="TransTag" closeOverlay="closeExpOverlay"></TutorialOverlay>
-                                    }
-                                    </div>
-                                    
-                                  
-                                        @if (chosenTag.id > 0) //existing tag
+                                        <span class="titleName">תגית</span>
+                                        <img src="./css/images/q-with-shadow.svg" style="height: 3rem;" @onclick="@(()=>expBubbleToolTip("TransTag"))" />
+                                        @if (bottomExpBubbleOpen)
                                         {
-                                            <div class="addTagBtn">
-
-                                                <img src="./css/images/after-tag.svg" />
-                                                <span class="tag tagLabel" style="background-color:@chosenTag.tagColor">@chosenTag.tagTitle</span>
-
-                                            </div>
+                                            <TutorialOverlay elementID="TransTag" closeOverlay="closeExpOverlay"></TutorialOverlay>
                                         }
+                                    </div>
+
+
+                                    @if (chosenTag.id > 0) //existing tag
+                                    {
+                                        <div class="addTagBtn">
+
+                                            <img src="./css/images/after-tag.svg" />
+                                            <span class="tag tagLabel" style="background-color:@chosenTag.tagColor">@chosenTag.tagTitle</span>
+
+                                        </div>
+                                    }
 
                                     @*   ---- TAG GALLERY ----*@
-                                        <div class="outerGalleryAndNav">
-                                            <div class="outerGallery">
-                                                        <button class="createTagBtn" @onclick="tagCreationOverlay">תגית חדשה</button>
-                                                @foreach (var tag in GetCurrentPageTags())
-                                                {
-                                                    Console.WriteLine(tag);
-                                                    var fontWeight = (chosenTag == tag) ? "font-weight: 600;" : "";
-                                                    <button class="tag"
+                                    <div class="outerGalleryAndNav">
+                                        <div class="outerGallery">
+                                            <button class="createTagBtn" @onclick="tagCreationOverlay">תגית חדשה</button>
+                                            @foreach (var tag in GetCurrentPageTags())
+                                            {
+                                                Console.WriteLine(tag);
+                                                var fontWeight = (chosenTag == tag) ? "font-weight: 600;" : "";
+                                                <button class="tag"
                                             @onclick="(() => ChooseTagForTrans(tag))"
                                             style="background-color:@tag.tagColor; @fontWeight">
-                                                        @tag.tagTitle
-                                                    </button>
-                                                }
+                                                    @tag.tagTitle
+                                                </button>
+                                            }
 
-                                            </div>
-                                            <div class="outerBtnAndDots">
-                                                <button class="galleryArrow @disBtnStyle" @onclick="PreviousPage"><img src="./css/images/arrow-back.svg" /></button>
-                                                <div class="pageDots">
-                                                    @for (int i = 0; i < totalPages; i++)
-                                                    {
-                                                        <span class="dot @(i == currentPage ? "active" : "")"></span>
-                                                    }
-                                                </div>
-                                                <button class="galleryArrow @disNextBtnStyle" @onclick="NextPage"><img src="./css/images/arrow-next.svg" /></button>
-
-                                            </div>
                                         </div>
-                                   
+                                        <div class="outerBtnAndDots">
+                                            <button class="galleryArrow @disBtnStyle" @onclick="PreviousPage"><img src="./css/images/arrow-back.svg" /></button>
+                                            <div class="pageDots">
+                                                @for (int i = 0; i < totalPages; i++)
+                                                {
+                                                    <span class="dot @(i == currentPage ? "active" : "")"></span>
+                                                }
+                                            </div>
+                                            <button class="galleryArrow @disNextBtnStyle" @onclick="NextPage"><img src="./css/images/arrow-next.svg" /></button>
+
+                                        </div>
+                                    </div>
+
                                 </div>
 
                                 @*   ---- DESCRIPTION TEXTBOX ----*@
@@ -640,38 +686,9 @@
                                 <button class="primery-button" @onclick="saveAndRepeatTransactions" disabled>שמירה והוצאה נוספת</button>
                             }
                             <button class="secondery-button" @onclick="saveAndEndTransactions" disabled>שמירה וסיום</button>
-                            @if (titleInput.Length < 2)
-                            {
-                                if (isTyped)
-                                {
-                                    if (categoryTypeIndicator)
-                                    {
-                                        <span>שם ההכנסה צריך להיות בין 2-18 תווים.</span>
-                                    }
-                                    else
-                                    {
-                                        <span>שם ההוצאה צריך להיות בין 2-18 תווים.</span>
-                                    }
-
-                                }
-
-                            }
-                            else if (newTransaction.transValue <= 0)
-                            {
-                                if (categoryTypeIndicator)
-                                {
-                                    <span>סך ההכנסה לא תקין.</span>
-                                }
-                                else
-                                {
-                                    <span>סך ההוצאה לא תקין.</span>
-                                }
-
-                            }
-                            else if (newTransaction.valueType == "" || newTransaction.valueType == null)
-                            {
-                                <span>לא נבחר אמצעי תשלום.</span>
-                            }
+                           
+                          
+                           
                         </div>
                     }
 
@@ -688,34 +705,7 @@
                     {
                         <div class="outerSaveBtns">
                             <button class="primery-button" @onclick="updateExistingTrans" disabled>שמירה וסיום</button>
-                            @if (titleInput.Length < 2)
-                            {
-                                if (categoryTypeIndicator)
-                                {
-                                    <span>אורך שם ההוצאה לא תקין.</span>
-                                }
-                                else
-                                {
-                                    <span>אורך שם ההכנסה לא תקין.</span>
-                                }
-
-                            }
-                            else if (newTransaction.transValue <= 0)
-                            {
-                                if (categoryTypeIndicator)
-                                {
-                                    <span>סך ההוצאה לא תקין.</span>
-                                }
-                                else
-                                {
-                                    <span>סך ההכנסה לא תקין.</span>
-                                }
-
-                            }
-                            else if (newTransaction.valueType == "" || newTransaction.valueType == null)
-                            {
-                                <span>לא נבחר אמצעי תשלום.</span>
-                            }
+                           
                         </div>
                     }
 
@@ -1153,6 +1143,7 @@
     int currentStreak = 0;
 
     bool isTyped = false;
+    bool isTransSumTyped = false;
 
     private int currentPage = 0;
     private int pageSize = 5;
@@ -3206,13 +3197,14 @@
     public void expBubbleToolTip(string elementName)
     {
         elementToExp = elementName;
-        
-        if(elementName=="Trans"){
+
+        if (elementName == "Trans")
+        {
             topExpBubbleOpen = !topExpBubbleOpen;
         }
-        else if(elementName=="TransTag")
+        else if (elementName == "TransTag")
         {
-            bottomExpBubbleOpen=!bottomExpBubbleOpen;
+            bottomExpBubbleOpen = !bottomExpBubbleOpen;
         }
 
         if (topExpBubbleOpen)
@@ -3229,6 +3221,22 @@
     public void closeExpOverlay()
     {
         topExpBubbleOpen = false;
+    }
+
+     private void transAmount(ChangeEventArgs e)
+    {
+        
+        string transSumInput = e.Value.ToString();
+
+        if(transSumInput.Length == 0)
+        {
+            isTransSumTyped = true;
+        }
+        else
+        {
+            isTransSumTyped = false;
+        }
+        
     }
 
 }
