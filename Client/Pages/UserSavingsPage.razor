@@ -99,7 +99,7 @@
 
 
                     </div>
-                    <div>
+                    <div class="outerDivSaving">
                         <div class="outerTitle">
                             <div class="outerIconAndTitleToShow">
                                 <span class="emoji-circle">
@@ -121,17 +121,17 @@
 
 
                         </div>
-                        @if (savingDetailsToShow.savingLocation!=null && savingDetailsToShow.savingLocation.Length>0)
+                        @if (savingDetailsToShow.savingLocation != null && savingDetailsToShow.savingLocation.Length > 0)
                         {
-                            
-                        <div class="outerSaving">
-                            <span><b>מקום החסכון</b></span>
+
+                            <div class="outerSaving">
+                                <span><b>מקום החסכון</b></span>
 
 
                                 <span class="outerSavingAmount" style="word-break: break-word;"><b> @savingDetailsToShow.savingLocation</b></span>
 
 
-                        </div>
+                            </div>
                         }
                     </div>
 
@@ -191,24 +191,45 @@
                                     </div>
 
                                 </div>
+                                <div>
+                                    @if (editedSaving.savingsTitle == null || editedSaving.savingsTitle == "")
+                                    {
+                                        if (emptySavingTitle)
+                                        {
+                                            <span style="color:#F95050">שם החסכון צריך להיות בין 2-18 תווים</span>
+                                        }
+
+                                    }
+                                </div>
                             </div>
                             <div class="lineBetween"></div>
                         </div>
 
 
 
-                        <div class="outerSaving">
-                            <span><b>סכום חסכון</b></span>
+                        <div class="outerSavingAndMsg">
+
+                            <div class="outerSaving">
+                                <span><b>סכום חסכון</b></span>
 
 
 
-                            <div class="outerSavingsAmountAndShekel">
-                                <input class="outerSavingAmountToEdit" type="number" @bind="@editedSaving.savingsSum" />
-                                <span>₪</span>
+                                <div class="outerSavingsAmountAndShekel">
+                                    <input class="outerSavingAmountToEdit" type="number" @bind="@editedSaving.savingsSum" @oninput="savingSumCounter" />
+                                    <span>₪</span>
 
+                                </div>
                             </div>
 
-
+                            <div>
+                                @if (editedSaving.savingsSum == null || editedSaving.savingsSum == 0)
+                                {
+                                    if (emptySavingSum)
+                                    {
+                                        <span style="color:#F95050">לא ניתן לשמור חסכון ללא סכום</span>
+                                    }
+                                }
+                            </div>
                         </div>
                         <div class="outerSaving">
                             <div> <span><b>מקום החסכון</b></span></div>
@@ -216,27 +237,27 @@
     justify-content: flex-end;">
                                 <div class="counter" style="bottom: 13.7vh;
     z-index: 1;">
-                                @if (saveLocation == null || saveLocation == "")
-                                {
-                                    <span>0/45</span>
-                                }
-                                else
-                                {
-                                    if (saveLocation.Length < 2 || saveLocation.Length > 18)
+                                    @if (saveLocation == null || saveLocation == "")
                                     {
-
-                                        <span>@locationLength/18</span>
+                                        <span>0/45</span>
                                     }
                                     else
                                     {
-                                        <span>@locationLength/18</span>
+                                        if (saveLocation.Length < 2 || saveLocation.Length > 18)
+                                        {
 
+                                            <span>@locationLength/18</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@locationLength/18</span>
+
+                                        }
                                     }
-                                }
-                            </div>
+                                </div>
                                 <input class="catTitle" type="text" maxlength="18" minlength="2" @bind="@saveLocation" @oninput="savingLocationLengthCounter" />
                             </div>
-                            
+
                         </div>
 
                     </div>
@@ -300,40 +321,70 @@
                                     </div>
 
                                 </div>
+                                <div>
+                                    @if (newSaving.savingsTitle == null || newSaving.savingsTitle == "")
+                                    {
+                                        if (emptySavingTitle)
+                                        {
+                                            <span style="color:#F95050">שם החסכון צריך להיות בין 2-18 תווים</span>
+                                        }
+
+                                    }
+                                </div>
                             </div>
                         </div>
-                        <div class="outerSavingToAdd">
-                            <span><b>סכום החסכון</b></span>
-                            <div class="outerSavingsAmountAndShekel">
-                                <input class="outerSavingAmountToAdd" type="number" @bind="newSaving.savingsSum" />
-                                <span>₪</span>
+                        <div class="outerSavingAndMsgSum">
+
+                            <div class="outerSaving">
+                                <span><b>סכום החסכון</b></span>
+
+                                <div class="outerSavingsAmountAndShekel">
+                                    <input class="outerSavingAmountToAdd" type="number" @bind="newSaving.savingsSum" @oninput="savingSumCounter" />
+                                    <span style="text-align: right;
+    width: 1.5rem;
+}">₪</span>
+                                </div>
+
+                            </div>
+                            <div>
+                                @if (newSaving.savingsSum == null || newSaving.savingsSum == 0)
+                                {
+                                    if (emptySavingSum)
+                                    {
+                                        <span style="color:#F95050">לא ניתן לשמור חסכון ללא סכום</span>
+                                    }
+                                }
                             </div>
 
                         </div>
+
                         <div class="outerSavingToAdd">
-                            <div> <span><b>איפה החסכון שלי נמצא?</b></span></div>
-                            <span class="outerSavingsAmountAndShekel">
-                                <input class="outerSavingAmountToAdd" type="text" maxlength="45" minlength="2" @bind="@saveLocation" @oninput="savingLocationLengthCounter" />
+                            <div> <span><b>מקום החסכון</b></span></div>
+                            <div class="outerSumAndCounter">
+                                <span class="outerSavingsAmountAndShekelSum">
+                                <input class="outerSavingAmountToAdd" type="text" maxlength="18" minlength="2" @bind="@saveLocation" @oninput="savingLocationLengthCounter" />
                             </span>
-                            <div class="counter">
+                            <div class="savingCounter">
                                 @if (saveLocation == null || saveLocation == "")
                                 {
-                                    <span>0/45</span>
+                                    <span>0/18</span>
                                 }
                                 else
                                 {
-                                    if (saveLocation.Length < 2 || saveLocation.Length > 45)
+                                    if (saveLocation.Length < 2 || saveLocation.Length > 18)
                                     {
 
-                                        <span>@locationLength/45</span>
+                                        <span>@locationLength/18</span>
                                     }
                                     else
                                     {
-                                        <span>@locationLength/45</span>
+                                        <span>@locationLength/18</span>
 
                                     }
                                 }
                             </div>
+                            </div>
+                            
                         </div>
 
 
@@ -341,7 +392,21 @@
                     </div>
                 </div>
                 <div class="outerSaveSaving">
-                    <button class="primery-button" @onclick="addNewSaving">שמירה וסיום</button>
+
+                    @if (newSaving.savingsTitle == null || newSaving.savingsTitle == "" || newSaving.savingsTitle.Length > 18 || newSaving.savingsTitle.Length < 2)
+                    {
+
+                        <button class="primery-button" style="opacity:0.6">שמירה וסיום</button>
+                    }
+                    else if (newSaving.savingsSum == null || newSaving.savingsSum == 0)
+                    {
+                        <button class="primery-button" style="opacity:0.6">שמירה וסיום</button>
+                    }
+                    else
+                    {
+                        <button class="primery-button" @onclick="addNewSaving">שמירה וסיום</button>
+                    }
+
                 </div>
             </div>
         </div>
@@ -370,6 +435,8 @@
     bool isOpetionsBtnClicked = false;
     bool isEditSavingClicked = false;
     bool deleteBtnClicked = false;
+    bool emptySavingTitle = false;
+    bool emptySavingSum = false;
 
     string titleInput = "";
     string popupBodyText = "";
@@ -500,11 +567,11 @@
         editedSaving.savingsSum = savingDetailsToShow.savingsSum;
         editedSaving.id = savingDetailsToShow.id;
         editedSaving.savingLocation = savingDetailsToShow.savingLocation;
-        if (savingDetailsToShow.savingLocation!=null)
+        if (savingDetailsToShow.savingLocation != null)
         {
-        saveLocation = savingDetailsToShow.savingLocation;
-        locationLength = savingDetailsToShow.savingLocation.Length;
-            
+            saveLocation = savingDetailsToShow.savingLocation;
+            locationLength = savingDetailsToShow.savingLocation.Length;
+
         }
 
     }
@@ -537,8 +604,30 @@
     private void titleLengthCounter(ChangeEventArgs e)
     {
         titleInput = e.Value.ToString();
+        if (titleInput.Length == 0)
+        {
+            emptySavingTitle = true;
+        }
+        else
+        {
+            emptySavingTitle = false;
+        }
         newSaving.savingsTitle = titleInput;
         titleInputLength = titleInput.Length;
+    }
+
+    private void savingSumCounter(ChangeEventArgs e)
+    {
+        string savingSum = e.Value.ToString();
+        if (savingSum.Length == 0)
+        {
+            emptySavingSum = true;
+        }
+        else
+        {
+            emptySavingSum = false;
+        }
+
     }
 
     string saveLocation = "";
@@ -641,7 +730,7 @@
         isAddSavingOverlayClicked = !isAddSavingOverlayClicked;
         titleInputLength = 0;
         newSaving.savingsSum = 0;
-        saveLocation="";
+        saveLocation = "";
         locationLength = 0;
     }
 

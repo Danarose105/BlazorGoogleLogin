@@ -62,7 +62,7 @@
             @if (earliestDate.HasValue)
             {
                 numberOfMonthesToDivide = (12 - earliestDate.Value.Month) + 1;
-               
+
                 @if (numberOfMonthesToDivide > 0)
                 {
                     monthlySavings = sumNeededSavingsPerYear / numberOfMonthesToDivide;
@@ -209,6 +209,18 @@
                                             </div>
 
                                         </div>
+                                        <div>
+                                            @if (newGoal.goalTitle == null || newGoal.goalTitle == "" || newGoal.goalTitle.Length > 18 || newGoal.goalTitle.Length < 2)
+                                            {
+                                                if (emptyGoalTitle)
+                                                {
+                                                    <span style="color:#F95050">שם היעד צריך להיות בין 2-18 תווים</span>
+                                                }
+
+
+                                            }
+
+                                        </div>
                                     </div>
                                 </div>
 
@@ -272,26 +284,62 @@
                                                         <div class="yearOption" @onclick="() => SetYearAndClose(CurrentYear + currentLoopValue)">
                                                             @(CurrentYear + currentLoopValue)
                                                         </div>
-                                                        
+
                                                     }
                                                 </div>
                                             }
                                         </div>
                                     </div>
+                                    <div>
+                                        @if (newGoal.dueYear == null || newGoal.dueYear == 0)
+                                        {
+
+                                            <span style="color:#F95050">לא ניתן לשמור יעד ללא שנה.</span>
+                                        }
+                                    </div>
                                 </div>
 
                                 <div class="SavingAmountToAdd">
-                                    <span><b>סכום היעד</b></span>
-                                    <span class="outerSavingAmount">
-                                        <input class="SavingAmount" type="number" @bind="newGoal.budget" />
-                                        <span>₪</span>
-                                    </span>
+                                    <div class="outerGoalAmount">
+                                        <span><b>סכום היעד</b></span>
+                                        <span class="outerSavingAmount">
+                                            <input class="SavingAmount" type="number" @bind="newGoal.budget" @oninput="goalSumCounter" />
+                                            <span>₪</span>
+                                        </span>
+                                    </div>
+                                    <div>
+                                        @if (newGoal.budget == null || newGoal.budget == 0)
+                                        {
+                                            if (emptyGoalSum)
+                                            {
+                                                <span style="color:#F95050">לא ניתן לשמור יעד ללא סכום.</span>
+                                            }
+
+                                        }
+                                    </div>
 
                                 </div>
+
                             </div>
                         </div>
                         <div class="outerSaveSaving">
-                            <button class="primery-button" @onclick="addNewGoal">שמירה וסיום</button>
+                            @if (newGoal.goalTitle == null || newGoal.goalTitle == "" || newGoal.goalTitle.Length > 18 || newGoal.goalTitle.Length < 2)
+                            {
+                                <button class="primery-button" style="opacity:0.6">שמירה וסיום</button>
+                            }
+                            else if (newGoal.dueYear == null || newGoal.dueYear == 0)
+                            {
+                                <button class="primery-button" style="opacity:0.6">שמירה וסיום</button>
+                            }
+                            else if (newGoal.budget == null || newGoal.budget == 0)
+                            {
+                                <button class="primery-button" style="opacity:0.6">שמירה וסיום</button>
+                            }
+                            else
+                            {
+                                <button class="primery-button" @onclick="addNewGoal">שמירה וסיום</button>
+                            }
+
                         </div>
                     </div>
                 </div>
@@ -353,7 +401,7 @@
                             }
                             else
                             {
-                                
+
 
                                 @foreach (AllUserGoalsToShow goalPerYear in goalsPerYearList)
                                 {
@@ -488,6 +536,15 @@
 
                                     </div>
 
+
+                                </div>
+                                <div>
+                                    @if (editedGoal.goalTitle == null || editedGoal.goalTitle == "" || editedGoal.goalTitle.Length > 18 || editedGoal.goalTitle.Length < 2)
+                                    {
+
+                                        <span style="color:#F95050">שם היעד צריך להיות בין 2-18 תווים</span>
+                                    }
+
                                 </div>
                             </div>
 
@@ -558,7 +615,7 @@
                                                 }
 
 
-                                               
+
                                             </div>
                                         }
                                     </div>
@@ -567,12 +624,27 @@
                         </div>
 
                         <div class="outerSaving">
-                            <span><b>סכום היעד</b></span>
-
+                            
                             <div class="outerSavingAmount">
-                                <input class="savingSum" type="number" @bind="@editedGoal.budget" />
-                                <span>₪</span>
+                                <div class="outerGoalAmount">
+                                    <span><b>סכום היעד</b></span>
+
+                                    <input class="savingSum" type="number" @bind="@editedGoal.budget" @oninput="goalSumCounter" />
+                                    <span>₪</span>
+                                </div>
+                                <div>
+                                    @if (editedGoal.budget == null || editedGoal.budget == 0)
+                                    {
+                                        if (emptyGoalSum)
+                                        {
+                                            <span style="color:#F95050">לא ניתן לשמור יעד ללא סכום.</span>
+                                        }
+
+                                    }
+                                </div>
                             </div>
+
+
                         </div>
 
                         <div class="divBtn">
@@ -580,7 +652,7 @@
                             @if (editedGoal.goalTitle == null || editedGoal.goalTitle == "" || editedGoal.goalTitle.Length > 18 || editedGoal.goalTitle.Length < 2)
                             {
                                 <button class="primery-button" style="opacity:0.6" disabled>שמירת שינויים</button>
-                                <span>לא ניתן לשמור יעד ללא שם.</span>
+
                             }
                             else
                             {
@@ -647,6 +719,9 @@
     bool openISaving = false;
     bool disBtn = false;
     bool disNextBtn = false;
+    bool emptyGoalTitle = false;
+    bool emptyGoalSum = false;
+
     private DateTime? earliestDate;
     string selectedClass = "";
     string titleInput = "";
@@ -751,7 +826,8 @@
             }
 
             widthForProgressBar = savingsForProgressBar.ToString() + "%";
-        }else if (sumGoals==0 && sumSavings==0)
+        }
+        else if (sumGoals == 0 && sumSavings == 0)
         {
             widthForProgressBar = "0%";
         }
@@ -931,7 +1007,32 @@
     private void titleLengthCounter(ChangeEventArgs e)
     {
         titleInput = e.Value.ToString();
+        if (titleInput.Length == 0)
+        {
+            emptyGoalTitle = true;
+        }
+        else
+        {
+            emptyGoalTitle = false;
+        }
+
         titleInputLength = titleInput.Length;
+    }
+
+    private void goalSumCounter(ChangeEventArgs e)
+    {
+        string goaslSum = e.Value.ToString();
+
+        if (goaslSum.Length == 0)
+        {
+            emptyGoalSum = true;
+        }
+        else
+        {
+            emptyGoalSum = false;
+        }
+
+
     }
 
     public async Task saveUpdatedGoal()

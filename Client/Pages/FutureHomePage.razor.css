@@ -463,7 +463,7 @@
     border-radius: 0.25rem;
     background: #6775F4;
     color: #6775F4;
-    width: 11rem;
+    width: 11.5rem;
     height: 2.3rem;
     flex-shrink: 0;
     color: #F9F9F9;
@@ -696,14 +696,13 @@
 }
 
 .outerSavingAmount {
-    border-radius: 0.5rem;
     display: flex;
-    background-color: #F9F9F9;
-    padding: 1vh;
-    font-size: 1.1rem;
-    width: 55%;
-    justify-content: center;
+    background-color: #EDEFF7;
+    border-radius: 0.625rem;
+    padding: 0vh 0;
     align-items: center;
+    flex-direction: column;
+    row-gap: 1vh;
 }
 
 .optionsMenu {
@@ -749,8 +748,8 @@
 
     .counter span {
         color: inherit; /* Inherit color from parent */
-        color: #636363
-    }
+    color: #636363
+}
 
 .outerGoalYearsOptions {
     display: flex;
@@ -835,7 +834,8 @@
 .savingSum {
     border: none;
     padding: 1vh 1vw;
-    width: 80%;
+    width: 53%;
+    border-radius: 0.37rem;
 }
 
 .primery-button {
@@ -1061,9 +1061,25 @@
     display: flex;
     background-color: #EDEFF7;
     border-radius: 0.625rem;
-    padding: 3vh 0;
+    padding: 1vh 0;
     align-items: center;
     justify-content: space-around;
     width: 100%;
     margin-bottom: 3vh;
+    flex-direction: column;
+}
+
+.outerGoalAmount {
+    display: flex;
+    background-color: #EDEFF7;
+    border-radius: 0.625rem;
+    /* padding: 3vh 0; */
+    align-items: center;
+    justify-content: space-around;
+    /* margin: 3vh 0; */
+    width: 100%;
+}
+
+.outerTitle {
+    margin-bottom: 1vh;
 }
