@@ -60,7 +60,16 @@ else
                 <div class="closePopUpBtn">
                     <button class="modal-close-btn" @onclick="()=>streakOverlay=false"><img src="./css/images/close x.svg" /></button>
                 </div>
+                <div id="streakExpAndTitle">
+                    <div id="streakExpBtn">
+                        <span id="qMarkSpan" @onclick="@(()=>expBubbleToolTip("streakPopUp"))"><img src="./css/images/q-with-shadow.svg" /></span>
+                        @if (streakExpBubble)
+                        {
+                             <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+                        }
+                    </div>
                 <div class="mainTitle">כל הכבוד על ההתמדה!</div>
+                </div>
                 <div class="weeklyTransAmount">הזנת השבוע @weeklyTransAmount הוצאות,</div>
                 <div class="mainTitle">שאפו!</div>
                 <div class="outerInfoText">
@@ -86,7 +95,7 @@ else
                 <button class="primery-button">להזנה נוספת</button><br />
                 <div>
                     <img src="@streakImgSrc" />
-                    <span>@streakStatusOpt.IndexOf(streakStatTitle)</span>
+                   @* <span>@streakStatusOpt.IndexOf(streakStatTitle)</span>*@
                 </div>
             </div>
         </div>
@@ -637,6 +646,8 @@ else
     "מטבע ארד", "מטבע כסף", "מטבע זהב", "שטר", "שטרות","גביע","יהלום"
     };
     int nextStreakStatIn = 0;
+    bool streakExpBubble=false;
+
 
     List<CategoryOverDraftCheckToShow> checkOverdraftingCats = new List<CategoryOverDraftCheckToShow>();
     private bool isVisible = false;
@@ -792,8 +803,18 @@ else
 
     public void expBubbleToolTip(string elementName)
     {
-        expBubbleOpen= !expBubbleOpen;
-        if (expBubbleOpen)
+        if (elementName == "streakPopUp")
+        {
+            streakExpBubble = !streakExpBubble;
+            expBubbleOpen=false;
+        }
+        else
+        {
+            expBubbleOpen= !expBubbleOpen;
+            streakExpBubble = false;
+        }
+
+        if (expBubbleOpen || streakExpBubble)
         {
             elementToExp = elementName;
         }
@@ -887,6 +908,8 @@ else
 
                         break;
                 }
+
+                streakOverlay = true;
             }
         }
 

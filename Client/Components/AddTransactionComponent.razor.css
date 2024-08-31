@@ -1465,3 +1465,18 @@ input:disabled, button:disabled {
     text-align: left;
     width: 84%;
 }
+
+#expDivAndTitle {
+    display: flex;
+    flex-direction: row-reverse;
+    width: 100%;
+}
+
+#expDiv {
+    width: 40%;
+}
+
+#qMarkSpan {
+    display: flex;
+    justify-content: flex-end;
+}

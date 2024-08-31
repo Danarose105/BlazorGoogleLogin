@@ -732,7 +732,7 @@
                 <div class="overdraftWindow" id="presentOnboarding5">
                     <div id="expDiv">
 
-                        <div id="expBtn" @onclick="@(()=>expBubbleToolTip("Overdraft"))"><img src="./css/images/q-with-shadow.svg" style="height: 3rem;" /></div>
+                        <div id="expBtn" @onclick="@(()=>expBubbleToolTip("ODwithSubCats"))"><img src="./css/images/q-with-shadow.svg" style="height: 3rem;" /></div>
                         @if (topExpBubbleOpen)
                         {
 
@@ -896,7 +896,16 @@
                         <div class="outerCloseBtn">
                             <button class="modal-close-btn" @onclick="@(async () => await closeOverdraftWindow())"><img src="./css/images/close x.svg" /></button>
                         </div>
+                         <div id="expDiv">
 
+                            <div id="expBtn" @onclick="@(()=>expBubbleToolTip("ODwithNoSubCats"))"><img src="./css/images/q-with-shadow.svg" style="height: 3rem;" /></div>
+                        @if (topExpBubbleOpen)
+                        {
+
+                            <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+                        }
+
+                    </div>
                         <h3 class="titleText">חרגת...</h3>
 
                         <div>

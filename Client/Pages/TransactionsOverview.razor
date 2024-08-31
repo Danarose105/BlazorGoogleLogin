@@ -545,9 +545,17 @@
         <div class="overlay">
             <div class="@overdraftClass">
                 <div class="overdraftWindow">
-
                     <div class="outerText">
+                        <div id="expDivAndTitle">
+                            <div id="expDiv">
+                            <span @onclick="@(()=>expBubbleToolTip("ODwithSubCats"))" id="qMarkSpan"><img src="./css/images/q-with-shadow.svg" /></span>
+                            @if (overdraftExpBubble)
+                            {
+                                <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+                            }
+                            </div>
                         <h3 class="titleText">חרגת...</h3>
+                        </div>
 
                         <div>נראה שהוצאת ב @overDraftSubCategory.subCategoryTitle @closeOverdraftOpts[closeOverdraftOpts.Count-1].remainingBudget ₪ </div>
                         <div>שזה <span><b>@currentGap ₪</b></span> יותר </div>
@@ -723,7 +731,16 @@
                             <button class="modal-close-btn" @onclick="()=>overdraftOverlayOpen = false"><img src="./css/images/close x.svg" /></button>
                         </div>
 
+                        <div id="expDivAndTitle">
+                            <div id="expDiv">
+                            <span @onclick="@(()=>expBubbleToolTip("ODwithNoSubCats"))" id="qMarkSpan"><img src="./css/images/q-with-shadow.svg" /></span>
+                            @if (overdraftExpBubble)
+                            {
+                                <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+                            }
+                            </div>
                         <h3 class="titleText">חרגת...</h3>
+                        </div>
 
                         <div>
                             אין תתי קטגוריות בעלות תקציב
@@ -1714,6 +1731,7 @@
     OverBudgetToShow chosenSubCategory = new OverBudgetToShow();
     bool openSubCatsOptions = false;
     bool overdraftNotTreated = false;
+    bool overdraftExpBubble = false;
 
 
 
@@ -1885,7 +1903,20 @@
         }
 
         Console.WriteLine(overdraftClass);
+    }
 
-        //titleInputLength = titleInput.Length;
+    string elementToExp = "";
+    public void expBubbleToolTip(string elementName)
+    {
+        overdraftExpBubble = !overdraftExpBubble;
+        if (overdraftExpBubble)
+        {
+            elementToExp = elementName;
+        }
+    }
+
+        public void closeExpOverlay()
+    {
+        overdraftExpBubble = false;
     }
 }
