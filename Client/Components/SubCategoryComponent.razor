@@ -143,35 +143,54 @@
                                         }
                                     </div>
                                 </div>
-                            </div>
 
+                            </div>
                         </div>
                     </div>
-                    <div class="outerExp">
-                            <div id="expDiv">
-                                <div id="expBtn" @onclick="@(()=>expBubbleToolTip("editSubCat"))"><img src="./css/images/q-with-shadow.svg" style="height: 3rem;" /></div>
-                                @if (expBubbleOpen)
+                    <div>
+                                @if (!categoryTypeIndicator)
                                 {
+                                    if (titleInput == null || titleInput == "" || titleInput.Length <= 0 || subCatToEdit.subCategoryTitle.Length <= 0)
+                                    {
+                                        if (isTyped)
+                                        {
 
-                                    <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+                                            <span style="color:#F95050">שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
+                                        }
+                                    }
+                                    else if (isSameName)
+                                    {
+
+                                        <span style="color:#F95050">קיימת תת קטגוריה בעלת אותו שם</span>
+
+                                    }
                                 }
                             </div>
-                    <label class="titleName" for="description">מה התקציב החודשי שלך עבור "@subCatToEdit.subCategoryTitle"?</label>
+                    <div class="outerExp">
+                        <div id="expDiv">
+                            <div id="expBtn" @onclick="@(()=>expBubbleToolTip("editSubCat"))"><img src="./css/images/q-with-shadow.svg" style="height: 3rem;" /></div>
+                            @if (expBubbleOpen)
+                            {
+
+                                <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+                            }
                         </div>
+                        <label class="titleName" for="description">מה התקציב החודשי שלך עבור "@subCatToEdit.subCategoryTitle"?</label>
+                    </div>
                     <div class="outerBudget">
-                       <input class="budgetBox" type="number" id="description" @oninput="SubCatBudgetInput" @bind="subCatToEdit.monthlyPlannedBudget" />
+                        <input class="budgetBox" type="number" id="description" @oninput="SubCatBudgetInput" @bind="subCatToEdit.monthlyPlannedBudget" />
                         <span class="currency-symbol">₪</span>
                         <br />
                         @*@if (ogBudget < 0)
-                        {
-                            <span>הקטנת את התקציב ב- @(Math.Round((ogBudget * -1), 2))%.</span>
-                            <br />
-                        }
-                        else if (ogBudget > 0)
-                        {
-                            <span>הגדלת את התקציב ב- @(Math.Round(ogBudget, 2))%.</span>
-                            <br />
-                        }*@
+                {
+                <span>הקטנת את התקציב ב- @(Math.Round((ogBudget * -1), 2))%.</span>
+                <br />
+                }
+                else if (ogBudget > 0)
+                {
+                <span>הגדלת את התקציב ב- @(Math.Round(ogBudget, 2))%.</span>
+                <br />
+                }*@
 
 
                         <div class="lineBetween"></div>
@@ -180,19 +199,28 @@
                             @if (ogBudget < 0)
                             {
                                 <span>הקטנת את התקציב ב- @(Math.Round((ogBudget * -1), 2))%.</span>
-                                <br />
+
                             }
                             else if (ogBudget > 0)
                             {
                                 <span>הגדלת את התקציב ב- @(Math.Round(ogBudget, 2))%.</span>
-                                <br />
+
                             }
+                            <div>
+
+                                @if (subCatToEdit.monthlyPlannedBudget <= 0 || subCatToEdit.monthlyPlannedBudget == null)
+                                {
+
+                                    <span style="color:#F95050">לא ניתן לשמור תת קטגוריה ללא תקציב .</span>
+                                }
+                            </div>
                         </div>
+
                     </div>
 
                     <div class="outerImportance">
-                        
-                            <label class="titleName" for="importance">עדיפות תת הקטגוריה</label>
+
+                        <label class="titleName" for="importance">עדיפות תת הקטגוריה</label>
                         <div class="outerBtns">
                             <div class="importanceBtns">
                                 @if (subCatToEdit.importance == 0)
@@ -226,6 +254,12 @@
                                     <label for="must">חובה</label>
                                 }
                             </div>
+                            <div>
+                                @if (subCatToEdit.importance > 2 || subCatToEdit.importance < 0)
+                                {
+                                    <span style="color:#F95050">לא ניתן לשמור תת קטגוריה ללא הגדרת עדיפות .</span>
+                                }
+                            </div>
                         </div>
                     </div>
 
@@ -253,9 +287,28 @@
 
                                 }
                             </div>
-                        </div>
 
+                        </div>                       
                     </div>
+                    <div>
+                            @if (!categoryTypeIndicator)
+                            {
+                                if (titleInput == null || titleInput == "" || titleInput.Length <= 0 || subCatToEdit.subCategoryTitle.Length <= 0)
+                                {
+                                    if (isTyped)
+                                    {
+
+                                        <span style="color:#F95050">שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
+                                    }
+                                }
+                                else if (isSameName)
+                                {
+
+                                    <span style="color:#F95050">קיימת תת קטגוריה בעלת אותו שם</span>
+
+                                }
+                            }
+                        </div>
                 }
 
 
@@ -279,8 +332,7 @@
                                     <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הוצאה</button>
                                     <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
                                 }
-                                <br />
-                                <span>שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
+
                             }
                             else
                             {
@@ -311,17 +363,13 @@
                                 <button class="secondery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
                             }
 
-                            <br />
-                            <span>לא ניתן לשמור תת קטגוריה ללא תקציב .</span>
+
                         }
                         else if (isSameName)
                         {
 
-
                             <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הזנה</button>
                             <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
-                            
-                            <span>קיימת תת קטגוריה בעלת אותו שם</span>
 
                         }
                         else if (subCatToEdit.importance > 2 || subCatToEdit.importance < 0)
@@ -336,8 +384,7 @@
                                 <button class="primery-button" @onclick="EditSubCategoryAndTransaction" disabled>שמירה ויצירת הוצאה</button>
                                 <button class="secondery-button" @onclick="saveUpdatedSubCat" disabled>שמירה וסיום</button>
                             }
-                            <br />
-                            <span>לא ניתן לשמור תת קטגוריה ללא הגדרת עדיפות .</span>
+
                         }
                         else
                         {
@@ -374,8 +421,7 @@
                                     <button class="primery-button" style="opacity:60%" disabled>שמירה ויצירת הוצאה</button>
                                     <button class="secondery-button" style="opacity:60%" disabled>שמירה וסיום</button>
                                 }
-                                <br />
-                                <span>שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
+
                             }
                             else
                             {
@@ -397,10 +443,12 @@
                         {
                             if (categoryTypeIndicator)
                             {
-                                 <button class="primery-button" @onclick="EditSubCategoryAndTransaction">שמירה ויצירת הכנסה</button>
+                                <button class="primery-button" @onclick="EditSubCategoryAndTransaction">שמירה ויצירת הכנסה</button>
                                 <button class="secondery-button" @onclick="saveUpdatedSubCat">שמירה וסיום</button>
-                                
-                            }else{
+
+                            }
+                            else
+                            {
                                 <button class="primery-button" @onclick="EditSubCategoryAndTransaction">שמירה ויצירת הוצאה</button>
                                 <button class="secondery-button" @onclick="saveUpdatedSubCat">שמירה וסיום</button>
                             }
@@ -505,7 +553,7 @@
     double ogBudget = 0;
     double? subCatTransTotal = 0;
 
-     bool isSameName = false;
+    bool isSameName = false;
     string ogSubCatName = "";
 
     private string _previousColor = "##INITIAL##";
@@ -882,7 +930,7 @@
     {
         isTyped = true;
 
-         var subCatsListRes = await Http.GetAsync("api/Present/userSubCategoriesList/" + categoryID);
+        var subCatsListRes = await Http.GetAsync("api/Present/userSubCategoriesList/" + categoryID);
         if (subCatsListRes.IsSuccessStatusCode)
         {
             userSubCategories = subCatsListRes.Content.ReadFromJsonAsync<List<SubCategoryToShow>>().Result;
