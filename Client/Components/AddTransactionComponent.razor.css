@@ -810,6 +810,8 @@ input:disabled, button:disabled {
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 100%;
+    justify-content: space-around;
 }
 
 .titleText{
@@ -1466,17 +1468,28 @@ input:disabled, button:disabled {
     width: 84%;
 }
 
-#expDivAndTitle {
+.expDivAndTitle {
     display: flex;
     flex-direction: row-reverse;
     width: 100%;
 }
 
-#expDiv {
+.expDiv {
     width: 40%;
 }
 
-#qMarkSpan {
+.expBtn {
     display: flex;
     justify-content: flex-end;
+}
+
+.qMarkSpan {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.outerCloseBtn {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
 }
