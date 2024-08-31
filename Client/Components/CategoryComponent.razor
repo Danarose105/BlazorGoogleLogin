@@ -326,7 +326,9 @@
                                         <span>שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
                                     }
 
-                                else if (titleInputExists)
+                            }
+
+                                @*else if (titleInputExists)
                                 {
 
                                     <span>קיימת תת קטגוריה בעלת אותו שם</span>
@@ -339,9 +341,23 @@
                                 {
                                     <span>בחרו עדיפות לתת קטגוריה זו.</span>
 
-                                }
+                                }*@
 
-                            }
+                                else if (titleInputExists)
+                                {
+                                    
+                                    <span>קיימת תת קטגוריה בעלת אותו שם</span>
+                                }
+                                else if (newSubCategory.monthlyPlannedBudget < 0)
+                                {
+                                    <span>תקציב תת קטגוריה צריך להיות גדול מאפס.</span>
+                                }
+                                else if (newSubCategory.importance < 0 && !categoryTypeIndicator || newSubCategory.importance > 2 && !categoryTypeIndicator)
+                                {
+                                    <span>בחרו עדיפות לתת קטגוריה זו.</span>
+                                    
+                                }
+                            
                         }
                     }
                     else

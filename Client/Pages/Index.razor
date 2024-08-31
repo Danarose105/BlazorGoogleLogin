@@ -164,10 +164,31 @@
                                         </div>
                                     </div>
                                     <div>
-                                        @if (newUser.monthStartDate <= 0 || newUser.profilePicOrIcon == null || newUser.profilePicOrIcon == "" || newUser.firstName == null || newUser.firstName == "")
+                                        @if (newUser.monthStartDate <= 0 || newUser.profilePicOrIcon == null || newUser.profilePicOrIcon == "" || newUser.firstName == null || newUser.firstName == "" || newUser.lastName == null || newUser.lastName == "")
                                         {
 
                                             <button class="primery-button" disabled style="opacity:60%;">שמירה                                </button>
+
+                                             <span>
+
+
+                                                @if (newUser.monthStartDate <= 0)
+                                                {
+                                                    <span>יש לבחור תאריך תחילת תזרים</span>
+                                                }
+                                                else if (newUser.profilePicOrIcon == null || newUser.profilePicOrIcon == "")
+                                                {
+                                                    <span>יש לבחור תאריך אייקון</span>
+                                                }
+                                                else if (newUser.firstName == null || newUser.firstName == "")
+                                                {
+                                                    <span>יש לבחור שם פרטי</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>יש לבחור שם משפחה</span>
+                                                }
+                                            </span>
 
                                         }
                                         else
@@ -221,7 +242,7 @@
         background-color: #6775F4;
         padding: 10rem;
         /*  z-index: 5;
-                        position:relative;*/
+         position:relative;*/
     }
 
 

@@ -149,7 +149,7 @@
 
 
                         <div>
-                            <button class="backArrow" @onclick="()=> isEditSavingClicked = !isEditSavingClicked"><img src="./css/images/back-repeated.svg" /></button>
+                            <button class="backArrow" @onclick="closeEditAndDeleteOpt"><img src="./css/images/back-repeated.svg" /></button>
                         </div>
 
                     </div>
@@ -475,9 +475,16 @@
     void showSavingDetails(AllUserSavingsToShow savingFullDetails)
     {
         OpenSavingDetails = true;
+        isOpetionsBtnClicked = false;
         saveLocation = "";
         locationLength = 0;
         savingDetailsToShow = savingFullDetails;
+    }
+
+    void closeEditAndDeleteOpt()
+    {
+        isOpetionsBtnClicked = false;
+        isEditSavingClicked = !isEditSavingClicked;
     }
 
     public void OpetionsBtnClicked()
@@ -638,11 +645,7 @@
         locationLength = 0;
     }
 
-    void closeEditAndDeleteOpt()
-    {
-        isOpetionsBtnClicked = false;
-        isEditSavingClicked = !isEditSavingClicked;
-    }
+
 
     private async Task getCurrentStreak()
     {
