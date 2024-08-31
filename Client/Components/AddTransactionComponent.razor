@@ -728,7 +728,7 @@
     @*---- OVERDRAFT POPUP ----*@
     @if (overdraftDetected && closeOverdraftOpts.Count > 1)
     {
-        @* && closeOverdraftOpts[closeOverdraftOpts.Count - 1].id != subCategoryIDTOGet*@
+      
         <div class="overlay">
             <div class="outerOverdraft">
                 <div class="overdraftWindow" id="presentOnboarding5">
@@ -3049,7 +3049,7 @@
     {
         if (userID > 0)
         {
-            var streakDataRes = await Http.GetAsync("api/Present/checkCurrentStreak/" + userID);
+            var streakDataRes = await Http.GetAsync("api/Present/checkCurrentStreak/" + userID); //checking streak by week amount and tran count
             if (streakDataRes.IsSuccessStatusCode)
             {
                 List<TransAmountByWeekToShow> transCountByWeeksList = new List<TransAmountByWeekToShow>();
@@ -3058,7 +3058,7 @@
                 currentStreak = 0;
                 foreach (TransAmountByWeekToShow week in transCountByWeeksList)
                 {
-                    if (week.transactionCount > 3)
+                    if (week.transactionCount >= 3)
                     {
                         currentStreak++;
                     }
@@ -3080,6 +3080,8 @@
                         {
                             int statInDB = streakStatusOpt.IndexOf(getCurrentStat);
                             int newerStat = streakStatusOpt.IndexOf(streakStatus);
+
+
                             if (newerStat > statInDB)
                             {
                                 //take the new status

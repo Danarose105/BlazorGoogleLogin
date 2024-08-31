@@ -35,13 +35,13 @@ else
             <div style="font-weight: 600;">אז איך מתמצאים פה?</div>
             <div>
                 <span>לאורך השימוש, לחיצה על אייקון סימן השאלה תציג הסברים קצרים.</span>
-              
+
             </div>
             <div style="text-align: center; margin-top: 16vh;">
                 <img src="./css/images/q-with-bg.svg" style="height:10vh" />
             </div>
-                        <div style="text-align: center; margin-top: 25vh;">
-                        @* לחבר לפונקציה שמעדכנת את הDB וסוגרת את האוברליי*@
+            <div style="text-align: center; margin-top: 25vh;">
+                @* לחבר לפונקציה שמעדכנת את הDB וסוגרת את האוברליי*@
                 <button class="primery-button" @onclick="PassOnboarding">בואו נתחיל!</button>
             </div>
         </div>
@@ -65,10 +65,10 @@ else
                         <span id="qMarkSpan" @onclick="@(()=>expBubbleToolTip("streakPopUp"))"><img src="./css/images/q-with-shadow.svg" /></span>
                         @if (streakExpBubble)
                         {
-                             <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+                            <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
                         }
                     </div>
-                <div class="mainTitle">כל הכבוד על ההתמדה!</div>
+                    <div class="mainTitle">כל הכבוד על ההתמדה!</div>
                 </div>
                 <div class="weeklyTransAmount">הזנת השבוע @weeklyTransAmount הוצאות,</div>
                 <div class="mainTitle">שאפו!</div>
@@ -95,7 +95,7 @@ else
                 <button class="primery-button">להזנה נוספת</button><br />
                 <div>
                     <img src="@streakImgSrc" />
-                   @* <span>@streakStatusOpt.IndexOf(streakStatTitle)</span>*@
+                    @* <span>@streakStatusOpt.IndexOf(streakStatTitle)</span>*@
                 </div>
             </div>
         </div>
@@ -646,7 +646,7 @@ else
     "מטבע ארד", "מטבע כסף", "מטבע זהב", "שטר", "שטרות","גביע","יהלום"
     };
     int nextStreakStatIn = 0;
-    bool streakExpBubble=false;
+    bool streakExpBubble = false;
 
 
     List<CategoryOverDraftCheckToShow> checkOverdraftingCats = new List<CategoryOverDraftCheckToShow>();
@@ -796,7 +796,7 @@ else
         var userPassReq = await Http.GetAsync("api/Present/passOnboarding/" + userID);
         if (userPassReq.IsSuccessStatusCode)
         {
-            isDisabled=false;
+            isDisabled = false;
             tutorialActive = false;
         }
     }
@@ -806,11 +806,11 @@ else
         if (elementName == "streakPopUp")
         {
             streakExpBubble = !streakExpBubble;
-            expBubbleOpen=false;
+            expBubbleOpen = false;
         }
         else
         {
-            expBubbleOpen= !expBubbleOpen;
+            expBubbleOpen = !expBubbleOpen;
             streakExpBubble = false;
         }
 
@@ -909,7 +909,7 @@ else
                         break;
                 }
 
-              
+
             }
         }
 
@@ -1033,7 +1033,7 @@ else
         {
             budgetPercentage = currentUser.budgetFullValue;
             double? ogBudget = currentUser.spendingValueFullList / (budgetPercentage / 100);
-            if (!isChecked)
+            if (!isChecked) //means it's an expense
             {
                 currentUser.spendingValueFullList += transValue;
                 Console.WriteLine("isChecked- " + isChecked + ", transValue- " + transValue);
@@ -1044,13 +1044,12 @@ else
 
 
             }
-            else
+            else //means it's an income
             {
                 currentUser.incomeValueFullList += transValue;
                 //Console.WriteLine("isChecked- " + isChecked + ", transValue- " + transValue);
             }
             Console.WriteLine("isChecked- " + isChecked + ", transValue- " + transValue + ", currentUser.budgetFullValue- " + currentUser.budgetFullValue);
-
 
         }
 
@@ -1323,7 +1322,7 @@ else
                 currentStreak = 0;
                 foreach (TransAmountByWeekToShow week in transCountByWeeksList)
                 {
-                    if (week.transactionCount > 3)
+                    if (week.transactionCount >= 3)
                     {
                         currentStreak++;
                     }
@@ -1412,8 +1411,13 @@ else
         Console.WriteLine("streak status got to present home page, new status is: " + newStreakStat);
         if (newStreakStat != null)
         {
-            streakStatTitle = newStreakStat;
-            await getStreakDetails();
+
+            if (newStreakStat != streakStatTitle)
+            {
+                streakStatTitle = newStreakStat;
+                await getStreakDetails();
+            }
+
         }
     }
 
