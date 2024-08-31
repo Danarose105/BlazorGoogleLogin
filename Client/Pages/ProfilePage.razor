@@ -260,7 +260,7 @@
 
                         <button class="addTagBtn" @onclick="addNewTag">
                             <div class="addTagText">
-                                הוספת תגית
+                                יצירת תגית
                             </div>
                             <img class="addTagImg" src="./css/images/add-new-tag (1).svg" />
                         </button>
@@ -275,7 +275,7 @@
                         {
                             <button class="addTagBtn" @onclick="addNewTag">
                                 <div class="addTagText">
-                                    הוספת תגית
+                                    יצירת תגית
                                 </div>
                                 <img class="addTagImg" src="./css/images/add-new-tag (1).svg" />
                             </button>
@@ -395,7 +395,7 @@
         </div>
 
     }
-   
+
 </div>
 @if (!editBtnClicked)
 {
@@ -450,6 +450,17 @@
 
                                     </div>
                                 </div>
+
+                                <div>
+                                    @if (currentTagName == null || currentTagName == "")
+                                    {
+                                        if (emptyTagName)
+                                        {
+                                            <span style="color:#F95050">שם התגית צריך להיות בין 2-18 תווים</span>
+                                        }
+
+                                    }
+                                </div>
                             </div>
 
                         }
@@ -458,7 +469,7 @@
 
                             <div class="outerTitleAndIcon">
                                 <button class="closeOverlay" @onclick="closeTagsOverlay"><img src="./css/images/close x.svg" /></button>
-                                <h3 class="titleName" style="font-size: 1.2rem;">הוספת תגית</h3>
+                                <h3 class="titleName" style="font-size: 1.2rem;">יצירת תגית</h3>
                             </div>
 
 
@@ -477,6 +488,16 @@
                                         }
 
                                     </div>
+                                </div>
+                                <div>
+                                    @if (currentTagName == null || currentTagName == "")
+                                    {
+                                        if (emptyTagName)
+                                        {
+                                            <span style="color:#F95050">שם התגית צריך להיות בין 2-18 תווים</span>
+                                        }
+
+                                    }
                                 </div>
                             </div>
                         }
@@ -512,22 +533,26 @@
                             <br />
                         </div>
 
-                        @if (isEdit)
+                        @if(emptyTagName)
+                        {
+                            
+                            <div class="outerSaveBtns">
+                            <button class="primery-button" style="opacity:60%" disabled>שמירה וסיום</button>
+                            </div>
+                        }
+                        else if (isEdit)
                         {
                             <div class="outerSaveBtns">
                                 @if (tagToEdit.tagTitle != "")
                                 {
                                     <button class="primery-button" @onclick="updateTag">שמירה וסיום</button>
                                 }
-                                else
-                                {
-                                    <button class="primery-button" style="opacity:60%" @onclick="updateTag" disabled>שמירה וסיום</button>
-                                }
+                               
                             </div>
 
 
                         }
-                        else
+                        else 
                         {
 
                             <div class="outerSaveBtns">
@@ -537,9 +562,13 @@
                                     {
                                         <button class="primery-button" @onclick="addTag">שמירה וסיום</button>
                                     }
+                                    else if (currentTagName == null || currentTagName == "")
+                                    {
+                                        <button class="primery-button" style="opacity:60%" disabled>שמירה וסיום</button>
+                                    }
                                     else
                                     {
-                                        <button class="primery-button" style="opacity:60%" @onclick="addTag" disabled>שמירה וסיום</button>
+                                        <button class="primery-button" style="opacity:60%" disabled>שמירה וסיום</button>
                                     }
                                 }
                                 else
@@ -547,6 +576,10 @@
                                     if ((tagToEdit.tagTitle != "" || tagToEdit.tagTitle != null))
                                     {
                                         <button class="primery-button" @onclick="async ()=> await addFirstTagToDB()">שמירה וסיום</button>
+                                    }
+                                    else if (tagToEdit.tagTitle == "" || tagToEdit.tagTitle == null)
+                                    {
+                                        <button class="primery-button" style="opacity:60%" disabled>שמירה וסיום</button>
                                     }
                                     else
                                     {
@@ -614,6 +647,7 @@
     bool isTagColor = true;
     bool isEdit = false;
     bool isColorClicked = false;
+    bool emptyTagName = false;
     string OgColor = "";
     string disBtnStyle => disBtn ? "disBtn" : "";
     string disNextBtnStyle => disNextBtn ? "disBtn" : "";
@@ -1088,8 +1122,27 @@
     private void tagTitleLengthCheck(ChangeEventArgs e)
     {
         currentTagName = e.Value.ToString();
+
+        if (currentTagName.Length == 0)
+        {
+            emptyTagName = true;
+        }
+        else
+        {
+            emptyTagName = false;
+        }
+
         //tagToEdit.tagTitle = currentTagName;
         tagNameLength = currentTagName.Length;
+
+        if (tagNameLength == 0)
+        {
+            emptyTagName = true;
+        }
+        else
+        {
+            emptyTagName = false;
+        }
         //tagTitleInputLength = tagToEdit.tagTitle.Length;
 
     }
