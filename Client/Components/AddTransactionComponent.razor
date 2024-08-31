@@ -960,7 +960,18 @@
 
                                     </div>
                                 </div>
+                                <div>
+                                     @if (currentTagName == null || currentTagName == "")
+                                    {
+                                        if (emptyTagName)
+                                        {
+                                            <span style="color:#F95050">שם התגית צריך להיות בין 2-18 תווים</span>
+                                        }
+
+                                    }
+                                </div>
                             </div>
+
                             <div class="outerNameAndColor">
                                 <div>צבע התגית:</div>
                                 <div class="outerColors">
@@ -1163,6 +1174,7 @@
 
     bool isTyped = false;
     bool isTransSumTyped = false;
+    bool emptyTagName = false;
 
     private int currentPage = 0;
     private int pageSize = 5;
@@ -2641,7 +2653,14 @@
     private void tagTitleLengthCheck(ChangeEventArgs e)
     {
         currentTagName = e.Value.ToString();
-
+        if(currentTagName.Length == 0)
+        {
+            emptyTagName = true;
+        }
+        else
+        {
+            emptyTagName = false;
+        }
         tagNameLength = currentTagName.Length;
         createdTag.tagTitle = currentTagName;
 
