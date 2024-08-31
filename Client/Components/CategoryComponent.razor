@@ -216,8 +216,56 @@
                             </div>
                         </div>
                     </div>
-                    
-                    
+
+                    <div>
+                        @if (titleInput.Length < 2 || titleInput.Length > 18)
+                        {
+                            if (isTyped)
+                            {
+
+                                <span style="color:#F95050">שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
+                            }
+
+                        }
+
+
+                        else if (titleInputExists)
+                        {
+                            if (categoryTypeIndicator)
+                            {
+                                <div>
+
+                                    <span style="color:#F95050">קיימת תת קטגוריה בעלת אותו שם</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div>
+
+                                    <span style="color:#F95050">קיימת תת קטגוריה בעלת אותו שם</span>
+                                </div>
+                            }
+
+                        }
+
+
+
+
+                        @if (titleInput.Length <= 2 && titleInput.Length > 18)
+                        {
+
+                            <div>
+
+                                <span style="color:#F95050">אורך שם תת הקטגוריה לא תקין.</span>
+                            </div>
+                        }
+
+                    </div>
+
+
+
+
+
 
                     @if (!categoryTypeIndicator)
                     {
@@ -226,12 +274,20 @@
                             <label class="titleName" for="description">מה התקציב החודשי שלך עבור @newSubCategory.subCategoryTitle? </label>
 
                             <div class="outerBudget">
-                                <input class="budgetBox" type="number" id="description" @bind="newSubCategory.monthlyPlannedBudget" />
+                                <input class="budgetBox" type="number" id="description" @bind="newSubCategory.monthlyPlannedBudget" @oninput="SubCatAmount" />
                                 <span class="currency-symbol">₪</span>
                                 <div class="lineBetween"></div>
                             </div>
 
                         </div>
+                        <div>
+
+                            @if (isSumTyped)
+                            {
+                                <span style="color:#F95050">תקציב תת קטגוריה צריך להיות גדול מ-0.</span>
+                            }
+                        </div>
+
                         <div id="importanceExp">
                             <div class="outerImportance">
 
@@ -261,7 +317,15 @@
                                     </div>
                                 </div>
                             </div>
-                        
+
+                            <div>
+                                @if (newSubCategory.importance < 0 && !categoryTypeIndicator || newSubCategory.importance > 2 && !categoryTypeIndicator)
+                                {
+                                    <span style="color:#F95050">בחרו עדיפות לתת קטגוריה זו.</span>
+
+                                }
+                            </div>
+
 
                             <div class="outerExample">
                                 <div>
@@ -319,47 +383,6 @@
                                     <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
                                 }
                             </div>
-
-                            @if (titleInput.Length < 2 || titleInput.Length > 18)
-                            {
-                                    if (isTyped)
-                                    {
-
-                                        <span>שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
-                                    }
-
-                            }
-
-                                @*else if (titleInputExists)
-                                {
-
-                                    <span>קיימת תת קטגוריה בעלת אותו שם</span>
-                                }
-                                else if (newSubCategory.monthlyPlannedBudget < 0)
-                                {
-                                    <span>תקציב תת קטגוריה צריך להיות גדול מאפס.</span>
-                                }
-                                else if (newSubCategory.importance < 0 && !categoryTypeIndicator || newSubCategory.importance > 2 && !categoryTypeIndicator)
-                                {
-                                    <span>בחרו עדיפות לתת קטגוריה זו.</span>
-
-                                }*@
-
-                                else if (titleInputExists)
-                                {
-                                    
-                                    <span>קיימת תת קטגוריה בעלת אותו שם</span>
-                                }
-                                else if (newSubCategory.monthlyPlannedBudget < 0)
-                                {
-                                    <span>תקציב תת קטגוריה צריך להיות גדול מאפס.</span>
-                                }
-                                else if (newSubCategory.importance < 0 && !categoryTypeIndicator || newSubCategory.importance > 2 && !categoryTypeIndicator)
-                                {
-                                    <span>בחרו עדיפות לתת קטגוריה זו.</span>
-                                    
-                                }
-                            
                         }
                     }
                     else
@@ -368,19 +391,19 @@
                         {
                             if (categoryTypeIndicator)
                             {
-                            <div class="outerSaveBtns">
-                                <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הכנסה</button>
-                                <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
-                                <span> שם תת הקטגוריה כבר קיים.</span>
-                            </div>
+                                <div class="outerSaveBtns">
+                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הכנסה</button>
+                                    <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
+
+                                </div>
                             }
                             else
                             {
-                            <div class="outerSaveBtns">
-                                <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הוצאה</button>
-                                <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
-                                <span> שם תת הקטגוריה כבר קיים.</span>
-                            </div>
+                                <div class="outerSaveBtns">
+                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הוצאה</button>
+                                    <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
+
+                                </div>
                             }
 
                         }
@@ -388,31 +411,31 @@
                         {
                             if (titleInput.Length >= 2 && titleInput.Length < 19)
                             {
-                            <div class="outerSaveBtns">
-                                <button class="primery-button" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הכנסה</button>
-                                <button class="secondery-button" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
-                            </div>
+                                <div class="outerSaveBtns">
+                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction">שמירה ויצירת הכנסה</button>
+                                    <button class="secondery-button" @onclick="addSubCategoryAndEnd">שמירה וסיום</button>
+                                </div>
                             }
                             else
                             {
-                            <div class="outerSaveBtns">
-                                <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הוצאה</button>
-                                <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
-                                <span>אורך שם תת הקטגוריה לא תקין.</span>
-                            </div>
+                                <div class="outerSaveBtns">
+                                    <button class="primery-button" @onclick="addSubCategoryAndTransaction" disabled>שמירה ויצירת הוצאה</button>
+                                    <button class="secondery-button" @onclick="addSubCategoryAndEnd" disabled>שמירה וסיום</button>
+
+                                </div>
                             }
                         }
 
                     }
 
+                </div>
             </div>
         </div>
-    </div>
     }
 
     @if (openTransactionOverlay)
     {
-    <AddTransactionComponent subCategoryTitle="@newSubCatTitle" subCategoryIDTOGet="@newSubCatID" isTransactionOverlayOpen="AddTransOverlay" userID="@userID" updatedStreak="updateStreak"></AddTransactionComponent>
+        <AddTransactionComponent subCategoryTitle="@newSubCatTitle" subCategoryIDTOGet="@newSubCatID" isTransactionOverlayOpen="AddTransOverlay" userID="@userID" updatedStreak="updateStreak"></AddTransactionComponent>
     }
 </div>
 
@@ -518,6 +541,7 @@
     bool openTransactionOverlay = false;
     bool isOpetionsBtnClicked = false;
     bool isTyped = false;
+    bool isSumTyped = false;
 
 
     List<SubCategoryToShow> subCategories = new List<SubCategoryToShow>();
@@ -943,6 +967,22 @@
         {
             titleInputExists = false;
         }
+    }
+
+     private void SubCatAmount(ChangeEventArgs e)
+    {
+        
+        string sumInput = e.Value.ToString();
+
+        if(sumInput.Length == 0)
+        {
+            isSumTyped = true;
+        }
+        else
+        {
+            isSumTyped = false;
+        }
+        
     }
     //--------------------//
 
