@@ -14,7 +14,7 @@
     display: flex;
     bottom: 0;
     position: fixed;
-    z-index: 4;
+    z-index: 1000;
     width: 100%;
 }
 
@@ -418,4 +418,8 @@
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+}
+
+.errorMsg{
+
 }

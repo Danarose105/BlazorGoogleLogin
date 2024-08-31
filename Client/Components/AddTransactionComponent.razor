@@ -95,6 +95,22 @@
                                     </div>
                                     <input type="date" @bind="newTransaction.transDate" class="custom-date-input" />
                                 </div>
+                                <div>
+                                    @if (titleInput.Length < 2)
+                                    {
+                                        if (isTyped)
+                                        {
+                                            if (categoryTypeIndicator)
+                                            {
+                                                <span style="color:#F95050">שם ההכנסה צריך להיות בין 2-18 תווים.</span>
+                                            }
+                                            else
+                                            {
+                                                <span style="color:#F95050">שם ההוצאה צריך להיות בין 2-18 תווים.</span>
+                                            }
+                                        }
+                                    }
+                                </div>
 
                                 @*   ---- TRANS SUM  ----*@
                                 <div class="outerTitleAndDateAndName">
@@ -108,10 +124,33 @@
                                     }
 
                                     <div class="outerBudget">
-                                        <input class="budgetBox" id="description" type="number" @bind="newTransaction.transValue" />
+                                        <input class="budgetBox" id="description" type="number" @bind="newTransaction.transValue" @oninput="transAmount" />
                                         <span class="currency-symbol">₪</span>
                                         <div class="lineBetween"></div>
+                                         <div>
+                                        @if (newTransaction.transValue <= 0)
+                                        {
+                                            if (categoryTypeIndicator)
+                                            {
+                                                if(isTransSumTyped)
+                                                {
+                                                    <span style="color:#F95050">סך ההכנסה לא תקין.</span>
+                                                }
+                                                
+                                            }
+                                            else
+                                            {
+                                                if(isTransSumTyped)
+                                                {
+                                                    <span style="color:#F95050">סך ההוצאה לא תקין.</span>
+                                                }
+                                                
+                                            }
+
+                                        }
                                     </div>
+                                    </div>
+                                   
                                 </div>
 
 
@@ -264,6 +303,12 @@
                                             <option value="אחר">אחר</option>
 
                                         </select>
+                                    </div>
+                                    <div>
+                                        @if (newTransaction.valueType == "" || newTransaction.valueType == null)
+                                        {
+                                            <span style="color:#F95050">לא נבחר אמצעי תשלום.</span>
+                                        }
                                     </div>
                                 </div>
 
@@ -641,38 +686,9 @@
                                 <button class="primery-button" @onclick="saveAndRepeatTransactions" disabled>שמירה והוצאה נוספת</button>
                             }
                             <button class="secondery-button" @onclick="saveAndEndTransactions" disabled>שמירה וסיום</button>
-                            @if (titleInput.Length < 2)
-                            {
-                                if (isTyped)
-                                {
-                                    if (categoryTypeIndicator)
-                                    {
-                                        <span>שם ההכנסה צריך להיות בין 2-18 תווים.</span>
-                                    }
-                                    else
-                                    {
-                                        <span>שם ההוצאה צריך להיות בין 2-18 תווים.</span>
-                                    }
-
-                                }
-
-                            }
-                            else if (newTransaction.transValue <= 0)
-                            {
-                                if (categoryTypeIndicator)
-                                {
-                                    <span>סך ההכנסה לא תקין.</span>
-                                }
-                                else
-                                {
-                                    <span>סך ההוצאה לא תקין.</span>
-                                }
-
-                            }
-                            else if (newTransaction.valueType == "" || newTransaction.valueType == null)
-                            {
-                                <span>לא נבחר אמצעי תשלום.</span>
-                            }
+                           
+                          
+                           
                         </div>
                     }
 
@@ -689,34 +705,7 @@
                     {
                         <div class="outerSaveBtns">
                             <button class="primery-button" @onclick="updateExistingTrans" disabled>שמירה וסיום</button>
-                            @if (titleInput.Length < 2)
-                            {
-                                if (categoryTypeIndicator)
-                                {
-                                    <span>אורך שם ההוצאה לא תקין.</span>
-                                }
-                                else
-                                {
-                                    <span>אורך שם ההכנסה לא תקין.</span>
-                                }
-
-                            }
-                            else if (newTransaction.transValue <= 0)
-                            {
-                                if (categoryTypeIndicator)
-                                {
-                                    <span>סך ההוצאה לא תקין.</span>
-                                }
-                                else
-                                {
-                                    <span>סך ההכנסה לא תקין.</span>
-                                }
-
-                            }
-                            else if (newTransaction.valueType == "" || newTransaction.valueType == null)
-                            {
-                                <span>לא נבחר אמצעי תשלום.</span>
-                            }
+                           
                         </div>
                     }
 
@@ -1173,6 +1162,7 @@
     int currentStreak = 0;
 
     bool isTyped = false;
+    bool isTransSumTyped = false;
 
     private int currentPage = 0;
     private int pageSize = 5;
@@ -3226,6 +3216,22 @@
     public void closeExpOverlay()
     {
         topExpBubbleOpen = false;
+    }
+
+     private void transAmount(ChangeEventArgs e)
+    {
+        
+        string transSumInput = e.Value.ToString();
+
+        if(transSumInput.Length == 0)
+        {
+            isTransSumTyped = true;
+        }
+        else
+        {
+            isTransSumTyped = false;
+        }
+        
     }
 
 }

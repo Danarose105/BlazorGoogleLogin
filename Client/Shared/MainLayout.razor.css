@@ -205,14 +205,11 @@ main {
 
 #expDiv {
     display: flex;
-    flex-direction: column-reverse;
-    width: 13%;
+    width: 92%;
     position: fixed;
     bottom: 4rem;
     z-index: 998;
-    border: none;
-    align-items: flex-end;
-    right: 19rem;
+    justify-content: flex-end;
 }
 
 /*#expBtn {

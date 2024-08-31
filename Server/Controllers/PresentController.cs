@@ -1471,6 +1471,26 @@ namespace BlazorGoogleLogin.Server.Controllers
             }
             return BadRequest("user is null");
         }
+
+
+        [HttpGet("userSubCategoriesList/{CatID}")]
+        public async Task<IActionResult> userSubCategoriesList(int CatID)
+        {
+            object param = new { ID = CatID };
+            string getUserSubCategoriesQuery = "SELECT subCategoryTitle FROM subcategories WHERE categoryID = @ID;";
+
+
+            var subCategories = (await _db.GetRecordsAsync<SubCategoryToShow>(getUserSubCategoriesQuery, param)).ToList();
+
+
+            if (subCategories != null)
+            {
+
+                return Ok(subCategories);
+            }
+            return BadRequest("category is null");
+        }
+
     }
 
    
