@@ -319,10 +319,14 @@
 
 
     }
-    public void OpetionsBtnClicked()
+    public async Task OpetionsBtnClicked()
     {
         isOpetionsBtnClicked = !isOpetionsBtnClicked;
-
+        if (isOpetionsBtnClicked)
+        {
+            await Task.Delay(4000);
+            isOpetionsBtnClicked = false;
+        }
     }
 
 
