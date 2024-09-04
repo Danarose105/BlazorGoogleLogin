@@ -164,12 +164,12 @@
 
                                             if (categoryTypeIndicator)
                                             {
-                                                repeatedBtnTitle = "עריכת ההכנסה החוזרת";
+                                                //repeatedBtnTitle = "עריכת ההכנסה החוזרת";
                                                 <button class="cancleRepeatedBtn" @onclick="undoFixedMonthly">ביטול הכנסה חוזרת</button>
                                             }
                                             else
                                             {
-                                                repeatedBtnTitle = "עריכת ההוצאה החוזרת";
+                                                //repeatedBtnTitle = "עריכת ההוצאה החוזרת";
                                                 <button class="cancleRepeatedBtn" @onclick="undoFixedMonthly">ביטול הוצאה חוזרת</button>
                                             }
                                         }
@@ -690,8 +690,6 @@
                                 <button class="primery-button" @onclick="saveAndRepeatTransactions" disabled>שמירה והוצאה נוספת</button>
                             }
                             <button class="secondery-button" @onclick="saveAndEndTransactions" disabled>שמירה וסיום</button>
-
-
 
                         </div>
                     }
@@ -1268,8 +1266,21 @@
         Console.WriteLine("monthIndex- " + monthIndex + ", releventMonthIndex- " + releventMonthIndex);
         return monthIndex < releventMonthIndex;
     }
+
+
     private string GetDefaultValue(string month)
     {
+        if (fixedTransChildrenToAdd.Count > 0)
+        {
+            DateTime date = DateTime.ParseExact(month, "MMMM", System.Globalization.CultureInfo.InvariantCulture);
+            int monthNumber = date.Month;
+            var existingChild = fixedTransChildrenToAdd.FirstOrDefault(t => t.transDate.Month == monthNumber);
+            if (existingChild != null)
+            {
+                return IsPastMonth(month) ? "0" : existingChild.transValue.ToString();
+            }
+            //return IsPastMonth(month) ? "0" : newTransaction.transValue.ToString();
+        }
 
         return IsPastMonth(month) ? "0" : newTransaction.transValue.ToString();
 
@@ -1348,14 +1359,23 @@
                 }
             }
 
-            int monthsToRepeat = 12 - DateTime.Today.Month;
+            int monthsToRepeat = 12 - newTransaction.transDate.Month;
             if (unfitTrans < monthsToRepeat) //if there are valid values in future months
             {
                 newTransaction.fixedMonthly = true;
+                if (categoryTypeIndicator)
+                {
+                    repeatedBtnTitle = "עריכת ההכנסה החוזרת";
+                }
+                else
+                {
+                    repeatedBtnTitle = "עריכת ההוצאה החוזרת";
+                }
             }
             else
             {
                 newTransaction.fixedMonthly = false;
+                fixedTransChildrenToAdd = new List<TransactionToAdd>();
             }
 
         }
@@ -2834,11 +2854,12 @@
                 else
                 {
                     Console.WriteLine("finding repeated Trans values failed");
+                    newTransaction.fixedMonthly = false;
                 }
 
             }
 
-            returningTrans = !returningTrans; //opens the overlay
+
             fixedTransChildrenToAdd = new List<TransactionToAdd>();
             int currentDay = newTransaction.transDate.Day;
             int currentYear = newTransaction.transDate.Year;
@@ -2866,7 +2887,7 @@
                 if (reapeatedTransValuesList.Count > 0) //means the transaction is fixedMonthly=true in DB
                 {
                     Console.WriteLine("reapeatedTransValuesList count- " + reapeatedTransValuesList.Count);
-                    var matchingTrans = reapeatedTransValuesList.FirstOrDefault(t => t.transDate == tempDate); //searches for the trans in the list that fits the current trans
+
                     TransactionToAdd childTrans = new TransactionToAdd()
                         {
                             transValue = newTransaction.transValue,
@@ -2892,16 +2913,15 @@
                         childTrans.transType = 2; //income
                     }
 
+                    var matchingTrans = reapeatedTransValuesList.FirstOrDefault(t => t.transDate == tempDate); //searches for the trans in the list that fits the current trans
                     if (matchingTrans != null) //if the childTrans exists in DB
                     {
                         childTrans.transValue = matchingTrans.transValue;
                         childTrans.parentTransID = matchingTrans.id;
                     }
 
-                    
+                    fixedTransChildrenToAdd.Add(childTrans);
 
-                        fixedTransChildrenToAdd.Add(childTrans);
-                   
                     Console.WriteLine("childTrans.transValue- " + childTrans.transValue);
                 }
                 else //if the trans wasn't fixedMonthly before
@@ -2935,6 +2955,11 @@
                 }
             }
         }
+        else //means the user wants to edit what they've done
+        {
+            newTransaction.fixedMonthly = true;
+        }
+        returningTrans = !returningTrans; //opens the overlay
 
     }
 
