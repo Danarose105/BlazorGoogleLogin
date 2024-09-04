@@ -57,6 +57,10 @@
                                                     </div>
                                                 </div>
 
+                                                @if ((newUser.firstName == null || newUser.firstName == "") & isEmpty)
+                                                    {
+                                                        <span style="color:#F95050">יש לבחור שם פרטי</span>
+                                                    }
                                             </div>
 
                                             <div class="outerUserDetails">
@@ -74,6 +78,10 @@
                                                         }
                                                     </div>
                                                 </div>
+                                                @if ((newUser.lastName == null || newUser.lastName == "") & isEmpty)
+                                                {
+                                                    <span style="color:#F95050">יש לבחור שם משפחה</span>
+                                                }
                                             </div>
 
 
@@ -123,8 +131,13 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                
                                             </div>
 
+                                            @if ((newUser.profilePicOrIcon == null || newUser.profilePicOrIcon == "") & isEmpty)
+                                                    {
+                                                        <span style="color:#F95050">יש לבחור אייקון</span>
+                                                    }
 
                                         </div>
                                         <div class="megaOuterDaysOptions">
@@ -152,6 +165,7 @@
 
                                                 @if (openDaysOptions)
                                                 {
+                                                   
                                                     <div class="outerMonthDayOptions">
                                                         <button class="dropDownOptionBtn" @onclick="@(()=>newUser.monthStartDate=1)">ה-1 לחודש</button>
                                                         <div class="daydivider"></div>
@@ -162,34 +176,44 @@
                                                         <button class="dropDownOptionBtn" @onclick="@(()=>newUser.monthStartDate=15)">ה-15 לחודש</button>
                                                     </div>
                                                 }
+
+                                                @if (newUser.monthStartDate <= 0 & isEmpty)
+                                                {
+                                                    <div style="color:#F95050">יש לבחור תאריך תחילת תזרים</div>
+                                                }
+
                                             </div>
                                         </div>
-                                        <div>
+                                        <div style="display: flex;
+    flex-direction: column-reverse;
+    row-gap: 1vh;">
                                             @if (newUser.monthStartDate <= 0 || newUser.profilePicOrIcon == null || newUser.profilePicOrIcon == "" || newUser.firstName == null || newUser.firstName == "" || newUser.lastName == null || newUser.lastName == "")
                                             {
 
-                                                <button class="primery-button" disabled style="opacity:60%;">הבא</button>
+                                                <button class="primery-button" @onclick="checkWhatEmpty">הבא</button>
 
-                                                <span>
+                                                @*<span style="display: flex;
+    align-items: center;
+    justify-content: center;">
 
 
-                                                    @if (newUser.monthStartDate <= 0)
+                                                    @if (newUser.monthStartDate <= 0 & isEmpty)
                                                     {
-                                                        <span>יש לבחור תאריך תחילת תזרים</span>
+                                                        <span style="color:#F95050">יש לבחור תאריך תחילת תזרים</span>
                                                     }
-                                                    else if (newUser.profilePicOrIcon == null || newUser.profilePicOrIcon == "")
+                                                    else if ((newUser.profilePicOrIcon == null || newUser.profilePicOrIcon == "") & isEmpty)
                                                     {
-                                                        <span>יש לבחור תאריך אייקון</span>
+                                                        <span style="color:#F95050">יש לבחור אייקון</span>
                                                     }
-                                                    else if (newUser.firstName == null || newUser.firstName == "")
+                                                    else if ((newUser.firstName == null || newUser.firstName == "") & isEmpty)
                                                     {
-                                                        <span>יש לבחור שם פרטי</span>
+                                                        <span style="color:#F95050">יש לבחור שם פרטי</span>
                                                     }
-                                                    else
+                                                    if((newUser.lastName == null || newUser.lastName == "") & isEmpty)
                                                     {
-                                                        <span>יש לבחור שם משפחה</span>
+                                                        <span style="color:#F95050">יש לבחור שם משפחה</span>
                                                     }
-                                                </span>
+                                                </span>*@
 
                                             }
                                             else
@@ -523,6 +547,7 @@
     bool cat10Selected = false;
     bool cat11Selected = false;
     bool cat12Selected = false;
+    bool isEmpty = false;
     public string cat1Chosen => cat1Selected ? "chosen" : "";
     public string cat2Chosen => cat2Selected ? "chosen" : "";
     public string cat3Chosen => cat3Selected ? "chosen" : "";
@@ -661,17 +686,17 @@
         else
         {
             cat1Selected = false;
-        cat2Selected = false;
-        cat3Selected = false;
-        cat4Selected = false;
-        cat5Selected = false;
-        cat6Selected = false;
-        cat7Selected = false;
-        cat8Selected = false;
-        cat9Selected = false;
-        cat10Selected = false;
-        cat11Selected = false;
-        cat12Selected = false;
+            cat2Selected = false;
+            cat3Selected = false;
+            cat4Selected = false;
+            cat5Selected = false;
+            cat6Selected = false;
+            cat7Selected = false;
+            cat8Selected = false;
+            cat9Selected = false;
+            cat10Selected = false;
+            cat11Selected = false;
+            cat12Selected = false;
             //foreach (CategoryToAdd selectedCat in defualtCategoriesList)
             //{
             //    if (selectedCat.categroyTitle == "אוכל")
@@ -763,7 +788,7 @@
             //    else
             //    {
             //        cat11Selected = false;
-                    
+
             //    } 
             //        if (selectedCat.categroyTitle == "שונות")
             //    {
@@ -1197,6 +1222,13 @@
     {
         isPrefrences = true;
     }
+
+
+    void checkWhatEmpty()
+    {
+        isEmpty = true;
+    }
+
 
     //private async Task StartTutorial()
     //{
