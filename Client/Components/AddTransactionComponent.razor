@@ -1052,8 +1052,8 @@
     /// <summary>
     /// adds the trans total to the main status table in present home page
     /// </summary>
-    [Parameter]
-    public EventCallback<double> transValueToAdd { get; set; }
+    //[Parameter]
+    //public EventCallback<double> transValueToAdd { get; set; }
 
     //[Parameter]
     //public TransactionToAdd newTransaction { get; set; }
@@ -1702,9 +1702,9 @@
                 if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay) //checks if the users month has started and then adds it to the total
                 {
                     addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                    transValueToAdd.InvokeAsync(newTransaction.transValue);
+                    //transValueToAdd.InvokeAsync(newTransaction.transValue);
                 }
-                await getStreakDetails();
+                //await getStreakDetails();
 
                 //if(!overdraftDetected && closeOverdraftOpts.Count < 1 )
                 //{
@@ -1765,7 +1765,7 @@
                         if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
                         {
                             addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                            transValueToAdd.InvokeAsync(newTransaction.transValue);
+                            //transValueToAdd.InvokeAsync(newTransaction.transValue);
                         }
 
                     }
@@ -1777,7 +1777,7 @@
                         if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
                         {
                             addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                            transValueToAdd.InvokeAsync(newTransaction.transValue);
+                            //transValueToAdd.InvokeAsync(newTransaction.transValue);
                         }
                     }
                 }
@@ -1788,7 +1788,7 @@
             }
 
 
-            await getStreakDetails();
+            //await getStreakDetails();
 
 
             //isTransactionOverlayOpen.InvokeAsync(false);
@@ -1822,10 +1822,10 @@
                 if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
                 {
                     addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                    transValueToAdd.InvokeAsync(newTransaction.transValue);
+                    //transValueToAdd.InvokeAsync(newTransaction.transValue);
 
                 }
-                await getStreakDetails();
+                //await getStreakDetails();
 
             }
             else
@@ -1896,10 +1896,10 @@
                 if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
                 {
                     addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                    transValueToAdd.InvokeAsync(newTransaction.transValue);
+                    //transValueToAdd.InvokeAsync(newTransaction.transValue);
 
                 }
-                await getStreakDetails();
+                //await getStreakDetails();
 
 
             }
@@ -1953,7 +1953,7 @@
                         if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
                         {
                             addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                            transValueToAdd.InvokeAsync(newTransaction.transValue);
+                            //transValueToAdd.InvokeAsync(newTransaction.transValue);
 
                         }
 
@@ -1964,7 +1964,7 @@
                     Console.WriteLine("הזנה נכשלה");
                 }
             }
-            await getStreakDetails();
+            //await getStreakDetails();
 
         }
         else //means the trans is not split or fixed
@@ -1990,8 +1990,8 @@
                         }
                     }
                     addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                    transValueToAdd.InvokeAsync(newTransaction.transValue);
-                    await getStreakDetails();
+                    //transValueToAdd.InvokeAsync(newTransaction.transValue);
+                    //await getStreakDetails();
 
                     Console.WriteLine("ההזנה נשמרה בהצלחה :)");
                 }
@@ -2000,9 +2000,9 @@
                     if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
                     {
                         addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                        transValueToAdd.InvokeAsync(newTransaction.transValue);
+                        //transValueToAdd.InvokeAsync(newTransaction.transValue);
                     }
-                    await getStreakDetails();
+                    //await getStreakDetails();
 
                 }
 
@@ -3055,7 +3055,7 @@
         hiddenReOverlay = "";
     }
 
-
+//-------------------------------------//
     public async Task getStreakDetails()
     {
         if (userID > 0)
@@ -3177,6 +3177,9 @@
             return "";
         }
     }
+
+    //-------------------------------------//
+
 
     void manageDropDown()
     {
