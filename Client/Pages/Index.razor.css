@@ -395,3 +395,74 @@
     align-items: flex-end;
     justify-content: flex-end;
 }
+
+.catIcon {
+    /*border-radius: 50%;
+    width: 4rem;
+    text-align: center;
+    background-color: #D6D9F1;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem*/
+
+    border-radius: 50%;
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    background-color: #D6D9F1;
+    position: relative;
+}
+
+.chosen {
+    background-color: rgba(0, 0, 0, 0.6); /* Dimming effect */
+    border-radius:50%;
+}
+
+    .chosen::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: url(css/images/check-v.svg) center center no-repeat;
+        background-color: darkblue;
+        border-radius: 50%;
+        background-color: rgba(3, 9, 66, 0.58);
+        background-size: 50%;
+    }
+
+.iconAndText {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.outerCatsOptions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* grid-gap: 20px; */
+    grid-column-gap: 2rem;
+    grid-row-gap: 1rem;
+    padding: 1rem;
+}
+
+.outerText {
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.6rem;
+    align-items: center;
+    margin: 1rem 0;
+}
+
+.outerPrefPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}

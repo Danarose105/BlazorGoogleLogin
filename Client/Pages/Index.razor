@@ -19,199 +19,361 @@
 
             if (signUpForm)
             {
+                if (!isPrefrences)
+                {
 
-
-                <div class="megaOuterLay">
-                    <div class="registerOuterLay">
-                        <div class="registerBgOverlay"> </div>
-                        <div class="outerLogoAndOpeningText">
-                            <img src="./css/images/light logo small.svg" />
-                            <div>
+                    <div class="megaOuterLay">
+                        <div class="registerOuterLay">
+                            <div class="registerBgOverlay"> </div>
+                            <div class="outerLogoAndOpeningText">
+                                <img src="./css/images/light logo small.svg" />
                                 <div>
-                                    אפליקציה לניהול תקציב מבית איה תמרי
-                                </div>
-                                <div>
-                                    אנחנו כאן ללוות אותך בדרך לניהול תקציב נכון
+                                    <div>
+                                        אפליקציה לניהול תקציב מבית איה תמרי
+                                    </div>
+                                    <div>
+                                        אנחנו כאן ללוות אותך בדרך לניהול תקציב נכון
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="registerOverlay">
-                            <div class="registerPaddingDiv">
+                            <div class="registerOverlay">
+                                <div class="registerPaddingDiv">
 
-                                <div class="outerRegisterInfo">
-                                    <div class="firstLastAndEmoji">
-                                        <div class="outerUserDetails">
-                                            <span class="titleName">שם פרטי:</span>
-                                            <div class="nameInputAndCounterWrap">
-                                                <input class="catTitle" type="text" @bind="@userFirstName" @oninput="userFnameLengthCounter" maxlength="15" />
-                                                <div class="counter">
-                                                    @if (userFirstName.Length > 0 && userFirstName.Length < 16)
-                                                    {
-                                                        <span>@userFirstName.Length/15</span>
-                                                    }
-                                                    else if (userFirstName.Length <= 0)
-                                                    {
-                                                        <span>0/15</span>
-                                                    }
+                                    <div class="outerRegisterInfo">
+                                        <div class="firstLastAndEmoji">
+                                            <div class="outerUserDetails">
+                                                <span class="titleName">שם פרטי:</span>
+                                                <div class="nameInputAndCounterWrap">
+                                                    <input class="catTitle" type="text" @bind="@userFirstName" @oninput="userFnameLengthCounter" maxlength="15" />
+                                                    <div class="counter">
+                                                        @if (userFirstName.Length > 0 && userFirstName.Length < 16)
+                                                        {
+                                                            <span>@userFirstName.Length/15</span>
+                                                        }
+                                                        else if (userFirstName.Length <= 0)
+                                                        {
+                                                            <span>0/15</span>
+                                                        }
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="outerUserDetails">
+                                                <span class="titleName">שם משפחה:</span>
+                                                <div class="nameInputAndCounterWrap">
+                                                    <input class="catTitle" type="text" @bind="@userLastName" maxlength="18" @oninput="userLnameLengthCounter" />
+                                                    <div class="counter">
+                                                        @if (userLastName.Length > 0 && userLastName.Length < 19)
+                                                        {
+                                                            <span>@userLastName.Length/18</span>
+                                                        }
+                                                        else if (userLastName.Length <= 0)
+                                                        {
+                                                            <span>0/18</span>
+                                                        }
+                                                    </div>
                                                 </div>
                                             </div>
 
-                                        </div>
 
-                                        <div class="outerUserDetails">
-                                            <span class="titleName">שם משפחה:</span>
-                                            <div class="nameInputAndCounterWrap">
-                                                <input class="catTitle" type="text" @bind="@userLastName" maxlength="18" @oninput="userLnameLengthCounter" />
-                                                <div class="counter">
-                                                    @if (userLastName.Length > 0 && userLastName.Length < 19)
-                                                    {
-                                                        <span>@userLastName.Length/18</span>
-                                                    }
-                                                    else if (userLastName.Length <= 0)
-                                                    {
-                                                        <span>0/18</span>
-                                                    }
-                                                </div>
-                                            </div>
-                                        </div>
+                                            <div class="keyBoardAndBtn">
+                                                <span class="titleName">אייקון הפרופיל שלי</span>
+                                                <div class="outerEmojiBtnAndKeyboard">
+                                                    <div class="outerCancleAndEmoji">
+                                                        @if (isCancleBtnClicked)
+                                                        {
+                                                            <button @onclick="ToggleKeyboard" id="emoji-trigger"><img src="./css/images/add emoji (1).svg" /></button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button @onclick="ToggleKeyboard" id="emoji-trigger" class="@hideBtn"><img src="./css/images/add emoji (1).svg" /></button>
+                                                        }
+                                                        @if (noEmojiBtn)
+                                                        {
 
-
-                                        <div class="keyBoardAndBtn">
-                                            <span class="titleName">אייקון הפרופיל שלי</span>
-                                            <div class="outerEmojiBtnAndKeyboard">
-                                                <div class="outerCancleAndEmoji">
-                                                    @if (isCancleBtnClicked)
-                                                    {
-                                                        <button @onclick="ToggleKeyboard" id="emoji-trigger"><img src="./css/images/add emoji (1).svg" /></button>
-                                                    }
-                                                    else
-                                                    {
-                                                        <button @onclick="ToggleKeyboard" id="emoji-trigger" class="@hideBtn"><img src="./css/images/add emoji (1).svg" /></button>
-                                                    }
-                                                    @if (noEmojiBtn)
-                                                    {
-
-                                                        <div class="outerCancleAndEmoji">
-                                                            <button @onclick="deleteSelectedEmoji" class="cancleEmoji">ביטול בחירה</button>
-                                                            <button @onclick="ToggleKeyboard" class="selectedEmoji">
-                                                                <span class="emoji">@newUser.profilePicOrIcon</span>
-                                                                <img src="./css/images/plus icon.svg" class="plusIcon" />
-                                                            </button>
-                                                        </div>
-
-                                                    }
-                                                </div>
-
-                                                <div class="outerEmojiKeyboard">
-                                                    <div class="emoji-keyboard @visibilityClass">
-                                                        <div class="emoji-categories">
-                                                            @foreach (var category in emojiCategories.Keys)
-                                                            {
-                                                                <button class="category-button @(selectedCategory == category ? "active" : "")"
-                                                            @onclick="() => SelectCategory(category)">
-                                                                    @category
+                                                            <div class="outerCancleAndEmoji">
+                                                                <button @onclick="deleteSelectedEmoji" class="cancleEmoji">ביטול בחירה</button>
+                                                                <button @onclick="ToggleKeyboard" class="selectedEmoji">
+                                                                    <span class="emoji">@newUser.profilePicOrIcon</span>
+                                                                    <img src="./css/images/plus icon.svg" class="plusIcon" />
                                                                 </button>
-                                                            }
-                                                        </div>
-                                                        <div class="emoji-section">
-                                                            @foreach (var emoji in emojiCategories[selectedCategory])
-                                                            {
-                                                                <span @onclick="() => SelectEmoji(emoji)" class="emoji">@emoji</span>
-                                                            }
+                                                            </div>
+
+                                                        }
+                                                    </div>
+
+                                                    <div class="outerEmojiKeyboard">
+                                                        <div class="emoji-keyboard @visibilityClass">
+                                                            <div class="emoji-categories">
+                                                                @foreach (var category in emojiCategories.Keys)
+                                                                {
+                                                                    <button class="category-button @(selectedCategory == category ? "active" : "")"
+                                                            @onclick="() => SelectCategory(category)">
+                                                                        @category
+                                                                    </button>
+                                                                }
+                                                            </div>
+                                                            <div class="emoji-section">
+                                                                @foreach (var emoji in emojiCategories[selectedCategory])
+                                                                {
+                                                                    <span @onclick="() => SelectEmoji(emoji)" class="emoji">@emoji</span>
+                                                                }
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+
+
                                         </div>
+                                        <div class="megaOuterDaysOptions">
+                                            <div class="outerDaysTitleAndPoly">
+                                                <div class="titleName">יום תחילת תזרים:</div>
+                                            </div>
+                                            <div class="outerDaysOptions" @onclick="()=>openDaysOptions =! openDaysOptions">
 
 
-                                    </div>
-                                    <div class="megaOuterDaysOptions">
-                                        <div class="outerDaysTitleAndPoly">
-                                            <div class="titleName">יום תחילת תזרים:</div>
-                                        </div>
-                                        <div class="outerDaysOptions" @onclick="()=>openDaysOptions =! openDaysOptions">
-
-
-                                            @if (newUser.monthStartDate != null && newUser.monthStartDate != 0)
-                                            {
-                                                Console.WriteLine(newUser.monthStartDate);
-                                                <div class="dropDownTitle">
-                                                    ה- @newUser.monthStartDate לחודש
-                                                    <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
-                                                </div>
-                                            }
-                                            else
-                                            {
-                                                <div class="dropDownTitle" style="color:#727272">
-                                                    בחירת יום..
-                                                    <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
-                                                </div>
-                                            }
-
-                                            @if (openDaysOptions)
-                                            {
-                                                <div class="outerMonthDayOptions">
-                                                    <button class="dropDownOptionBtn" @onclick="@(()=>newUser.monthStartDate=1)">ה-1 לחודש</button>
-                                                    <div class="daydivider"></div>
-                                                    <button class="dropDownOptionBtn" @onclick="@(()=>newUser.monthStartDate=2)">ה-2 לחודש</button>
-                                                    <div class="daydivider"></div>
-                                                    <button class="dropDownOptionBtn" @onclick="@(()=>newUser.monthStartDate=10)">ה-10 לחודש</button>
-                                                    <div class="daydivider"></div>
-                                                    <button class="dropDownOptionBtn" @onclick="@(()=>newUser.monthStartDate=15)">ה-15 לחודש</button>
-                                                </div>
-                                            }
-                                        </div>
-                                    </div>
-                                    <div>
-                                        @if (newUser.monthStartDate <= 0 || newUser.profilePicOrIcon == null || newUser.profilePicOrIcon == "" || newUser.firstName == null || newUser.firstName == "" || newUser.lastName == null || newUser.lastName == "")
-                                        {
-
-                                            <button class="primery-button" disabled style="opacity:60%;">שמירה                                </button>
-
-                                             <span>
-
-
-                                                @if (newUser.monthStartDate <= 0)
+                                                @if (newUser.monthStartDate != null && newUser.monthStartDate != 0)
                                                 {
-                                                    <span>יש לבחור תאריך תחילת תזרים</span>
-                                                }
-                                                else if (newUser.profilePicOrIcon == null || newUser.profilePicOrIcon == "")
-                                                {
-                                                    <span>יש לבחור תאריך אייקון</span>
-                                                }
-                                                else if (newUser.firstName == null || newUser.firstName == "")
-                                                {
-                                                    <span>יש לבחור שם פרטי</span>
+                                                    Console.WriteLine(newUser.monthStartDate);
+                                                    <div class="dropDownTitle">
+                                                        ה- @newUser.monthStartDate לחודש
+                                                        <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
+                                                    </div>
                                                 }
                                                 else
                                                 {
-                                                    <span>יש לבחור שם משפחה</span>
+                                                    <div class="dropDownTitle" style="color:#727272">
+                                                        בחירת יום..
+                                                        <span class="accordionPoly"><img src="./css/images/arrow3.svg" /></span>
+                                                    </div>
                                                 }
-                                            </span>
 
-                                        }
-                                        else
-                                        {
-                                            <button class="primery-button" @onclick="@(async () => await createNewUser())">שמירה                                </button>
-                                        }
+                                                @if (openDaysOptions)
+                                                {
+                                                    <div class="outerMonthDayOptions">
+                                                        <button class="dropDownOptionBtn" @onclick="@(()=>newUser.monthStartDate=1)">ה-1 לחודש</button>
+                                                        <div class="daydivider"></div>
+                                                        <button class="dropDownOptionBtn" @onclick="@(()=>newUser.monthStartDate=2)">ה-2 לחודש</button>
+                                                        <div class="daydivider"></div>
+                                                        <button class="dropDownOptionBtn" @onclick="@(()=>newUser.monthStartDate=10)">ה-10 לחודש</button>
+                                                        <div class="daydivider"></div>
+                                                        <button class="dropDownOptionBtn" @onclick="@(()=>newUser.monthStartDate=15)">ה-15 לחודש</button>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div>
+                                            @if (newUser.monthStartDate <= 0 || newUser.profilePicOrIcon == null || newUser.profilePicOrIcon == "" || newUser.firstName == null || newUser.firstName == "" || newUser.lastName == null || newUser.lastName == "")
+                                            {
+
+                                                <button class="primery-button" disabled style="opacity:60%;">הבא</button>
+
+                                                <span>
+
+
+                                                    @if (newUser.monthStartDate <= 0)
+                                                    {
+                                                        <span>יש לבחור תאריך תחילת תזרים</span>
+                                                    }
+                                                    else if (newUser.profilePicOrIcon == null || newUser.profilePicOrIcon == "")
+                                                    {
+                                                        <span>יש לבחור תאריך אייקון</span>
+                                                    }
+                                                    else if (newUser.firstName == null || newUser.firstName == "")
+                                                    {
+                                                        <span>יש לבחור שם פרטי</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>יש לבחור שם משפחה</span>
+                                                    }
+                                                </span>
+
+                                            }
+                                            else
+                                            {
+                                                @*<button class="primery-button" @onclick="@(async () => await createNewUser())">שמירה                                </button>*@
+                                                <button class="primery-button" @onclick="toPrefPage">הבא</button>
+                                            }
+
+                                        </div>
 
                                     </div>
-
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                }
+
+                else
+                {
+
+                    <div class="outerPrefPage">
+                        <div class="outerText">
+                            <div style="font-weight: 600;
+    font-size: 1.2rem;">
+                                הקטגוריות שלי
+                            </div>
+                            <div>זה המקום לבחור את הקטגוריות הרלוונטיות לך </div>
+                        </div>
+                        <div class="outerCatsOptions">
+
+
+                            <div class="iconAndText" @onclick='() => ToggleCategory("אוכל", "🍰", "#6775F4")'>
+                                <div class="catIcon @cat1Chosen">
+                                    🍰
+                                </div>
+                                <span style="font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;">אוכל</span>
+                            </div>
+
+
+
+                            <div class="iconAndText" @onclick='() => ToggleCategory("דיור", "🏠", "#6775F4")'>
+                                <div class="catIcon @cat2Chosen">
+                                    🏠
+                                </div>
+                                <span style="font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;">דיור</span>
+
+                            </div>
+
+                            <div class="iconAndText" @onclick='() => ToggleCategory("חשבונות", "📄", "#6775F4")'>
+                                <div class="catIcon @cat3Chosen">
+                                    📄
+                                </div>
+                                <span style="font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;">חשבונות</span>
+
+                            </div>
+
+                            <div class="iconAndText" @onclick='() => ToggleCategory("רכב", "🚗", "#6775F4")'>
+                                <div class="catIcon  @cat4Chosen">
+                                    🚗
+                                </div>
+                                <span style="font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;">רכב</span>
+
+                            </div>
+
+                            <div class="iconAndText" @onclick='() => ToggleCategory("תקשורת", "📱", "#6775F4")'>
+                                <div class="catIcon @cat6Chosen">
+                                    📱
+                                </div>
+                                <span style="font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;">תקשורת</span>
+
+                            </div>
+
+                            <div class="iconAndText" @onclick='() => ToggleCategory("טיפוח", "💅", "#6775F4")'>
+                                <div class="catIcon @cat7Chosen">
+                                    💅
+                                </div>
+                                <span style="font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;">טיפוח</span>
+
+                            </div>
+
+                            <div class="iconAndText" @onclick='() => ToggleCategory("בילוי", "🎉", "#6775F4")'>
+                                <div class="catIcon @cat8Chosen">
+                                    🎉
+                                </div>
+                                <span style="font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;">בילוי</span>
+
+                            </div>
+
+                            <div class="iconAndText" @onclick='() => ToggleCategory("ילדים", "👶", "#6775F4")'>
+                                <div class="catIcon @cat9Chosen">
+                                    👶
+                                </div>
+                                <span style="font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;">ילדים</span>
+
+                            </div>
+
+                            <div class="iconAndText" @onclick='() => ToggleCategory("ביטוח", "📜", "#6775F4")'>
+                                <div class="catIcon @cat5Chosen">
+                                    📜
+                                </div>
+                                <span style="font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;">ביטוח</span>
+
+                            </div>
+
+                            <div class="iconAndText" @onclick='() => ToggleCategory("הפקדה לחסכון", "💰", "#6775F4")'>
+                                <div class="catIcon @cat10Chosen">
+                                    💰
+                                </div>
+                                <span style="font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;">הפקדה לחסכון</span>
+
+                            </div>
+
+                            <div class="iconAndText" @onclick='() => ToggleCategory("מזומן", "💸", "#6775F4")'>
+                                <div class="catIcon @cat11Chosen">
+                                    💸
+                                </div>
+                                <span style="font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;">מזומן</span>
+
+                            </div>
+
+                            <div class="iconAndText" @onclick='() => ToggleCategory("שונות", "🔧", "#6775F4")'>
+                                <div class="catIcon @cat12Chosen">
+                                    🔧
+                                </div>
+                                <span style="font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;">שונות</span>
+
+                            </div>
+
+
+
+                        </div>
+                        <div>
+                            @if (defualtCategoriesList.Count > 0)
+                            {
+                                <button class="primery-button" @onclick="@(async () => await createNewUser())">שמירה                                </button>
+                            }
+                            else
+                            {
+                                <button class="primery-button" style="opacity:0.6">שמירה                                </button>
+                            }
+                        </div>
+
+                    </div>
+                }
+
             }
 
+            <div>
+                @foreach(CategoryToAdd c in defualtCategoriesList)
+                {
+                    <div>@c.categroyTitle</div>
+                }
+            </div>
             @* <button class="btn btn-primary" @onclick="logout">התנתקות</button>*@
         }
 
     </Authorized>
 
     <NotAuthorized>
-                       
+
         <div id="body" style="background-color:#6775F4;">
             <div>
                 <div class="col-md-6 col-md-offset-2 loginWrapperDiv">
@@ -242,7 +404,7 @@
         background-color: #6775F4;
         padding: 10rem;
         /*  z-index: 5;
-         position:relative;*/
+                         position:relative;*/
     }
 
 
@@ -329,6 +491,7 @@
 
     UserToAdd newUser = new UserToAdd();
     CategoryToShow defaultCategory = new CategoryToShow();
+    List<CategoryToAdd> defualtCategoriesList = new List<CategoryToAdd>();
 
     bool isUserSignUp = false;
     bool signUpForm = false;
@@ -344,9 +507,37 @@
     private string selectedCategory = "כללי";
 
     string bgColor = "";
+    bool isPrefrences = false;
 
     string userFirstName = "";
     string userLastName = "";
+    bool cat1Selected = false;
+    bool cat2Selected = false;
+    bool cat3Selected = false;
+    bool cat4Selected = false;
+    bool cat5Selected = false;
+    bool cat6Selected = false;
+    bool cat7Selected = false;
+    bool cat8Selected = false;
+    bool cat9Selected = false;
+    bool cat10Selected = false;
+    bool cat11Selected = false;
+    bool cat12Selected = false;
+    public string cat1Chosen => cat1Selected ? "chosen" : "";
+    public string cat2Chosen => cat2Selected ? "chosen" : "";
+    public string cat3Chosen => cat3Selected ? "chosen" : "";
+    public string cat4Chosen => cat4Selected ? "chosen" : "";
+    public string cat5Chosen => cat5Selected ? "chosen" : "";
+    public string cat6Chosen => cat6Selected ? "chosen" : "";
+    public string cat7Chosen => cat7Selected ? "chosen" : "";
+    public string cat8Chosen => cat8Selected ? "chosen" : "";
+    public string cat9Chosen => cat9Selected ? "chosen" : "";
+    public string cat10Chosen => cat10Selected ? "chosen" : "";
+    public string cat11Chosen => cat11Selected ? "chosen" : "";
+    public string cat12Chosen => cat12Selected ? "chosen" : "";
+
+
+
 
     async Task logout()
     {
@@ -392,7 +583,7 @@
     }
     private Dictionary<string, List<string>>
     emojiCategories = new Dictionary<string, List<string>>
-                                    {
+                                                                            {
     {"כללי", new List<string> {
     "🏠", "🛏️", "🚿", "💡", "📞", "🖥️", "🚗", "🚌", "🛒", "🍲",
     "🏥", "💊", "👕", "🧹", "🧺", "🍼", "🐶", "🧑‍🔧", "📚", "🧾",
@@ -413,7 +604,7 @@
     "🖋️", "💎", "📜", "🏧",
     "📅", "🖥️", "🖨️", "🔍"
     }},
-                                    };
+                                                                            };
 
     private void SelectCategory(string category)
     {
@@ -430,6 +621,208 @@
         newUser.profilePicOrIcon = emoji;
     }
 
+    private void ToggleCategory(string categoryTitle, string icon, string color)
+    {
+
+        var category = defualtCategoriesList.FirstOrDefault(c => c.categroyTitle == categoryTitle);
+
+        if (category != null)
+        {
+
+            defualtCategoriesList.Remove(category);
+        }
+        else
+        {
+
+            defualtCategoriesList.Add(new CategoryToAdd
+                {
+                    userID = user.Id,
+                    categroyTitle = categoryTitle,
+                    icon = icon,
+                    color = color
+                });
+        }
+
+        if (defualtCategoriesList.Count == 0)
+        {
+            cat1Selected = false;
+            cat2Selected = false;
+            cat3Selected = false;
+            cat4Selected = false;
+            cat5Selected = false;
+            cat6Selected = false;
+            cat7Selected = false;
+            cat8Selected = false;
+            cat9Selected = false;
+            cat10Selected = false;
+            cat11Selected = false;
+            cat12Selected = false;
+        }
+        else
+        {
+            cat1Selected = false;
+        cat2Selected = false;
+        cat3Selected = false;
+        cat4Selected = false;
+        cat5Selected = false;
+        cat6Selected = false;
+        cat7Selected = false;
+        cat8Selected = false;
+        cat9Selected = false;
+        cat10Selected = false;
+        cat11Selected = false;
+        cat12Selected = false;
+            //foreach (CategoryToAdd selectedCat in defualtCategoriesList)
+            //{
+            //    if (selectedCat.categroyTitle == "אוכל")
+            //    {
+            //        cat1Selected = true;
+            //    }
+            //    else
+            //    {
+            //        cat1Selected = false;
+            //    }
+
+            //    if (selectedCat.categroyTitle == "דיור")
+            //    {
+            //        cat2Selected = true;
+            //    }
+            //    else
+            //    {
+            //        cat2Selected = false;
+            //    }
+
+            //    if (selectedCat.categroyTitle == "חשבונות")
+            //    {
+            //        cat3Selected = true;
+            //    }
+            //    else
+            //    {
+            //        cat3Selected = false;
+            //    }
+            //    if (selectedCat.categroyTitle == "רכב")
+            //    {
+            //        cat4Selected = true;
+            //    }
+            //    else
+            //    {
+            //        cat4Selected = false;
+            //    }
+            //    if (selectedCat.categroyTitle == "ביטוח")
+            //    {
+            //        cat5Selected = true;
+            //    }
+            //    else
+            //    {
+            //        cat5Selected = false;
+            //    }
+            //    if (selectedCat.categroyTitle == "תקשורת")
+            //    {
+            //        cat6Selected = true;
+            //    }
+            //    else
+            //    {
+            //        cat6Selected = false;
+            //    }
+            //    if (selectedCat.categroyTitle == "טיפוח")
+            //    {
+            //        cat7Selected = true;
+            //    }
+            //    else
+            //    {
+            //        cat7Selected = false;
+            //    }
+            //    if (selectedCat.categroyTitle == "בילוי")
+            //    {
+            //        cat8Selected = true;
+            //    }
+            //    else
+            //    {
+            //        cat8Selected = false;
+            //    }
+            //    if (selectedCat.categroyTitle == "ילדים")
+            //    {
+            //        cat9Selected = true;
+            //    }
+            //    else
+            //    {
+            //        cat9Selected = false;
+            //    }
+            //    if (selectedCat.categroyTitle == "הפקדה לחסכון")
+            //    {
+            //        cat10Selected = true;
+            //    }
+            //    else
+            //    {
+            //        cat10Selected = false;
+            //    }
+            //    if (selectedCat.categroyTitle == "מזומן")
+            //    {
+            //        cat11Selected = true;
+            //    }
+            //    else
+            //    {
+            //        cat11Selected = false;
+                    
+            //    } 
+            //        if (selectedCat.categroyTitle == "שונות")
+            //    {
+            //        cat12Selected = true;
+            //    }
+            //    else
+            //    {
+            //        cat12Selected = false;
+            //    }
+
+            //}
+
+            foreach (CategoryToAdd selectedCat in defualtCategoriesList)
+            {
+                switch (selectedCat.categroyTitle)
+                {
+                    case "אוכל":
+                        cat1Selected = true;
+                        break;
+                    case "דיור":
+                        cat2Selected = true;
+                        break;
+                    case "חשבונות":
+                        cat3Selected = true;
+                        break;
+                    case "רכב":
+                        cat4Selected = true;
+                        break;
+                    case "ביטוח":
+                        cat5Selected = true;
+                        break;
+                    case "תקשורת":
+                        cat6Selected = true;
+                        break;
+                    case "טיפוח":
+                        cat7Selected = true;
+                        break;
+                    case "בילוי":
+                        cat8Selected = true;
+                        break;
+                    case "ילדים":
+                        cat9Selected = true;
+                        break;
+                    case "הפקדה לחסכון":
+                        cat10Selected = true;
+                        break;
+                    case "מזומן":
+                        cat11Selected = true;
+                        break;
+                    case "שונות":
+                        cat12Selected = true;
+                        break;
+                }
+            }
+        }
+
+    }
+
+
     public async Task createNewUser()
     {
         if (newUser.profilePicOrIcon == null || newUser.profilePicOrIcon == "")
@@ -445,18 +838,17 @@
             UserToAdd newUser = new UserToAdd();
             isOnInitializedOver = false;
 
-            List<CategoryToAdd> defualtCategoriesList = new List<CategoryToAdd>()
-    {
-    new CategoryToAdd{userID = user.Id, categroyTitle = "אוכל", icon = "🍰", color = "#6775F4" },
-    new CategoryToAdd{userID = user.Id, categroyTitle = "חשבונות", icon = "📜", color = "#6775F4" },
-    new CategoryToAdd{userID = user.Id, categroyTitle = "הוצאות ילדים", icon = "🍼", color = "#6775F4" },
-    new CategoryToAdd{userID = user.Id, categroyTitle = "ביטוח", icon = "🖋️", color = "#6775F4" },
-    new CategoryToAdd{userID = user.Id, categroyTitle = "בילוי", icon = "🎭", color = "#6775F4" },
-    new CategoryToAdd{userID = user.Id, categroyTitle = "מזומן ללא מעקב", icon = "🎟️", color = "#6775F4" },
-    new CategoryToAdd{userID = user.Id, categroyTitle = "הפקדה לחיסכון", icon = "🏦", color = "#6775F4" },
-    new CategoryToAdd{userID = user.Id, categroyTitle = "שונות", icon = "💡", color = "#6775F4" },
-    new CategoryToAdd{userID = user.Id, categroyTitle = "הכנסות", icon = "💵", color = "#6775F4" }
-    };
+            defualtCategoriesList.Add(new CategoryToAdd { userID = user.Id, categroyTitle = "הכנסות", icon = "💵", color = "#6775F4" });
+            //{
+            //new CategoryToAdd{userID = user.Id, categroyTitle = "אוכל", icon = "🍰", color = "#6775F4" },
+            //new CategoryToAdd{userID = user.Id, categroyTitle = "חשבונות", icon = "📜", color = "#6775F4" },
+            //new CategoryToAdd{userID = user.Id, categroyTitle = "הוצאות ילדים", icon = "🍼", color = "#6775F4" },
+            //new CategoryToAdd{userID = user.Id, categroyTitle = "ביטוח", icon = "🖋️", color = "#6775F4" },
+            //new CategoryToAdd{userID = user.Id, categroyTitle = "בילוי", icon = "🎭", color = "#6775F4" },
+            //new CategoryToAdd{userID = user.Id, categroyTitle = "מזומן ללא מעקב", icon = "🎟️", color = "#6775F4" },
+            //new CategoryToAdd{userID = user.Id, categroyTitle = "הפקדה לחיסכון", icon = "🏦", color = "#6775F4" },
+            //new CategoryToAdd{userID = user.Id, categroyTitle = "שונות", icon = "💡", color = "#6775F4" },
+            //new CategoryToAdd{userID = user.Id, categroyTitle = "הכנסות", icon = "💵", color = "#6775F4" }};
 
             foreach (CategoryToAdd defualtCategory in defualtCategoriesList)
             {
@@ -475,7 +867,7 @@
     {
     new SubCategoryToAdd{subCategoryTitle = "סופר", categoryID = defaultCategory.id, monthlyPlannedBudget=1500},
     new SubCategoryToAdd{subCategoryTitle = "ירקות", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
-    new SubCategoryToAdd{subCategoryTitle = "בשר/דגים", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
+    new SubCategoryToAdd{subCategoryTitle = "בשר ודגים", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
     new SubCategoryToAdd{subCategoryTitle = "הזמנת אוכל מבחוץ", categoryID = defaultCategory.id, monthlyPlannedBudget=500}
     };
 
@@ -499,10 +891,9 @@
                             List<SubCategoryToAdd> defaultSubCategory2List = new List<SubCategoryToAdd>()
     {
     new SubCategoryToAdd{subCategoryTitle = "חשמל", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
-    new SubCategoryToAdd{subCategoryTitle = "מים וגז", categoryID = defaultCategory.id, monthlyPlannedBudget=500},
-    new SubCategoryToAdd{subCategoryTitle = "ארנונה", categoryID = defaultCategory.id, monthlyPlannedBudget=500},
-    new SubCategoryToAdd{subCategoryTitle = "תקשורת", categoryID = defaultCategory.id, monthlyPlannedBudget=500},
-    };
+    new SubCategoryToAdd{subCategoryTitle = "מים", categoryID = defaultCategory.id, monthlyPlannedBudget=500},
+    new SubCategoryToAdd{subCategoryTitle = "גז", categoryID = defaultCategory.id, monthlyPlannedBudget=500},
+    new SubCategoryToAdd{subCategoryTitle = "ארנונה", categoryID = defaultCategory.id, monthlyPlannedBudget=1000}};
 
                             foreach (SubCategoryToAdd defaultSubCategory2 in defaultSubCategory2List)
                             {
@@ -524,7 +915,7 @@
     new SubCategoryToAdd{subCategoryTitle = "טיפול נפשי", categoryID = defaultCategory.id, monthlyPlannedBudget=1500},
     new SubCategoryToAdd{subCategoryTitle = "רפואה פרטית", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
     new SubCategoryToAdd{subCategoryTitle = "תרופות", categoryID = defaultCategory.id, monthlyPlannedBudget=500},
-    new SubCategoryToAdd{subCategoryTitle = "מנוי פיס", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
+    new SubCategoryToAdd{subCategoryTitle = "מנוי פיס", categoryID = defaultCategory.id, monthlyPlannedBudget=120},
     };
 
                             foreach (SubCategoryToAdd defaultSubCategory3 in defaultSubCategory3List)
@@ -541,11 +932,11 @@
                                 }
                             }
                             break;
-                        case "הפקדה לחיסכון":
+                        case "הפקדה לחסכון":
                             List<SubCategoryToAdd> defaultSubCategory4List = new List<SubCategoryToAdd>()
     {
     new SubCategoryToAdd{subCategoryTitle = "פיקדון בבנק", categoryID = defaultCategory.id, monthlyPlannedBudget=1500},
-    new SubCategoryToAdd{subCategoryTitle = "השקעה בבורסה", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
+    new SubCategoryToAdd{subCategoryTitle = "השקעות בבורסה", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
     };
 
                             foreach (SubCategoryToAdd defaultSubCategory4 in defaultSubCategory4List)
@@ -589,16 +980,16 @@
                                 }
                             }
                             break;
-                        case "הוצאות ילדים":
+                        case "ילדים":
                             List<SubCategoryToAdd> defaultSubCategory6List = new List<SubCategoryToAdd>()
     {
-    new SubCategoryToAdd{subCategoryTitle = "גן", categoryID = defaultCategory.id, monthlyPlannedBudget=1500},
+    new SubCategoryToAdd{subCategoryTitle = "גן", categoryID = defaultCategory.id, monthlyPlannedBudget=3000},
     new SubCategoryToAdd{subCategoryTitle = "צהרון", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
     new SubCategoryToAdd{subCategoryTitle = "תשלומי הורים", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
     new SubCategoryToAdd{subCategoryTitle = "חוג 1", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
     new SubCategoryToAdd{subCategoryTitle = "חוג 2", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
-    new SubCategoryToAdd{subCategoryTitle = "דמי כיס", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
-    new SubCategoryToAdd{subCategoryTitle = "תנועת נוער", categoryID = defaultCategory.id, monthlyPlannedBudget=1500}
+    new SubCategoryToAdd{subCategoryTitle = "דמי כיס", categoryID = defaultCategory.id, monthlyPlannedBudget=400},
+    new SubCategoryToAdd{subCategoryTitle = "תנועת נוער", categoryID = defaultCategory.id, monthlyPlannedBudget=200}
     };
 
                             foreach (SubCategoryToAdd defaultSubCategory6 in defaultSubCategory6List)
@@ -618,11 +1009,10 @@
                         case "ביטוח":
                             List<SubCategoryToAdd> defaultSubCategory7List = new List<SubCategoryToAdd>()
     {
-    new SubCategoryToAdd{subCategoryTitle = "קופת חולים", categoryID = defaultCategory.id, monthlyPlannedBudget=1500},
+    new SubCategoryToAdd{subCategoryTitle = "קופת חולים", categoryID = defaultCategory.id, monthlyPlannedBudget=400},
     new SubCategoryToAdd{subCategoryTitle = "ביטוח בריאות פרטי", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
     new SubCategoryToAdd{subCategoryTitle = "ביטוח תכולה", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
-    new SubCategoryToAdd{subCategoryTitle = "ביטוח חיים", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
-    new SubCategoryToAdd{subCategoryTitle = "ביטוחים נוספים", categoryID = defaultCategory.id, monthlyPlannedBudget=1000}
+    new SubCategoryToAdd{subCategoryTitle = "ביטוח חיים", categoryID = defaultCategory.id, monthlyPlannedBudget=1000}
     };
 
                             foreach (SubCategoryToAdd defaultSubCategory7 in defaultSubCategory7List)
@@ -643,14 +1033,115 @@
                             List<SubCategoryToAdd> defaultSubCategory8List = new List<SubCategoryToAdd>()
     {
     new SubCategoryToAdd{subCategoryTitle = "מסעדות", categoryID = defaultCategory.id, monthlyPlannedBudget=1500},
-    new SubCategoryToAdd{subCategoryTitle = "בתי קפה", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
-    new SubCategoryToAdd{subCategoryTitle = "סרטים/הצגות/הופעות", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
+    new SubCategoryToAdd{subCategoryTitle = "בתי קפה", categoryID = defaultCategory.id, monthlyPlannedBudget=500},
+    new SubCategoryToAdd{subCategoryTitle = "הצגות והופעות", categoryID = defaultCategory.id, monthlyPlannedBudget=500},
+    new SubCategoryToAdd{subCategoryTitle = "סרטים", categoryID = defaultCategory.id, monthlyPlannedBudget=500},
+    new SubCategoryToAdd{subCategoryTitle = "טיולים", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
     new SubCategoryToAdd{subCategoryTitle = "חופשות", categoryID = defaultCategory.id, monthlyPlannedBudget=3000}
     };
 
                             foreach (SubCategoryToAdd defaultSubCategory8 in defaultSubCategory8List)
                             {
                                 var defaultSubCategories = await Http.PostAsJsonAsync("api/Present/AddSubCategory/", defaultSubCategory8);
+
+                                if (defaultCategories.IsSuccessStatusCode)
+                                {
+                                    msg = "ווהוו לא מעניין את מלכית";
+                                }
+                                else
+                                {
+                                    msg = "לא ווהו, כן מעניין את מלכית";
+                                }
+                            }
+                            break;
+
+                        case "דיור":
+                            List<SubCategoryToAdd> defaultSubCategory9List = new List<SubCategoryToAdd>()
+    {
+    new SubCategoryToAdd{subCategoryTitle = "משכנתא", categoryID = defaultCategory.id, monthlyPlannedBudget=400},
+    new SubCategoryToAdd{subCategoryTitle = "שכר דירה", categoryID = defaultCategory.id, monthlyPlannedBudget=4000},
+    new SubCategoryToAdd{subCategoryTitle = "ועד בית", categoryID = defaultCategory.id, monthlyPlannedBudget=200},
+    new SubCategoryToAdd{subCategoryTitle = "גינון", categoryID = defaultCategory.id, monthlyPlannedBudget=500},
+    new SubCategoryToAdd{subCategoryTitle = "שירותי ניקיון", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
+    new SubCategoryToAdd{subCategoryTitle = "רכישות לבית", categoryID = defaultCategory.id, monthlyPlannedBudget=1000}
+    };
+
+                            foreach (SubCategoryToAdd defaultSubCategory9 in defaultSubCategory9List)
+                            {
+                                var defaultSubCategories = await Http.PostAsJsonAsync("api/Present/AddSubCategory/", defaultSubCategory9);
+
+                                if (defaultCategories.IsSuccessStatusCode)
+                                {
+                                    msg = "ווהוו לא מעניין את מלכית";
+                                }
+                                else
+                                {
+                                    msg = "לא ווהו, כן מעניין את מלכית";
+                                }
+                            }
+                            break;
+
+                        case "רכב":
+                            List<SubCategoryToAdd> defaultSubCategory10List = new List<SubCategoryToAdd>()
+    {
+    new SubCategoryToAdd{subCategoryTitle = "דלק", categoryID = defaultCategory.id, monthlyPlannedBudget=1500},
+    new SubCategoryToAdd{subCategoryTitle = "חניה", categoryID = defaultCategory.id, monthlyPlannedBudget=500},
+    new SubCategoryToAdd{subCategoryTitle = "כבישי אגרה", categoryID = defaultCategory.id, monthlyPlannedBudget=200},
+    new SubCategoryToAdd{subCategoryTitle = "ביטוחים", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
+    new SubCategoryToAdd{subCategoryTitle = "טסט וטיפולים", categoryID = defaultCategory.id, monthlyPlannedBudget=1000}};
+
+                            foreach (SubCategoryToAdd defaultSubCategory10 in defaultSubCategory10List)
+                            {
+                                var defaultSubCategories = await Http.PostAsJsonAsync("api/Present/AddSubCategory/", defaultSubCategory10);
+
+                                if (defaultCategories.IsSuccessStatusCode)
+                                {
+                                    msg = "ווהוו לא מעניין את מלכית";
+                                }
+                                else
+                                {
+                                    msg = "לא ווהו, כן מעניין את מלכית";
+                                }
+                            }
+                            break;
+
+                        case "תקשורת":
+                            List<SubCategoryToAdd> defaultSubCategory11List = new List<SubCategoryToAdd>()
+    {
+    new SubCategoryToAdd{subCategoryTitle = "אינטרנט", categoryID = defaultCategory.id, monthlyPlannedBudget=300},
+    new SubCategoryToAdd{subCategoryTitle = "טלפון", categoryID = defaultCategory.id, monthlyPlannedBudget=300},
+    new SubCategoryToAdd{subCategoryTitle = "תיקונים", categoryID = defaultCategory.id, monthlyPlannedBudget=500},
+    new SubCategoryToAdd{subCategoryTitle = "טלוויזיה", categoryID = defaultCategory.id, monthlyPlannedBudget=300},
+    new SubCategoryToAdd{subCategoryTitle = "אפליקציות", categoryID = defaultCategory.id, monthlyPlannedBudget=200},
+    new SubCategoryToAdd{subCategoryTitle = "שירותי סטרימינג", categoryID = defaultCategory.id, monthlyPlannedBudget=200}};
+
+                            foreach (SubCategoryToAdd defaultSubCategory11 in defaultSubCategory11List)
+                            {
+                                var defaultSubCategories = await Http.PostAsJsonAsync("api/Present/AddSubCategory/", defaultSubCategory11);
+
+                                if (defaultCategories.IsSuccessStatusCode)
+                                {
+                                    msg = "ווהוו לא מעניין את מלכית";
+                                }
+                                else
+                                {
+                                    msg = "לא ווהו, כן מעניין את מלכית";
+                                }
+                            }
+                            break;
+
+                        case "טיפוח":
+                            List<SubCategoryToAdd> defaultSubCategory12List = new List<SubCategoryToAdd>()
+    {
+    new SubCategoryToAdd{subCategoryTitle = "מספרה", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
+    new SubCategoryToAdd{subCategoryTitle = "קוסמטיקה", categoryID = defaultCategory.id, monthlyPlannedBudget=400},
+    new SubCategoryToAdd{subCategoryTitle = "ציפורניים", categoryID = defaultCategory.id, monthlyPlannedBudget=200},
+    new SubCategoryToAdd{subCategoryTitle = "טיפולים", categoryID = defaultCategory.id, monthlyPlannedBudget=500},
+    new SubCategoryToAdd{subCategoryTitle = "פארם", categoryID = defaultCategory.id, monthlyPlannedBudget=500}};
+
+                            foreach (SubCategoryToAdd defaultSubCategory12 in defaultSubCategory12List)
+                            {
+                                var defaultSubCategories = await Http.PostAsJsonAsync("api/Present/AddSubCategory/", defaultSubCategory12);
 
                                 if (defaultCategories.IsSuccessStatusCode)
                                 {
@@ -701,6 +1192,11 @@
     private TutorialOverlay tutorialOverlay;
     private string targetElementId = "";
 
+
+    void toPrefPage()
+    {
+        isPrefrences = true;
+    }
 
     //private async Task StartTutorial()
     //{
