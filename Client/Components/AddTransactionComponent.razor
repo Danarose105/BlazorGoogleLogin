@@ -93,7 +93,7 @@
                                         </div>
                                         @*   ---- TRANS DATE  ----*@
                                     </div>
-                                    <input type="date" @bind="newTransaction.transDate" class="custom-date-input" />
+                                    <input type="date" @bind="newTransaction.transDate" min="@(DateTime.Today.ToString("yyyy-MM-dd"))" class="custom-date-input" />
                                 </div>
                                 <div>
                                     @if (titleInput.Length < 2)
@@ -127,35 +127,35 @@
                                         <input class="budgetBox" id="description" type="number" @bind="newTransaction.transValue" @oninput="transAmount" />
                                         <span class="currency-symbol">₪</span>
                                         <div class="lineBetween"></div>
-                                         <div>
-                                        @if (newTransaction.transValue <= 0)
-                                        {
-                                            if (categoryTypeIndicator)
+                                        <div>
+                                            @if (newTransaction.transValue <= 0)
                                             {
-                                                if(isTransSumTyped)
+                                                if (categoryTypeIndicator)
                                                 {
-                                                    <span style="color:#F95050">סך ההכנסה לא תקין.</span>
-                                                }
-                                                
-                                            }
-                                            else
-                                            {
-                                                if(isTransSumTyped)
-                                                {
-                                                    <span style="color:#F95050">סך ההוצאה לא תקין.</span>
-                                                }
-                                                
-                                            }
+                                                    if (isTransSumTyped)
+                                                    {
+                                                        <span style="color:#F95050">סך ההכנסה לא תקין.</span>
+                                                    }
 
-                                        }
+                                                }
+                                                else
+                                                {
+                                                    if (isTransSumTyped)
+                                                    {
+                                                        <span style="color:#F95050">סך ההוצאה לא תקין.</span>
+                                                    }
+
+                                                }
+
+                                            }
+                                        </div>
                                     </div>
-                                    </div>
-                                   
+
                                 </div>
 
 
                                 @*   ---- FIXED MONTHLY BUTTONS  ----*@
-                                <div class="outerReBtn" disabled="@splitPayment">
+                                <div class="outerReBtn" disabled="@fixedMonthly">
 
                                     <div class="outerReBtn">
                                         <button class="repeatedBtn" @onclick=@(async () => await repeatingTransOverlay())>@repeatedBtnTitle <img src="./css/images/repeat icon.svg" /></button>
@@ -190,7 +190,7 @@
                                 </div>
 
                                 @*   ---- SPLIT PAYMENT TOGGLE & DROPDOWN ----*@
-                                <div class="outerTitleAndDateAndName" disabled="@fixedMonthly">
+                                <div class="outerTitleAndDateAndName" disabled="@splitPayment">
 
                                     @if (splitPayment)
                                     {
@@ -259,7 +259,7 @@
                                     }
                                     else
                                     {
-                                        <div class="splitToggle" disabled="@fixedMonthly">
+                                        <div class="splitToggle">
                                             @if (categoryTypeIndicator)
                                             {
                                                 <span class="titleName">ההכנסה בתשלומים?</span>
@@ -686,9 +686,9 @@
                                 <button class="primery-button" @onclick="saveAndRepeatTransactions" disabled>שמירה והוצאה נוספת</button>
                             }
                             <button class="secondery-button" @onclick="saveAndEndTransactions" disabled>שמירה וסיום</button>
-                           
-                          
-                           
+
+
+
                         </div>
                     }
 
@@ -705,7 +705,7 @@
                     {
                         <div class="outerSaveBtns">
                             <button class="primery-button" @onclick="updateExistingTrans" disabled>שמירה וסיום</button>
-                           
+
                         </div>
                     }
 
@@ -717,21 +717,21 @@
     @*---- OVERDRAFT POPUP ----*@
     @if (overdraftDetected && closeOverdraftOpts.Count > 1)
     {
-      
+
         <div class="overlay">
             <div class="outerOverdraft">
                 <div class="overdraftWindow" id="presentOnboarding5">
                     <div class="expDivAndTitle">
-                    <div class="expDiv">
+                        <div class="expDiv">
 
-                        <div class="expBtn" @onclick="@(()=>expBubbleToolTip("ODwithSubCats"))"><img src="./css/images/q-with-shadow.svg" /></div>
-                        @if (odExpBubble)
-                        {
+                            <div class="expBtn" @onclick="@(()=>expBubbleToolTip("ODwithSubCats"))"><img src="./css/images/q-with-shadow.svg" /></div>
+                            @if (odExpBubble)
+                            {
 
-                            <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
-                        }
+                                <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+                            }
 
-                    </div>
+                        </div>
 
                         <h3 class="titleText">חרגת...</h3>
                     </div>
@@ -886,24 +886,24 @@
             <div class="outerOverdraft">
                 <div class="overdraftWindow">
 
-                        <div class="outerCloseBtn">
-                            <button class="modal-close-btn" @onclick="@(async () => await closeOverdraftWindow())"><img src="./css/images/close x.svg" /></button>
-                        </div>
+                    <div class="outerCloseBtn">
+                        <button class="modal-close-btn" @onclick="@(async () => await closeOverdraftWindow())"><img src="./css/images/close x.svg" /></button>
+                    </div>
                     <div class="outerText">
-                    <div class="expDivAndTitle">
-                    <div class="expDiv">
+                        <div class="expDivAndTitle">
+                            <div class="expDiv">
 
-                        <div class="expBtn" @onclick="@(()=>expBubbleToolTip("ODwithNoSubCats"))"><img src="./css/images/q-with-shadow.svg"/></div>
-                        @if (odExpBubble)
-                        {
+                                <div class="expBtn" @onclick="@(()=>expBubbleToolTip("ODwithNoSubCats"))"><img src="./css/images/q-with-shadow.svg" /></div>
+                                @if (odExpBubble)
+                                {
 
-                            <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
-                        }
+                                    <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+                                }
 
-                    </div>
+                            </div>
 
-                        <h3 class="titleText">חרגת...</h3>
-                    </div>
+                            <h3 class="titleText">חרגת...</h3>
+                        </div>
 
                         <div>
                             אין תתי קטגוריות בעלות תקציב
@@ -961,7 +961,7 @@
                                     </div>
                                 </div>
                                 <div>
-                                     @if (currentTagName == null || currentTagName == "")
+                                    @if (currentTagName == null || currentTagName == "")
                                     {
                                         if (emptyTagName)
                                         {
@@ -1049,15 +1049,6 @@
     [Parameter]
     public EventCallback<double> addTransactionToTotal { get; set; }
 
-    /// <summary>
-    /// adds the trans total to the main status table in present home page
-    /// </summary>
-    //[Parameter]
-    //public EventCallback<double> transValueToAdd { get; set; }
-
-    //[Parameter]
-    //public TransactionToAdd newTransaction { get; set; }
-
     [Parameter]
     public int transIDtoEdit { get; set; }
 
@@ -1106,8 +1097,13 @@
     private bool isItAnewTrans = false;
     //public bool isTagClicked = false;
     public bool overdraftDetected;
-
+    /// <summary>
+    /// controls the disabled state of fixedMonthly
+    /// </summary>
     bool splitPayment = false;
+    /// <summary>
+    /// controls the disabled state of fixedMonthly
+    /// </summary>
     bool fixedMonthly = false;
     bool isTopDropDownOpen = true;
     bool isButtomDropDownOpen = false;
@@ -1157,7 +1153,7 @@
     List<TransactionToAdd> fixedTransChildrenToAdd = new List<TransactionToAdd>();
 
     /// <summary>
-    /// fixed monthly children in DB
+    /// fixed monthly/ split payment children in DB
     /// </summary>
     List<RepeatedTransToShow> reapeatedTransValuesList = new List<RepeatedTransToShow>();
 
@@ -1271,6 +1267,60 @@
 
     }
 
+    /// <summary>
+    /// checks if the day exists in a specific month
+    /// </summary>
+    bool DayExistsInMonth(int year, int month, int day)
+    {
+        try
+        {
+            DateTime date = new DateTime(year, month, day);
+            return true;
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// gets the last day of the month
+    /// </summary>
+
+    DateTime GetLastDayOfMonth(int year, int month)
+    {
+        // Create a DateTime object for the first day of the next month
+        DateTime firstDayOfNextMonth = new DateTime(year, month, 1).AddMonths(1);
+
+        // Subtract one day to get the last day of the current month
+        DateTime lastDayOfMonth = firstDayOfNextMonth.AddDays(-1);
+
+        return lastDayOfMonth;
+    }
+
+    /// <summary>
+    /// checks if the date for the trans child exists and if not sets it to the last day of the wanted month
+    /// </summary>
+    private DateTime checkDateExistsInMonth(DateTime dateOfChild, int wantedMonth)
+    {
+        DateTime dateToCheck = dateOfChild;
+        DateTime newChildDate;
+        //checks if the day of the trans child exists in the month the user wants it to be in
+        if (DayExistsInMonth(dateToCheck.Year, wantedMonth, dateToCheck.Day))
+        {
+            newChildDate = new DateTime(dateToCheck.Year, wantedMonth, dateToCheck.Day);
+
+        }
+        else
+        {
+            //if the date doesnt exist it inserts the last day of the month as the trans child's date
+            DateTime lastDay = GetLastDayOfMonth(dateToCheck.Year, wantedMonth);
+            newChildDate = new DateTime(dateToCheck.Year, wantedMonth, lastDay.Day);
+        }
+        return newChildDate;
+    }
+
+
     void backToTrans()
     {
         hiddenReOverlay = "display:none;";
@@ -1309,6 +1359,9 @@
         Console.WriteLine("reapeatedTransValuesList count- " + reapeatedTransValuesList.Count + ", fixedTransChildrenToAdd count- " + fixedTransChildrenToAdd.Count);
     }
 
+
+
+
     /// <summary>
     /// In fixedMonthly overlay-handles values when the parent was not already fixedMonthly
     /// </summary>
@@ -1333,6 +1386,10 @@
         {
             Console.WriteLine("Invalid month name or format.");
         }
+
+        date = checkDateExistsInMonth(date, date.Month);
+        Console.WriteLine("child date- " + date);
+
         string newValue = e.Value?.ToString();
         if (int.TryParse(newValue, out int _))
         {
@@ -1390,16 +1447,20 @@
                 //finds the child trans in the list of the children that are only in the page and are to be added/edited
                 var findMatchTrans = fixedTransChildrenToAdd.FirstOrDefault(t => t.transDate == existingTrans.transDate);
                 int indexOfMatch = fixedTransChildrenToAdd.IndexOf(findMatchTrans);
+
+                fixedTransChildrenToAdd[indexOfMatch].transDate = checkDateExistsInMonth(fixedTransChildrenToAdd[indexOfMatch].transDate, fixedTransChildrenToAdd[indexOfMatch].transDate.Month); //checks if the date is valid, and if not sets it to be the last day of that month
+
                 fixedTransChildrenToAdd[indexOfMatch].transValue = existingTrans.transValue;
             }
         }
         else
         {
             // Optionally add a new transaction if it does not exist, this block now only executes if there's no existing transaction
+            int parsedMonth = int.Parse(month);
             var newTrans = new TransactionToAdd
                 {
-                    transDate = DateTime.ParseExact(month, "MMMM", CultureInfo.InvariantCulture),
-                    //transValue = parsedValue // Now it will add with parsedValue which could be 0 from above
+                    //checks if the date is valid, and if not sets it to be the last day of that month:
+                    transDate = checkDateExistsInMonth(newTransaction.transDate, parsedMonth),
                     transValue = 0
                 };
             Console.WriteLine("input was null");
@@ -1424,7 +1485,8 @@
                 userStartMonthDay = 1;
             }
         }
-        if (transIDtoEdit > 0)
+
+        if (transIDtoEdit > 0) //means it's an existing transaction
         {
             if (categoryTypeIndicator)
             {
@@ -1437,12 +1499,14 @@
             }
 
             isItAnewTrans = false;
+
             var transEditRes = await Http.GetAsync("api/Transactions/getSplitParent/" + transIDtoEdit); //doesn't necessarily mean that the transaction is a split parent/child, this gets the entire data of a specific transaction by its ID
             if (transEditRes.IsSuccessStatusCode)
             {
                 ogTransaction = await transEditRes.Content.ReadFromJsonAsync<TransactionToEdit>();
                 if (ogTransaction != null)
                 {
+                    //links the original trans (that's in DB) to the form's trans
                     newTransaction = new TransactionToAdd()
                         {
                             subCategoryID = subCategoryIDTOGet,
@@ -1490,8 +1554,8 @@
                             repeatedBtnTitle = "עריכת ההוצאה החוזרת";
                         }
 
-                        fixedMonthly = true;
-
+                        fixedMonthly = false; //disables the split payment option
+                        splitPayment = !fixedMonthly;
                         var getRepeatedChildren = await Http.GetAsync("api/Transactions/getRepeatedTransToEdit/" + transIDtoEdit); //gets the fixed children only
                         if (getRepeatedChildren.IsSuccessStatusCode)
                         {
@@ -1504,7 +1568,9 @@
                     }
                     else if (newTransaction.splitPayment == true)
                     {
-                        splitPayment = true;
+                        splitPayment = false;
+                        fixedMonthly = !splitPayment;
+
                         var repeatedTransValuesRes = await Http.GetAsync("api/Transactions/getPaymentTransToEdit/" + transIDtoEdit);
 
 
@@ -1557,46 +1623,6 @@
                         splitPayment = false;
                     }
 
-                    //if (newTransaction.splitPayment == true)
-                    //{
-
-                    //    splitPayment = true;
-                    //    var repeatedTransValuesRes = await Http.GetAsync("api/Transactions/getPaymentTransToEdit/" + transIDtoEdit);
-
-
-                    //    if (repeatedTransValuesRes.IsSuccessStatusCode)
-                    //    {
-                    //        reapeatedTransValuesList = repeatedTransValuesRes.Content.ReadFromJsonAsync<List<RepeatedTransToShow>>().Result;
-                    //        foreach (RepeatedTransToShow repeatedT in reapeatedTransValuesList)
-                    //        {
-                    //            if (repeatedT.id == transIDtoEdit)
-                    //            {
-                    //                indexOfPayment = reapeatedTransValuesList.IndexOf(repeatedT) + 1;
-                    //            }
-                    //        }
-                    //        selectedNumber = reapeatedTransValuesList.Count;
-                    //        initialAmountOfSplits = selectedNumber;
-                    //        sumPreSplit = newTransaction.transValue * initialAmountOfSplits;
-                    //        newTransaction.transValue = sumPreSplit;
-                    //        Console.WriteLine("sum pre split- " + sumPreSplit);
-                    //        Console.WriteLine("newTransaction.transValue- " + newTransaction.transValue);
-                    //        List<int> transStatus = new List<int>()
-                    //        {
-                    //            indexOfPayment, selectedNumber
-                    //        };
-                    //        SplitPaymentWithIndex.InvokeAsync(transStatus);
-
-                    //    }
-                    //    else
-                    //    {
-                    //        Console.WriteLine("repeated Trans values failed");
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    initialAmountOfSplits = 1;
-                    //    selectedNumber = 1;
-                    //}
                 }
                 else
                 {
@@ -1608,7 +1634,7 @@
                 Console.WriteLine("failed to find/get transaction with this ID- " + transIDtoEdit);
             }
         }
-        else
+        else //means it's a new transaction
         {
 
             newTransaction = new TransactionToAdd()
@@ -1636,10 +1662,6 @@
 
         }
 
-        //if (newTransaction.tagID > 0)
-        //{
-        //    chosenTag.tagTitle = newTransaction.tagTitle;
-        //}
         isLoadComplete = true;
     }
 
@@ -1686,7 +1708,7 @@
                             var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
                             if (transOverdraftRes.IsSuccessStatusCode)
                             {
-                                //overdraftOverlay = true;
+
                                 Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
                             }
                         }
@@ -1702,15 +1724,8 @@
                 if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay) //checks if the users month has started and then adds it to the total
                 {
                     addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                    //transValueToAdd.InvokeAsync(newTransaction.transValue);
+
                 }
-                //await getStreakDetails();
-
-                //if(!overdraftDetected && closeOverdraftOpts.Count < 1 )
-                //{
-                //isTransactionOverlayOpen.InvokeAsync(false);
-
-                //}
 
             }
             else
@@ -1752,7 +1767,7 @@
                                     var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
                                     if (transOverdraftRes.IsSuccessStatusCode)
                                     {
-                                        //overdraftOverlay=true;
+
                                         Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
 
                                     }
@@ -1765,7 +1780,7 @@
                         if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
                         {
                             addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                            //transValueToAdd.InvokeAsync(newTransaction.transValue);
+
                         }
 
                     }
@@ -1777,7 +1792,7 @@
                         if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
                         {
                             addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                            //transValueToAdd.InvokeAsync(newTransaction.transValue);
+
                         }
                     }
                 }
@@ -1787,11 +1802,6 @@
                 }
             }
 
-
-            //await getStreakDetails();
-
-
-            //isTransactionOverlayOpen.InvokeAsync(false);
 
 
         }
@@ -1811,7 +1821,7 @@
                             var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
                             if (transOverdraftRes.IsSuccessStatusCode)
                             {
-                                //overdraftOverlay = true;
+
                                 Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
                             }
                         }
@@ -1822,10 +1832,10 @@
                 if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
                 {
                     addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                    //transValueToAdd.InvokeAsync(newTransaction.transValue);
+
 
                 }
-                //await getStreakDetails();
+
 
             }
             else
@@ -1896,10 +1906,10 @@
                 if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
                 {
                     addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                    //transValueToAdd.InvokeAsync(newTransaction.transValue);
+
 
                 }
-                //await getStreakDetails();
+
 
 
             }
@@ -1953,7 +1963,6 @@
                         if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
                         {
                             addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                            //transValueToAdd.InvokeAsync(newTransaction.transValue);
 
                         }
 
@@ -1964,7 +1973,7 @@
                     Console.WriteLine("הזנה נכשלה");
                 }
             }
-            //await getStreakDetails();
+
 
         }
         else //means the trans is not split or fixed
@@ -1990,8 +1999,7 @@
                         }
                     }
                     addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                    //transValueToAdd.InvokeAsync(newTransaction.transValue);
-                    //await getStreakDetails();
+
 
                     Console.WriteLine("ההזנה נשמרה בהצלחה :)");
                 }
@@ -2000,9 +2008,9 @@
                     if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
                     {
                         addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-                        //transValueToAdd.InvokeAsync(newTransaction.transValue);
+
                     }
-                    //await getStreakDetails();
+
 
                 }
 
@@ -2314,6 +2322,7 @@
             {
                 //transToEdit.transValue = splitValue;
                 transToEdit.transDate = newTransaction.transDate.AddMonths(i);
+                transToEdit.transDate = checkDateExistsInMonth(transToEdit.transDate, transToEdit.transDate.Month);
                 transToEdit.parentTransID = transIDtoEdit;
                 transToEdit.splitPayment = false;
 
@@ -2363,6 +2372,7 @@
                 {
 
                     transToEdit.transDate = newTransaction.transDate.AddMonths(j);
+                    transToEdit.transDate = checkDateExistsInMonth(transToEdit.transDate, transToEdit.transDate.Month);
                     transToEdit.parentTransID = transIDtoEdit;
                     transToEdit.splitPayment = false;
 
@@ -2653,7 +2663,7 @@
     private void tagTitleLengthCheck(ChangeEventArgs e)
     {
         currentTagName = e.Value.ToString();
-        if(currentTagName.Length == 0)
+        if (currentTagName.Length == 0)
         {
             emptyTagName = true;
         }
@@ -2822,8 +2832,8 @@
 
             returningTrans = !returningTrans; //opens the overlay
             fixedTransChildrenToAdd = new List<TransactionToAdd>();
-            int currentDay = DateTime.Now.Day;
-            int currentYear = DateTime.Now.Year;
+            int currentDay = newTransaction.transDate.Day;
+            int currentYear = newTransaction.transDate.Year;
 
             //adds possible transactions to the fixed children list:
             foreach (string m in months)
@@ -2833,11 +2843,15 @@
                 DateTime tempDate;
                 if (DateTime.TryParseExact(dateString, "d MMMM yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out tempDate))
                 {
-                    parsedDate = tempDate;
+                    parsedDate = checkDateExistsInMonth(tempDate, tempDate.Month);
+
                 }
                 else
                 {
                     Console.WriteLine("date parsing failed");
+                    DateTime month = DateTime.ParseExact(m, "MMMM", System.Globalization.CultureInfo.InvariantCulture);
+                    int monthNumber = month.Month;
+                    parsedDate = checkDateExistsInMonth(newTransaction.transDate, monthNumber);
                 }
                 attemptedParsing = true;
 
@@ -2990,7 +3004,7 @@
                             transType = newTransaction.transType,
                             transValue = childTrans.transValue,
                             valueType = newTransaction.valueType,
-                            transDate = childTrans.transDate,
+                            transDate = checkDateExistsInMonth(childTrans.transDate, childTrans.transDate.Month),
                             description = newTransaction.description,
                             parentTransID = transIDtoEdit,
                             fixedMonthly = false,
@@ -3043,19 +3057,32 @@
         newTransaction.fixedMonthly = false;
 
 
-        fixedTransChildrenToAdd.Clear();
+        //fixedTransChildrenToAdd.Clear();
         fixedTransChildrenToAdd = new List<TransactionToAdd>();
         Console.WriteLine("fixedTransChildrenToAdd count- " + fixedTransChildrenToAdd.Count);
-        repeatedBtnTitle = "הגדרת ההזנה כחוזרת";
+
+        if (categoryTypeIndicator)
+        {
+            repeatedBtnTitle = "הגדרת ההכנסה כחוזרת";
+        }
+        else
+        {
+            repeatedBtnTitle = "הגדרת ההוצאה כחוזרת";
+        }
+
+        //closes the fixed trans overlay
         returningTrans = false;
         isReapetedBtnClicked = false;
-        fixedMonthly = false;
-        //reapeatedTransValuesList = new List<RepeatedTransToShow>();
-
         hiddenReOverlay = "";
+
+        //enables both buttons in the trans form:
+        fixedMonthly = false;
+        splitPayment = false;
+
+
     }
 
-//-------------------------------------//
+    //-------------------------------------//
     public async Task getStreakDetails()
     {
         if (userID > 0)
@@ -3220,7 +3247,7 @@
         {
             topExpBubbleOpen = !topExpBubbleOpen;
             bottomExpBubbleOpen = false;
-            odExpBubble=false;
+            odExpBubble = false;
         }
         else if (elementName == "TransTag")
         {
@@ -3231,7 +3258,7 @@
         else if (elementName == "ODwithNoSubCats" || elementName == "ODwithSubCats")
         {
             odExpBubble = !odExpBubble;
-            topExpBubbleOpen=false;
+            topExpBubbleOpen = false;
             bottomExpBubbleOpen = false;
         }
 
@@ -3242,12 +3269,12 @@
         topExpBubbleOpen = false;
     }
 
-     private void transAmount(ChangeEventArgs e)
+    private void transAmount(ChangeEventArgs e)
     {
-        
+
         string transSumInput = e.Value.ToString();
 
-        if(transSumInput.Length == 0)
+        if (transSumInput.Length == 0)
         {
             isTransSumTyped = true;
         }
@@ -3255,7 +3282,7 @@
         {
             isTransSumTyped = false;
         }
-        
+
     }
 
 }
