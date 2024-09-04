@@ -12,8 +12,8 @@
 @*@using PSC.Blazor.Components.Tours*@
 
 
-<div id="lottieAnimation" style="display:block;">
-    <lottie-player src="https://lottie.host/embed/5154f28c-27b5-434b-b7bf-e5226737de82/wsrkhAfMxt.json" background="transparent" speed="1" loop autoplay style="display: flex; align-items: center; justify-content: center; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50%; height: 50%;"></lottie-player>
+<div id="lottieAnimation" style="display:">
+    <lottie-player src="https://lottie.host/embed/5154f28c-27b5-434b-b7bf-e5226737de82/wsrkhAfMxt.json" background="transparent" speed="1" loop autoplay></lottie-player>
 </div>
 
 
@@ -218,8 +218,16 @@ else
                                             <span class="likeIcon">👍</span>
                                             <div class="storyTextWrapper">
                                                 <h3 class="titleFirstStory">החסכון הגדול ביותר</h3>
-                                                <div>עד כה החודש הוצאת @Math.Round(subCatsTotalsStory[bestSavingIndex].currentMonthTotal)₪ על @bestSavingSubCat, @bestSavingValue₪ פחות מחודש שעבר! </div>
+                                                @if (Math.Round(subCatsTotalsStory[bestSavingIndex].currentMonthTotal) > 0)
+                                                {
+                                                    <div>עד כה החודש הוצאת @Math.Round(subCatsTotalsStory[bestSavingIndex].currentMonthTotal)₪ על @bestSavingSubCat, @bestSavingValue₪ פחות מחודש שעבר! </div>
+                                                }
+                                                else
+                                                {
+                                                    <div>עד כה, לא נמצאו תתי קטגוריות בהן הוצאת פחות מחודש שעבר.</div>
+                                                }
                                             </div>
+
                                         </div>
                                         <div class="divider"></div>
                                         <div class="firstStoryLike">
@@ -227,7 +235,16 @@ else
                                             <div class="storyTextWrapper">
 
                                                 <h3 class="titleFirstStory">העלייה הגדולה ביותר</h3>
-                                                <div>עד כה החודש הוצאת @Math.Round(subCatsTotalsStory[worstSavingIndex].currentMonthTotal)₪ על @worstSavingSubCat, @worstSavingValue₪ יותר מחודש שעבר! </div>
+                                                @if(Math.Round(subCatsTotalsStory[worstSavingIndex].currentMonthTotal) > 0)
+                                                {
+                                                    <div>
+                                                        עד כה החודש הוצאת @Math.Round(subCatsTotalsStory[worstSavingIndex].currentMonthTotal)₪ על @worstSavingSubCat, @worstSavingValue₪ יותר מחודש שעבר! 
+                                                        </div>
+                                                }
+                                                else
+                                                {
+                                                     <div>עד כה, לא נמצאו תתי קטגוריות בהן הוצאת יותר מחודש שעבר.</div>
+                                                }
                                             </div>
                                         </div>
                                         <div class="imgWrapper">
@@ -698,9 +715,9 @@ else
     protected override async Task OnInitializedAsync()
     {
 
+        //await JSRuntime.InvokeVoidAsync("showAnimationForTwoSeconds");
         userID = user.Id;
-
-        await Task.Delay(1000); // This is just to simulate an async process.
+        await Task.Delay(10000);
 
         int currentMonthNumber = DateTime.Now.Month; // Gets the current month number
         currentMonth = GetHebrewMonthName(currentMonthNumber);
@@ -1433,7 +1450,7 @@ else
     {
         if (firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("showAnimationForTwoSeconds");
+            
             await JSRuntime.InvokeVoidAsync("navScroll.init", navBar);
 
         }
@@ -1487,7 +1504,7 @@ else
     }
 
 
-  
+
 }
 
-    
+
