@@ -351,7 +351,8 @@
 
                                                                 }
 
-                                                                @if (GetCurrentMonth() == month)
+                                                                @*   @if (GetCurrentMonth() == month)*@
+                                                                @if (newTransaction.transDate.ToString("MMMM") == month)
                                                                 {
                                                                     inputValue = newTransaction.transValue.ToString();
                                                                     <div class="thisOuterValue">
@@ -390,7 +391,8 @@
                                                         {
                                                             <div class="monthValueInput">
                                                                 <label>@GetHebrewMonthName(month)</label>
-                                                                @if (GetCurrentMonth() != month)
+                                                                @*@if (GetCurrentMonth() != month)*@
+                                                                @if (newTransaction.transDate.ToString("MMMM") != month)
                                                                 {
 
                                                                     <div class="monthDivider"></div>
@@ -472,7 +474,8 @@
 
                                                             <div class="monthValueInput">
 
-                                                                @if (GetCurrentMonth() == month)
+                                                                @* @if (GetCurrentMonth() == month)*@
+                                                                @if (newTransaction.transDate.ToString("MMMM") == month)
                                                                 {
                                                                     <label>@GetHebrewMonthName(month)</label>
                                                                     <div class="monthDivider"></div>
@@ -516,7 +519,8 @@
                                                                 <label>@GetHebrewMonthName(month)</label> @*/סקשן איפוס!!!*@
                                                                 <div class="monthDivider"></div>
                                                                 <div class="outerValue">
-                                                                    @if (GetCurrentMonth() != month)
+                                                                    @* @if (GetCurrentMonth() != month)*@
+                                                                    @if (newTransaction.transDate.ToString("MMMM") != month)
                                                                     {
                                                                         <input class="months" type="text"
                                                    disabled="@IsPastMonth(month)" value="0" @oninput="eventArgs => HandleInput(eventArgs, month)" />
@@ -1256,9 +1260,13 @@
     private bool IsPastMonth(string month)
     {
         pastMonthStyle = "disMonth";
-        int currentMonthIndex = months.IndexOf(GetCurrentMonth());
+        //int currentMonthIndex = months.IndexOf(GetCurrentMonth());
         int monthIndex = months.IndexOf(month);
-        return monthIndex < currentMonthIndex;
+        //return monthIndex < currentMonthIndex;
+
+        int releventMonthIndex = months.IndexOf(newTransaction.transDate.ToString("MMMM"));
+        Console.WriteLine("monthIndex- " + monthIndex + ", releventMonthIndex- " + releventMonthIndex);
+        return monthIndex < releventMonthIndex;
     }
     private string GetDefaultValue(string month)
     {
@@ -1371,8 +1379,8 @@
         isValueTypedAfterReset = true;
 
 
-        int currentDay = DateTime.Now.Day;
-        int currentYear = DateTime.Now.Year;
+        int currentDay = newTransaction.transDate.Day;
+        int currentYear = newTransaction.transDate.Year;
 
         // Build the date string using today's day, the given month, and the current year
         string dateString = $"{currentDay} {monthName} {currentYear}";
@@ -1721,7 +1729,7 @@
 
                 isTyped = false;
                 Console.WriteLine("ההזנה נשמרה בהצלחה :)");
-                if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay) //checks if the users month has started and then adds it to the total
+                if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay && newTransaction.transDate.Day <= DateTime.Today.Day) //checks if the users month has started and then adds it to the total
                 {
                     addTransactionToTotal.InvokeAsync(newTransaction.transValue);
 
@@ -2890,7 +2898,10 @@
                         childTrans.parentTransID = matchingTrans.id;
                     }
 
-                    fixedTransChildrenToAdd.Add(childTrans);
+                    
+
+                        fixedTransChildrenToAdd.Add(childTrans);
+                   
                     Console.WriteLine("childTrans.transValue- " + childTrans.transValue);
                 }
                 else //if the trans wasn't fixedMonthly before
@@ -2933,7 +2944,7 @@
 
     public async Task saveRepeatedTransactions(int parentTransID)
     {
-        fixedTransChildrenToAdd.RemoveAll(e => e.transDate <= DateTime.Now); //deletes all children that their date had already passed
+        fixedTransChildrenToAdd.RemoveAll(e => e.transDate <= newTransaction.transDate); //deletes all children that their date had already passed
         for (int i = fixedTransChildrenToAdd.Count - 1; i >= 0; i--)
         {
             TransactionToAdd repT = fixedTransChildrenToAdd[i];
@@ -2951,6 +2962,7 @@
             {
                 fixedTransChildrenToAdd.RemoveAt(i);
             }
+
         }
 
         foreach (TransactionToAdd repT in fixedTransChildrenToAdd)
@@ -2974,7 +2986,7 @@
     /// </summary>
     public async Task updateReTransactions(List<RepeatedTransToShow> reTransToUpdate)
     {
-        reTransToUpdate.RemoveAll(e => e.transDate <= DateTime.Now); //removes all transaction that don't occur in the future (including the present trans)
+        reTransToUpdate.RemoveAll(e => e.transDate <= newTransaction.transDate); //removes all transaction that don't occur in the future (including the present trans)
         if (newTransaction.fixedMonthly == true)
         {
             foreach (RepeatedTransToShow childTrans in reTransToUpdate)
