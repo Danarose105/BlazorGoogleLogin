@@ -1270,3 +1270,19 @@ ol li::marker {
     justify-content: flex-start;
     width: 90%;
 }
+
+#streakExpAndTitle {
+    display: flex;
+    flex-direction: row-reverse;
+    width: 100%;
+}
+
+#streakExpBtn {
+    width: 21%;
+}
+
+#qMarkSpan {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}

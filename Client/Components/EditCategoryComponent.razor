@@ -355,7 +355,16 @@
     {
         //editedCategory.categroyTitle = categoryToEdit.categroyTitle;
         editedCategory.categroyTitle = titleInput;
-        editedCategory.color = categoryToEdit.color;
+
+        if (categoryToEdit.color!=null)
+        {
+            editedCategory.color = categoryToEdit.color;
+        }
+        else if(categoryColor=="" || categoryColor==null)
+        {
+            editedCategory.color = "#6775F4";
+        }
+       
         editedCategory.icon = categoryToEdit.icon;
         editedCategory.id = categoryToEdit.id;
 

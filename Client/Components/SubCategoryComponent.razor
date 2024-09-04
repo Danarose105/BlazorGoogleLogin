@@ -526,6 +526,12 @@
     [Parameter]
     public EventCallback<double> updateTransactionSum { get; set; }
 
+
+    //[Parameter]
+    //public EventCallback<int> optBtnOpenID { get; set; }
+
+    //[Parameter]
+    //public bool subCatOptStatus { get; set; }
     //[Parameter]
     //public EventCallback<Dictionary<int,double>> subCatIDtoUpdate { get; set; }
 
@@ -577,8 +583,6 @@
             titleInput = subCategoryTitle;
 
         }
-
-
 
         if (budget.HasValue)
         {
@@ -921,9 +925,17 @@
         }
     }
 
-    void toggleOptionsMenu()
+    async Task toggleOptionsMenu()
     {
         isOptBtnClicked = !isOptBtnClicked;
+
+        if (isOptBtnClicked)
+        {
+            await Task.Delay(4000);
+            isOptBtnClicked = false;
+        }
+        //optBtnOpenID.InvokeAsync(subCategoryIDToGet);
+       
     }
 
     private async Task SubCatTitleLengthCounter(ChangeEventArgs e)

@@ -447,9 +447,14 @@
 
             List<CategoryToAdd> defualtCategoriesList = new List<CategoryToAdd>()
     {
-    new CategoryToAdd{userID = user.Id, categroyTitle = "משק בית", icon = "🏠", color = "#6775F4" },
-    new CategoryToAdd{userID = user.Id, categroyTitle = "רכב ותחבורה", icon = "🚗", color = "#6775F4" },
-    new CategoryToAdd{userID = user.Id, categroyTitle = "בריאות וטיפוח", icon = "💄", color = "#6775F4" },
+    new CategoryToAdd{userID = user.Id, categroyTitle = "אוכל", icon = "🍰", color = "#6775F4" },
+    new CategoryToAdd{userID = user.Id, categroyTitle = "חשבונות", icon = "📜", color = "#6775F4" },
+    new CategoryToAdd{userID = user.Id, categroyTitle = "הוצאות ילדים", icon = "🍼", color = "#6775F4" },
+    new CategoryToAdd{userID = user.Id, categroyTitle = "ביטוח", icon = "🖋️", color = "#6775F4" },
+    new CategoryToAdd{userID = user.Id, categroyTitle = "בילוי", icon = "🎭", color = "#6775F4" },
+    new CategoryToAdd{userID = user.Id, categroyTitle = "מזומן ללא מעקב", icon = "🎟️", color = "#6775F4" },
+    new CategoryToAdd{userID = user.Id, categroyTitle = "הפקדה לחיסכון", icon = "🏦", color = "#6775F4" },
+    new CategoryToAdd{userID = user.Id, categroyTitle = "שונות", icon = "💡", color = "#6775F4" },
     new CategoryToAdd{userID = user.Id, categroyTitle = "הכנסות", icon = "💵", color = "#6775F4" }
     };
 
@@ -464,12 +469,14 @@
 
                     switch (defaultCategory.categroyTitle)
                     {
-                        case "משק בית":
+                        case "אוכל":
 
                             List<SubCategoryToAdd> defaultSubCategory1List = new List<SubCategoryToAdd>()
     {
-    new SubCategoryToAdd{subCategoryTitle = "חשבונות", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
-    new SubCategoryToAdd{subCategoryTitle = "מזון", categoryID = defaultCategory.id, monthlyPlannedBudget=1500}
+    new SubCategoryToAdd{subCategoryTitle = "סופר", categoryID = defaultCategory.id, monthlyPlannedBudget=1500},
+    new SubCategoryToAdd{subCategoryTitle = "ירקות", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
+    new SubCategoryToAdd{subCategoryTitle = "בשר/דגים", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
+    new SubCategoryToAdd{subCategoryTitle = "הזמנת אוכל מבחוץ", categoryID = defaultCategory.id, monthlyPlannedBudget=500}
     };
 
                             foreach (SubCategoryToAdd defaultSubCategory1 in defaultSubCategory1List)
@@ -487,12 +494,14 @@
                             }
                             // Code for when number is 1
                             break;
-                        case "רכב ותחבורה":
+                        case "חשבונות":
 
                             List<SubCategoryToAdd> defaultSubCategory2List = new List<SubCategoryToAdd>()
     {
-    new SubCategoryToAdd{subCategoryTitle = "דלק", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
-    new SubCategoryToAdd{subCategoryTitle = "תחבורה ציבורית", categoryID = defaultCategory.id, monthlyPlannedBudget=500}
+    new SubCategoryToAdd{subCategoryTitle = "חשמל", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
+    new SubCategoryToAdd{subCategoryTitle = "מים וגז", categoryID = defaultCategory.id, monthlyPlannedBudget=500},
+    new SubCategoryToAdd{subCategoryTitle = "ארנונה", categoryID = defaultCategory.id, monthlyPlannedBudget=500},
+    new SubCategoryToAdd{subCategoryTitle = "תקשורת", categoryID = defaultCategory.id, monthlyPlannedBudget=500},
     };
 
                             foreach (SubCategoryToAdd defaultSubCategory2 in defaultSubCategory2List)
@@ -509,11 +518,13 @@
                                 }
                             }
                             break;
-                        case "בריאות וטיפוח":
+                        case "שונות":
                             List<SubCategoryToAdd> defaultSubCategory3List = new List<SubCategoryToAdd>()
     {
-    new SubCategoryToAdd{subCategoryTitle = "קופת חולים", categoryID = defaultCategory.id, monthlyPlannedBudget=500},
-    new SubCategoryToAdd{subCategoryTitle = "טואלטיקה", categoryID = defaultCategory.id, monthlyPlannedBudget=200}
+    new SubCategoryToAdd{subCategoryTitle = "טיפול נפשי", categoryID = defaultCategory.id, monthlyPlannedBudget=1500},
+    new SubCategoryToAdd{subCategoryTitle = "רפואה פרטית", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
+    new SubCategoryToAdd{subCategoryTitle = "תרופות", categoryID = defaultCategory.id, monthlyPlannedBudget=500},
+    new SubCategoryToAdd{subCategoryTitle = "מנוי פיס", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
     };
 
                             foreach (SubCategoryToAdd defaultSubCategory3 in defaultSubCategory3List)
@@ -530,10 +541,11 @@
                                 }
                             }
                             break;
-                        case "הכנסות":
+                        case "הפקדה לחיסכון":
                             List<SubCategoryToAdd> defaultSubCategory4List = new List<SubCategoryToAdd>()
     {
-    new SubCategoryToAdd{subCategoryTitle = "משכורת", categoryID = defaultCategory.id}
+    new SubCategoryToAdd{subCategoryTitle = "פיקדון בבנק", categoryID = defaultCategory.id, monthlyPlannedBudget=1500},
+    new SubCategoryToAdd{subCategoryTitle = "השקעה בבורסה", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
     };
 
                             foreach (SubCategoryToAdd defaultSubCategory4 in defaultSubCategory4List)
@@ -550,7 +562,106 @@
                                 }
                             }
                             break;
+                        case "הכנסות":
+                            List<SubCategoryToAdd> defaultSubCategory5List = new List<SubCategoryToAdd>()
+    {
+    new SubCategoryToAdd{subCategoryTitle = "משכורת 1", categoryID = defaultCategory.id},
+    new SubCategoryToAdd{subCategoryTitle = "משכורת 2", categoryID = defaultCategory.id},
+    new SubCategoryToAdd{subCategoryTitle = "קצבה", categoryID = defaultCategory.id},
+    new SubCategoryToAdd{subCategoryTitle = "ביטוח לאומי", categoryID = defaultCategory.id},
+    new SubCategoryToAdd{subCategoryTitle = "הכנסות מנכס", categoryID = defaultCategory.id},
+    new SubCategoryToAdd{subCategoryTitle = "הכנסות מעסק", categoryID = defaultCategory.id},
+    new SubCategoryToAdd{subCategoryTitle = "עזרה מהמשפחה", categoryID = defaultCategory.id},
+    new SubCategoryToAdd{subCategoryTitle = "הכנסות נוספות", categoryID = defaultCategory.id},
+    };
 
+                            foreach (SubCategoryToAdd defaultSubCategory5 in defaultSubCategory5List)
+                            {
+                                var defaultSubCategories = await Http.PostAsJsonAsync("api/Present/AddSubCategory/", defaultSubCategory5);
+
+                                if (defaultCategories.IsSuccessStatusCode)
+                                {
+                                    msg = "ווהוו לא מעניין את מלכית";
+                                }
+                                else
+                                {
+                                    msg = "לא ווהו, כן מעניין את מלכית";
+                                }
+                            }
+                            break;
+                        case "הוצאות ילדים":
+                            List<SubCategoryToAdd> defaultSubCategory6List = new List<SubCategoryToAdd>()
+    {
+    new SubCategoryToAdd{subCategoryTitle = "גן", categoryID = defaultCategory.id, monthlyPlannedBudget=1500},
+    new SubCategoryToAdd{subCategoryTitle = "צהרון", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
+    new SubCategoryToAdd{subCategoryTitle = "תשלומי הורים", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
+    new SubCategoryToAdd{subCategoryTitle = "חוג 1", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
+    new SubCategoryToAdd{subCategoryTitle = "חוג 2", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
+    new SubCategoryToAdd{subCategoryTitle = "דמי כיס", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
+    new SubCategoryToAdd{subCategoryTitle = "תנועת נוער", categoryID = defaultCategory.id, monthlyPlannedBudget=1500}
+    };
+
+                            foreach (SubCategoryToAdd defaultSubCategory6 in defaultSubCategory6List)
+                            {
+                                var defaultSubCategories = await Http.PostAsJsonAsync("api/Present/AddSubCategory/", defaultSubCategory6);
+
+                                if (defaultCategories.IsSuccessStatusCode)
+                                {
+                                    msg = "ווהוו לא מעניין את מלכית";
+                                }
+                                else
+                                {
+                                    msg = "לא ווהו, כן מעניין את מלכית";
+                                }
+                            }
+                            break;
+                        case "ביטוח":
+                            List<SubCategoryToAdd> defaultSubCategory7List = new List<SubCategoryToAdd>()
+    {
+    new SubCategoryToAdd{subCategoryTitle = "קופת חולים", categoryID = defaultCategory.id, monthlyPlannedBudget=1500},
+    new SubCategoryToAdd{subCategoryTitle = "ביטוח בריאות פרטי", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
+    new SubCategoryToAdd{subCategoryTitle = "ביטוח תכולה", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
+    new SubCategoryToAdd{subCategoryTitle = "ביטוח חיים", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
+    new SubCategoryToAdd{subCategoryTitle = "ביטוחים נוספים", categoryID = defaultCategory.id, monthlyPlannedBudget=1000}
+    };
+
+                            foreach (SubCategoryToAdd defaultSubCategory7 in defaultSubCategory7List)
+                            {
+                                var defaultSubCategories = await Http.PostAsJsonAsync("api/Present/AddSubCategory/", defaultSubCategory7);
+
+                                if (defaultCategories.IsSuccessStatusCode)
+                                {
+                                    msg = "ווהוו לא מעניין את מלכית";
+                                }
+                                else
+                                {
+                                    msg = "לא ווהו, כן מעניין את מלכית";
+                                }
+                            }
+                            break;
+                        case "בילוי":
+                            List<SubCategoryToAdd> defaultSubCategory8List = new List<SubCategoryToAdd>()
+    {
+    new SubCategoryToAdd{subCategoryTitle = "מסעדות", categoryID = defaultCategory.id, monthlyPlannedBudget=1500},
+    new SubCategoryToAdd{subCategoryTitle = "בתי קפה", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
+    new SubCategoryToAdd{subCategoryTitle = "סרטים/הצגות/הופעות", categoryID = defaultCategory.id, monthlyPlannedBudget=1000},
+    new SubCategoryToAdd{subCategoryTitle = "חופשות", categoryID = defaultCategory.id, monthlyPlannedBudget=3000}
+    };
+
+                            foreach (SubCategoryToAdd defaultSubCategory8 in defaultSubCategory8List)
+                            {
+                                var defaultSubCategories = await Http.PostAsJsonAsync("api/Present/AddSubCategory/", defaultSubCategory8);
+
+                                if (defaultCategories.IsSuccessStatusCode)
+                                {
+                                    msg = "ווהוו לא מעניין את מלכית";
+                                }
+                                else
+                                {
+                                    msg = "לא ווהו, כן מעניין את מלכית";
+                                }
+                            }
+                            break;
                         default:
                             msg = "Error creating new sub category";
                             break;
