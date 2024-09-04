@@ -695,6 +695,10 @@ else
     {
 
         userID = user.Id;
+        streakOverlay = true; //delete after styling!
+        streakImgSrc = "./css/images/Bronze-welldone.svg";
+        streakImgIcon = "./css/images/bronzeCoin.svg";
+        nextStreakStatIn = 1;
 
         await Task.Delay(1000); // This is just to simulate an async process.
 
@@ -852,17 +856,16 @@ else
                 streakStatTitle = await getCurrentStatRes.Content.ReadAsStringAsync();
                 if (streakStatTitle != streakStatCheck)
                 {
-                    
-                        var updateStreakRes = await Http.GetAsync("api/Present/updateStreakStat/" + userID + "/" + streakStatTitle); //updates the status title if necessary
-                        if (updateStreakRes.IsSuccessStatusCode)
-                        {
-                            Console.WriteLine("streak status up to date");
-                        }
-                        else
-                        {
-                            Console.WriteLine("failed to update streak status on page load, shown streak isn't necessarily accurate");
-                        }
-                   
+                    var updateStreakRes = await Http.GetAsync("api/Present/updateStreakStat/" + userID + "/" + streakStatTitle); //updates the status title if necessary
+                    if (updateStreakRes.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("streak status up to date");
+                    }
+                    else
+                    {
+                        Console.WriteLine("failed to update streak status on page load, shown streak isn't necessarily accurate");
+                    }
+
                     streakStatTitle = streakStatCheck;
 
                 }
