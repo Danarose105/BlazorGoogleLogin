@@ -12,6 +12,11 @@
 @*@using PSC.Blazor.Components.Tours*@
 
 
+<div id="lottieAnimation" style="display:block;">
+    <lottie-player src="https://lottie.host/embed/5154f28c-27b5-434b-b7bf-e5226737de82/wsrkhAfMxt.json" background="transparent" speed="1" loop autoplay style="display: flex; align-items: center; justify-content: center; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50%; height: 50%;"></lottie-player>
+</div>
+
+
 @if (openAddCatOverlay)
 {
     isOverlay = true;
@@ -547,7 +552,6 @@ else
         }
     }
 </div>
-
 
 
 
@@ -1429,8 +1433,11 @@ else
     {
         if (firstRender)
         {
+            await JSRuntime.InvokeVoidAsync("showAnimationForTwoSeconds");
             await JSRuntime.InvokeVoidAsync("navScroll.init", navBar);
+
         }
+
     }
 
     public void Dispose()
@@ -1480,10 +1487,7 @@ else
     }
 
 
-
-
-
-
-
+  
 }
 
+    

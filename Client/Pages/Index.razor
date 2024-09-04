@@ -59,7 +59,7 @@
 
                                                 @if ((newUser.firstName == null || newUser.firstName == "") & isEmpty)
                                                     {
-                                                        <span style="color:#F95050">יש לבחור שם פרטי</span>
+                                                        <span style="color:#F95050">יש להקליד שם פרטי</span>
                                                     }
                                             </div>
 
@@ -80,7 +80,7 @@
                                                 </div>
                                                 @if ((newUser.lastName == null || newUser.lastName == "") & isEmpty)
                                                 {
-                                                    <span style="color:#F95050">יש לבחור שם משפחה</span>
+                                                    <span style="color:#F95050">יש להקליד שם משפחה</span>
                                                 }
                                             </div>
 
@@ -144,7 +144,7 @@
                                             <div class="outerDaysTitleAndPoly">
                                                 <div class="titleName">יום תחילת תזרים:</div>
                                             </div>
-                                            <div class="outerDaysOptions" @onclick="()=>openDaysOptions =! openDaysOptions">
+                                            <div class="outerDaysOptions" @onclick="openDate">
 
 
                                                 @if (newUser.monthStartDate != null && newUser.monthStartDate != 0)
@@ -165,7 +165,7 @@
 
                                                 @if (openDaysOptions)
                                                 {
-                                                   
+                                                    
                                                     <div class="outerMonthDayOptions">
                                                         <button class="dropDownOptionBtn" @onclick="@(()=>newUser.monthStartDate=1)">ה-1 לחודש</button>
                                                         <div class="daydivider"></div>
@@ -240,7 +240,8 @@
     font-size: 1.2rem;">
                                 הקטגוריות שלי
                             </div>
-                            <div>זה המקום לבחור את הקטגוריות הרלוונטיות לך </div>
+                            <div>זה המקום לבחור את הקטגוריות הרלוונטיות לך, </div>
+                            <div>תמיד אפשר לערוך אותן בהמשך 😊</div>
                         </div>
                         <div class="outerCatsOptions">
 
@@ -385,12 +386,7 @@
 
             }
 
-            <div>
-                @foreach(CategoryToAdd c in defualtCategoriesList)
-                {
-                    <div>@c.categroyTitle</div>
-                }
-            </div>
+         
             @* <button class="btn btn-primary" @onclick="logout">התנתקות</button>*@
         }
 
@@ -1227,6 +1223,13 @@
     void checkWhatEmpty()
     {
         isEmpty = true;
+    }
+
+    void openDate()
+    {
+        isVisible = false;
+        openDaysOptions =!openDaysOptions;
+
     }
 
 
