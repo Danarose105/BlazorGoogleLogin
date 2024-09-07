@@ -81,11 +81,11 @@
                                             @*   ---- TRANS TITLE & COUNTER  ----*@
                                             <input class="titleBox" type="text" @bind="titleInput" @oninput="TransTitleLengthCounter" maxlength="18" minlength="2" placeholder="@nameInputPlaceholder" />
                                             <div class="counter">
-                                                @if (titleInput.Length > 2 && titleInput.Length < 19)
+                                                @if (titleInput.Length > 0 && titleInput.Length < 19)
                                                 {
                                                     <span>@titleInput.Length/18</span>
                                                 }
-                                                else if (titleInput.Length < 2)
+                                                else if (titleInput.Length <=0)
                                                 {
                                                     <span>0/18</span>
                                                 }
