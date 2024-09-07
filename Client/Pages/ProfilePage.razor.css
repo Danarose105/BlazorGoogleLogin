@@ -81,6 +81,7 @@
     width: 90%;
     height: 2rem;
     justify-items: center;
+    max-width: 6rem;
 }
 
 .Editedtag {

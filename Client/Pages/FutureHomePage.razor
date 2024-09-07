@@ -43,7 +43,7 @@
                     <div style="width: @widthForProgressBar;" class="savingsProgress">
 
 
-                        <span class="bubbleText">חסכתי @sumSavings ₪</span>
+                        <span class="bubbleText @isSavingsZero">חסכתי @sumSavings ₪</span>
                     </div>
 
                 </div>
@@ -299,7 +299,7 @@
                                     </div>
                                 </div>
 
-                                <div class="SavingAmountToAdd">
+                                <div class="SavingAmountToAdd" style="width:100%;">
                                     <div class="outerGoalAmount">
                                         <span><b>סכום היעד</b></span>
                                         <span class="outerSavingAmount">
@@ -397,7 +397,9 @@
                         <div class="goalsContainer">
                             @if (goalsPerYearList.Count == 0)
                             {
-                                <span>לא נמצאו יעדים לשנה זו</span>
+                                <span style="display: flex;
+    align-items: center;
+    justify-content: center;">לא נמצאו יעדים לשנה זו</span>
                             }
                             else
                             {
@@ -721,6 +723,9 @@
     bool disNextBtn = false;
     bool emptyGoalTitle = false;
     bool emptyGoalSum = false;
+    bool isSavingsZero = true;
+
+    string savingsClassPadding => isSavingsZero ? "zeroClass" : "";
 
     private DateTime? earliestDate;
     string selectedClass = "";
@@ -818,6 +823,7 @@
         savingsForProgressBar = 0;
         if (sumGoals > 0)
         {
+            isSavingsZero = false;
             savingsForProgressBar = ((double)sumSavings / sumGoals) * 100;
 
             if (savingsForProgressBar > 100)
@@ -830,6 +836,7 @@
         else if (sumGoals == 0 && sumSavings == 0)
         {
             widthForProgressBar = "0%";
+            isSavingsZero = true;
         }
     }
 

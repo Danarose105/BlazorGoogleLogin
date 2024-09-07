@@ -63,6 +63,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    max-width: 6rem;
 }
 
 .outerTitleDateAndTag {
@@ -138,6 +139,7 @@
     flex-direction: row-reverse;
     align-items: center;
     column-gap: 1vh;
+    text-align:center;
 }
 
 .outerTextAndDes {
