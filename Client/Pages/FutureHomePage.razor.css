@@ -689,7 +689,6 @@
     display: flex;
     background-color: #EDEFF7;
     border-radius: 0.625rem;
-    padding: 3vh 0;
     align-items: center;
     justify-content: space-around;
     margin: 3vh 0;
@@ -699,10 +698,11 @@
     display: flex;
     background-color: #EDEFF7;
     border-radius: 0.625rem;
-    padding: 0vh 0;
+    padding: 2vh 0;
     align-items: center;
-    flex-direction: column;
-    row-gap: 1vh;
+    /* flex-direction: column; */
+    /* row-gap: 2vh; */
+    justify-content: center;
 }
 
 .optionsMenu {
@@ -1053,8 +1053,16 @@
 }
 
 .SavingAmount {
+    border-radius: 0.5rem;
+    display: flex;
+    background-color: #F9F9F9;
+    padding: 1vh 5vw;
+    font-size: 1.1rem;
     border: none;
-    width: 72%;
+    /* width: 95%; */
+    justify-content: center;
+    align-items: center;
+}
 }
 
 .SavingAmountToAdd {
@@ -1075,11 +1083,16 @@
     border-radius: 0.625rem;
     /* padding: 3vh 0; */
     align-items: center;
+    margin: 3vh 0;
+    /* width: 100%; */
     justify-content: space-around;
-    /* margin: 3vh 0; */
-    width: 100%;
 }
 
 .outerTitle {
     margin-bottom: 1vh;
+}
+
+.zeroClass {
+    margin-right: 2rem;
+    width: 6rem;
 }
