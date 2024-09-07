@@ -55,10 +55,13 @@
             return element.id;
         };
     </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.4/lottie.min.js"></script>
 </head>
 
 <body style="font-family: 'Heebo', sans-serif; font-weight: 400; color: #030942; height: 100%; background-color: #EDEFF7; width: 100%; ">
-    <div id="app">Loading...</div>
+    <div id="app"></div>
+    <div id="lottie-animation"></div>
     <!--background-color: #EDEFF7;-->
     <div id="blazor-error-ui">
         An unhandled error has occurred.
@@ -66,6 +69,7 @@
         <a class="dismiss">🗙</a>
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
+    <script src="animation.js"></script>
     <script src="navScroll.js"></script>
     <script src="site.js"></script>
     <script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js">
@@ -97,8 +101,41 @@
     <script src="_content/Blazorise.Charts/charts.js?v=1.6.0"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
 
+    <!--<script>
+        document.addEventListener('DOMContentLoaded', function () {
+            lottie.loadAnimation({
+                container: document.getElementById('lottie-animation'), // the dom element that will contain the animation
+                renderer: 'svg',
+                loop: true,
+                autoplay: true,
+                path: 'css/images/Animation - 1725457972203.json' // the path to the animation json file
+            });
+        });
+    </script>-->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var animation = lottie.loadAnimation({
+                container: document.getElementById('lottie-animation'), // the DOM element that will contain the animation
+                renderer: 'svg',
+                loop: true,
+                autoplay: true,
+                path: 'css/images/Animation.json' // the path to the animation JSON file
+            });
+
+            // Function to hide the animation
+            function hideAnimation() {
+                document.getElementById('lottie-animation').style.display = 'none';
+            }
+
+            // Set a timeout to hide the animation 3 seconds after it starts
+            setTimeout(hideAnimation, 3000);  // 3000 milliseconds = 3 seconds
+        });
+    </script>
+
 
 
 </body>
 
 </html>
+
