@@ -624,7 +624,7 @@
                         </div>
 
                         <div class="outerSaving">
-                            
+
                             <div class="outerSavingAmount">
                                 <div class="outerGoalAmount">
                                     <span><b>סכום היעד</b></span>
@@ -907,7 +907,7 @@
             allGoals.Add(newGoalToAddToList);
             newGoal = new GoalToAdd();
             openGoalsPerYearPopUp(newGoalToAddToList.dueYear);
-             showYearlyGoals = false;
+            showYearlyGoals = false;
             await OnInitializedAsync();
 
         }
@@ -1054,6 +1054,10 @@
             goalDetailsToShow.dueYear = editedGoal.dueYear;
             goalDetailsToShow.budget = editedGoal.budget;
             goalDetailsToShow.goalTitle = editedGoal.goalTitle;
+            if (goalsYearToShow != editedGoal.dueYear)
+            {
+                showYearlyGoals = false;
+            }
             isEditGoalClicked = false;
             isGoalFullDetails = false;
             OpetionsBtnClicked();
@@ -1070,7 +1074,8 @@
         }
 
         isEditGoalClicked = false;
-        //showYearlyGoals = false;
+
+
         selectedClass = "";
 
         savingsForProgressBar = 0;
@@ -1271,7 +1276,7 @@
     void closeAddGoalOverlay()
     {
         isAddGoalOverlayClicked = false;
-        
+
         selectedClass = "";
     }
 
