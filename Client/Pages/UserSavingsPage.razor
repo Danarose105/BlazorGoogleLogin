@@ -614,7 +614,15 @@
         {
             emptySavingTitle = false;
         }
-        newSaving.savingsTitle = titleInput;
+        if (isEditSavingClicked)
+        {
+            editedSaving.savingsTitle = titleInput;
+        }
+        else if (isAddSavingOverlayClicked)
+        {
+            newSaving.savingsTitle = titleInput;
+        }
+        
         titleInputLength = titleInput.Length;
     }
 
