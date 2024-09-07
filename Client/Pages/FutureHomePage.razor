@@ -861,7 +861,7 @@
         goalsPerYearList.Clear();
         showYearlyGoals = true;
         goalsYearToShow = goalsYear;
-        @foreach (AllUserGoalsToShow goal in allGoals)
+        foreach (AllUserGoalsToShow goal in allGoals)
         {
             if (goal.dueYear == goalsYear)
             {
@@ -907,6 +907,7 @@
             allGoals.Add(newGoalToAddToList);
             newGoal = new GoalToAdd();
             openGoalsPerYearPopUp(newGoalToAddToList.dueYear);
+             showYearlyGoals = false;
             await OnInitializedAsync();
 
         }
@@ -916,7 +917,7 @@
             Console.WriteLine("Failed to add new goal");
         }
 
-        isAddGoalOverlayClicked = false;
+
         selectedClass = "";
 
         savingsForProgressBar = 0;
@@ -931,6 +932,8 @@
 
             widthForProgressBar = savingsForProgressBar.ToString() + "%";
         }
+
+        isAddGoalOverlayClicked = false;
     }
 
     private void UpdateColor(string color)
@@ -1268,6 +1271,7 @@
     void closeAddGoalOverlay()
     {
         isAddGoalOverlayClicked = false;
+        
         selectedClass = "";
     }
 
