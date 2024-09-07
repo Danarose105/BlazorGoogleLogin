@@ -91,9 +91,10 @@
                         </div>
 
                         <div class="outerTitleAndCounter">
+                           
                             <div class="input-container">
                                 <div>שם פרטי:</div>
-                                <input class="titleBox" type="text" maxlength="15" @oninput="firstNameLengthCheck" value="@currentUser.firstName" />
+                                <input class="titleBox" type="text" maxlength="15" @oninput="firstNameLengthCheck" value="@newFirstName" />
                                 <div class="counter">
                                     @if (newFirstNameLength > 0)
                                     {
@@ -122,8 +123,9 @@
 
                         <div class="outerTitleAndCounter">
                             <div class="input-container">
+                               
                                 <div>שם משפחה:</div>
-                                <input class="titleBox" value="@currentUser.lastName" type="text" maxlength="15" @oninput="lastNameLengthCheck">
+                                <input class="titleBox" value="@newLastName" type="text" maxlength="15" @oninput="lastNameLengthCheck">
                                 <div class="counter">
                                     @if (newLastNameLength > 0)
                                     {
@@ -784,6 +786,8 @@
                     startMonthDate = 1;
                 }
 
+                newFirstName=currentUser.firstName;
+                newLastName = currentUser.lastName;
                 newFirstNameLength = currentUser.firstName.Length;
                 newLastNameLength = currentUser.lastName.Length;
 
@@ -1194,6 +1198,7 @@
             emptyFirstName = false;
         }
         newFirstNameLength = newFirstName.Length;
+        currentUser.firstName = newFirstName;
     }
 
     private void lastNameLengthCheck(ChangeEventArgs e)
@@ -1208,6 +1213,7 @@
             emptyLastName = false;
         }
         newLastNameLength = newLastName.Length;
+        currentUser.lastName = newLastName;
     }
 
     public void goToStreakPage()

@@ -155,7 +155,7 @@
 
 
                                 @*   ---- FIXED MONTHLY BUTTONS  ----*@
-                                <div class="outerReBtn" disabled="@fixedMonthly">
+                                <div class="outerReBtn">
 
                                     <div class="outerReBtn">
                                         <button class="repeatedBtn" @onclick=@(async () => await repeatingTransOverlay())>@repeatedBtnTitle <img src="./css/images/repeat icon.svg" /></button>
@@ -190,7 +190,7 @@
                                 </div>
 
                                 @*   ---- SPLIT PAYMENT TOGGLE & DROPDOWN ----*@
-                                <div class="outerTitleAndDateAndName" disabled="@splitPayment">
+                                <div class="outerTitleAndDateAndName">
 
                                     @if (splitPayment)
                                     {
@@ -320,6 +320,7 @@
                                         <div class="outerRepetedTrans" style="@hiddenReOverlay">
                                             <div class="innerTransOverlay">
                                                 <button class="modal-close-btn" @onclick="backToTrans"><img src="./css/images/back-repeated.svg" /></button>
+                                                @*overlay instructions:*@
                                                 @if (categoryTypeIndicator)
                                                 {
                                                     <h4>הגדרת '@newTransaction.transTitle' כהכנסה חוזרת על עצמה</h4>
@@ -347,7 +348,24 @@
 
                                                                     <div class="monthDivider"></div>
                                                                     // Determine the value to display in the input
-                                                                    string inputValue = matchingTrans != null ? matchingTrans.transValue.ToString() : "0";
+                                                                    string inputValue="";
+
+                                                                    if(matchingTrans==null){
+                                                                        var matchingTinPage = potentialFixedChildren.FirstOrDefault(trans => trans.transDate.ToString("MMMM") == month);
+                                                                        if(matchingTinPage!=null)
+                                                                        {
+                                                                            inputValue=matchingTinPage.transValue.ToString();
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            inputValue="0";
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        inputValue=matchingTrans.transValue.ToString();
+                                                                    }
+                                                                     //inputValue = matchingTrans != null ? matchingTrans.transValue.ToString() : "0";
 
                                                                 }
 
@@ -415,6 +433,7 @@
                                                                     </div>
                                                                 }
 
+                                                                
                                                             </div>
                                                         }
                                                     }
@@ -452,6 +471,7 @@
                                             @if (returningTrans)
                                             {
                                                 <button class="modal-close-btn" @onclick="backToTrans"><img src="./css/images/back-repeated.svg" /></button>
+                                                @*overlay instructions:*@
                                                 @if (categoryTypeIndicator)
                                                 {
                                                     <h4>הגדרת '@newTransaction.transTitle' כהכנסה חוזרת על עצמה</h4>
@@ -467,6 +487,20 @@
                                                     @if (resetMonthValues == false)
                                                     {
                                                         isResetBtnClicked = false;
+                                                        //checking if the list was reset:
+                                                        bool childrenWereReset = fixedTransChildrenToAdd.All(t => t.transValue == 0);
+                                                        if(childrenWereReset)
+                                                        {
+                                                            foreach(TransactionToAdd tChild in fixedTransChildrenToAdd)
+                                                            {
+                                                                var matchingChild= potentialFixedChildren.FirstOrDefault(p=> p.transDate==tChild.transDate);
+                                                                if(matchingChild!=null)
+                                                                {
+                                                                    int indexOfMatch= potentialFixedChildren.IndexOf(matchingChild);
+                                                                    tChild.transValue = potentialFixedChildren[indexOfMatch].transValue;
+                                                                }
+                                                            }
+                                                        }
 
                                                         foreach (string month in months)
                                                         {
@@ -505,21 +539,21 @@
                                                         isResetBtnClicked = true;
                                                         isValueTyped = false;
 
-                                                        @if (!isValueTypedAfterReset)
+                                                        if (!isValueTypedAfterReset)
                                                         {
-                                                            @foreach (TransactionToAdd tToCheck in fixedTransChildrenToAdd)
+                                                            foreach (TransactionToAdd tToCheck in fixedTransChildrenToAdd)
                                                             {
                                                                 tToCheck.transValue = 0;
                                                             }
                                                         }
 
-                                                        @foreach (string month in months)
+                                                        foreach (string month in months)
                                                         {
                                                             <div class="monthValueInput">
-                                                                <label>@GetHebrewMonthName(month)</label> @*/סקשן איפוס!!!*@
+                                                                <label>@GetHebrewMonthName(month)</label> 
                                                                 <div class="monthDivider"></div>
                                                                 <div class="outerValue">
-                                                                    @* @if (GetCurrentMonth() != month)*@
+                                                                   
                                                                     @if (newTransaction.transDate.ToString("MMMM") != month)
                                                                     {
                                                                         <input class="months" type="text"
@@ -530,7 +564,7 @@
                                                                     {
                                                                         <div class="thisOuterValue">
                                                                             <input class="thisMonth" type="text"
-                                                       value="@GetDefaultValue(month)" @oninput="eventArgs => HandleInput(eventArgs, month)" />
+                                                       value="@newTransaction.transValue.ToString()" @oninput="eventArgs => HandleInput(eventArgs, month)" />
                                                                             <span class="ShekelSign">₪</span>
                                                                         </div>
                                                                     }
@@ -1356,6 +1390,7 @@
                     {
                         unfitTrans++;
                     }
+
                 }
             }
 
@@ -1375,7 +1410,7 @@
             else
             {
                 newTransaction.fixedMonthly = false;
-                fixedTransChildrenToAdd = new List<TransactionToAdd>();
+                //fixedTransChildrenToAdd = new List<TransactionToAdd>();
             }
 
         }
@@ -1384,7 +1419,6 @@
             newTransaction.fixedMonthly = false;
         }
 
-        Console.WriteLine("reapeatedTransValuesList count- " + reapeatedTransValuesList.Count + ", fixedTransChildrenToAdd count- " + fixedTransChildrenToAdd.Count);
     }
 
 
@@ -1435,7 +1469,17 @@
             {
                 repeatedTrans.transValue = double.Parse(newValue); //updates the list of the children that are to be added (the temp list in page)
 
-                Console.WriteLine("trans month- " + repeatedTrans.transDate + ", value- " + repeatedTrans.transValue);
+                var transInEditList = potentialFixedChildren.FirstOrDefault(t => t.transDate == date);
+                if(transInEditList!=null)
+                {
+                    int indexOfCurrentT = potentialFixedChildren.IndexOf(repeatedTrans);
+                    potentialFixedChildren[indexOfCurrentT].transValue=repeatedTrans.transValue;
+                }
+                else
+                {
+                    potentialFixedChildren.Add(repeatedTrans);
+                }
+
             }
 
         }
@@ -1479,6 +1523,14 @@
                 fixedTransChildrenToAdd[indexOfMatch].transDate = checkDateExistsInMonth(fixedTransChildrenToAdd[indexOfMatch].transDate, fixedTransChildrenToAdd[indexOfMatch].transDate.Month); //checks if the date is valid, and if not sets it to be the last day of that month
 
                 fixedTransChildrenToAdd[indexOfMatch].transValue = existingTrans.transValue;
+
+                var transInEditList = potentialFixedChildren.FirstOrDefault(t => t.transDate == existingTrans.transDate);
+                if(transInEditList!=null)
+                {
+                    int indexOfCurrentT = potentialFixedChildren.IndexOf(transInEditList);
+                    potentialFixedChildren[indexOfCurrentT].transValue = existingTrans.transValue;
+                }
+            
             }
         }
         else
@@ -1493,6 +1545,7 @@
                 };
             Console.WriteLine("input was null");
             fixedTransChildrenToAdd.Add(newTrans);
+            potentialFixedChildren.Add(newTrans);
 
         }
     }
@@ -1634,6 +1687,8 @@
 
                     if (newTransaction.fixedMonthly == false)
                     {
+                        fixedMonthly = false;
+                        splitPayment = false;
                         if (categoryTypeIndicator)
                         {
                             repeatedBtnTitle = "הגדרת ההכנסה החוזרת";
@@ -1649,6 +1704,7 @@
                         initialAmountOfSplits = 1;
                         selectedNumber = 1;
                         splitPayment = false;
+                        fixedMonthly = false;
                     }
 
                 }
@@ -1664,7 +1720,6 @@
         }
         else //means it's a new transaction
         {
-
             newTransaction = new TransactionToAdd()
                 {
                     transDate = DateTime.Today, // Set the transaction date to today
@@ -1672,6 +1727,9 @@
                     splitPayment = false,
 
                 };
+
+            fixedMonthly = false;
+            splitPayment = false;
             overlayTitle = "הוספה לתת קטגוריה";
             isItAnewTrans = true;
             //isLoadComplete = true;
@@ -2592,9 +2650,6 @@
         }
 
         overdraftDetected = true;
-        //overdraftOverlay = false;
-        //addTransactionToTotal.InvokeAsync(newTransaction.transValue);
-        //transValueToAdd.InvokeAsync(newTransaction.transValue);
 
         isTransactionOverlayOpen.InvokeAsync(false);
 
@@ -2824,141 +2879,152 @@
 
     private DateTime parsedDate;
     private bool attemptedParsing = false;
+    /// <summary>
+    /// holds the fixedMonthly children between edits in the overlay
+    /// </summary>
+    List<TransactionToAdd> potentialFixedChildren = new List<TransactionToAdd>();
 
     /// <summary>
     /// creates the fixed monthly input overlay
     /// </summary>
     public async Task repeatingTransOverlay()
     {
-
+        Console.WriteLine("repeatingTransOverlay clicked");
         isReapetedBtnClicked = true;
         resetMonthValues = false;
 
-        if (fixedTransChildrenToAdd == null || fixedTransChildrenToAdd.Count <= 0)
+        // gets the existing children in DB, if they aren't alreaedy in the page:
+        if(transIDtoEdit > 0 && reapeatedTransValuesList.Count<=0)
         {
+            
+            var repeatedTransValuesRes = await Http.GetAsync("api/Transactions/getRepeatedTransToEdit/" + transIDtoEdit);
 
-            if (transIDtoEdit > 0)
+            if (repeatedTransValuesRes.IsSuccessStatusCode)
             {
-
-                //gets all transactions that are a part of this fixed payment
-                var repeatedTransValuesRes = await Http.GetAsync("api/Transactions/getRepeatedTransToEdit/" + transIDtoEdit);
-
-                if (repeatedTransValuesRes.IsSuccessStatusCode)
+                reapeatedTransValuesList = repeatedTransValuesRes.Content.ReadFromJsonAsync<List<RepeatedTransToShow>>().Result;
+                if (reapeatedTransValuesList.Count > 0)
                 {
-                    reapeatedTransValuesList = repeatedTransValuesRes.Content.ReadFromJsonAsync<List<RepeatedTransToShow>>().Result;
-                    if (reapeatedTransValuesList.Count > 0)
-                    {
-                        newTransaction.fixedMonthly = true;
-                    }
+                    newTransaction.fixedMonthly = true;
                 }
                 else
                 {
-                    Console.WriteLine("finding repeated Trans values failed");
                     newTransaction.fixedMonthly = false;
                 }
-
             }
+            else
+            {
+                Console.WriteLine("finding repeated Trans values failed");
+            }
+        }
 
-
-            fixedTransChildrenToAdd = new List<TransactionToAdd>();
+        if (fixedTransChildrenToAdd == null || fixedTransChildrenToAdd.Count <= 0)
+        {
+            
             int currentDay = newTransaction.transDate.Day;
             int currentYear = newTransaction.transDate.Year;
 
-            //adds possible transactions to the fixed children list:
-            foreach (string m in months)
+
+            if (potentialFixedChildren == null || potentialFixedChildren.Count <= 0) //means the user clicked the fixedMonthly btn for the 1st time
             {
 
-                string dateString = $"{currentDay} {m} {currentYear}";
-                DateTime tempDate;
-                if (DateTime.TryParseExact(dateString, "d MMMM yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out tempDate))
+                foreach (string m in months)
                 {
-                    parsedDate = checkDateExistsInMonth(tempDate, tempDate.Month);
 
-                }
-                else
-                {
-                    Console.WriteLine("date parsing failed");
-                    DateTime month = DateTime.ParseExact(m, "MMMM", System.Globalization.CultureInfo.InvariantCulture);
-                    int monthNumber = month.Month;
-                    parsedDate = checkDateExistsInMonth(newTransaction.transDate, monthNumber);
-                }
-                attemptedParsing = true;
-
-                if (reapeatedTransValuesList.Count > 0) //means the transaction is fixedMonthly=true in DB
-                {
-                    Console.WriteLine("reapeatedTransValuesList count- " + reapeatedTransValuesList.Count);
-
-                    TransactionToAdd childTrans = new TransactionToAdd()
-                        {
-                            transValue = newTransaction.transValue,
-                            valueType = newTransaction.valueType,
-                            description = newTransaction.description,
-                            fixedMonthly = false,
-                            splitPayment = false,
-                            parentTransID = newTransaction.parentTransID,
-                            tagID = newTransaction.tagID,
-                            tagTitle = newTransaction.tagTitle,
-                            tagColor = newTransaction.tagColor,
-                            transTitle = newTransaction.transTitle,
-                            subCategoryID = subCategoryIDTOGet,
-                            transDate = parsedDate,
-                            transType = newTransaction.transType
-                        };
-                    if (!categoryTypeIndicator)
+                    string dateString = $"{currentDay} {m} {currentYear}";
+                    DateTime tempDate;
+                    if (DateTime.TryParseExact(dateString, "d MMMM yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out tempDate))
                     {
-                        childTrans.transType = 1; //expense
+                        parsedDate = checkDateExistsInMonth(tempDate, tempDate.Month);
+
                     }
                     else
                     {
-                        childTrans.transType = 2; //income
+                        Console.WriteLine("date parsing failed");
+                        DateTime month = DateTime.ParseExact(m, "MMMM", System.Globalization.CultureInfo.InvariantCulture);
+                        int monthNumber = month.Month;
+                        parsedDate = checkDateExistsInMonth(newTransaction.transDate, monthNumber);
                     }
+                    attemptedParsing = true;
 
-                    var matchingTrans = reapeatedTransValuesList.FirstOrDefault(t => t.transDate == tempDate); //searches for the trans in the list that fits the current trans
-                    if (matchingTrans != null) //if the childTrans exists in DB
+                    //means the transaction is fixedMonthly=true in DB:
+                    if (reapeatedTransValuesList.Count > 0)
                     {
-                        childTrans.transValue = matchingTrans.transValue;
-                        childTrans.parentTransID = matchingTrans.id;
-                    }
+                        Console.WriteLine("reapeatedTransValuesList count- " + reapeatedTransValuesList.Count);
 
-                    fixedTransChildrenToAdd.Add(childTrans);
-
-                    Console.WriteLine("childTrans.transValue- " + childTrans.transValue);
-                }
-                else //if the trans wasn't fixedMonthly before
-                {
-                    TransactionToAdd childTrans = new TransactionToAdd()
+                        TransactionToAdd childTrans = new TransactionToAdd()
+                            {
+                                transValue = newTransaction.transValue,
+                                valueType = newTransaction.valueType,
+                                description = newTransaction.description,
+                                fixedMonthly = false,
+                                splitPayment = false,
+                                parentTransID = newTransaction.parentTransID,
+                                tagID = newTransaction.tagID,
+                                tagTitle = newTransaction.tagTitle,
+                                tagColor = newTransaction.tagColor,
+                                transTitle = newTransaction.transTitle,
+                                subCategoryID = subCategoryIDTOGet,
+                                transDate = parsedDate,
+                                transType = newTransaction.transType
+                            };
+                        if (!categoryTypeIndicator)
                         {
-                            transValue = newTransaction.transValue,
-                            valueType = newTransaction.valueType,
-                            description = newTransaction.description,
-                            fixedMonthly = false,
-                            splitPayment = false,
-                            parentTransID = newTransaction.parentTransID,
-                            tagID = newTransaction.tagID,
-                            tagTitle = newTransaction.tagTitle,
-                            tagColor = newTransaction.tagColor,
-                            transTitle = newTransaction.transTitle,
-                            subCategoryID = subCategoryIDTOGet,
-                            transDate = parsedDate,
-                            transType = newTransaction.transType
-                        };
-                    if (!categoryTypeIndicator)
-                    {
-                        childTrans.transType = 1; //expense
-                    }
-                    else
-                    {
-                        childTrans.transType = 2; //income
-                    }
+                            childTrans.transType = 1; //expense
+                        }
+                        else
+                        {
+                            childTrans.transType = 2; //income
+                        }
 
-                    fixedTransChildrenToAdd.Add(childTrans);
+                        var matchingTrans = reapeatedTransValuesList.FirstOrDefault(t => t.transDate == tempDate); //searches for the trans in the list that fits the current trans
+                        if (matchingTrans != null) //if the childTrans exists in DB
+                        {
+                            childTrans.transValue = matchingTrans.transValue;
+                            childTrans.parentTransID = matchingTrans.id;
+                        }
+
+                        fixedTransChildrenToAdd.Add(childTrans);
+                        potentialFixedChildren.Add(childTrans);
+
+                        Console.WriteLine("childTrans.transValue- " + childTrans.transValue);
+                    }
+                    else //if the trans wasn't fixedMonthly before
+                    {
+                        TransactionToAdd childTrans = new TransactionToAdd()
+                            {
+                                transValue = newTransaction.transValue,
+                                valueType = newTransaction.valueType,
+                                description = newTransaction.description,
+                                fixedMonthly = false,
+                                splitPayment = false,
+                                parentTransID = newTransaction.parentTransID,
+                                tagID = newTransaction.tagID,
+                                tagTitle = newTransaction.tagTitle,
+                                tagColor = newTransaction.tagColor,
+                                transTitle = newTransaction.transTitle,
+                                subCategoryID = subCategoryIDTOGet,
+                                transDate = parsedDate,
+                                transType = newTransaction.transType
+                            };
+                        if (!categoryTypeIndicator)
+                        {
+                            childTrans.transType = 1; //expense
+                        }
+                        else
+                        {
+                            childTrans.transType = 2; //income
+                        }
+
+                        fixedTransChildrenToAdd.Add(childTrans);
+                        potentialFixedChildren.Add(childTrans);
+                    }
                 }
+
             }
         }
-        else //means the user wants to edit what they've done
-        {
-            newTransaction.fixedMonthly = true;
-        }
+
+        //newTransaction.fixedMonthly = true;
+        hiddenReOverlay = "";
         returningTrans = !returningTrans; //opens the overlay
 
     }
@@ -3094,7 +3160,6 @@
         newTransaction.fixedMonthly = false;
 
 
-        //fixedTransChildrenToAdd.Clear();
         fixedTransChildrenToAdd = new List<TransactionToAdd>();
         Console.WriteLine("fixedTransChildrenToAdd count- " + fixedTransChildrenToAdd.Count);
 
