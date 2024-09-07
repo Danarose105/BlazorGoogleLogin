@@ -299,7 +299,7 @@
                                     <span><b>שם החסכון</b></span>
                                 </div>
                                 <div class="input-containerToAdd">
-                                    <input class="catTitleToAdd" type="text" maxlength="18" minlength="2" @oninput="titleLengthCounter" />
+                                    <input class="catTitleToAdd" type="text" maxlength="18" minlength="2" @oninput="titleLengthCounter" @bind="newSaving.savingsTitle" />
                                     <div class="counter">
                                         @if (newSaving.savingsTitle == null || newSaving.savingsTitle == "")
                                         {
@@ -564,6 +564,8 @@
     {
         isEditSavingClicked = true;
         editedSaving.savingsTitle = savingDetailsToShow.savingsTitle;
+        titleInput = editedSaving.savingsTitle;
+        titleInputLength = editedSaving.savingsTitle.Length;
         editedSaving.savingsSum = savingDetailsToShow.savingsSum;
         editedSaving.id = savingDetailsToShow.id;
         editedSaving.savingLocation = savingDetailsToShow.savingLocation;
