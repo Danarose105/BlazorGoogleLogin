@@ -128,7 +128,7 @@
                                 <span><b>מקום החסכון</b></span>
 
 
-                                <span class="outerSavingAmount" style="word-break: break-word;padding: 0.3rem;"><b> @savingDetailsToShow.savingLocation</b></span>
+                                <span class="outerSavingAmount" style="word-break: break-word;    padding: 0.6rem 2rem;;"><b> @savingDetailsToShow.savingLocation</b></span>
 
 
                             </div>
@@ -235,7 +235,7 @@
                             <div> <span><b>מקום החסכון</b></span></div>
                             <div style="display: flex;
     justify-content: flex-end;">
-                                <div class="counter" style="bottom: 10.7vh;
+                                <div class="counter" style="bottom: 21%;
     z-index: 1;">
                                     @if (saveLocation == null || saveLocation == "")
                                     {
@@ -764,6 +764,7 @@
         isAddSavingOverlayClicked = !isAddSavingOverlayClicked;
         titleInputLength = 0;
         newSaving.savingsSum = 0;
+        newSaving.savingsTitle = "";
         saveLocation = "";
         locationLength = 0;
     }

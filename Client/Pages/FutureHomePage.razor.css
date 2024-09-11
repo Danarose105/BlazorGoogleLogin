@@ -1080,9 +1080,9 @@
     display: flex;
     background-color: #EDEFF7;
     border-radius: 0.625rem;
-    /* padding: 3vh 0; */
+    padding: 3vh 0;
     align-items: center;
-    margin: 3vh 0;
+    margin: 0vh 0 2vh;
     /* width: 100%; */
     justify-content: space-around;
 }

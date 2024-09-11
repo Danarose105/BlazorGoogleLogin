@@ -287,7 +287,8 @@
     display: flex;
     background-color: #F9F9F9;
     font-size: 1.1rem;
-    max-width: 7rem;
+    max-width: 9rem;
+    padding: 0.6rem 2rem;
 }
 
 .outerSaving {
@@ -611,7 +612,7 @@
 
 .savingCounter {
     position: absolute;
-    bottom: 8rem;
+    bottom: 21%;
     color: #666;
     font-size: 12px;
     padding: 2px 6px;

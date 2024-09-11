@@ -848,7 +848,7 @@
         savingsForProgressBar = 0;
         if (sumGoals > 0)
         {
-            isSavingsZero = false;
+            
             savingsForProgressBar = ((double)sumSavings / sumGoals) * 100;
 
             if (savingsForProgressBar > 100)
@@ -857,6 +857,10 @@
             }
 
             widthForProgressBar = savingsForProgressBar.ToString() + "%";
+        }
+        else if(sumSavings > 0)
+        {
+            isSavingsZero = false;
         }
         else if (sumGoals == 0 && sumSavings == 0)
         {
@@ -1310,6 +1314,7 @@
         isAddGoalOverlayClicked = false;
 
         selectedClass = "";
+        newGoal = new GoalToAdd();
     }
 
     private void SetYearAndClose(int year)
