@@ -483,8 +483,7 @@ input:checked + .slider:before {
     padding-top: 2vh;
 }
 
-.
-{
+.tag {
     background: none;
     color: inherit;
     border: none;

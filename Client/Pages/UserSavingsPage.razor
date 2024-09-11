@@ -117,7 +117,7 @@
                             <span><b>סכום חסכון</b></span>
 
 
-                            <span class="outerSavingAmount" style="padding: 0.3rem;"><b> @savingDetailsToShow.savingsSum ₪</b></span>
+                            <span class="outerSavingAmount"><b> @savingDetailsToShow.savingsSum ₪</b></span>
 
 
                         </div>
@@ -128,7 +128,7 @@
                                 <span><b>מקום החסכון</b></span>
 
 
-                                <span class="outerSavingAmount" style="word-break: break-word;padding: 0.3rem;"><b> @savingDetailsToShow.savingLocation</b></span>
+                                <span class="outerSavingAmount" style="word-break: break-word;"><b> @savingDetailsToShow.savingLocation</b></span>
 
 
                             </div>
@@ -235,7 +235,7 @@
                             <div> <span><b>מקום החסכון</b></span></div>
                             <div style="display: flex;
     justify-content: flex-end;">
-                                <div class="counter" style="bottom: 10.7vh;
+                                <div class="counter" style="bottom: 11.7vh;
     z-index: 1;">
                                     @if (saveLocation == null || saveLocation == "")
                                     {
@@ -299,7 +299,7 @@
                                     <span><b>שם החסכון</b></span>
                                 </div>
                                 <div class="input-containerToAdd">
-                                    <input class="catTitleToAdd" type="text" maxlength="18" minlength="2" @oninput="titleLengthCounter" />
+                                    <input class="catTitleToAdd" type="text" maxlength="18" minlength="2" @oninput="titleLengthCounter" @bind="newSaving.savingsTitle" />
                                     <div class="counter">
                                         @if (newSaving.savingsTitle == null || newSaving.savingsTitle == "")
                                         {
@@ -564,6 +564,8 @@
     {
         isEditSavingClicked = true;
         editedSaving.savingsTitle = savingDetailsToShow.savingsTitle;
+        titleInput = editedSaving.savingsTitle;
+        titleInputLength = editedSaving.savingsTitle.Length;
         editedSaving.savingsSum = savingDetailsToShow.savingsSum;
         editedSaving.id = savingDetailsToShow.id;
         editedSaving.savingLocation = savingDetailsToShow.savingLocation;
@@ -612,7 +614,15 @@
         {
             emptySavingTitle = false;
         }
-        newSaving.savingsTitle = titleInput;
+        if (isEditSavingClicked)
+        {
+            editedSaving.savingsTitle = titleInput;
+        }
+        else if (isAddSavingOverlayClicked)
+        {
+            newSaving.savingsTitle = titleInput;
+        }
+        
         titleInputLength = titleInput.Length;
     }
 

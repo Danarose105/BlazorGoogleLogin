@@ -91,9 +91,10 @@
                         </div>
 
                         <div class="outerTitleAndCounter">
+
                             <div class="input-container">
                                 <div>שם פרטי:</div>
-                                <input class="titleBox" type="text" maxlength="15" @oninput="firstNameLengthCheck" value="@currentUser.firstName" />
+                                <input class="titleBox" type="text" maxlength="15" @oninput="firstNameLengthCheck" value="@newFirstName" />
                                 <div class="counter">
                                     @if (newFirstNameLength > 0)
                                     {
@@ -122,8 +123,9 @@
 
                         <div class="outerTitleAndCounter">
                             <div class="input-container">
+
                                 <div>שם משפחה:</div>
-                                <input class="titleBox" value="@currentUser.lastName" type="text" maxlength="15" @oninput="lastNameLengthCheck">
+                                <input class="titleBox" value="@newLastName" type="text" maxlength="15" @oninput="lastNameLengthCheck">
                                 <div class="counter">
                                     @if (newLastNameLength > 0)
                                     {
@@ -431,6 +433,7 @@
 {
 
     <div class="outerBtn">
+        <button class="secondery-button" @onclick="()=>aboutPopUpOpen=!aboutPopUpOpen">אודות</button>
         <button class="secondery-button" @onclick="BeginSignOut">התנתקות מהמערכת</button>
     </div>
 }
@@ -447,7 +450,7 @@
                     <div class="paddingDiv">
                         @if (isEdit)
                         {
-                            ogTagColor = chosenTag.tagColor;
+                            @* ogTagColor = chosenTag.tagColor;*@
 
 
                             if (isTagColor)
@@ -639,7 +642,53 @@
     <GeneralPopUpComponent popupTypeTitle="מחיקת תגית" middleText="@msg" action="מחיקה" makeAction="deleteTag" closePopUp="closeDeleteWarning"></GeneralPopUpComponent>
 }
 
+@if (aboutPopUpOpen)
+{
+    <div class="aboutOverlay">
+        <div class="outerPopUp">
+            <div id="closeAbout" @onclick="()=>aboutPopUpOpen=false"> <img src="./css/images/close x.svg" /></div>
+            <div class="logos"><img src="./css/images/light logo small.svg" /></div>
+            <div id="descParagraph">
+                <div>
 
+                    <div>אפליקציה מבוססת WEB</div>
+                    <div> לניהול תקציב משק הבית</div>
+                </div>
+                <div>
+                    <div>פרויקט גמר, תשפ"ה</div>
+                    <div><a href="https://www.hit.ac.il/academic/instructional-technologies/ba/">הפקולטה לטכנולוגיות למידה</a></div>
+                </div>
+            </div>
+            <div id="moreInfo">
+                <div id="HITinfo">
+                    <img id="HITlogo" class="logos" src="./css/images/LogoHitNew-removebg-preview.png">
+                    <div id="teamInfo">
+                       
+
+                            <div>
+                                <div style="font-weight:700">צוות הפרויקט:</div>
+                                <div>מלכה ברי, ענבל עזר ודנה רוזנבלוט</div>
+                            </div>
+                            <div>
+                            <div style="font-weight:700">המנחים:</div>
+                                <div>איתי לוסטגרטן וטל קליין</div>
+                            </div>
+                       
+                    </div>
+                </div>
+                <div id="clientInfo">
+                    <img id="clientLogo" src="./css/images/aya_Logo1.jpg">
+                    <div>
+                        <div>עבור:</div>
+                        <div>איה תמרי</div>
+                        <div>יועצת פיננסית לכלכלת המשפחה</div>
+                    </div>
+                </div>
+                <div>כל הזכויות שמורות למכון הטכנולוגי חולון</div>
+            </div>
+        </div>
+    </div>
+}
 @code {
     [Parameter]
     public int userID { get; set; }
@@ -745,7 +794,7 @@
     int tagTitleInputLength = 0;
 
     bool goingBackDisabled = false;
-
+    bool aboutPopUpOpen = false;
 
     //------
 
@@ -784,6 +833,8 @@
                     startMonthDate = 1;
                 }
 
+                newFirstName = currentUser.firstName;
+                newLastName = currentUser.lastName;
                 newFirstNameLength = currentUser.firstName.Length;
                 newLastNameLength = currentUser.lastName.Length;
 
@@ -832,9 +883,7 @@
         goingBackDisabled = false;
     }
 
-    public void ChooseTagForTrans(TagsToShow 
-    
-    ) //selection of a tag pre edit
+    public void ChooseTagForTrans(TagsToShow tag) //selection of a tag pre edit
     {
         isTagChosen = !isTagChosen;
 
@@ -1196,12 +1245,13 @@
             emptyFirstName = false;
         }
         newFirstNameLength = newFirstName.Length;
+        currentUser.firstName = newFirstName;
     }
 
     private void lastNameLengthCheck(ChangeEventArgs e)
     {
         newLastName = e.Value.ToString();
-        if(newLastName.Length == 0)
+        if (newLastName.Length == 0)
         {
             emptyLastName = true;
         }
@@ -1210,6 +1260,7 @@
             emptyLastName = false;
         }
         newLastNameLength = newLastName.Length;
+        currentUser.lastName = newLastName;
     }
 
     public void goToStreakPage()

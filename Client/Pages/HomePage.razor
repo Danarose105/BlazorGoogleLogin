@@ -89,7 +89,7 @@ else
                             </div>
                             <div>תוביל לסטטוס הבא!</div>
                         }
-                        else
+                        else if (nextStreakStatIn >= 35)
                         {
                             <p><b>הגעת לדרגה הגבוהה ביותר! אליפות!</b></p>
                         }
@@ -118,7 +118,7 @@ else
                         {
                             @if (streakImgIcon != "")
                             {
-                                <button class="streakBtn"><img src=@streakImgIcon style="width:87%;" @onclick="getStreakDetails" /></button>
+                                <span class="streakBtn"><img src=@streakImgIcon style="width:87%;" /></span>
 
                             }
                         }
@@ -392,7 +392,7 @@ else
 
         @if (userIncomeCat != null && isChecked)
         {
-            <CategoryComponent Category="@userIncomeCat" categoryTitle="userIncomeCat.categroyTitle" icon="userIncomeCat.icon" categoryColor="@userIncomeCat.color" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryTypeIndicator="true" updateBudget="refreshBudgetsOfSubCats" updateTransSum="refreshTransSumTotals"></CategoryComponent>
+            <CategoryComponent Category="@userIncomeCat" categoryTitle="userIncomeCat.categroyTitle" icon="userIncomeCat.icon" categoryColor="@userIncomeCat.color" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryTypeIndicator="true" updateTransSum="refreshTransSumTotals" updateBudget="refreshBudgetsOfSubCats"></CategoryComponent>
         }
         @if (!isChecked) // עובר להוצאות
         {
@@ -427,14 +427,14 @@ else
                         if (category.id == givingsubCatCategoryID)
                         {
                             <div class="fullCategory">
-                                <CategoryComponent Category=category categoryTitle="category.categroyTitle" icon="category.icon" categoryColor="@category.color" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" updateBudget="refreshBudgetsOfSubCats" updateTransSum="refreshTransSumTotals"></CategoryComponent>
+                                <CategoryComponent Category=category categoryTitle="category.categroyTitle" icon="category.icon" categoryColor="@category.color" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" updateTransSum="refreshTransSumTotals" updateBudget="refreshBudgetsOfSubCats"></CategoryComponent>
                             </div>
 
                         }
                         else
                         {
                             <div class="fullCategory">
-                                <CategoryComponent Category=category categoryTitle="category.categroyTitle" icon="category.icon" categoryColor="@category.color" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" updateBudget="refreshBudgetsOfSubCats" updateTransSum="refreshTransSumTotals"></CategoryComponent>
+                                <CategoryComponent Category=category categoryTitle="category.categroyTitle" icon="category.icon" categoryColor="@category.color" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" updateTransSum="refreshTransSumTotals" updateBudget="refreshBudgetsOfSubCats"></CategoryComponent>
                             </div>
 
                         }
@@ -467,14 +467,14 @@ else
                     if (category == currentUser.categoriesFullList[0]) //for onboarding purposes:
                     {
                         <div class="fullCategory">
-                            <CategoryComponent Category=category categoryTitle="category.categroyTitle" icon="category.icon" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryColor="@category.color" updateBudget="refreshBudgetsOfSubCats" updateTransSum="refreshTransSumTotals"></CategoryComponent>
+                            <CategoryComponent Category=category categoryTitle="category.categroyTitle" icon="category.icon" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryColor="@category.color" updateTransSum="refreshTransSumTotals" updateBudget="refreshBudgetsOfSubCats"></CategoryComponent>
 
                         </div>
                     }
                     else
                     {
                         <div class="fullCategory">
-                            <CategoryComponent Category=category categoryTitle="category.categroyTitle" icon="category.icon" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryColor="@category.color" updateBudget="refreshBudgetsOfSubCats" updateTransSum="refreshTransSumTotals"></CategoryComponent>
+                            <CategoryComponent Category=category categoryTitle="category.categroyTitle" icon="category.icon" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryColor="@category.color" updateTransSum="refreshTransSumTotals" updateBudget="refreshBudgetsOfSubCats"></CategoryComponent>
 
                         </div>
                     }
@@ -557,8 +557,8 @@ else
                            closeEdit="closeEdit"
                            closeDelete="closeDelete"
                            updatedStreakStat="updateStreak"
-                           updateBudget="refreshBudgetsOfSubCats"
-                           updateTransSum="refreshTransSumTotals">
+                           updateTransSum="refreshTransSumTotals"
+                           updateBudget="refreshBudgetsOfSubCats">
                             </CategoryComponent>
                         </div>
 
@@ -721,7 +721,7 @@ else
 
         int currentMonthNumber = DateTime.Now.Month; // Gets the current month number
         currentMonth = GetHebrewMonthName(currentMonthNumber);
-        StateHasChanged();
+        //StateHasChanged();
 
 
         var userRes = await Http.GetAsync("api/Present/userToShowByDate/" + userID);
@@ -855,11 +855,14 @@ else
             transCountByWeeksList = streakDataRes.Content.ReadFromJsonAsync<List<TransAmountByWeekToShow>>().Result;
 
             int weekAmount = 0;
-            foreach (TransAmountByWeekToShow week in transCountByWeeksList)
+            if (transCountByWeeksList.Count >= 1)
             {
-                if (week.transactionCount > 3)
+                foreach (TransAmountByWeekToShow week in transCountByWeeksList)
                 {
-                    weekAmount++;
+                    if (week.transactionCount >= 3)
+                    {
+                        weekAmount++;
+                    }
                 }
             }
             string streakStatCheck = streakStatusCheck(weekAmount);
@@ -870,8 +873,6 @@ else
                 streakStatTitle = await getCurrentStatRes.Content.ReadAsStringAsync();
                 if (streakStatTitle != streakStatCheck)
                 {
-                    streakStatTitle = streakStatCheck;
-
                     var updateStreakRes = await Http.GetAsync("api/Present/updateStreakStat/" + userID + "/" + streakStatTitle); //updates the status title if necessary
                     if (updateStreakRes.IsSuccessStatusCode)
                     {
@@ -881,6 +882,9 @@ else
                     {
                         Console.WriteLine("failed to update streak status on page load, shown streak isn't necessarily accurate");
                     }
+
+                    streakStatTitle = streakStatCheck;
+
                 }
 
                 switch (streakStatTitle) //will fill the related streak image route
@@ -927,7 +931,6 @@ else
                         break;
                 }
 
-
             }
         }
 
@@ -938,16 +941,20 @@ else
     /// </summary>
     public string streakStatusCheck(int weekAmount)
     {
+
         if (weekAmount <= 1 && weekAmount < 2)
         {
             if (weekAmount == 0)
             {
+
                 return "";
             }
             else
             {
+
                 return "מטבע ארד";
             }
+
         }
         else if (weekAmount >= 2 && weekAmount <= 9)
         {
@@ -969,7 +976,7 @@ else
 
             return "שטרות";
         }
-        else if (weekAmount >= 32)
+        else if (weekAmount <= 32 && weekAmount > 24)
         {
 
             return "גביע";
@@ -1020,56 +1027,72 @@ else
     }
 
 
-    public void refreshBudgetsOfSubCats(double? refreshBudget)
+    public async Task refreshBudgetsOfSubCats(double? refreshBudget)
     {
         if (refreshBudget.HasValue)
         {
             double budgetPercentage = 0;
-            double? ogBudget = 0;
-            if (currentUser.budgetFullValue > 0)
+            double ogBudget = 0;
+            var getTotalBudgetRec = await Http.GetAsync("api/Present/getUserTotalBudget/" + userID);
+            if (getTotalBudgetRec.IsSuccessStatusCode)
             {
+                ogBudget = getTotalBudgetRec.Content.ReadFromJsonAsync<double>().Result;
+            }
+            else
+            {
+
                 budgetPercentage = currentUser.budgetFullValue;
 
                 ogBudget = currentUser.spendingValueFullList / (budgetPercentage / 100);
             }
 
+
             ogBudget += refreshBudget.Value;
 
             if (currentUser.spendingValueFullList > 0)
             {
-                currentUser.budgetFullValue = (currentUser.spendingValueFullList / ogBudget.Value) * 100;
+                currentUser.budgetFullValue = (currentUser.spendingValueFullList / ogBudget) * 100;
             }
 
         }
     }
 
-    public void refreshTransSumTotals(double transValue)
+    public async Task refreshTransSumTotals(double transValue)
     {
-        Console.WriteLine("currentUser.budgetFullValue- " + currentUser.budgetFullValue);
-        double budgetPercentage = 0;
-        if (currentUser.budgetFullValue > 0)
+        Console.WriteLine("currentUser.budgetFullValue in % - " + currentUser.budgetFullValue);
+
+        if (!isChecked) //means it's an expense
         {
-            budgetPercentage = currentUser.budgetFullValue;
-            double? ogBudget = currentUser.spendingValueFullList / (budgetPercentage / 100);
-            if (!isChecked) //means it's an expense
+            double ogBudget = 0;
+
+            var getTotalBudgetRec = await Http.GetAsync("api/Present/getUserTotalBudget/" + userID);
+            if (getTotalBudgetRec.IsSuccessStatusCode)
             {
-                currentUser.spendingValueFullList += transValue;
-                Console.WriteLine("isChecked- " + isChecked + ", transValue- " + transValue);
-
-                //refreshing the budget accordingly:
-
-                currentUser.budgetFullValue = (currentUser.spendingValueFullList / ogBudget.Value) * 100;
-
+                ogBudget = getTotalBudgetRec.Content.ReadFromJsonAsync<double>().Result;
 
             }
-            else //means it's an income
+            else
             {
-                currentUser.incomeValueFullList += transValue;
-                //Console.WriteLine("isChecked- " + isChecked + ", transValue- " + transValue);
-            }
-            Console.WriteLine("isChecked- " + isChecked + ", transValue- " + transValue + ", currentUser.budgetFullValue- " + currentUser.budgetFullValue);
+                //if budget wasn't found in DB it calculates based on whats in the page:
+                double budgetPercentage = 0;
 
+                budgetPercentage = currentUser.budgetFullValue;
+                ogBudget = currentUser.spendingValueFullList / (budgetPercentage / 100);
+            }
+
+            currentUser.spendingValueFullList += transValue;
+            Console.WriteLine("isChecked- " + isChecked + ", transValue- " + transValue);
+            //refreshing the budget accordingly:
+
+            currentUser.budgetFullValue = (currentUser.spendingValueFullList / ogBudget) * 100;
         }
+        else //means it's an income
+        {
+            currentUser.incomeValueFullList += transValue;
+            //Console.WriteLine("isChecked- " + isChecked + ", transValue- " + transValue);
+        }
+
+        await getStreakDetails();
 
     }
 
@@ -1255,7 +1278,7 @@ else
                             worstSavingValue = gapCheck;
                             worstSavingIndex = i;
                         }
-                        if (gapCheck > bestSavingValue)
+                        else if (gapCheck > bestSavingValue)
                         {
                             bestSavingValue = gapCheck;
                             bestSavingIndex = i;
@@ -1285,12 +1308,14 @@ else
             {
                 tagsSpendingsList = getUserSpendingsByTags.Content.ReadFromJsonAsync<List<TagsAndSpendingsToShow>>().Result;
             }
+
             storyNav = 1;
-            storyPopUpWindow = !storyPopUpWindow;
+            storyPopUpWindow = true;
         }
         else
         {
             storyNav = 0;
+            storyPopUpWindow = false;
         }
     }
 
@@ -1329,6 +1354,7 @@ else
     /// </summary>
     public async Task getStreakDetails()
     {
+        Console.WriteLine("reached get streak details");
         if (userID > 0)
         {
             var streakDataRes = await Http.GetAsync("api/Present/checkCurrentStreak/" + userID);
@@ -1338,82 +1364,119 @@ else
                 transCountByWeeksList = streakDataRes.Content.ReadFromJsonAsync<List<TransAmountByWeekToShow>>().Result;
 
                 currentStreak = 0;
-                foreach (TransAmountByWeekToShow week in transCountByWeeksList)
+                if (transCountByWeeksList.Count > 1)
                 {
-                    if (week.transactionCount >= 3)
+
+                    foreach (TransAmountByWeekToShow week in transCountByWeeksList)
+                    {
+                        if (week.transactionCount >= 3)
+                        {
+                            currentStreak++;
+                        }
+                    }
+                }
+                else if (transCountByWeeksList.Count == 1)
+                {
+                    if (transCountByWeeksList[0].transactionCount >= 3)
                     {
                         currentStreak++;
                     }
                 }
 
 
-                if (currentStreak > 0)
-                {
-                    var totalTransThisWeekRes = await Http.GetAsync("api/Present/getTotalWeekTrans/" + userID);
-                    if (totalTransThisWeekRes.IsSuccessStatusCode)
-                    {
-                        weeklyTransAmount = await totalTransThisWeekRes.Content.ReadFromJsonAsync<int>();
-                        if (weeklyTransAmount >= 3)
-                        {
-                            if (currentStreak == 1)
-                            {
-                                streakStatTitle = "מטבע ארד";
-                            }
-                            switch (streakStatTitle) //will fill the related streak image route
-                            {
-                                case "מטבע ארד":
-                                    streakImgSrc = "./css/images/Bronze-welldone.svg";
-                                    streakImgIcon = "./css/images/bronzeCoin.svg";
-                                    nextStreakStatIn = 1;
-                                    break;
-                                case "מטבע כסף":
-                                    streakImgSrc = "./css/images/silver-welldone.svg";
-                                    streakImgIcon = "./css/images/silverCoin.svg";
-                                    nextStreakStatIn = 6;
-                                    break;
-                                case "מטבע זהב":
-                                    streakImgSrc = "./css/images/gold-welldone.svg";
-                                    streakImgIcon = "./css/images/goldCoin.svg";
-                                    nextStreakStatIn = 4;
-                                    break;
-                                case "שטר":
-                                    streakImgSrc = "./css/images/note-welldone.svg";
-                                    streakImgIcon = "./css/images/singleCashNote.svg";
-                                    nextStreakStatIn = 8;
-                                    break;
-                                case "שטרות":
-                                    streakImgSrc = "./css/images/two-notes-welldone.svg";
-                                    streakImgIcon = "./css/images/cashNotes.svg";
-                                    nextStreakStatIn = 4;
-                                    break;
-                                case "גביע":
-                                    streakImgSrc = "./css/images/trophy-welldone.svg";
-                                    streakImgIcon = "./css/images/goblet.svg";
-                                    nextStreakStatIn = 8;
-                                    break;
-                                case "יהלום":
-                                    streakImgSrc = "./css/images/dimond-welldone.svg";
-                                    streakImgIcon = "./css/images/diamond.svg";
-                                    nextStreakStatIn = 35;
-                                    break;
-                                default:
-                                    Console.WriteLine("no picture is associated with this streak");
-                                    streakImgSrc = "";
-                                    streakImgIcon = "";
-                                    nextStreakStatIn = 3;
-                                    break;
-                            }
 
-                            streakOverlay = true;
+
+                DateTime today = DateTime.Today;
+
+                // Calculate the difference between today and the previous Sunday
+                int daysSinceSunday = (int)today.DayOfWeek;
+
+                // Subtract the difference to get the previous Sunday (or today if it's Sunday)
+                DateTime currentSunday = today.AddDays(-daysSinceSunday);
+
+                if (transCountByWeeksList[transCountByWeeksList.Count - 1].weekStartDate == currentSunday) //checks if the last week in the week amount list is this week
+                {
+                    weeklyTransAmount = transCountByWeeksList[transCountByWeeksList.Count - 1].transactionCount;
+
+                    if (transCountByWeeksList[transCountByWeeksList.Count - 1].transactionCount > 2) //checks the amount of transactions done this week so far by checking if the last list item's date is this week's Sunday
+                    {
+                        if (currentStreak > 0)
+                        {
+                            string currentStreakTitle = streakStatusCheck(currentStreak);
+
+                            if (streakStatTitle != currentStreakTitle)
+                            {
+                                int dbStreak = streakStatusOpt.IndexOf(streakStatTitle);
+                                int pageStreak = streakStatusOpt.IndexOf(currentStreakTitle);
+
+                                if (dbStreak < pageStreak)
+                                {
+                                    streakStatTitle = currentStreakTitle;
+                                    switch (streakStatTitle) //will fill the related streak image route
+                                    {
+                                        case "מטבע ארד":
+                                            streakImgSrc = "./css/images/Bronze-welldone.svg";
+                                            streakImgIcon = "./css/images/bronzeCoin.svg";
+                                            nextStreakStatIn = 1;
+                                            break;
+                                        case "מטבע כסף":
+                                            streakImgSrc = "./css/images/silver-welldone.svg";
+                                            streakImgIcon = "./css/images/silverCoin.svg";
+                                            nextStreakStatIn = 6;
+                                            break;
+                                        case "מטבע זהב":
+                                            streakImgSrc = "./css/images/gold-welldone.svg";
+                                            streakImgIcon = "./css/images/goldCoin.svg";
+                                            nextStreakStatIn = 4;
+                                            break;
+                                        case "שטר":
+                                            streakImgSrc = "./css/images/note-welldone.svg";
+                                            streakImgIcon = "./css/images/singleCashNote.svg";
+                                            nextStreakStatIn = 8;
+                                            break;
+                                        case "שטרות":
+                                            streakImgSrc = "./css/images/two-notes-welldone.svg";
+                                            streakImgIcon = "./css/images/cashNotes.svg";
+                                            nextStreakStatIn = 4;
+                                            break;
+                                        case "גביע":
+                                            streakImgSrc = "./css/images/trophy-welldone.svg";
+                                            streakImgIcon = "./css/images/goblet.svg";
+                                            nextStreakStatIn = 8;
+                                            break;
+                                        case "יהלום":
+                                            streakImgSrc = "./css/images/dimond-welldone.svg";
+                                            streakImgIcon = "./css/images/diamond.svg";
+                                            nextStreakStatIn = 35;
+                                            break;
+                                        default:
+                                            Console.WriteLine("no picture is associated with this streak");
+                                            streakImgSrc = "";
+                                            streakImgIcon = "";
+                                            nextStreakStatIn = 3;
+                                            break;
+                                    }
+
+
+                                    if (streakStatTitle != "" || streakStatTitle != null)
+                                    {
+                                        var updateStreak = await Http.GetAsync("api/Present/updateStreakStat/" + userID + "/" + streakStatTitle);
+                                        if (updateStreak.IsSuccessStatusCode)
+                                        {
+                                            streakOverlay = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            streakImgSrc = "";
+                            streakImgIcon = "";
+                            nextStreakStatIn = 3;
+                            streakOverlay = false;
                         }
                     }
-
-                }
-                else
-                {
-                    streakImgSrc = "";
-                    streakImgIcon = "";
-                    nextStreakStatIn = 3;
                 }
 
             }

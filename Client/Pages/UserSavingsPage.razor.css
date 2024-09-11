@@ -286,6 +286,7 @@
     border-radius: 0.5rem;
     display: flex;
     background-color: #F9F9F9;
+    padding: 1vh 5vw;
     font-size: 1.1rem;
     max-width: 7rem;
 }
@@ -349,7 +350,7 @@
 
 .counter {
     position: absolute;
-    bottom: -0.3rem;
+    bottom: 0;
     color: #666;
     font-size: 12px;
     padding: 2px 6px;
@@ -363,7 +364,7 @@
 .catTitle {
     font-weight: 500;
     margin: 0;
-    height: 3rem;
+    height: 7vh;
     border-radius: 0.3125rem;
     background: #FFF;
     box-shadow: 0px 85px 24px 0px rgba(171, 173, 191, 0.00), 0px 55px 22px 0px rgba(171, 173, 191, 0.01), 0px 31px 18px 0px rgba(171, 173, 191, 0.05), 0px 14px 14px 0px rgba(171, 173, 191, 0.09), 0px 3px 7px 0px rgba(171, 173, 191, 0.10);

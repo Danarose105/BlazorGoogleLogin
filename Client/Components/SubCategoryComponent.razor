@@ -86,7 +86,7 @@
 @if (openTransOverlay)
 {
     isOptBtnClicked = false;
-    <AddTransactionComponent subCategoryTitle="@subCategoryTitle" subCategoryIDTOGet="@subCategoryIDToGet" isTransactionOverlayOpen="openAddTransOverlay" userID="@userID" gapsToUpdateBudgets="gapsToUpdateTheBudget" addTransactionToTotal="addNewTransToTotalSpendings" categoryTypeIndicator="@categoryTypeIndicator" updatedStreak="updateStreak" closeAddTransAfterOverdraft="closeAddTrans" transValueToAdd="updateTotalsIndexTable"></AddTransactionComponent>
+    <AddTransactionComponent subCategoryTitle="@subCategoryTitle" subCategoryIDTOGet="@subCategoryIDToGet" isTransactionOverlayOpen="openAddTransOverlay" userID="@userID" gapsToUpdateBudgets="gapsToUpdateTheBudget" addTransactionToTotal="addNewTransToTotalSpendings" categoryTypeIndicator="@categoryTypeIndicator" updatedStreak="updateStreak" closeAddTransAfterOverdraft="closeAddTrans" ></AddTransactionComponent>
 
 }
 
@@ -853,13 +853,13 @@
 
         Console.WriteLine(subCategoryTitle + ": " + totalSpendings + ", latest trans value- " + transactionValue);
 
-        StateHasChanged();
+        updateTransactionSum.InvokeAsync(transactionValue);
+        //StateHasChanged();
 
     }
 
     public void updateTotalsIndexTable(double transValue)
     {
-        updateTransactionSum.InvokeAsync(transValue);
     }
 
 
