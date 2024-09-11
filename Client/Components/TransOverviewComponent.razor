@@ -68,9 +68,9 @@
 
                         <span class="bubbleTextPayMethod">@transaction.valueType</span>
 
-                    }
+                    } 
 
-                    @* value type too tip content:*@
+                   @* value type too tip content:*@
                     @if (transaction.valueType == "מזומן")
                     {
                         <div class="paymentMethod" @onclick="explainPaymentIcon">
@@ -102,18 +102,18 @@
                     @if (transaction.fixedMonthly == true)
                     {
                         <div class="paymentMethod" @onclick="explainFixedTrans">
-                            @if (isFixedTooltipOpen)
+                        @if (isFixedTooltipOpen)
+                        {
+                            if (typeByCat)
                             {
-                                if (typeByCat)
-                                {
                                     <span class="bubbleTextPayType">הכנסה חוזרת</span>
-                                }
-                                else
-                                {
+                            }
+                            else
+                            {
                                     <span class="bubbleTextPayType">הוצאה חוזרת</span>
 
-                                }
                             }
+                        }
 
                             <span><img src="./css/images/repeat iconrestart.svg" /></span>
                         </div>
@@ -121,18 +121,18 @@
                     else if (transaction.splitPayment == true || childOfSplit == true)
                     {
                         <div class="paymentMethod" @onclick="explainSplitTrans">
-                            @if (isSplitTooltipOpen)
+                        @if (isSplitTooltipOpen)
+                        {
+                            if (typeByCat)
                             {
-                                if (typeByCat)
-                                {
                                     <span class="bubbleTextPayType">הכנסה בתשלומים</span>
-                                }
-                                else
-                                {
-                                    <span class="bubbleTextPayType">הוצאה בתשלומים</span>
-
-                                }
                             }
+                            else
+                            {
+                                <span class="bubbleTextPayType">הוצאה בתשלומים</span>
+
+                            }
+                        }
                             <span><img src="./css/images/payments.svg" /></span>
                         </div>
                         <span>תשלום @transIndexInPayments/@totalPayments </span>
@@ -150,24 +150,29 @@
 
         @if (editBtnClicked)
         {
-            if (childOfSplit)
+            if (transaction.splitPayment == true || childOfSplit == true)
             {
-                if (transaction.parentTransID.HasValue)
+                if (transaction.splitPayment)
                 {
-                    if (transaction.parentTransID.Value > 0)
+                    <AddTransactionComponent subCategoryTitle="@subCategoryTitle" subCategoryIDTOGet="@subCatID" userID="@userID" gapsToUpdateBudgets="gapsToUpdateTheBudget" addTransactionAfterEdit="updateTranPostEdit" transIDtoEdit="@transIDtoEdit" isTransactionOverlayOpen="closeEditTransWindow" overdraftNotTreated="showOverdraftingTrans" SplitPaymentWithIndex="paymentsDisplay" categoryTypeIndicator="@typeByCat"></AddTransactionComponent>
+                }
+                else if (childOfSplit)
+                {
+                    if (transaction.parentTransID.HasValue)
                     {
-                        Console.WriteLine("split parent was sent to edit");
-                        <AddTransactionComponent subCategoryTitle="@subCategoryTitle" subCategoryIDTOGet="@subCatID" userID="@userID" gapsToUpdateBudgets="gapsToUpdateTheBudget" addTransactionAfterEdit="updateTranPostEdit" transIDtoEdit="@transIDtoEdit" isTransactionOverlayOpen="closeEditTransWindow" overdraftNotTreated="showOverdraftingTrans" SplitPaymentWithIndex="paymentsDisplay" categoryTypeIndicator="@typeByCat"></AddTransactionComponent>
+                        if (transaction.parentTransID.Value > 0)
+                        {
+                            Console.WriteLine("split parent was sent to edit");
+                            <AddTransactionComponent subCategoryTitle="@subCategoryTitle" subCategoryIDTOGet="@subCatID" userID="@userID" gapsToUpdateBudgets="gapsToUpdateTheBudget" addTransactionAfterEdit="updateTranPostEdit" transIDtoEdit="@transIDtoEdit" isTransactionOverlayOpen="closeEditTransWindow" overdraftNotTreated="showOverdraftingTrans" SplitPaymentWithIndex="paymentsDisplay" categoryTypeIndicator="@typeByCat"></AddTransactionComponent>
+                        }
                     }
                 }
+
             }
             else
             {
                 <AddTransactionComponent subCategoryTitle="@subCategoryTitle" subCategoryIDTOGet="@subCatID" userID="@userID" gapsToUpdateBudgets="gapsToUpdateTheBudget" addTransactionAfterEdit="updateTranPostEdit" transIDtoEdit="@transIDtoEdit" isTransactionOverlayOpen="closeEditTransWindow" overdraftNotTreated="showOverdraftingTrans" SplitPaymentWithIndex="paymentsDisplay" categoryTypeIndicator="@typeByCat"></AddTransactionComponent>
             }
-
-
-
         }
 
 
@@ -269,7 +274,7 @@
             childOfSplit = false;
         }
 
-        if (transaction.splitPayment == true || childOfSplit == true)
+        if (transaction.splitPayment == true || childOfSplit==true)
         {
             var repeatedTransValuesRes = await Http.GetAsync("api/Transactions/getPaymentTransToEdit/" + transIDtoEdit);
             if (repeatedTransValuesRes.IsSuccessStatusCode)
@@ -284,7 +289,7 @@
                 }
 
                 totalPayments = reapeatedTransValuesList.Count;
-                if (reapeatedTransValuesList.Count <= 1)
+                if (reapeatedTransValuesList.Count<=1)
                 {
                     transaction.splitPayment = false;
                     childOfSplit = false;
@@ -329,17 +334,8 @@
     {
         deleteBtnClicked = !deleteBtnClicked;
         isOpetionsBtnClicked = !isOpetionsBtnClicked;
-        if (!typeByCat)
-        {
-
-            popupTitle = "מחיקת הוצאה";
-            popupBodyText = "ההוצאה '" + transaction.transTitle + "' עומדת להמחק";
-        }
-        else
-        {
-            popupTitle = "מחיקת הכנסה";
-            popupBodyText = "ההכנסה '" + transaction.transTitle + "' עומדת להמחק";
-        }
+        popupTitle = "מחיקת הזנה";
+        popupBodyText = "ההזנה '" + transaction.transTitle + "' עומדת להמחק";
     }
 
     public async Task deleteTrans()
@@ -501,7 +497,6 @@
 
         transaction = editedTransaction;
         refreshTags.InvokeAsync(transaction);
-
     }
 
     public void closeEditTransWindow()
@@ -519,7 +514,7 @@
     public async Task explainPaymentIcon()
     {
         isValueTypeTooltipOpen = !isValueTypeTooltipOpen;
-        isFixedTooltipOpen = false;
+        isFixedTooltipOpen= false;
         isSplitTooltipOpen = false;
 
         if (isValueTypeTooltipOpen)
@@ -534,7 +529,7 @@
     public async Task explainFixedTrans()
     {
         isFixedTooltipOpen = !isFixedTooltipOpen;
-        isValueTypeTooltipOpen = false;
+        isValueTypeTooltipOpen=false;
         isSplitTooltipOpen = false;
         if (isFixedTooltipOpen)
         {

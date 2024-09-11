@@ -9,7 +9,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.75);
+    background-color: rgba(0, 0, 0, 0.6);
     z-index: 3;
     display: flex;
     align-items: center;
@@ -785,7 +785,7 @@ ol li::marker {
 .closePopUpBtn {
     display: flex;
     justify-content: flex-start;
-    width: 80%;
+    width: 100%;
 }
 
 
@@ -1274,11 +1274,11 @@ ol li::marker {
 #streakExpAndTitle {
     display: flex;
     flex-direction: row-reverse;
-    width: 82%;
+    width: 100%;
 }
 
 #streakExpBtn {
-    width: 28%;
+    width: 21%;
 }
 
 #qMarkSpan {

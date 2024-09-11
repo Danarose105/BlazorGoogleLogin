@@ -305,7 +305,7 @@
             neededTransAmount = rankMinTransCount - (3 * weekAmount);
             return "שטרות";
         }
-        else if (weekAmount <= 32 && weekAmount > 24)
+        else if (weekAmount >= 32)
         {
             rankMinTransCount = 32 * 3;
             neededTransAmount = rankMinTransCount - (3 * weekAmount);

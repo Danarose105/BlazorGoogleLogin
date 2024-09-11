@@ -13,13 +13,10 @@
         <article>
             @Body
         </article>
-        <AuthorizeView>
-            <Authorized>
-
         @if (!NavManager.Uri.Contains("LogoutPage"))
         {
-           @* if (!NavManager.Uri.EndsWith("/") || !NavManager.Uri.EndsWith("CountOnIt_MalkaInbalDana"))
-            {*@
+            if (!NavManager.Uri.EndsWith("/") || !NavManager.Uri.EndsWith("MalkaInbalDana"))
+            {
                 if (NavManager.Uri.EndsWith("CountOnIt_MalkaInbalDana/HomePage") || NavManager.Uri.EndsWith("HomePage") && !NavManager.Uri.Contains("FutureHomePage"))
                 {
                     <div id="expDiv">
@@ -70,10 +67,8 @@
                     <div class="NavLines"> </div>
                     <button class="navBtn" style="@currentFuturetNavPage" @onclick="goToFutureHomePage">מבט לעתיד<img src="./css/images/future.svg" /></button>
                 </div>
-           @* }*@
+            }
         }
-            </Authorized>
-        </AuthorizeView>
 
     </main>
 </div>

@@ -974,32 +974,7 @@ namespace BlazorGoogleLogin.Server.Controllers
             return BadRequest("user not created");
         }
 
-        [HttpGet("getUserTotalBudget/{userID}")]
-        public async Task<IActionResult> getUserTotalBudget(int userID)
-        {
-
-            object userParam = new
-            {
-                ID = userID
-            };
-
-            string getTotalBudgetQuery = "SELECT COALESCE(SUM(sc.monthlyPlannedBudget), 0) AS totalBudget FROM subcategories sc JOIN categories c ON sc.categoryID = c.id  JOIN users u ON c.userID = u.id  WHERE u.id = @ID;";
-
-            var totalBudgetRes = await _db.GetRecordsAsync<double>(getTotalBudgetQuery, userParam);
-            double totalBudgetSum= totalBudgetRes.FirstOrDefault();
-            if (totalBudgetSum!=null)
-            {
-                return Ok(totalBudgetSum);
-            }
-
-            return BadRequest("couldnt find total budget");
-
-
-        }
-
-
-
-            [HttpGet("GetSubCatImportance/{subCatID}")] // שליפת עדיפות תת קטגוריה בעריכה
+        [HttpGet("GetSubCatImportance/{subCatID}")] // שליפת עדיפות תת קטגוריה בעריכה
         public async Task<IActionResult> GetSubCatImportance(int subCatID)
         {
 
@@ -1256,7 +1231,8 @@ namespace BlazorGoogleLogin.Server.Controllers
                     return BadRequest(updateResult.ErrorMessage);
                 }
 
-                return Ok(updateResult.Data); // Assuming you want to return the list of deleted tag IDs.
+                return Ok(updateResult.Data); // Assuming you want to return the list of deleted
+                                              // IDs.
             }
             catch (Exception ex)
             {

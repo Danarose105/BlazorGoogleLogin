@@ -464,14 +464,14 @@
                             <div class="lineBetween"></div>
                         </div>
 
-                        <div class="outerSaving">
+                        <div class="outerSaving" style="padding: 2vh">
                             <span><b>שנת היעד</b></span>
 
                             <span class="outerSavingAmount"><b> @goalDetailsToShow.dueYear</b></span>
 
                         </div>
 
-                        <div class="outerSaving">
+                        <div class="outerSaving" style="padding: 2vh">
                             <span><b>סכום היעד</b></span>
 
 
@@ -626,7 +626,7 @@
                         </div>
 
                         <div class="outerSaving">
-
+                            
                             <div class="outerSavingAmount">
                                 <div class="outerGoalAmount">
                                     <span><b>סכום היעד</b></span>
@@ -868,7 +868,7 @@
         goalsPerYearList.Clear();
         showYearlyGoals = true;
         goalsYearToShow = goalsYear;
-        foreach (AllUserGoalsToShow goal in allGoals)
+    @foreach (AllUserGoalsToShow goal in allGoals)
         {
             if (goal.dueYear == goalsYear)
             {
@@ -914,7 +914,6 @@
             allGoals.Add(newGoalToAddToList);
             newGoal = new GoalToAdd();
             openGoalsPerYearPopUp(newGoalToAddToList.dueYear);
-            showYearlyGoals = false;
             await OnInitializedAsync();
 
         }
@@ -924,7 +923,7 @@
             Console.WriteLine("Failed to add new goal");
         }
 
-
+        isAddGoalOverlayClicked = false;
         selectedClass = "";
 
         savingsForProgressBar = 0;
@@ -939,8 +938,6 @@
 
             widthForProgressBar = savingsForProgressBar.ToString() + "%";
         }
-
-        isAddGoalOverlayClicked = false;
     }
 
     private void UpdateColor(string color)
@@ -1061,10 +1058,6 @@
             goalDetailsToShow.dueYear = editedGoal.dueYear;
             goalDetailsToShow.budget = editedGoal.budget;
             goalDetailsToShow.goalTitle = editedGoal.goalTitle;
-            if (goalsYearToShow != editedGoal.dueYear)
-            {
-                showYearlyGoals = false;
-            }
             isEditGoalClicked = false;
             isGoalFullDetails = false;
             OpetionsBtnClicked();
@@ -1081,8 +1074,7 @@
         }
 
         isEditGoalClicked = false;
-
-
+        //showYearlyGoals = false;
         selectedClass = "";
 
         savingsForProgressBar = 0;
@@ -1283,7 +1275,6 @@
     void closeAddGoalOverlay()
     {
         isAddGoalOverlayClicked = false;
-
         selectedClass = "";
     }
 
