@@ -1032,9 +1032,8 @@
     transform: translate(-50%, -50%);
     z-index: 1000;
     width: 90%;
-    height:80%;
+    height: 80%;
     padding: 2.5vh;
-   
     border-radius: 0.5rem;
     border: 0.2px solid rgba(0, 0, 0, 0.30);
     background: #FFF;
@@ -1044,6 +1043,8 @@
     align-items: center;
     line-height: 3vh;
     row-gap: 3vh;
+    background-image: url(css/images/aboutbg.svg);
+    background-repeat: round;
 }
 
 #closeAbout {
