@@ -1231,7 +1231,8 @@ namespace BlazorGoogleLogin.Server.Controllers
                     return BadRequest(updateResult.ErrorMessage);
                 }
 
-                return Ok(updateResult.Data); // Assuming you want to return the list of deleted tag IDs.
+                return Ok(updateResult.Data); // Assuming you want to return the list of deleted
+                                              // IDs.
             }
             catch (Exception ex)
             {
