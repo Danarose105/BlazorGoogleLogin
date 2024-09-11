@@ -73,7 +73,7 @@ else
                 </div>
                 <div id="streakExpAndTitle">
                     <div id="streakExpBtn">
-                        <span id="qMarkSpan" @onclick="@(()=>expBubbleToolTip("streakPopUp"))"><img src="./css/images/q-with-shadow.svg" /></span>
+                        <span id="qMarkSpan" @onclick="@(()=>expBubbleToolTip("streakPopUp"))"><img style="width: 2.5rem;" src="./css/images/q-with-shadow.svg" /></span>
                         @if (streakExpBubble)
                         {
                             <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>

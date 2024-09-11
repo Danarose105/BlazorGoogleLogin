@@ -1273,18 +1273,22 @@ ol li::marker {
 
 #streakExpAndTitle {
     display: flex;
-    flex-direction: row-reverse;
-    width: 82%;
+    width: 100%;
+    column-gap: 2vh;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
 }
 
 #streakExpBtn {
-    width: 28%;
+    width: 100%;
 }
 
 #qMarkSpan {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+    width: 96%;
 }
 
 .navBtn {
