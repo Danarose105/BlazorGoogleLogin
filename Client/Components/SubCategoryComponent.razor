@@ -57,8 +57,15 @@
         <div class="budget-info">
             @if (!categoryTypeIndicator)
             {
-
-                <button class="budget-progress" @onclick="goToTransactionsPage">
+                if (budget.Value.ToString().Length >= 5 && subCatTransTotal.Value.ToString().Length >= 5)
+                {
+                    smallerFont = "font-size: 0.93rem;";
+                }
+                else
+                {
+                    smallerFont = "";
+                }
+                <button class="budget-progress" style="@smallerFont" @onclick="goToTransactionsPage">
                     @Math.Round(budget.Value) /  @Math.Round(subCatTransTotal.Value) ₪
                 </button>
 
@@ -86,7 +93,7 @@
 @if (openTransOverlay)
 {
     isOptBtnClicked = false;
-    <AddTransactionComponent subCategoryTitle="@subCategoryTitle" subCategoryIDTOGet="@subCategoryIDToGet" isTransactionOverlayOpen="openAddTransOverlay" userID="@userID" gapsToUpdateBudgets="gapsToUpdateTheBudget" addTransactionToTotal="addNewTransToTotalSpendings" categoryTypeIndicator="@categoryTypeIndicator" updatedStreak="updateStreak" closeAddTransAfterOverdraft="closeAddTrans" ></AddTransactionComponent>
+    <AddTransactionComponent subCategoryTitle="@subCategoryTitle" subCategoryIDTOGet="@subCategoryIDToGet" isTransactionOverlayOpen="openAddTransOverlay" userID="@userID" gapsToUpdateBudgets="gapsToUpdateTheBudget" addTransactionToTotal="addNewTransToTotalSpendings" categoryTypeIndicator="@categoryTypeIndicator" updatedStreak="updateStreak" closeAddTransAfterOverdraft="closeAddTrans"></AddTransactionComponent>
 
 }
 
@@ -148,24 +155,24 @@
                         </div>
                     </div>
                     <div>
-                                @if (!categoryTypeIndicator)
+                        @if (!categoryTypeIndicator)
+                        {
+                            if (titleInput == null || titleInput == "" || titleInput.Length <= 0 || subCatToEdit.subCategoryTitle.Length <= 0)
+                            {
+                                if (isTyped)
                                 {
-                                    if (titleInput == null || titleInput == "" || titleInput.Length <= 0 || subCatToEdit.subCategoryTitle.Length <= 0)
-                                    {
-                                        if (isTyped)
-                                        {
 
-                                            <span style="color:#F95050">שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
-                                        }
-                                    }
-                                    else if (isSameName)
-                                    {
-
-                                        <span style="color:#F95050">קיימת תת קטגוריה בעלת אותו שם</span>
-
-                                    }
+                                    <span style="color:#F95050">שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
                                 }
-                            </div>
+                            }
+                            else if (isSameName)
+                            {
+
+                                <span style="color:#F95050">קיימת תת קטגוריה בעלת אותו שם</span>
+
+                            }
+                        }
+                    </div>
                     <div class="outerExp">
                         <div id="expDiv">
                             <div id="expBtn" @onclick="@(()=>expBubbleToolTip("editSubCat"))"><img src="./css/images/q-with-shadow.svg" style="height: 3rem;" /></div>
@@ -179,8 +186,8 @@
                     </div>
                     <div class="outerBudget">
                         <input class="budgetBox" type="number" id="description" @oninput="SubCatBudgetInput" @bind="subCatToEdit.monthlyPlannedBudget" />
-                        <span class="currency-symbol">₪</span>
-                        <br />
+                        <span class="currency-symbol" style="@isBudgetMsg">₪</span>
+                       
                         @*@if (ogBudget < 0)
                 {
                 <span>הקטנת את התקציב ב- @(Math.Round((ogBudget * -1), 2))%.</span>
@@ -195,17 +202,34 @@
 
                         <div class="lineBetween"></div>
 
-                        <div>
+                        <div style="width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;flex-direction: column-reverse;
+    row-gap: 0.5vh;">
+
+
                             @if (ogBudget < 0)
                             {
-                                <span>הקטנת את התקציב ב- @(Math.Round((ogBudget * -1), 2))%.</span>
-
+                                isBudgetMsg = "bottom: 60%;";
+                                <div class="outerBudgetMsg">
+                                    <img src="./css/images/light.svg" />
+                                    <span>הקטנת את התקציב ב- @(Math.Round((ogBudget * -1), 2))%.</span>
+                                </div>
                             }
                             else if (ogBudget > 0)
                             {
-                                <span>הגדלת את התקציב ב- @(Math.Round(ogBudget, 2))%.</span>
-
+                                isBudgetMsg = "bottom: 60%;";
+                                <div class="outerBudgetMsg">
+                                    <img src="./css/images/light.svg" />
+                                    <span>הגדלת את התקציב ב- @(Math.Round(ogBudget, 2))%.</span>
+                                </div>
                             }
+                            else
+                            {
+                                isBudgetMsg = "";
+                            }
+
                             <div>
 
                                 @if (subCatToEdit.monthlyPlannedBudget <= 0 || subCatToEdit.monthlyPlannedBudget == null)
@@ -288,27 +312,27 @@
                                 }
                             </div>
 
-                        </div>                       
+                        </div>
                     </div>
                     <div>
-                            @if (!categoryTypeIndicator)
+                        @if (!categoryTypeIndicator)
+                        {
+                            if (titleInput == null || titleInput == "" || titleInput.Length <= 0 || subCatToEdit.subCategoryTitle.Length <= 0)
                             {
-                                if (titleInput == null || titleInput == "" || titleInput.Length <= 0 || subCatToEdit.subCategoryTitle.Length <= 0)
-                                {
-                                    if (isTyped)
-                                    {
-
-                                        <span style="color:#F95050">שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
-                                    }
-                                }
-                                else if (isSameName)
+                                if (isTyped)
                                 {
 
-                                    <span style="color:#F95050">קיימת תת קטגוריה בעלת אותו שם</span>
-
+                                    <span style="color:#F95050">שם תת הקטגוריה צריך להיות בין 2-18 תווים.</span>
                                 }
                             }
-                        </div>
+                            else if (isSameName)
+                            {
+
+                                <span style="color:#F95050">קיימת תת קטגוריה בעלת אותו שם</span>
+
+                            }
+                        }
+                    </div>
                 }
 
 
@@ -555,12 +579,13 @@
     int titleInputLength = 0;
     public bool openTransOverlay = false;
     string? catOutlineColor = "";
-
+    string smallerFont = "";
     double ogBudget = 0;
     double? subCatTransTotal = 0;
 
     bool isSameName = false;
     string ogSubCatName = "";
+    string isBudgetMsg = "";
 
     private string _previousColor = "##INITIAL##";
 
@@ -841,6 +866,8 @@
         {
             Console.WriteLine(" בעיה במחיקת תת- קטגוריה");
         }
+
+        deleteBtnClicked = !deleteBtnClicked;
     }
 
     public void addNewTransToTotalSpendings(double transactionValue)
@@ -935,7 +962,7 @@
             isOptBtnClicked = false;
         }
         //optBtnOpenID.InvokeAsync(subCategoryIDToGet);
-       
+
     }
 
     private async Task SubCatTitleLengthCounter(ChangeEventArgs e)
@@ -971,6 +998,7 @@
         Console.WriteLine(OgsubCatTitle + "OgsubCatTitle");
         editSubCatBtnClicked = !editSubCatBtnClicked;
         titleInput = subCategoryTitle;
+        ogBudget = 0;
 
     }
 

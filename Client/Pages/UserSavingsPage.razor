@@ -128,7 +128,7 @@
                                 <span><b>מקום החסכון</b></span>
 
 
-                                <span class="outerSavingAmount" style="word-break: break-word;"><b> @savingDetailsToShow.savingLocation</b></span>
+                                <span class="outerSavingAmount" style="word-break: break-word;    padding: 0.6rem 2rem;;"><b> @savingDetailsToShow.savingLocation</b></span>
 
 
                             </div>
@@ -235,7 +235,7 @@
                             <div> <span><b>מקום החסכון</b></span></div>
                             <div style="display: flex;
     justify-content: flex-end;">
-                                <div class="counter" style="bottom: 11.7vh;
+                                <div class="counter" style="bottom: 21%;
     z-index: 1;">
                                     @if (saveLocation == null || saveLocation == "")
                                     {
@@ -414,6 +414,22 @@
 
 }
 
+<div>
+    @if (isPastClick)
+    {
+        <div class="pastClick">
+            <span>יפותח בהמשך</span>
+        </div>
+    }
+<div id="@hideNav" class="bottom-nav" @ref="navBar">
+    <button class="navBtn" style="opacity:60%" @onclick="PastBtnClicked">מבט לעבר<img src="./css/images/past.svg" /></button>
+    <div class="NavLines"> </div>
+    <button class="navBtn" style="@currentPresentNavPage" @onclick="goToPresentHomePage">מבט להווה<img src="./css/images/present.svg" /></button>
+    <div class="NavLines"> </div>
+    <button class="navBtn" style="@currentFuturetNavPage" @onclick="goToFutureHomePage">מבט לעתיד<img src="./css/images/future.svg" /></button>
+</div>
+</div>
+
 
 @code {
 
@@ -429,6 +445,14 @@
     AllUserSavingsToShow savingDetailsToShow = new AllUserSavingsToShow();
     int sumSavings = 0;
     private int CurrentYear => DateTime.Now.Year;
+
+    bool isPastClick = false;
+     bool expBubbleOpen = false;
+    bool isScrollingDown = false;
+    string hideNav => isScrollingDown ? "nav-hidden" : "bottomNav";
+    string currentPresentNavPage = "";
+    string currentFuturetNavPage = "font-weight:600; color:#6775F4;";
+    private ElementReference navBar;
 
     bool isAddSavingOverlayClicked = false;
     bool OpenSavingDetails = false;
@@ -740,8 +764,11 @@
         isAddSavingOverlayClicked = !isAddSavingOverlayClicked;
         titleInputLength = 0;
         newSaving.savingsSum = 0;
+        newSaving.savingsTitle = "";
         saveLocation = "";
         locationLength = 0;
+        emptySavingSum = false;
+        emptySavingTitle = false;
     }
 
 
@@ -797,4 +824,51 @@
             }
         }
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("navScroll.init", navBar);
+        }
+    }
+
+    public void Dispose()
+    {
+        JSRuntime.InvokeVoidAsync("navScroll.dispose");
+    }
+
+    public void goToPresentHomePage()
+    {
+
+        currentPresentNavPage = "font-weight:600; color:#6775F4;";
+        currentFuturetNavPage = "";
+        closeExpOverlay();
+        Nav.NavigateTo("./HomePage");
+    }
+
+    public void goToFutureHomePage()
+    {
+
+        currentFuturetNavPage = "font-weight:600; color:#6775F4;";
+        currentPresentNavPage = "";
+        closeExpOverlay();
+        Nav.NavigateTo("./FutureHomePage");
+    }
+
+    public void closeExpOverlay()
+    {
+        expBubbleOpen = false;
+    }
+
+    public async Task PastBtnClicked()
+    {
+        isPastClick = !isPastClick;
+        if (isPastClick)
+        {
+            await Task.Delay(2000);
+            isPastClick = false;
+        }
+    }
+
 }

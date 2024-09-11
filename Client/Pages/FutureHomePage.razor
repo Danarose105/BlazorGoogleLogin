@@ -43,7 +43,8 @@
                     <div style="width: @widthForProgressBar;" class="savingsProgress">
 
 
-                        <span class="bubbleText @isSavingsZero">חסכתי @sumSavings ₪</span>
+                        <span class="bubbleText @savingsClassPadding">חסכתי @sumSavings ₪</span>
+
                     </div>
 
                 </div>
@@ -387,7 +388,7 @@
                             <span class="yearToShow">@goalsYearToShow</span>
                         </div>
                         <div>
-                            <button @onclick="()=> isAddGoalOverlayClicked = !isAddGoalOverlayClicked" class="AddNewSaving">
+                            <button @onclick="newGoalFromPopup" class="AddNewSaving">
                                 <div class="emoji-circle">
                                     🎯
                                 </div>
@@ -464,14 +465,14 @@
                             <div class="lineBetween"></div>
                         </div>
 
-                        <div class="outerSaving">
-                            <span><b>שנת היעד</b></span>
+                        <div class="outerSaving" style="padding: 2vh">
+                            <span ><b>שנת היעד</b></span>
 
                             <span class="outerSavingAmount"><b> @goalDetailsToShow.dueYear</b></span>
 
                         </div>
 
-                        <div class="outerSaving">
+                        <div class="outerSaving" style="padding: 2vh">
                             <span><b>סכום היעד</b></span>
 
 
@@ -679,6 +680,24 @@
 
 </div>
 
+<div>
+   
+      @if (isPastClick)
+        {
+            <div class="pastClick">
+                    <span>יפותח בהמשך</span>
+            </div>
+        }
+    <div id="@hideNav" class="bottom-nav" @ref="navBar">
+
+        <button class="navBtn" style="opacity:60%" @onclick="PastBtnClicked">מבט לעבר<img src="./css/images/past.svg" /></button>
+        <div class="NavLines"> </div>
+        <button class="navBtn" style="@currentPresentNavPage" @onclick="goToPresentHomePage">מבט להווה<img src="./css/images/present.svg" /></button>
+        <div class="NavLines"> </div>
+        <button class="navBtn" style="@currentFuturetNavPage" @onclick="goToFutureHomePage">מבט לעתיד<img src="./css/images/future.svg" /></button>
+    </div>
+</div>
+
 
 @code {
 
@@ -702,6 +721,12 @@
     GoalToAdd newGoal = new GoalToAdd();
     GoalToEdit editedGoal = new GoalToEdit();
 
+    bool isPastClick = false;
+    bool isScrollingDown = false;
+    string hideNav => isScrollingDown ? "nav-hidden" : "bottomNav";
+    string currentPresentNavPage = "";
+    string currentFuturetNavPage = "font-weight:600; color:#6775F4;";
+    private ElementReference navBar;
 
     int sumGoals = 0;
     int sumSavings = 0;
@@ -724,6 +749,7 @@
     bool emptyGoalTitle = false;
     bool emptyGoalSum = false;
     bool isSavingsZero = true;
+    bool isNewFromPopup = false;
 
     string savingsClassPadding => isSavingsZero ? "zeroClass" : "";
 
@@ -823,7 +849,7 @@
         savingsForProgressBar = 0;
         if (sumGoals > 0)
         {
-            isSavingsZero = false;
+
             savingsForProgressBar = ((double)sumSavings / sumGoals) * 100;
 
             if (savingsForProgressBar > 100)
@@ -832,6 +858,10 @@
             }
 
             widthForProgressBar = savingsForProgressBar.ToString() + "%";
+        }
+        else if(sumSavings > 0)
+        {
+            isSavingsZero = false;
         }
         else if (sumGoals == 0 && sumSavings == 0)
         {
@@ -940,7 +970,17 @@
             widthForProgressBar = savingsForProgressBar.ToString() + "%";
         }
 
-        isAddGoalOverlayClicked = false;
+        if(isNewFromPopup)
+        {
+            isAddGoalOverlayClicked = false;
+            showYearlyGoals = true;
+        }
+        else
+        {
+             isAddGoalOverlayClicked = false;
+        }
+        
+
     }
 
     private void UpdateColor(string color)
@@ -1282,9 +1322,23 @@
 
     void closeAddGoalOverlay()
     {
-        isAddGoalOverlayClicked = false;
+        if(isNewFromPopup)
+        {
+            isAddGoalOverlayClicked = false;
+            showYearlyGoals = true;
+        }
+        else
+        {
+             isAddGoalOverlayClicked = false;
+        }
+        
+        
 
         selectedClass = "";
+        newGoal = new GoalToAdd();
+        emptyGoalTitle = false;
+        emptyGoalSum = false;
+        isNewFromPopup = false;
     }
 
     private void SetYearAndClose(int year)
@@ -1306,5 +1360,53 @@
     public void closeExpOverlay()
     {
         openISaving = false;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("navScroll.init", navBar);
+        }
+    }
+
+    public void Dispose()
+    {
+        JSRuntime.InvokeVoidAsync("navScroll.dispose");
+    }
+
+    public void goToPresentHomePage()
+    {
+
+        currentPresentNavPage = "font-weight:600; color:#6775F4;";
+        currentFuturetNavPage = "";
+        closeExpOverlay();
+        Nav.NavigateTo("./HomePage");
+    }
+
+    public void goToFutureHomePage()
+    {
+
+        currentFuturetNavPage = "font-weight:600; color:#6775F4;";
+        currentPresentNavPage = "";
+        closeExpOverlay();
+        Nav.NavigateTo("./FutureHomePage");
+    }
+
+
+    public async Task PastBtnClicked()
+    {
+        isPastClick = !isPastClick;
+        if (isPastClick)
+        {
+            await Task.Delay(2000);
+            isPastClick = false;
+        }
+    }
+
+    void newGoalFromPopup()
+    {
+        isNewFromPopup = true;
+        isAddGoalOverlayClicked = !isAddGoalOverlayClicked;
     }
 }

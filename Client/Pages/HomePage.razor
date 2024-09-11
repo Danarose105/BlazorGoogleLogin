@@ -12,10 +12,16 @@
 @*@using PSC.Blazor.Components.Tours*@
 
 
-<div id="lottieAnimation" style="display:">
+@*<div id="lottieAnimation" style="display:">
     <lottie-player src="https://lottie.host/embed/5154f28c-27b5-434b-b7bf-e5226737de82/wsrkhAfMxt.json" background="transparent" speed="1" loop autoplay></lottie-player>
-</div>
+</div>*@
 
+@if (showAnimation)
+{
+    <div id="lottieAnimation">
+        <lottie-player src="https://lottie.host/a629e747-096a-41ac-8a03-f374dbd3779d/pY5KRvDIpG.json" background="transparent" speed="1" loop autoplay></lottie-player>
+    </div>
+}
 
 @if (openAddCatOverlay)
 {
@@ -67,7 +73,7 @@ else
                 </div>
                 <div id="streakExpAndTitle">
                     <div id="streakExpBtn">
-                        <span id="qMarkSpan" @onclick="@(()=>expBubbleToolTip("streakPopUp"))"><img src="./css/images/q-with-shadow.svg" /></span>
+                        <span id="qMarkSpan" @onclick="@(()=>expBubbleToolTip("streakPopUp"))"><img style="width: 2.5rem;" src="./css/images/q-with-shadow.svg" /></span>
                         @if (streakExpBubble)
                         {
                             <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
@@ -235,15 +241,15 @@ else
                                             <div class="storyTextWrapper">
 
                                                 <h3 class="titleFirstStory">העלייה הגדולה ביותר</h3>
-                                                @if(Math.Round(subCatsTotalsStory[worstSavingIndex].currentMonthTotal) > 0)
+                                                @if (Math.Round(subCatsTotalsStory[worstSavingIndex].currentMonthTotal) > 0)
                                                 {
                                                     <div>
-                                                        עד כה החודש הוצאת @Math.Round(subCatsTotalsStory[worstSavingIndex].currentMonthTotal)₪ על @worstSavingSubCat, @worstSavingValue₪ יותר מחודש שעבר! 
-                                                        </div>
+                                                        עד כה החודש הוצאת @Math.Round(subCatsTotalsStory[worstSavingIndex].currentMonthTotal)₪ על @worstSavingSubCat, @worstSavingValue₪ יותר מחודש שעבר!
+                                                    </div>
                                                 }
                                                 else
                                                 {
-                                                     <div>עד כה, לא נמצאו תתי קטגוריות בהן הוצאת יותר מחודש שעבר.</div>
+                                                    <div>עד כה, לא נמצאו תתי קטגוריות בהן הוצאת יותר מחודש שעבר.</div>
                                                 }
                                             </div>
                                         </div>
@@ -570,7 +576,21 @@ else
     }
 </div>
 
-
+<div>
+    @if (isPastClick)
+    {
+        <div class="pastClick">
+            <span>יפותח בהמשך</span>
+        </div>
+    }
+    <div id="@hideNav" class="bottom-nav" @ref="navBar">
+        <button class="navBtn" style="opacity:60%" @onclick="PastBtnClicked">מבט לעבר<img src="./css/images/past.svg" /></button>
+        <div class="NavLines"> </div>
+        <button class="navBtn" style="@currentPresentNavPage" @onclick="goToPresentHomePage">מבט להווה<img src="./css/images/present.svg" /></button>
+        <div class="NavLines"> </div>
+        <button class="navBtn" style="@currentFuturetNavPage" @onclick="goToFutureHomePage">מבט לעתיד<img src="./css/images/future.svg" /></button>
+    </div>
+</div>
 
 @code {
 
@@ -583,6 +603,14 @@ else
     //[Inject]
     //private ITourService TourService { get; set; }
 
+
+    bool isScrollingDown = false;
+    string hideNav => isScrollingDown ? "nav-hidden" : "bottomNav";
+    string currentPresentNavPage = "font-weight:600; color:#6775F4;";
+    string currentFuturetNavPage = "";
+    bool isPastClick = false;
+
+    private bool showAnimation = false;
 
     userToShow currentUser;
     UserToAdd newUser = new UserToAdd();
@@ -603,7 +631,6 @@ else
     string searchQuery = "";
     string currentSearch = "";
     string titleInput = "";
-    string hideNav => isScrollingDown ? "nav-hidden" : "bottomNav";
     //string BgOverlay => isOverlay ? "BgOverlay" : "";
     string BgOverlay = "";
     int newCurrentUserId;
@@ -616,7 +643,6 @@ else
     bool isOnInitializedOver = false;
     bool accordionRefresh = true;
     bool toSearch = false;
-    bool isScrollingDown = false;
     bool isOverlay = false;
     bool isEditOverlay = false;
     bool isCancleBtnClicked = false;
@@ -717,7 +743,10 @@ else
 
         //await JSRuntime.InvokeVoidAsync("showAnimationForTwoSeconds");
         userID = user.Id;
-        await Task.Delay(10000);
+        showAnimation = true; // Show the animation before starting the delay
+        await Task.Delay(7000);
+        showAnimation = false; // Hide the animation after the delay is over
+        StateHasChanged();
 
         int currentMonthNumber = DateTime.Now.Month; // Gets the current month number
         currentMonth = GetHebrewMonthName(currentMonthNumber);
@@ -1509,21 +1538,6 @@ else
 
     private ElementReference navBar;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            
-            await JSRuntime.InvokeVoidAsync("navScroll.init", navBar);
-
-        }
-
-    }
-
-    public void Dispose()
-    {
-        JSRuntime.InvokeVoidAsync("navScroll.dispose");
-    }
 
     private void SelectEmoji(string emoji)
     {
@@ -1566,6 +1580,46 @@ else
         openSubCatsOptions = !openSubCatsOptions;
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("navScroll.init", navBar);
+        }
+    }
+
+    public void Dispose()
+    {
+        JSRuntime.InvokeVoidAsync("navScroll.dispose");
+    }
+
+    public void goToPresentHomePage()
+    {
+
+        currentPresentNavPage = "font-weight:600; color:#6775F4;";
+        currentFuturetNavPage = "";
+        closeExpOverlay();
+        Nav.NavigateTo("./HomePage");
+    }
+
+    public void goToFutureHomePage()
+    {
+
+        currentFuturetNavPage = "font-weight:600; color:#6775F4;";
+        currentPresentNavPage = "";
+        closeExpOverlay();
+        Nav.NavigateTo("./FutureHomePage");
+    }
+
+    public async Task PastBtnClicked()
+    {
+        isPastClick = !isPastClick;
+        if (isPastClick)
+        {
+            await Task.Delay(2000);
+            isPastClick = false;
+        }
+    }
 
 
 }
