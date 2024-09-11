@@ -388,7 +388,7 @@
                             <span class="yearToShow">@goalsYearToShow</span>
                         </div>
                         <div>
-                            <button @onclick="()=> isAddGoalOverlayClicked = !isAddGoalOverlayClicked" class="AddNewSaving">
+                            <button @onclick="newGoalFromPopup" class="AddNewSaving">
                                 <div class="emoji-circle">
                                     🎯
                                 </div>
@@ -749,6 +749,7 @@
     bool emptyGoalTitle = false;
     bool emptyGoalSum = false;
     bool isSavingsZero = true;
+    bool isNewFromPopup = false;
 
     string savingsClassPadding => isSavingsZero ? "zeroClass" : "";
 
@@ -969,7 +970,17 @@
             widthForProgressBar = savingsForProgressBar.ToString() + "%";
         }
 
-        isAddGoalOverlayClicked = false;
+        if(isNewFromPopup)
+        {
+            isAddGoalOverlayClicked = false;
+            showYearlyGoals = true;
+        }
+        else
+        {
+             isAddGoalOverlayClicked = false;
+        }
+        
+
     }
 
     private void UpdateColor(string color)
@@ -1311,12 +1322,23 @@
 
     void closeAddGoalOverlay()
     {
-        isAddGoalOverlayClicked = false;
+        if(isNewFromPopup)
+        {
+            isAddGoalOverlayClicked = false;
+            showYearlyGoals = true;
+        }
+        else
+        {
+             isAddGoalOverlayClicked = false;
+        }
+        
+        
 
         selectedClass = "";
         newGoal = new GoalToAdd();
         emptyGoalTitle = false;
         emptyGoalSum = false;
+        isNewFromPopup = false;
     }
 
     private void SetYearAndClose(int year)
@@ -1382,5 +1404,9 @@
         }
     }
 
-
+    void newGoalFromPopup()
+    {
+        isNewFromPopup = true;
+        isAddGoalOverlayClicked = !isAddGoalOverlayClicked;
+    }
 }

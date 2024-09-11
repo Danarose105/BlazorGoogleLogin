@@ -154,6 +154,7 @@
     font: inherit;
     cursor: pointer;
     outline: inherit;
+    padding-bottom: 4vh;
 }
 .galleryArrow {
     background: none;
