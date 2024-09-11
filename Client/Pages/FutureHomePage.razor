@@ -848,7 +848,7 @@
         savingsForProgressBar = 0;
         if (sumGoals > 0)
         {
-            
+
             savingsForProgressBar = ((double)sumSavings / sumGoals) * 100;
 
             if (savingsForProgressBar > 100)
@@ -1315,6 +1315,8 @@
 
         selectedClass = "";
         newGoal = new GoalToAdd();
+        emptyGoalTitle = false;
+        emptyGoalSum = false;
     }
 
     private void SetYearAndClose(int year)

@@ -12,10 +12,16 @@
 @*@using PSC.Blazor.Components.Tours*@
 
 
-<div id="lottieAnimation" style="display:">
+@*<div id="lottieAnimation" style="display:">
     <lottie-player src="https://lottie.host/embed/5154f28c-27b5-434b-b7bf-e5226737de82/wsrkhAfMxt.json" background="transparent" speed="1" loop autoplay></lottie-player>
-</div>
+</div>*@
 
+@if (showAnimation)
+{
+    <div id="lottieAnimation">
+        <lottie-player src="https://lottie.host/a629e747-096a-41ac-8a03-f374dbd3779d/pY5KRvDIpG.json" background="transparent" speed="1" loop autoplay></lottie-player>
+    </div>
+}
 
 @if (openAddCatOverlay)
 {
@@ -604,6 +610,8 @@ else
     string currentFuturetNavPage = "";
     bool isPastClick = false;
 
+    private bool showAnimation = false;
+
     userToShow currentUser;
     UserToAdd newUser = new UserToAdd();
     CategoryToShow defaultCategory = new CategoryToShow();
@@ -735,7 +743,10 @@ else
 
         //await JSRuntime.InvokeVoidAsync("showAnimationForTwoSeconds");
         userID = user.Id;
-        await Task.Delay(10000);
+        showAnimation = true; // Show the animation before starting the delay
+        await Task.Delay(7000);
+        showAnimation = false; // Hide the animation after the delay is over
+        StateHasChanged();
 
         int currentMonthNumber = DateTime.Now.Month; // Gets the current month number
         currentMonth = GetHebrewMonthName(currentMonthNumber);

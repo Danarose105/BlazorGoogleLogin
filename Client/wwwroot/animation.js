@@ -1,5 +1,7 @@
 ﻿function showAnimationForTwoSeconds() {
-    var animation = document.getElementById('lottieAnimation');
+    var animation = document.getElementById('
+
+Animation');
     animation.style.display = 'block';
     setTimeout(() => {
         animation.style.display = 'none';
