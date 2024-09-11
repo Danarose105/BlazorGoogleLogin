@@ -438,6 +438,14 @@
     </div>
 }
 
+<div id="@hideNav" class="bottom-nav" @ref="navBar">
+    <button class="navBtn" style="opacity:60%">מבט לעבר<img src="./css/images/past.svg" /></button>
+    <div class="NavLines"> </div>
+    <button class="navBtn" style="@currentPresentNavPage" @onclick="goToPresentHomePage">מבט להווה<img src="./css/images/present.svg" /></button>
+    <div class="NavLines"> </div>
+    <button class="navBtn" style="@currentFuturetNavPage" @onclick="goToFutureHomePage">מבט לעתיד<img src="./css/images/future.svg" /></button>
+</div>
+
 @if (editTag)
 {
 
@@ -686,6 +694,9 @@
         </div>
     </div>
 }
+
+
+
 @code {
     [Parameter]
     public int userID { get; set; }
@@ -699,6 +710,14 @@
     bool onInitializedOver = false;
     userProfileDataToShow currentUser = new userProfileDataToShow();
 
+    
+    bool isScrollingDown = false;
+    string hideNav => isScrollingDown ? "nav-hidden" : "bottomNav";
+    string currentPresentNavPage = "font-weight:600; color:#6775F4;";
+    string currentFuturetNavPage = "";
+    private ElementReference navBar;
+
+    bool expBubbleOpen=false;
 
     public bool editBtnClicked = false;
     public bool closeOverlay = false;
@@ -1412,6 +1431,43 @@
         openDeleteTagWarning(true);
     }
 
+ 
+     protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("navScroll.init", navBar);
+        }
+    }
+
+    public void Dispose()
+    {
+        JSRuntime.InvokeVoidAsync("navScroll.dispose");
+    }
+
+    public void goToPresentHomePage()
+    {
+
+        currentPresentNavPage = "font-weight:600; color:#6775F4;";
+        currentFuturetNavPage = "";
+        closeExpOverlay();
+        Nav.NavigateTo("./HomePage");
+    }
+
+    public void goToFutureHomePage()
+    {
+
+        currentFuturetNavPage = "font-weight:600; color:#6775F4;";
+        currentPresentNavPage = "";
+        closeExpOverlay();
+        Nav.NavigateTo("./FutureHomePage");
+    }
+
+     public void closeExpOverlay()
+    {
+        expBubbleOpen = false;
+    }
 }
+
 
 

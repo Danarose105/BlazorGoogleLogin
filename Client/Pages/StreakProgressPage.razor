@@ -84,6 +84,15 @@
     </div>
 </div>
 
+<div id="@hideNav" class="bottom-nav" @ref="navBar">
+    <button class="navBtn" style="opacity:60%">מבט לעבר<img src="./css/images/past.svg" /></button>
+    <div class="NavLines"> </div>
+    <button class="navBtn" style="@currentPresentNavPage" @onclick="goToPresentHomePage">מבט להווה<img src="./css/images/present.svg" /></button>
+    <div class="NavLines"> </div>
+    <button class="navBtn" style="@currentFuturetNavPage" @onclick="goToFutureHomePage">מבט לעתיד<img src="./css/images/future.svg" /></button>
+</div>
+
+
 @code {
     [CascadingParameter]
     private UserDTO user { get; set; }
@@ -93,10 +102,17 @@
 
     int currentStreak = 0;
 
-    int currentUserStreakIndex = -1;
-    int neededTransAmount = 0;
     bool isScrollingDown = false;
     string hideNav => isScrollingDown ? "nav-hidden" : "bottomNav";
+    string currentPresentNavPage = "font-weight:600; color:#6775F4;";
+    string currentFuturetNavPage = "";
+    private ElementReference navBar;
+
+    bool expBubbleOpen = false;
+
+
+    int currentUserStreakIndex = -1;
+    int neededTransAmount = 0;
 
     string userIcon = "";
 
@@ -328,7 +344,6 @@
     {
         await JSRuntime.InvokeVoidAsync("navigateBack");
     }
-    private ElementReference navBar;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -345,5 +360,30 @@
     public void goToSProfilePage()
     {
         Nav.NavigateTo("./ProfilePage/" + userID);
+    }
+
+
+
+    public void goToPresentHomePage()
+    {
+
+        currentPresentNavPage = "font-weight:600; color:#6775F4;";
+        currentFuturetNavPage = "";
+        closeExpOverlay();
+        Nav.NavigateTo("./HomePage");
+    }
+
+    public void goToFutureHomePage()
+    {
+
+        currentFuturetNavPage = "font-weight:600; color:#6775F4;";
+        currentPresentNavPage = "";
+        closeExpOverlay();
+        Nav.NavigateTo("./FutureHomePage");
+    }
+
+    public void closeExpOverlay()
+    {
+        expBubbleOpen = false;
     }
 }

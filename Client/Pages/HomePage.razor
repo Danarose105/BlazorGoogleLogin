@@ -570,7 +570,13 @@ else
     }
 </div>
 
-
+<div id="@hideNav" class="bottom-nav" @ref="navBar">
+    <button class="navBtn" style="opacity:60%">מבט לעבר<img src="./css/images/past.svg" /></button>
+    <div class="NavLines"> </div>
+    <button class="navBtn" style="@currentPresentNavPage" @onclick="goToPresentHomePage">מבט להווה<img src="./css/images/present.svg" /></button>
+    <div class="NavLines"> </div>
+    <button class="navBtn" style="@currentFuturetNavPage" @onclick="goToFutureHomePage">מבט לעתיד<img src="./css/images/future.svg" /></button>
+</div>
 
 @code {
 
@@ -582,6 +588,12 @@ else
 
     //[Inject]
     //private ITourService TourService { get; set; }
+
+
+     bool isScrollingDown = false;
+    string hideNav => isScrollingDown ? "nav-hidden" : "bottomNav";
+    string currentPresentNavPage = "font-weight:600; color:#6775F4;";
+    string currentFuturetNavPage = "";
 
 
     userToShow currentUser;
@@ -603,7 +615,6 @@ else
     string searchQuery = "";
     string currentSearch = "";
     string titleInput = "";
-    string hideNav => isScrollingDown ? "nav-hidden" : "bottomNav";
     //string BgOverlay => isOverlay ? "BgOverlay" : "";
     string BgOverlay = "";
     int newCurrentUserId;
@@ -616,7 +627,6 @@ else
     bool isOnInitializedOver = false;
     bool accordionRefresh = true;
     bool toSearch = false;
-    bool isScrollingDown = false;
     bool isOverlay = false;
     bool isEditOverlay = false;
     bool isCancleBtnClicked = false;
@@ -1509,21 +1519,6 @@ else
 
     private ElementReference navBar;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            
-            await JSRuntime.InvokeVoidAsync("navScroll.init", navBar);
-
-        }
-
-    }
-
-    public void Dispose()
-    {
-        JSRuntime.InvokeVoidAsync("navScroll.dispose");
-    }
 
     private void SelectEmoji(string emoji)
     {
@@ -1566,6 +1561,36 @@ else
         openSubCatsOptions = !openSubCatsOptions;
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("navScroll.init", navBar);
+        }
+    }
+
+    public void Dispose()
+    {
+        JSRuntime.InvokeVoidAsync("navScroll.dispose");
+    }
+
+    public void goToPresentHomePage()
+    {
+
+        currentPresentNavPage = "font-weight:600; color:#6775F4;";
+        currentFuturetNavPage = "";
+        closeExpOverlay();
+        Nav.NavigateTo("./HomePage");
+    }
+
+    public void goToFutureHomePage()
+    {
+
+        currentFuturetNavPage = "font-weight:600; color:#6775F4;";
+        currentPresentNavPage = "";
+        closeExpOverlay();
+        Nav.NavigateTo("./FutureHomePage");
+    }
 
 
 }

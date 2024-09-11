@@ -635,3 +635,82 @@
     width: 13rem;
     justify-content: flex-start;
 }
+
+.navBtn {
+    position: relative;
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    row-gap: 0.4vh;
+}
+
+#bottomNav {
+    background-color: #F9F9F9;
+    border-radius: 1.25rem 1.25rem 0rem 0rem;
+    height: 10vh;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    position: relative;
+    align-content: stretch;
+    align-items: center;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1); /* Shadow added here */
+    position: fixed;
+    bottom: 0;
+    z-index: 2;
+    transition: transform 0.3s ease-in-out;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    will-change: transform;
+    transition: opacity 0.5s ease-in-out; /* Smooth transition for the opacity */
+}
+
+#nav-hidden {
+    display: none; /* Moves the navbar out of view */
+}
+
+
+.NavLines {
+    content: "";
+    display: block;
+    width: 0.06rem;
+    height: 60%;
+    background-color: #D6D9F1;
+    display: flex;
+    align-self: auto;
+    right: 14.5vh;
+    top: 20%;
+    /* flex-direction: column-reverse; */
+    /* flex-wrap: wrap; */
+    /* align-content: stretch; */
+    align-items: baseline;
+}
+
+.navBtn {
+    position: relative;
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    row-gap: 0.4vh;
+}
