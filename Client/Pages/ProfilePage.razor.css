@@ -133,6 +133,28 @@
     padding: 3vh 2vw;
 }
 
+.outerBtn {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin: 2vh 0 2vh;
+    flex-direction: column-reverse;
+    align-items: center;
+    row-gap: 1.5vh;
+}
+
+.thirdBtn {
+    text-decoration: underline;
+    font-weight: 700;
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+}
 .galleryArrow {
     background: none;
     color: inherit;
@@ -496,15 +518,6 @@
     line-height: normal;
 }
 
-.outerBtn {
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    margin: 4vh 0 2vh;
-    flex-direction: column;
-    align-items: center;
-    row-gap: 1em;
-}
 
 .outerOptions {
     position: absolute;
@@ -1029,7 +1042,7 @@
     flex-direction: column;
     align-items: center;
     line-height: 3vh;
-    row-gap: 0.4vh;
+    row-gap: 3vh;
 }
 
 #closeAbout {
@@ -1055,12 +1068,13 @@
 }
 
 .logos{
-    height:21%;
+    width:7rem;
 }
 
 #teamInfo {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     row-gap: 1vh;
+    justify-content: center;
 }

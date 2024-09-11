@@ -433,7 +433,7 @@
 {
 
     <div class="outerBtn">
-        <button class="secondery-button" @onclick="()=>aboutPopUpOpen=!aboutPopUpOpen">אודות</button>
+        <button class="thirdBtn" @onclick="()=>aboutPopUpOpen=!aboutPopUpOpen">אודות</button>
         <button class="secondery-button" @onclick="BeginSignOut">התנתקות מהמערכת</button>
     </div>
 }
@@ -647,44 +647,41 @@
     <div class="aboutOverlay">
         <div class="outerPopUp">
             <div id="closeAbout" @onclick="()=>aboutPopUpOpen=false"> <img src="./css/images/close x.svg" /></div>
-            <div class="logos"><img src="./css/images/light logo small.svg" /></div>
+            <div class="logos"><img src="./css/images/reallogo.svg" /></div>
             <div id="descParagraph">
-                <div>
-
-                    <div>אפליקציה מבוססת WEB</div>
-                    <div> לניהול תקציב משק הבית</div>
+                <div style="    font-size: 1.1rem;
+    font-weight: 700;
+">
+                    <div>Count On It</div>
                 </div>
                 <div>
-                    <div>פרויקט גמר, תשפ"ה</div>
+                    <div>פותח עבור איה תמרי-יועצת פיננסית</div>
+                    <div>לכלכלת המשפחה</div>
+                </div>
+                <div id="teamInfo">
+
+                    <div>
+                        <div style="font-weight:700">צוות הפרויקט:</div>
+                        <div>מלכה ברי, ענבל עזר ודנה רוזנבלוט</div>
+                    </div>
+                    <div>
+                    <div style="font-weight:700">המנחים:</div>
+                        <div>טל קליין ואיתי לוסטרגרטן</div>
+                    </div>                       
+                    </div>
+                <div>
+                    <div>פרויקט גמר, תשפ"ד-2024</div>
                     <div><a href="https://www.hit.ac.il/academic/instructional-technologies/ba/">הפקולטה לטכנולוגיות למידה</a></div>
                 </div>
             </div>
             <div id="moreInfo">
                 <div id="HITinfo">
                     <img id="HITlogo" class="logos" src="./css/images/LogoHitNew-removebg-preview.png">
-                    <div id="teamInfo">
-                       
-
-                            <div>
-                                <div style="font-weight:700">צוות הפרויקט:</div>
-                                <div>מלכה ברי, ענבל עזר ודנה רוזנבלוט</div>
-                            </div>
-                            <div>
-                            <div style="font-weight:700">המנחים:</div>
-                                <div>איתי לוסטגרטן וטל קליין</div>
-                            </div>
-                       
-                    </div>
+                    
                 </div>
-                <div id="clientInfo">
-                    <img id="clientLogo" src="./css/images/aya_Logo1.jpg">
-                    <div>
-                        <div>עבור:</div>
-                        <div>איה תמרי</div>
-                        <div>יועצת פיננסית לכלכלת המשפחה</div>
-                    </div>
-                </div>
+                
                 <div>כל הזכויות שמורות למכון הטכנולוגי חולון</div>
+               
             </div>
         </div>
     </div>
