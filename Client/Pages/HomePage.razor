@@ -235,15 +235,15 @@ else
                                             <div class="storyTextWrapper">
 
                                                 <h3 class="titleFirstStory">העלייה הגדולה ביותר</h3>
-                                                @if(Math.Round(subCatsTotalsStory[worstSavingIndex].currentMonthTotal) > 0)
+                                                @if (Math.Round(subCatsTotalsStory[worstSavingIndex].currentMonthTotal) > 0)
                                                 {
                                                     <div>
-                                                        עד כה החודש הוצאת @Math.Round(subCatsTotalsStory[worstSavingIndex].currentMonthTotal)₪ על @worstSavingSubCat, @worstSavingValue₪ יותר מחודש שעבר! 
-                                                        </div>
+                                                        עד כה החודש הוצאת @Math.Round(subCatsTotalsStory[worstSavingIndex].currentMonthTotal)₪ על @worstSavingSubCat, @worstSavingValue₪ יותר מחודש שעבר!
+                                                    </div>
                                                 }
                                                 else
                                                 {
-                                                     <div>עד כה, לא נמצאו תתי קטגוריות בהן הוצאת יותר מחודש שעבר.</div>
+                                                    <div>עד כה, לא נמצאו תתי קטגוריות בהן הוצאת יותר מחודש שעבר.</div>
                                                 }
                                             </div>
                                         </div>
@@ -570,12 +570,20 @@ else
     }
 </div>
 
-<div id="@hideNav" class="bottom-nav" @ref="navBar">
-    <button class="navBtn" style="opacity:60%">מבט לעבר<img src="./css/images/past.svg" /></button>
-    <div class="NavLines"> </div>
-    <button class="navBtn" style="@currentPresentNavPage" @onclick="goToPresentHomePage">מבט להווה<img src="./css/images/present.svg" /></button>
-    <div class="NavLines"> </div>
-    <button class="navBtn" style="@currentFuturetNavPage" @onclick="goToFutureHomePage">מבט לעתיד<img src="./css/images/future.svg" /></button>
+<div>
+    @if (isPastClick)
+    {
+        <div class="pastClick">
+            <span>יפותח בהמשך</span>
+        </div>
+    }
+    <div id="@hideNav" class="bottom-nav" @ref="navBar">
+        <button class="navBtn" style="opacity:60%" @onclick="PastBtnClicked">מבט לעבר<img src="./css/images/past.svg" /></button>
+        <div class="NavLines"> </div>
+        <button class="navBtn" style="@currentPresentNavPage" @onclick="goToPresentHomePage">מבט להווה<img src="./css/images/present.svg" /></button>
+        <div class="NavLines"> </div>
+        <button class="navBtn" style="@currentFuturetNavPage" @onclick="goToFutureHomePage">מבט לעתיד<img src="./css/images/future.svg" /></button>
+    </div>
 </div>
 
 @code {
@@ -590,11 +598,11 @@ else
     //private ITourService TourService { get; set; }
 
 
-     bool isScrollingDown = false;
+    bool isScrollingDown = false;
     string hideNav => isScrollingDown ? "nav-hidden" : "bottomNav";
     string currentPresentNavPage = "font-weight:600; color:#6775F4;";
     string currentFuturetNavPage = "";
-
+    bool isPastClick = false;
 
     userToShow currentUser;
     UserToAdd newUser = new UserToAdd();
@@ -1590,6 +1598,16 @@ else
         currentPresentNavPage = "";
         closeExpOverlay();
         Nav.NavigateTo("./FutureHomePage");
+    }
+
+    public async Task PastBtnClicked()
+    {
+        isPastClick = !isPastClick;
+        if (isPastClick)
+        {
+            await Task.Delay(2000);
+            isPastClick = false;
+        }
     }
 
 

@@ -679,13 +679,24 @@
 
 </div>
 
-<div id="@hideNav" class="bottom-nav" @ref="navBar">
-    <button class="navBtn" style="opacity:60%">מבט לעבר<img src="./css/images/past.svg" /></button>
-    <div class="NavLines"> </div>
-    <button class="navBtn" style="@currentPresentNavPage" @onclick="goToPresentHomePage">מבט להווה<img src="./css/images/present.svg" /></button>
-    <div class="NavLines"> </div>
-    <button class="navBtn" style="@currentFuturetNavPage" @onclick="goToFutureHomePage">מבט לעתיד<img src="./css/images/future.svg" /></button>
+<div>
+   
+      @if (isPastClick)
+        {
+            <div class="pastClick">
+                    <span>יפותח בהמשך</span>
+            </div>
+        }
+    <div id="@hideNav" class="bottom-nav" @ref="navBar">
+
+        <button class="navBtn" style="opacity:60%" @onclick="PastBtnClicked">מבט לעבר<img src="./css/images/past.svg" /></button>
+        <div class="NavLines"> </div>
+        <button class="navBtn" style="@currentPresentNavPage" @onclick="goToPresentHomePage">מבט להווה<img src="./css/images/present.svg" /></button>
+        <div class="NavLines"> </div>
+        <button class="navBtn" style="@currentFuturetNavPage" @onclick="goToFutureHomePage">מבט לעתיד<img src="./css/images/future.svg" /></button>
+    </div>
 </div>
+
 
 @code {
 
@@ -709,6 +720,7 @@
     GoalToAdd newGoal = new GoalToAdd();
     GoalToEdit editedGoal = new GoalToEdit();
 
+    bool isPastClick = false;
     bool isScrollingDown = false;
     string hideNav => isScrollingDown ? "nav-hidden" : "bottomNav";
     string currentPresentNavPage = "";
@@ -1320,7 +1332,7 @@
         openISaving = false;
     }
 
-     protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
@@ -1349,6 +1361,17 @@
         currentPresentNavPage = "";
         closeExpOverlay();
         Nav.NavigateTo("./FutureHomePage");
+    }
+
+
+    public async Task PastBtnClicked()
+    {
+        isPastClick = !isPastClick;
+        if (isPastClick)
+        {
+            await Task.Delay(2000);
+            isPastClick = false;
+        }
     }
 
 

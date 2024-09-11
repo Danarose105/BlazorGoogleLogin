@@ -438,12 +438,21 @@
     </div>
 }
 
-<div id="@hideNav" class="bottom-nav" @ref="navBar">
-    <button class="navBtn" style="opacity:60%">מבט לעבר<img src="./css/images/past.svg" /></button>
-    <div class="NavLines"> </div>
-    <button class="navBtn" style="@currentPresentNavPage" @onclick="goToPresentHomePage">מבט להווה<img src="./css/images/present.svg" /></button>
-    <div class="NavLines"> </div>
-    <button class="navBtn" style="@currentFuturetNavPage" @onclick="goToFutureHomePage">מבט לעתיד<img src="./css/images/future.svg" /></button>
+<div>
+    @if (isPastClick)
+    {
+        <div class="pastClick">
+            <span>יפותח בהמשך</span>
+        </div>
+    }
+
+    <div id="@hideNav" class="bottom-nav" @ref="navBar">
+        <button class="navBtn" style="opacity:60%" @onclick="PastBtnClicked">מבט לעבר<img src="./css/images/past.svg" /></button>
+        <div class="NavLines"> </div>
+        <button class="navBtn" style="@currentPresentNavPage" @onclick="goToPresentHomePage">מבט להווה<img src="./css/images/present.svg" /></button>
+        <div class="NavLines"> </div>
+        <button class="navBtn" style="@currentFuturetNavPage" @onclick="goToFutureHomePage">מבט לעתיד<img src="./css/images/future.svg" /></button>
+    </div>
 </div>
 
 @if (editTag)
@@ -673,10 +682,10 @@
                         <div>מלכה ברי, ענבל עזר ודנה רוזנבלוט</div>
                     </div>
                     <div>
-                    <div style="font-weight:700">המנחים:</div>
+                        <div style="font-weight:700">המנחים:</div>
                         <div>טל קליין ואיתי לוסטרגרטן</div>
-                    </div>                       
                     </div>
+                </div>
                 <div>
                     <div>פרויקט גמר, תשפ"ד-2024</div>
                     <div><a href="https://www.hit.ac.il/academic/instructional-technologies/ba/">הפקולטה לטכנולוגיות למידה</a></div>
@@ -685,11 +694,11 @@
             <div id="moreInfo">
                 <div id="HITinfo">
                     <img id="HITlogo" class="logos" src="./css/images/LogoHitNew-removebg-preview.png">
-                    
+
                 </div>
-                
+
                 <div>כל הזכויות שמורות למכון הטכנולוגי חולון</div>
-               
+
             </div>
         </div>
     </div>
@@ -710,14 +719,14 @@
     bool onInitializedOver = false;
     userProfileDataToShow currentUser = new userProfileDataToShow();
 
-    
+
     bool isScrollingDown = false;
     string hideNav => isScrollingDown ? "nav-hidden" : "bottomNav";
     string currentPresentNavPage = "font-weight:600; color:#6775F4;";
     string currentFuturetNavPage = "";
     private ElementReference navBar;
 
-    bool expBubbleOpen=false;
+    bool expBubbleOpen = false;
 
     public bool editBtnClicked = false;
     public bool closeOverlay = false;
@@ -731,7 +740,7 @@
     string secondOn = "סביבת מבט אל ההווה";
     string thirdOn = "סביבת מבט אל העתיד";
 
-
+    bool isPastClick = false;
     //Tag gallery variables:
     TagsToShow chosenTag = new TagsToShow();
     bool disBtn = false;
@@ -1431,8 +1440,8 @@
         openDeleteTagWarning(true);
     }
 
- 
-     protected override async Task OnAfterRenderAsync(bool firstRender)
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
@@ -1463,10 +1472,21 @@
         Nav.NavigateTo("./FutureHomePage");
     }
 
-     public void closeExpOverlay()
+    public void closeExpOverlay()
     {
         expBubbleOpen = false;
     }
+
+    public async Task PastBtnClicked()
+    {
+        isPastClick = !isPastClick;
+        if (isPastClick)
+        {
+            await Task.Delay(2000);
+            isPastClick = false;
+        }
+    }
+
 }
 
 
