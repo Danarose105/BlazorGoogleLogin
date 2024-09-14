@@ -9,6 +9,7 @@
 @inject DateService DateService
 @inject IJSRuntime JSRuntime
 
+
 @if (onInitializedOver)
 {
     <div id="topOptBar">
@@ -948,11 +949,14 @@
     {
         await _Auth.Logout();
 
-
+        await JSRuntime.InvokeVoidAsync("deleteToken");
+        
         Nav.NavigateTo("./LogoutPage");
 
 
     }
+
+    
 
     private IEnumerable<TagsToShow> GetCurrentPageTags()
     {

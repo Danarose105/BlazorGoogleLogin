@@ -108,7 +108,7 @@
     flex-direction: column;
     box-shadow: 0px 25px 25px 0px rgba(39, 53, 160, 0.09), 0px 6px 14px 0px rgba(39, 53, 160, 0.10);
     row-gap: 2vh;
-    height: 100%;
+    height: 90%;
 }
 
 .filterAndSortBtns {
@@ -862,14 +862,14 @@
     bottom: 0vh;
 }
 
-.outerBtns {
+.outerBtnsMove {
     width: 100%;
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
     row-gap: 2vh;
-    margin-top:1.5vh;
+    margin-top: 1.5vh;
 }
 
 .secondery-button {
@@ -1131,6 +1131,7 @@
     display: flex;
     width: 102%;
     justify-content: space-between;
+
 }
 
 .outerCurrentGap {
@@ -1285,4 +1286,26 @@
     /* width: 100%; */
     /* will-change: transform; */
     transition: opacity 0.5s ease-in-out;
+}
+
+.noTransClass {
+    display: flex;
+    background-color: rgba(251, 251, 251, 1);
+    flex-direction: column;
+    box-shadow: 0px 25px 25px 0px rgba(39, 53, 160, 0.09), 0px 6px 14px 0px rgba(39, 53, 160, 0.10);
+    row-gap: 2vh;
+    height: 100%;
+    padding-bottom: 85%;
+}
+
+@media (max-height: 740px) {
+    .noTransClass {
+        display: flex;
+        background-color: rgba(251, 251, 251, 1);
+        flex-direction: column;
+        box-shadow: 0px 25px 25px 0px rgba(39, 53, 160, 0.09), 0px 6px 14px 0px rgba(39, 53, 160, 0.10);
+        row-gap: 2vh;
+        height: 100%;
+        padding-bottom: 59%;
+    }
 }

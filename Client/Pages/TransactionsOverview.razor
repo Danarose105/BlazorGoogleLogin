@@ -247,7 +247,7 @@
         {
             <GeneralPopUpComponent popupTypeTitle="מחיקת תת קטגוריה" middleText="@popupBodyText" action="מחיקה" makeAction="deleteSubCat" closePopUp="deleteSubCatPopUp"></GeneralPopUpComponent>
         }
-        <div class="outerLowerPart">
+        <div class="outerLowerPart @noTrans">
 
             <div class="searchWrapper">
                 <div class="search__container">
@@ -483,6 +483,7 @@
             <div class="transactions">
                 @if (allTransactions != null && allTransactions.Count > 0 && string.IsNullOrEmpty(searchQuery))
                 {
+                    noTransStyle = false;
                     foreach (TransactionOverviewToShow transaction in allTransactions)
                     {
                         if (!filterByReturnTrans)
@@ -502,7 +503,7 @@
                 }
                 else if (allTransactions.Count <= 0 && isOnInitializedOver)
                 {
-
+                    noTransStyle = true;
                     <p style="display: flex;
     align-items: center;
     justify-content: center;">@failedFilterError</p>
@@ -511,6 +512,7 @@
                 }
                 else
                 {
+                    noTransStyle = true;
                     if (!string.IsNullOrEmpty(searchQuery))
                     {
                         @if (toSearch && (allTransactions.Any(t => string.IsNullOrEmpty(searchQuery) || t.transTitle.ToLower().Contains(searchQuery.ToLower()))))
@@ -682,7 +684,7 @@
                         </div>
 
                     </div>
-                    <div class="outerBtns">
+                    <div class="outerBtnsMove">
                         @if (chosenSubCategory == null)
                         {
                             <button class="primery-buttonOverDraft" @onclick="manageBudgetsToTranfer" disabled style="opacity:60%">העברה</button>
@@ -875,6 +877,9 @@
     string returnToMainPage = "סביבת ההווה";
 
     string overdraftClass = "outerOverdraft";
+    bool noTransStyle = false;
+    string noTrans => noTransStyle ? "noTransClass" : "";
+
 
 
     bool typeByCat = false; //false- expense, true- income
@@ -994,6 +999,7 @@
                         if (checkTransList != null && checkTransList.Count > 0)
                         {
                             allTransactions = checkTransList;
+                            noTransStyle = false;
 
                             foreach (TransactionOverviewToShow trans in allTransactions)
                             {
@@ -1006,13 +1012,13 @@
 
                             if (totalSpendings > budget)
                             {
-                                Console.WriteLine("איןןןןןןן תתיייייי קטגוריותתתתתתת");
+
                                 //overdraftStatus = true;
                                 isOverdraft = true; //triggers the warning button in the breadcrumbs
                                 var overdraftRes = await Http.GetAsync("api/Transactions/showOverdraft/" + subCatID + "/" + userID);
                                 if (overdraftRes.IsSuccessStatusCode)
                                 {
-                                    Console.WriteLine("איןןןןןןן תתיייייי קטגוריותתתתתתת");
+
                                     closeOverdraftOpts = await overdraftRes.Content.ReadFromJsonAsync<List<OverBudgetToShow>>();
 
                                     if (closeOverdraftOpts.Count <= 1 && closeOverdraftOpts[closeOverdraftOpts.Count - 1].id == subCatID)
@@ -1034,6 +1040,7 @@
                         }
                         else
                         {
+                            noTransStyle = true;
                             Console.WriteLine("No transactions found related to this sub category");
                         }
                     }
@@ -1151,6 +1158,14 @@
                 checkOverdraft -= allTransactions[i].transValue;
                 allTransactions.RemoveAt(i);
                 //Console.WriteLine("transaction id- " + allTransactions[i].id + " deleted");
+                if(allTransactions. Count == 0)
+                {
+                    noTransStyle = true;
+                }
+                if(totalSpendings < budget)
+                {
+                    isOverdraft = false;
+                }
             }
         }
 
@@ -1543,9 +1558,6 @@
     public async Task undoFilterAndSort()
     {
 
-
-
-
         allTransactions = new List<TransactionOverviewToShow>();
         var getAllTransactions = await Http.GetAsync("api/Transactions/getAllTransactionsByDate/" + userID + "/" + subCatID);
         if (getAllTransactions.IsSuccessStatusCode)
@@ -1554,6 +1566,7 @@
             if (checkTransList.Count > 0)
             {
                 allTransactions = checkTransList;
+                noTransStyle = false;
                 foreach (TransactionOverviewToShow trans in allTransactions)
                 {
                     totalSpendings += trans.transValue;
@@ -1570,7 +1583,7 @@
             }
             else
             {
-                Console.WriteLine("No transactions found related to this sub category");
+                noTransStyle = true;
                 failedFilterError = "לא נמצאו הזנות שקשורות לתת קטגוריה הזו.";
             }
         }

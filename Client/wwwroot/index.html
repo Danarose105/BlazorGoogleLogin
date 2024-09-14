@@ -58,6 +58,16 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.4/lottie.min.js"></script>
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <script>
+        function deleteToken() {
+            localStorage.removeItem("jwt");
+        }
+    </script>
+    <script>
+        function deleteCookie(name) {
+            document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        }
+    </script>
 </head>
 
 <body style="font-family: 'Heebo', sans-serif; font-weight: 400; color: #030942; height: 100%; background-color: #EDEFF7; width: 100%; ">

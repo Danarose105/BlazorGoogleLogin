@@ -849,6 +849,10 @@
         savingsForProgressBar = 0;
         if (sumGoals > 0)
         {
+            if(sumSavings > 0)
+            {
+                 isSavingsZero = false;
+            }
 
             savingsForProgressBar = ((double)sumSavings / sumGoals) * 100;
 
@@ -865,8 +869,13 @@
         }
         else if (sumGoals == 0 && sumSavings == 0)
         {
+            
             widthForProgressBar = "0%";
-            isSavingsZero = true;
+            
+        }
+        else if(sumSavings == 0)
+        {
+             isSavingsZero = true;
         }
     }
 

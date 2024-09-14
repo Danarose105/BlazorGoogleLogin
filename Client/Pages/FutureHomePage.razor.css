@@ -436,6 +436,7 @@
 
 .outerSavingSection {
     display: flex;
+    padding-bottom: 7vh;
 }
 
 .outerRight {
