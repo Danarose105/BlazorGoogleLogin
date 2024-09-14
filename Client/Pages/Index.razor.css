@@ -70,7 +70,7 @@
     width: 100%;
     bottom: 0;
     position: fixed;
-    z-index: 4;
+    z-index: 10;
     row-gap: 3vh;
 }
 
@@ -237,10 +237,6 @@
     font-weight: 500;
 }
 
-.emoji-section {
-    background-color: #EDEFF7;
-    border-radius: 0.6em;
-}
 
 .megaOuterDaysOptions {
     display: flex;
@@ -373,7 +369,7 @@
     opacity: 1;
     visibility: visible;
     padding: 2vh 5vw;
-    width: 142%;
+    width: 163%;
 }
 
 .category-button.active {
@@ -477,3 +473,19 @@
     align-items: center;
     
 }
+
+
+.emoji-section {
+    background-color: #EDEFF7;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.51rem;
+    border-radius: 0.6em;
+    padding: 1vh;
+}
+
+    .emoji-section span {
+        display: block; /* Ensures that the emojis are centered and can take padding if needed */
+        text-align: center; /* Centers the emoji in the span */
+        font-size: 1.35rem;
+    }

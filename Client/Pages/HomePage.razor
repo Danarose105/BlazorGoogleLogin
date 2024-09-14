@@ -493,7 +493,7 @@ else
             }
 
 
-            @if (!string.IsNullOrEmpty(searchQuery))
+            @*@if (!string.IsNullOrEmpty(searchQuery))
             {
                 @if (toSearch && (finalsearchSubCats.Any(sb => string.IsNullOrEmpty(searchQuery) || sb.subCategoryTitle.ToLower().Contains(searchQuery.ToLower()))))
                 {
@@ -534,7 +534,7 @@ else
 
                 }
 
-            }
+            }*@
 
             @if (categorizedSubCats.Count > 0)
             {
@@ -1223,7 +1223,7 @@ else
         if (!string.IsNullOrEmpty(searchQuery))
         {
             searchCats = currentUser.categoriesFullList.Where(category => category.categroyTitle.Contains(searchQuery)).ToList();
-            finalsearchSubCats = searchSubCats.Where(subCategory => subCategory.subCategoryTitle.Contains(searchQuery)).ToList();
+            //finalsearchSubCats = searchSubCats.Where(subCategory => subCategory.subCategoryTitle.Contains(searchQuery)).ToList();
 
         }
         else

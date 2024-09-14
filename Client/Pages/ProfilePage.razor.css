@@ -1182,3 +1182,18 @@
     /* will-change: transform; */
     transition: opacity 0.5s ease-in-out;
 }
+
+.emoji-section {
+    background-color: #EDEFF7;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.51rem;
+    border-radius: 0.6em;
+    padding: 1vh;
+}
+
+    .emoji-section span {
+        display: block; /* Ensures that the emojis are centered and can take padding if needed */
+        text-align: center; /* Centers the emoji in the span */
+        font-size: 1.35rem;
+    }
