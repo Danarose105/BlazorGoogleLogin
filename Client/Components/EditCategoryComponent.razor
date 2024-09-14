@@ -38,7 +38,7 @@
                                 
                                 @if (disabledEditOfIncomeTitle)
                                 {
-                                    <span style="font-size: 0.85em;color:#F95050">לא ניתן לשנות את שם קטגוריית ההכנסות.</span>
+                                    <span style="font-size: 0.85em;color:#F95050">לא ניתן לשנות את שם הקטגוריה</span>
                                 }
                             </div>
                         </div>
@@ -314,6 +314,7 @@
 
         ogCatName = categoryToEdit.categroyTitle;
         ogEmoji = categoryToEdit.icon;
+        ogColor = categoryToEdit.color;
 
         if (ogCatName == "הכנסות")
         {
@@ -351,6 +352,7 @@
     bool noEmojiBtn = false;
     bool isCancleBtnClicked = false;
     bool isTyped = false;
+    string ogColor = "";
     public async Task saveUpdatedCat()
     {
         //editedCategory.categroyTitle = categoryToEdit.categroyTitle;
@@ -364,7 +366,7 @@
         {
             editedCategory.color = "#6775F4";
         }
-       
+
         editedCategory.icon = categoryToEdit.icon;
         editedCategory.id = categoryToEdit.id;
 
@@ -438,12 +440,16 @@
 
     public void openCategoryOverlay()
     {
-        isTyped = false;
-        if(categoryToEdit.icon == "" || categoryToEdit.icon == null)
-        {
-            categoryToEdit.icon = ogEmoji;
-        }
 
+        categoryToEdit.color = ogColor;
+        categoryToEdit.icon = ogEmoji;
+        
+        isTyped = false;
+        //if(categoryToEdit.icon == "" || categoryToEdit.icon == null)
+        //{
+        //    categoryToEdit.icon = ogEmoji;
+        //}
+        
         closeOverlay.InvokeAsync(true);
 
     }
@@ -551,4 +557,4 @@
         titleInputLength = titleInput.Length;
     }
 }
-}
+
