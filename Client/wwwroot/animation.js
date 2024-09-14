@@ -5,5 +5,5 @@ Animation');
     animation.style.display = 'block';
     setTimeout(() => {
         animation.style.display = 'none';
-    }, 10000); // 2 seconds
+    }, 4000); // 2 seconds
 }

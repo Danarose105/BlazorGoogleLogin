@@ -302,7 +302,8 @@
 
                                 <div class="SavingAmountToAdd" style="width:100%;">
                                     <div class="outerGoalAmount">
-                                        <span><b>סכום היעד</b></span>
+                                        <span style="width: 33%;
+    text-align: center;"><b>סכום היעד</b></span>
                                         <span class="outerSavingAmount">
                                             <input class="SavingAmount" type="number" @bind="newGoal.budget" @oninput="goalSumCounter" />
                                             <span>₪</span>
@@ -468,7 +469,7 @@
                         <div class="outerSaving" style="padding: 2vh">
                             <span ><b>שנת היעד</b></span>
 
-                            <span class="outerSavingAmount"><b> @goalDetailsToShow.dueYear</b></span>
+                            <span class="outerSavingAmountToShow"><b> @goalDetailsToShow.dueYear</b></span>
 
                         </div>
 
@@ -476,7 +477,7 @@
                             <span><b>סכום היעד</b></span>
 
 
-                            <span class="outerSavingAmount"><b> @goalDetailsToShow.budget ₪</b></span>
+                            <span class="outerSavingAmountToShow"><b> @goalDetailsToShow.budget ₪</b></span>
 
                         </div>
 
@@ -628,9 +629,10 @@
 
                         <div class="outerSaving">
 
-                            <div class="outerSavingAmount">
-                                <div class="outerGoalAmount">
-                                    <span><b>סכום היעד</b></span>
+                            <div class="outerSavingAmountToEdit">
+                                <div class="outerGoalAmountToEdit">
+                                    <span style="width: 33%;
+    text-align: center;"><b>סכום היעד</b></span>
 
                                     <input class="savingSum" type="number" @bind="@editedGoal.budget" @oninput="goalSumCounter" />
                                     <span>₪</span>

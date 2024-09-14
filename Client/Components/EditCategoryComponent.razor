@@ -301,6 +301,8 @@
     bool isSameName = false;
     string ogCatName = "";
     string ogEmoji = "";
+ 
+
 
     string titleInput = "";
     int titleInputLength = 0;
@@ -542,10 +544,20 @@
 
         foreach (CategoryToShow userCat in userCategories)
         {
-            if(e.Value.ToString() == userCat.categroyTitle)
+            if (e.Value.ToString() == userCat.categroyTitle)
             {
-                isSameName = true;
-                break;
+                if (userCat.categroyTitle != ogCatName)
+                {
+                      isSameName = true;
+                      break;
+                }
+                else
+                {
+                     isSameName = false;
+                      
+                }
+               
+               
             }
             else
             {

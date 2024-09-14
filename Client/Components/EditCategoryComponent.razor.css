@@ -29,7 +29,7 @@
     column-gap: 10vw;
     /* width: 90%; */
     justify-content: space-evenly;
-    align-items: flex-start;
+    align-items: center;
 }
 
 #emoji-trigger {
@@ -129,6 +129,7 @@
 .popupTitle{
     font-size:1.3rem;
     font-weight:500;
+    margin:0;
 }
 
 .closeOverlay {

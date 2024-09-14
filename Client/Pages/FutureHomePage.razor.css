@@ -702,6 +702,18 @@
     align-items: center;
     /* flex-direction: column; */
     /* row-gap: 2vh; */
+    width: 83%;
+    justify-content: center;
+}
+
+.outerSavingAmountToEdit {
+    display: flex;
+    background-color: #EDEFF7;
+    border-radius: 0.625rem;
+    align-items: center;
+    /* flex-direction: column; */
+    /* row-gap: 2vh; */
+    width: 98%;
     justify-content: center;
 }
 
@@ -1059,11 +1071,11 @@
     padding: 1vh 5vw;
     font-size: 1.1rem;
     border: none;
-    /* width: 95%; */
+    width: 70%;
     justify-content: center;
     align-items: center;
 }
-}
+
 
 .SavingAmountToAdd {
     display: flex;
@@ -1081,11 +1093,29 @@
     display: flex;
     background-color: #EDEFF7;
     border-radius: 0.625rem;
-    padding: 3vh 0;
-    align-items: center;
-    margin: 0vh 0 2vh;
+    padding: 3vh 2vw;
     /* width: 100%; */
+    align-items: center;
+    justify-content: center;
+}
+
+.outerGoalAmountToEdit {
+    display: flex;
+    background-color: #EDEFF7;
+    border-radius: 0.625rem;
+    padding: 3vh 2vw;
+    margin: 0vh 0 2vh;
+    align-items: center;
     justify-content: space-around;
+   
+}
+
+.outerSavingAmountToShow {
+    display: flex;
+    background-color: #EDEFF7;
+    border-radius: 0.625rem;
+    align-items: center;
+    justify-content: center;
 }
 
 .outerTitle {
@@ -1152,9 +1182,6 @@
     align-self: auto;
     right: 14.5vh;
     top: 20%;
-    /* flex-direction: column-reverse; */
-    /* flex-wrap: wrap; */
-    /* align-content: stretch; */
     align-items: baseline;
 }
 
@@ -1193,8 +1220,6 @@
     z-index: 2;
     transition: transform 0.3s ease-in-out;
     position: fixed;
-    /* bottom: 0; */
-    /* width: 100%; */
-    /* will-change: transform; */
+
     transition: opacity 0.5s ease-in-out;
 }
