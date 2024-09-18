@@ -197,7 +197,7 @@
 
                                     @if (splitPayment)
                                     {
-                                        
+
                                         <div class="splitToggle">
                                             @if (categoryTypeIndicator)
                                             {
@@ -216,7 +216,7 @@
                                         </div>
                                         <div class="outerDropAndAv">
                                             <select class="splitDrop" @bind="selectedNumber">
-                                               
+
                                                 <option value="" disabled selected>מספר תשלומים</option>
                                                 @for (int i = 2; i <= 12; i++)
                                                 {
@@ -227,8 +227,8 @@
 
                                             @if (isItAnewTrans)
                                             {
-                                               
-                                               
+
+
                                                 <div class="outerSum">
                                                     <div>
                                                         סכום כל תשלום:
@@ -248,20 +248,29 @@
                                             else
                                             {
 
+
                                                 
-                                                if (sumPreSplit > 0)
-                                                {
                                                     if (newTransaction.transValue != sumPreSplit)
                                                     {
                                                         sumPreSplit = newTransaction.transValue;
                                                     }
-                                                    <p>
-                                                        סכום כל תשלום בממוצע @(
-                                       Math.Round((sumPreSplit / selectedNumber), 2)
-                                       ) ₪
+                                                    <div class="outerSum">
+                                                        <div>
+                                                            סכום כל תשלום:
+                                                        </div>
+                                                        <div>
+                                                            בממוצע
+                                                            <span style="font-weight:700">
+                                                                @(
+                                                                    Math.Round((sumPreSplit / selectedNumber), 2)
+                                                                    ) ₪
+                                                            </span>
 
-                                                    </p>
-                                                }
+                                                        </div>
+
+
+                                                    </div>
+                                                
                                             }
                                         </div>
 
@@ -290,10 +299,10 @@
                                         newTransaction.splitPayment = splitPayment;
                                         if (splitPayment == false)
                                         {
-                                           
+
                                             selectedNumber = 1;
                                         }
-                                       
+
                                     }
 
 
@@ -1677,14 +1686,15 @@
                     }
                     else if (newTransaction.splitPayment == true)
                     {
-                        splitPayment = false;
-                        fixedMonthly = !splitPayment;
+                        splitPayment = true;
+                        //fixedMonthly = !splitPayment;
 
                         var repeatedTransValuesRes = await Http.GetAsync("api/Transactions/getPaymentTransToEdit/" + transIDtoEdit);
 
 
                         if (repeatedTransValuesRes.IsSuccessStatusCode)
                         {
+                           
                             reapeatedTransValuesList = repeatedTransValuesRes.Content.ReadFromJsonAsync<List<RepeatedTransToShow>>().Result;
                             foreach (RepeatedTransToShow repeatedT in reapeatedTransValuesList)
                             {
@@ -1716,7 +1726,7 @@
                     if (newTransaction.fixedMonthly == false)
                     {
                         fixedMonthly = false;
-                        splitPayment = false;
+                        
                         if (categoryTypeIndicator)
                         {
                             repeatedBtnTitle = "הגדרת ההכנסה החוזרת";
@@ -1732,7 +1742,7 @@
                         initialAmountOfSplits = 1;
                         selectedNumber = 1;
                         splitPayment = false;
-                        fixedMonthly = false;
+                        
                     }
 
                 }
@@ -3418,5 +3428,4 @@
         }
 
     }
-
-    }
+}

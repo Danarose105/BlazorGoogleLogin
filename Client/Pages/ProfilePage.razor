@@ -699,12 +699,73 @@
                 </div>
 
                 <div style="background-color: white;">כל הזכויות שמורות למכון הטכנולוגי חולון</div>
-                <div style="font-size: 0.8rem;text-align: center;background-color: white;"><a href="https://lottiefiles.com/free-animation/coin-cgBuwIcovc">Lottie animation: Saygın Mağdala</a></div>
+                <div style="text-align: center;
+    text-decoration: underline;
+    color: #0D6EFE;" @onclick="()=>isCredits =!isCredits">
+                    קרדיטים
+                </div>
+                
 
             </div>
         </div>
     </div>
 }
+
+
+@if (isCredits)
+{
+    <div class="aboutOverlay">
+        <div class="outerPopUp">
+            <div id="closeAbout" @onclick="()=>isCredits=false"><img src="./css/images/arrow-back.svg" /></div>
+          <div style="    font-size: 1.1rem;
+    font-weight: 700;
+">
+                    <div>קרדיטים</div>
+                </div>
+            <div id="moreInfo">               
+                <div style="font-size: 0.8rem;text-align: center;background-color: white;"><a href="https://lottiefiles.com/free-animation/coin-cgBuwIcovc">Lottie animation: Saygın Mağdala</a></div>
+                <div style="font-size: 0.8rem;text-align: center;background-color: white;"><a href="https://creativecommons.org/licenses/by/3.0/">Iconfinder:Alpár-Etele Méder</a></div>
+                <div style="font-size: 0.8rem;text-align: center;background-color: white;"><a href="https://www.iconfinder.com/icons/8673329/ic_fluent_emoji_add_filled_icon">Iconfinder:Microsoft</a></div>
+                <div style="font-size: 0.8rem;text-align: center;background-color: white;"><a href="https://www.iconfinder.com/icons/3643779/clock_hour_ticker_time_times_icon">Iconfinder:DailyYouth</a></div>
+                <div style="font-size: 0.8rem;text-align: center;background-color: white;"><a href="https://www.iconfinder.com/icons/211651/close_round_icon">Iconfinder:Ionicons</a></div> 
+                <div style="font-size: 0.8rem;text-align: center;background-color: white;"><a href="https://www.iconfinder.com/icons/4801315/glass_magnifier_magnifying_search_searching_web_icon">Iconfinder:Kreasi Kanvas</a></div>
+                <div style="font-size: 0.8rem;text-align: center;background-color: white;"><a href="https://www.iconfinder.com/icons/8665885/trash_delete_remove_icon">Iconfinder:Font Awesome</a></div>              
+                <div style="font-size: 0.8rem;text-align: center;background-color: white;"><a href="https://www.iconfinder.com/icons/134224/add_plus_new_icon">Iconfinder:Timothy Miller</a></div>
+                 <div style="font-size: 0.8rem;text-align: center;background-color: white;"><a href="https://www.iconfinder.com/icons/9035016/warning_icon">Iconfinder:Ionicons Icons</a>
+                    </div>
+                <div style="font-size: 0.8rem;text-align: center;background-color: white;"><a href="https://www.iconfinder.com/icons/9310127/star_sparkle_stars_sparkles_icon">Iconfinder:iconfinder</a>
+                </div>
+                <div style="font-size: 0.8rem;text-align: center;background-color: white;"><a href="https://www.iconfinder.com/icons/9022817/repeat_duotone_icon">Iconfinder:Phosphor Icons</a>
+                </div>
+                
+                <div style="font-size: 0.8rem;text-align: center;background-color: white;"><a href="https://www.iconfinder.com/icons/4707189/card_credit_credit_card_ecommerce_payment_icon">Iconfinder:Royyan Wijaya</a>
+                </div>
+                 <div style="font-size: 0.8rem;text-align: center;background-color: white;"><a href="https://www.iconfinder.com/icons/9023693/money_fill_icon">Iconfinder:Phosphor Icons</a>
+                </div>
+                <div style="font-size: 0.8rem;text-align: center;background-color: white;"><a href="https://www.iconfinder.com/icons/5740107/cash_currency_finance_money_payment_wallet_icon">Iconfinder:Dhimas Hudi</a>
+                </div>
+                <div style="font-size: 0.8rem;text-align: center;background-color: white;"><a href="https://www.iconfinder.com/icons/2924861/ecommerce_exchange_market_mobile_money_shop_icon">Iconfinder:Just Icon</a>
+                </div>
+                <div style="font-size: 0.8rem;text-align: center;background-color: white;"><a href="https://www.iconfinder.com/icons/5349751/information_info_icon">Iconfinder:Sriti Chamola</a>
+                </div>
+                <div style="font-size: 0.8rem;text-align: center;background-color: white;">
+                    <a href="https://www.iconfinder.com/icons/8542027/filter_funnel_sort_icon">Iconfinder:Font Awesome</a>
+                </div>
+                <div style="font-size: 0.8rem;text-align: center;background-color: white;">
+                    <a href="https://www.iconfinder.com/icons/9080230/arrows_down_up_icon">Iconfinder:Tabler Icons</a>
+                </div>
+                <div style="font-size: 0.8rem;text-align: center;background-color: white;">
+                    <a href="https://www.iconfinder.com/icons/9666700/restart_icon">Iconfinder:Radhika Paghdal</a>
+                </div>
+                <div style="font-size: 0.8rem;text-align: center;background-color: white;">
+                    <a href="https://www.iconfinder.com/icons/2538717/lock_safety_security_square_icon">Iconfinder:Iconic hub</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+
 
 
 
@@ -723,6 +784,7 @@
 
 
     bool isScrollingDown = false;
+    bool isCredits = false;
     string hideNav => isScrollingDown ? "nav-hidden" : "bottomNav";
     string currentPresentNavPage = "font-weight:600; color:#6775F4;";
     string currentFuturetNavPage = "";
