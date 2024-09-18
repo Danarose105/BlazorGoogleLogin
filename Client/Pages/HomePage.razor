@@ -180,8 +180,8 @@ else
                     </thead>
                     <tbody>
                         <tr>
-                            <td>@Math.Round(currentUser.spendingValueFullList,2) ₪</td>
-                            <td id="middleTableRow">@Math.Round(currentUser.incomeValueFullList,2) ₪</td>
+                            <td>@Math.Round(currentUser.spendingValueFullList,0) ₪</td>
+                            <td id="middleTableRow">@Math.Round(currentUser.incomeValueFullList,0) ₪</td>
                             <td id="leftTableRow">
                                 @if (currentUser.spendingValueFullList <= 0 && currentUser.budgetFullValue > 0)
                                 {
@@ -189,7 +189,7 @@ else
                                 }
                                 else
                                 {
-                                    <span> @Math.Round(currentUser.budgetFullValue,2)%</span>
+                                    <span> @Math.Round(currentUser.budgetFullValue,0)%</span>
                                 }
 
                                 <br />
@@ -772,7 +772,7 @@ else
 
         // Remove the number at the beginning of the string (assuming the format "number. ")
         randomBudgetRule = RemoveLeadingNumber(selectedRule);
-        await Task.Delay(120000);
+        await Task.Delay(12000);
         showAnimation = false; // Hide the animation after the delay is over
         StateHasChanged();
 
@@ -1656,7 +1656,7 @@ else
         "התקציב מסתכל קדימה- יש לתכנן אותו לחודש הקרוב, רצוי בסוף החודש שעבר.",
         "שימוש בתקציב הוא ניסוי וטעיה, בדקו שסעיף מסויים תוקצב מספיק ואם לא, בחודש הבא נסו אחרת עד שתגיעו לתקציב הרצוי.",
         " בדקו האם יש דברים מיוחדים החודש שחשוב להכניס לתקציב- יום הולדת, חתונה, חג, אירוח המשפחה ועוד.",
-        "במהלך החודש, אם קורה שיש סעיף שלא חשבנו עליו, נוכל לבדוק מה לא ניצלנו עדיין מהתקציב ולהשתמש בסעיף התקציבי .לאותו הדבר",
+        "במהלך החודש, אם קורה שיש סעיף שלא חשבנו עליו, נוכל לבדוק מה לא ניצלנו עדיין מהתקציב ולהשתמש בסעיף התקציבי לאותו הדבר.",
         "אל תמעיטו בערכו של כסף קטן- ביטול הוצאה קבועה של 10 שקלים, מצטברת בסופו של דבר למאות שקלים.",
         "כדאי לשים לב- הוצאות תמיד יהיו קטנות מההכנסות.",
         "טפלו בביטוחים, ודאו כי יש לכם ולכן ביטוח ואין כפל ביטוחים מיותר.",

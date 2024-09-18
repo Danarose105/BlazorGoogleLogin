@@ -269,12 +269,12 @@
 
                     @if (!categoryTypeIndicator)
                     {
-                        <div id="presentOnboarding4">
+                        <div id="presentOnboarding4" style="width: 100%;">
 
                             <label class="titleName" for="description">מה התקציב החודשי שלך עבור @newSubCategory.subCategoryTitle? </label>
 
                             <div class="outerBudget">
-                                <input class="budgetBox" type="number" id="description" @bind="newSubCategory.monthlyPlannedBudget" @oninput="SubCatAmount" />
+                                <input class="budgetBox" type="number" id="description" @bind="newSubCategory.monthlyPlannedBudget" @oninput="SubCatAmount"/>
                                 <span class="currency-symbol">₪</span>
                                 <div class="lineBetween"></div>
                             </div>
@@ -980,6 +980,16 @@
 
         string sumInput = e.Value.ToString();
 
+        //if (sumInput.Length <= 6)
+        //{
+        //    newSubCategory.monthlyPlannedBudget = Convert.ToDouble(sumInput);
+        //}
+        //else
+        //{
+        //    // Optionally, you might want to trim the input to the maximum allowed length
+        //    newSubCategory.monthlyPlannedBudget = Convert.ToDouble(sumInput.Substring(0, 6));
+        //}
+
         if(sumInput.Length == 0)
         {
             isSumTyped = true;
@@ -988,6 +998,10 @@
         {
             isSumTyped = false;
         }
+
+
+       
+      
 
     }
     //--------------------//

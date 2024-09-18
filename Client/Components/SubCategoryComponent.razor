@@ -59,7 +59,7 @@
             {
                 if (budget.Value.ToString().Length >= 5 && subCatTransTotal.Value.ToString().Length >= 5)
                 {
-                    smallerFont = "font-size: 0.93rem;";
+                    smallerFont = "font-size: 0.872rem;";
                 }
                 else
                 {
@@ -185,7 +185,7 @@
                         <label class="titleName" for="description">מה התקציב החודשי שלך עבור "@subCatToEdit.subCategoryTitle"?</label>
                     </div>
                     <div class="outerBudget">
-                        <input class="budgetBox" type="number" id="description" @oninput="SubCatBudgetInput" @bind="subCatToEdit.monthlyPlannedBudget" />
+                        <input class="budgetBox" type="number" id="description" @oninput="SubCatBudgetInput" @bind="subCatToEdit.monthlyPlannedBudget"/>
                         <span class="currency-symbol" style="@isBudgetMsg">₪</span>
                        
                         @*@if (ogBudget < 0)
@@ -214,7 +214,7 @@
                                 isBudgetMsg = "bottom: 60%;";
                                 <div class="outerBudgetMsg">
                                     <img src="./css/images/light.svg" />
-                                    <span>הקטנת את התקציב ב- @(Math.Round((ogBudget * -1), 2))%.</span>
+                                    <span>הקטנת את התקציב ב- @(Math.Round((ogBudget * -1), 0))%.</span>
                                 </div>
                             }
                             else if (ogBudget > 0)
@@ -222,7 +222,7 @@
                                 isBudgetMsg = "bottom: 60%;";
                                 <div class="outerBudgetMsg">
                                     <img src="./css/images/light.svg" />
-                                    <span>הגדלת את התקציב ב- @(Math.Round(ogBudget, 2))%.</span>
+                                    <span>הגדלת את התקציב ב- @(Math.Round(ogBudget, 0))%.</span>
                                 </div>
                             }
                             else
@@ -917,6 +917,9 @@
     private void SubCatBudgetInput(ChangeEventArgs e)
     {
         string tempBudget = e.Value.ToString();
+
+
+
         if (tempBudget.Length > 0 && tempBudget != " ")
         {
             subCatToEdit.monthlyPlannedBudget = double.Parse(tempBudget);
@@ -928,6 +931,17 @@
             calculateBudgetChange();
 
         }
+
+        //if (tempBudget.Length <= 6)
+        //{
+        //    subCatToEdit.monthlyPlannedBudget = Convert.ToDouble(tempBudget);
+        //}
+        //else
+        //{
+        //    // Optionally, you might want to trim the input to the maximum allowed length
+        //    subCatToEdit.monthlyPlannedBudget = Convert.ToDouble(tempBudget.Substring(0, 6));
+            
+        //}
 
     }
 

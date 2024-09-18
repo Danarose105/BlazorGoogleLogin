@@ -130,12 +130,12 @@
                                     <br />
                                     @if (ogBudget < 0)
                                     {
-                                        <span>הקטנת את התקציב ב- @(Math.Round((ogBudget * -1), 2))%.</span>
+                                        <span>הקטנת את התקציב ב- @(Math.Round(ogBudget * -1, 0))%.</span>
                                         <br />
                                     }
                                     else if (ogBudget > 0)
                                     {
-                                        <span>הגדלת את התקציב ב- @(Math.Round(ogBudget, 2))%.</span>
+                                        <span>הגדלת את התקציב ב- @(Math.Round(ogBudget, 0))%.</span>
                                         <br />
                                     }
                                     <div class="lineBetween"></div>
@@ -555,13 +555,13 @@
                     <div class="outerText">
                         <div id="expDivAndTitle">
                             <div id="expDiv">
-                            <span @onclick="@(()=>expBubbleToolTip("ODwithSubCats"))" id="qMarkSpan"><img src="./css/images/q-with-shadow.svg" /></span>
-                            @if (overdraftExpBubble)
-                            {
-                                <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
-                            }
+                                <span @onclick="@(()=>expBubbleToolTip("ODwithSubCats"))" id="qMarkSpan"><img src="./css/images/q-with-shadow.svg" /></span>
+                                @if (overdraftExpBubble)
+                                {
+                                    <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+                                }
                             </div>
-                        <h3 class="titleText">חרגת...</h3>
+                            <h3 class="titleText">חרגת...</h3>
                         </div>
 
                         <div>נראה שהוצאת ב @overDraftSubCategory.subCategoryTitle @Math.Round(closeOverdraftOpts[closeOverdraftOpts.Count-1].remainingBudget, 0) ₪ </div>
@@ -740,13 +740,13 @@
 
                         <div id="expDivAndTitle">
                             <div id="expDiv">
-                            <span @onclick="@(()=>expBubbleToolTip("ODwithNoSubCats"))" id="qMarkSpan"><img src="./css/images/q-with-shadow.svg" /></span>
-                            @if (overdraftExpBubble)
-                            {
-                                <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
-                            }
+                                <span @onclick="@(()=>expBubbleToolTip("ODwithNoSubCats"))" id="qMarkSpan"><img src="./css/images/q-with-shadow.svg" /></span>
+                                @if (overdraftExpBubble)
+                                {
+                                    <TutorialOverlay elementID="@elementToExp" closeOverlay="closeExpOverlay"></TutorialOverlay>
+                                }
                             </div>
-                        <h3 class="titleText">חרגת...</h3>
+                            <h3 class="titleText">חרגת...</h3>
                         </div>
 
                         <div>
@@ -780,13 +780,13 @@
             <span>יפותח בהמשך</span>
         </div>
     }
-<div id="@hideNav" class="bottom-nav" @ref="navBar">
-    <button class="navBtn" style="opacity:60%" @onclick="PastBtnClicked">מבט לעבר<img src="./css/images/past.svg" /></button>
-    <div class="NavLines"> </div>
-    <button class="navBtn" style="@currentPresentNavPage" @onclick="goToPresentHomePage">מבט להווה<img src="./css/images/present.svg" /></button>
-    <div class="NavLines"> </div>
-    <button class="navBtn" style="@currentFuturetNavPage" @onclick="goToFutureHomePage">מבט לעתיד<img src="./css/images/future.svg" /></button>
-</div>
+    <div id="@hideNav" class="bottom-nav" @ref="navBar">
+        <button class="navBtn" style="opacity:60%" @onclick="PastBtnClicked">מבט לעבר<img src="./css/images/past.svg" /></button>
+        <div class="NavLines"> </div>
+        <button class="navBtn" style="@currentPresentNavPage" @onclick="goToPresentHomePage">מבט להווה<img src="./css/images/present.svg" /></button>
+        <div class="NavLines"> </div>
+        <button class="navBtn" style="@currentFuturetNavPage" @onclick="goToFutureHomePage">מבט לעתיד<img src="./css/images/future.svg" /></button>
+    </div>
 </div>
 
 
@@ -1161,11 +1161,11 @@
                 checkOverdraft -= allTransactions[i].transValue;
                 allTransactions.RemoveAt(i);
                 //Console.WriteLine("transaction id- " + allTransactions[i].id + " deleted");
-                if(allTransactions. Count == 0)
+                if (allTransactions.Count == 0)
                 {
                     noTransStyle = true;
                 }
-                if(totalSpendings < budget)
+                if (totalSpendings < budget)
                 {
                     isOverdraft = false;
                 }
@@ -1812,7 +1812,7 @@
 
                     closeOverdraftOpts = new List<OverBudgetToShow>();
                     closeOverdraftOpts = await overdraftRes.Content.ReadFromJsonAsync<List<OverBudgetToShow>>();
-                    currentGap = Math.Round((closeOverdraftOpts[closeOverdraftOpts.Count - 1].remainingBudget) - (closeOverdraftOpts[closeOverdraftOpts.Count - 1].monthlyPlannedBudget),0);
+                    currentGap = Math.Round((closeOverdraftOpts[closeOverdraftOpts.Count - 1].remainingBudget) - (closeOverdraftOpts[closeOverdraftOpts.Count - 1].monthlyPlannedBudget), 0);
                     budgetSumToMove = currentGap;
 
                     overDraftSubCategory.id = closeOverdraftOpts[closeOverdraftOpts.Count - 1].id;
@@ -1959,7 +1959,7 @@
         }
     }
 
-        public void closeExpOverlay()
+    public void closeExpOverlay()
     {
         overdraftExpBubble = false;
     }
