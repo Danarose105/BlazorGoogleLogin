@@ -489,7 +489,7 @@
                         if (!filterByReturnTrans)
                         {
 
-                            <TransOverviewComponent transaction="transaction" removeTransaction="@(()=>transactionDeleted(transaction.id))" subCatID="@subCatID" userID="@userID" subCatTakenBudget="updateSubCatBudgetPostOverdraft" overdraftStatus="@overdraftStatus" typeByCat="@typeByCat" refreshTags="refreshTransAndTags"></TransOverviewComponent>
+                            <TransOverviewComponent transaction="transaction" removeTransaction="@(()=>transactionDeleted(transaction.id))" subCatID="@subCatID" userID="@userID" subCatTakenBudget="updateSubCatBudgetPostOverdraft" overdraftStatus="@overdraftStatus" typeByCat="@typeByCat" refreshTags="refreshTransAndTags" isSplitAfterEdit="OnInitializedAsync"></TransOverviewComponent>
 
                         }
 

@@ -205,6 +205,9 @@
     [Parameter]
     public EventCallback<TransactionOverviewToShow> refreshTags { get; set; }
 
+    [Parameter]
+    public EventCallback<bool> isSplitAfterEdit { get; set; }
+
     bool deleteBtnClicked = false;
     bool editBtnClicked = false;
     bool isOpetionsBtnClicked = false;
@@ -513,8 +516,11 @@
     {
         transIndexInPayments = transPayment[0];
         totalPayments = transPayment[1];
+        isSplitAfterEdit.InvokeAsync(true);
         Console.WriteLine("total payments- " + totalPayments + ", transIndexInPayments- " + transIndexInPayments);
     }
+
+    
 
     public async Task explainPaymentIcon()
     {
