@@ -292,6 +292,7 @@
 .outerTitleAndI {
     display: flex;
     column-gap: 1vh;
+    align-items: center;
 }
 
 .outerCurrentSavings {

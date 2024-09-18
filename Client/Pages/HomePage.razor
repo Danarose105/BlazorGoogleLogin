@@ -43,15 +43,18 @@ else
     isDisabled = true;
     <div id="tutorialBg" class="tutorialOverlay">
         <div class="firstIntroduction">
-            <div style="font-weight: 600;">אז איך מתמצאים פה?</div>
-            <div>
+            <div style="font-weight: 600;
+    font-size: 1.6rem;">אז איך מתמצאים פה?</div>
+            <div style="font-size: 1.3rem;">
                 <span>לאורך השימוש, לחיצה על אייקון סימן השאלה תציג הסברים קצרים.</span>
 
             </div>
-            <div style="text-align: center; margin-top: 16vh;">
+            <div style="text-align: center;
+    margin-top: 11vh;">
                 <img src="./css/images/q-with-bg.svg" style="height:10vh" />
             </div>
-            <div style="text-align: center; margin-top: 25vh;">
+            <div style="text-align: center;
+    margin-top: 17vh;">
                 @* לחבר לפונקציה שמעדכנת את הDB וסוגרת את האוברליי*@
                 <button class="primery-button" @onclick="PassOnboarding">בואו נתחיל!</button>
             </div>
@@ -224,7 +227,7 @@ else
                                             <span class="likeIcon">👍</span>
                                             <div class="storyTextWrapper">
                                                 <h3 class="titleFirstStory">החסכון הגדול ביותר</h3>
-                                                @if (Math.Round(subCatsTotalsStory[bestSavingIndex].currentMonthTotal) > 0)
+                                                @if (Math.Round(subCatsTotalsStory[bestSavingIndex].currentMonthTotal) > 0 && Math.Round(subCatsTotalsStory[bestSavingIndex].lastMonthTotal) > 0)
                                                 {
                                                     <div>עד כה החודש הוצאת @Math.Round(subCatsTotalsStory[bestSavingIndex].currentMonthTotal)₪ על @bestSavingSubCat, @bestSavingValue₪ פחות מחודש שעבר! </div>
                                                 }
@@ -240,8 +243,8 @@ else
                                             <span class="likeIcon">👎</span>
                                             <div class="storyTextWrapper">
 
-                                                <h3 class="titleFirstStory">העלייה הגדולה ביותר</h3>
-                                                @if (Math.Round(subCatsTotalsStory[worstSavingIndex].currentMonthTotal) > 0)
+                                                <h3 class="titleFirstStory">העליה הגדולה ביותר</h3>
+                                                @if (Math.Round(subCatsTotalsStory[worstSavingIndex].currentMonthTotal) > 0 && Math.Round(subCatsTotalsStory[worstSavingIndex].lastMonthTotal) > 0)
                                                 {
                                                     <div>
                                                         עד כה החודש הוצאת @Math.Round(subCatsTotalsStory[worstSavingIndex].currentMonthTotal)₪ על @worstSavingSubCat, @worstSavingValue₪ יותר מחודש שעבר!

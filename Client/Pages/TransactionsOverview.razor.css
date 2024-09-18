@@ -108,7 +108,7 @@
     flex-direction: column;
     box-shadow: 0px 25px 25px 0px rgba(39, 53, 160, 0.09), 0px 6px 14px 0px rgba(39, 53, 160, 0.10);
     row-gap: 2vh;
-    height: 90%;
+    height: 100%;
 }
 
 .filterAndSortBtns {

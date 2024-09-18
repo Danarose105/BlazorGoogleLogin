@@ -33,6 +33,8 @@
     color: #F9F9F9;
     font-weight: 500;
     z-index: 9;
+    margin-top: 1.3rem;
+    row-gap: 1rem;
 }
 
 .registerOverlay {
