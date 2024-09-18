@@ -799,7 +799,7 @@
                     </div>
                     <div class="outerText">
 
-                        <div>נראה שהוצאת ב @subCategoryTitle @closeOverdraftOpts[closeOverdraftOpts.Count-1].remainingBudget ₪ </div>
+                        <div>נראה שהוצאת ב @subCategoryTitle @Math.Round(closeOverdraftOpts[closeOverdraftOpts.Count-1].remainingBudget)  ₪ </div>
                         <div>שזה <span><b>@currentGap ₪</b></span> יותר </div>
                         <div>מהתקציב שהגדרת: @closeOverdraftOpts[closeOverdraftOpts.Count-1].monthlyPlannedBudget ₪ </div>
                         <div>כדאי להגדיל את התקציב.</div>

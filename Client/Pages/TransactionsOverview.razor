@@ -564,7 +564,7 @@
                         <h3 class="titleText">חרגת...</h3>
                         </div>
 
-                        <div>נראה שהוצאת ב @overDraftSubCategory.subCategoryTitle @closeOverdraftOpts[closeOverdraftOpts.Count-1].remainingBudget ₪ </div>
+                        <div>נראה שהוצאת ב @overDraftSubCategory.subCategoryTitle @Math.Round(closeOverdraftOpts[closeOverdraftOpts.Count-1].remainingBudget, 0) ₪ </div>
                         <div>שזה <span><b>@currentGap ₪</b></span> יותר </div>
                         <div>מהתקציב שהגדרת: @closeOverdraftOpts[closeOverdraftOpts.Count-1].monthlyPlannedBudget ₪ </div>
                         <div>כדאי להגדיל את התקציב.</div>
@@ -1812,7 +1812,7 @@
 
                     closeOverdraftOpts = new List<OverBudgetToShow>();
                     closeOverdraftOpts = await overdraftRes.Content.ReadFromJsonAsync<List<OverBudgetToShow>>();
-                    currentGap = (closeOverdraftOpts[closeOverdraftOpts.Count - 1].remainingBudget) - (closeOverdraftOpts[closeOverdraftOpts.Count - 1].monthlyPlannedBudget);
+                    currentGap = Math.Round((closeOverdraftOpts[closeOverdraftOpts.Count - 1].remainingBudget) - (closeOverdraftOpts[closeOverdraftOpts.Count - 1].monthlyPlannedBudget),0);
                     budgetSumToMove = currentGap;
 
                     overDraftSubCategory.id = closeOverdraftOpts[closeOverdraftOpts.Count - 1].id;
