@@ -21,6 +21,22 @@
     <div id="lottieAnimation">
         <lottie-player src="https://lottie.host/a629e747-096a-41ac-8a03-f374dbd3779d/pY5KRvDIpG.json" background="transparent" speed="1" loop autoplay></lottie-player>
     </div>
+
+    <div class="outerOuter">
+        <div class="outerAyaAndTip">
+           
+            <div class="Aya">
+                <span>הטיפ של איה:</span>
+                <img src="./css/images/light.svg" />
+            </div>
+            <div class="Tip">
+                @randomBudgetRule
+            </div>
+
+        </div>
+    </div>
+
+
 }
 
 @if (openAddCatOverlay)
@@ -44,7 +60,9 @@ else
     <div id="tutorialBg" class="tutorialOverlay">
         <div class="firstIntroduction">
             <div style="font-weight: 600;
-    font-size: 1.6rem;">אז איך מתמצאים פה?</div>
+    font-size: 1.6rem;">
+                אז איך מתמצאים פה?
+            </div>
             <div style="font-size: 1.3rem;">
                 <span>לאורך השימוש, לחיצה על אייקון סימן השאלה תציג הסברים קצרים.</span>
 
@@ -497,47 +515,47 @@ else
 
 
             @*@if (!string.IsNullOrEmpty(searchQuery))
-            {
-                @if (toSearch && (finalsearchSubCats.Any(sb => string.IsNullOrEmpty(searchQuery) || sb.subCategoryTitle.ToLower().Contains(searchQuery.ToLower()))))
-                {
+    {
+    @if (toSearch && (finalsearchSubCats.Any(sb => string.IsNullOrEmpty(searchQuery) || sb.subCategoryTitle.ToLower().Contains(searchQuery.ToLower()))))
+    {
 
-                    foreach (var subCat in finalsearchSubCats)
-                    {
-                        CategoryToShow matchingCategory = currentUser.categoriesFullList.FirstOrDefault(cat => cat.id == subCat.categoryID);
-
-
-                        if (matchingCategory != null)
-                        {
-                            // If the category already exists in the dictionary, add the subcategory to the existing list
-                            if (categorizedSubCats.ContainsKey(matchingCategory))
-                            {
-                                categorizedSubCats[matchingCategory].Add(subCat.id);
-                            }
-                            else
-                            {
-                                // Otherwise, create a new list and add it to the dictionary
-                                categorizedSubCats.Add(matchingCategory, new List<int> { subCat.id });
-                            }
-                        }
-
-                    }
+    foreach (var subCat in finalsearchSubCats)
+    {
+    CategoryToShow matchingCategory = currentUser.categoriesFullList.FirstOrDefault(cat => cat.id == subCat.categoryID);
 
 
+    if (matchingCategory != null)
+    {
+    // If the category already exists in the dictionary, add the subcategory to the existing list
+    if (categorizedSubCats.ContainsKey(matchingCategory))
+    {
+    categorizedSubCats[matchingCategory].Add(subCat.id);
+    }
+    else
+    {
+    // Otherwise, create a new list and add it to the dictionary
+    categorizedSubCats.Add(matchingCategory, new List<int> { subCat.id });
+    }
+    }
 
-                    toSearch = false;
+    }
 
 
-                }
-                else
-                {
-                    if (finalsearchSubCats.Any(sb => string.IsNullOrEmpty(searchQuery)) && toSearch)
-                    {
-                        <p> אופס, לא נמצא תוצאה שמתאימה לחיפוש </p>
-                    }
 
-                }
+    toSearch = false;
 
-            }*@
+
+    }
+    else
+    {
+    if (finalsearchSubCats.Any(sb => string.IsNullOrEmpty(searchQuery)) && toSearch)
+    {
+    <p> אופס, לא נמצא תוצאה שמתאימה לחיפוש </p>
+    }
+
+    }
+
+    }*@
 
             @if (categorizedSubCats.Count > 0)
             {
@@ -739,6 +757,7 @@ else
     bool expBubbleOpen = false;
     string elementToExp = "";
 
+    private string randomBudgetRule;
 
 
     protected override async Task OnInitializedAsync()
@@ -747,7 +766,13 @@ else
         //await JSRuntime.InvokeVoidAsync("showAnimationForTwoSeconds");
         userID = user.Id;
         showAnimation = true; // Show the animation before starting the delay
-        await Task.Delay(12000);
+        Random random = new Random();
+        int index = random.Next(budgetRules.Count);
+        string selectedRule = budgetRules[index];
+
+        // Remove the number at the beginning of the string (assuming the format "number. ")
+        randomBudgetRule = RemoveLeadingNumber(selectedRule);
+        await Task.Delay(120000);
         showAnimation = false; // Hide the animation after the delay is over
         StateHasChanged();
 
@@ -1625,6 +1650,28 @@ else
     }
 
 
+    private List<string> budgetRules = new List<string>
+    {
+        "התקציב יהיה בגובה ההכנסות או פחות מהן (כדי לחסוך), לעולם לא יותר מההכנסות (כי אז ניכנס למינוס).",
+        "התקציב מסתכל קדימה- יש לתכנן אותו לחודש הקרוב, רצוי בסוף החודש שעבר.",
+        "שימוש בתקציב הוא ניסוי וטעיה, בדקו שסעיף מסויים תוקצב מספיק ואם לא, בחודש הבא נסו אחרת עד שתגיעו לתקציב הרצוי.",
+        " בדקו האם יש דברים מיוחדים החודש שחשוב להכניס לתקציב- יום הולדת, חתונה, חג, אירוח המשפחה ועוד.",
+        "במהלך החודש, אם קורה שיש סעיף שלא חשבנו עליו, נוכל לבדוק מה לא ניצלנו עדיין מהתקציב ולהשתמש בסעיף התקציבי .לאותו הדבר",
+        "אל תמעיטו בערכו של כסף קטן- ביטול הוצאה קבועה של 10 שקלים, מצטברת בסופו של דבר למאות שקלים.",
+        "כדאי לשים לב- הוצאות תמיד יהיו קטנות מההכנסות.",
+        "טפלו בביטוחים, ודאו כי יש לכם ולכן ביטוח ואין כפל ביטוחים מיותר.",
+        "צעדים קטנים עוזרים להסתגל לתקציב טוב יותר, לא לוותר על קטגוריות שלמות- בצעו התאמות קטנות במספר תחומים- זה מצטבר לסכומים גדולים ומשמעותיים."
+    };
+
+    private string RemoveLeadingNumber(string input)
+    {
+        int index = input.IndexOf(". ");
+        if (index != -1)
+        {
+            return input.Substring(index + 2);
+        }
+        return input; // If no number is found, return the original string
+    }
 }
 
 

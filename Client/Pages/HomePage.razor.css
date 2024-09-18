@@ -1401,3 +1401,39 @@ ol li::marker {
     /* will-change: transform; */
     transition: opacity 0.5s ease-in-out;
 }
+
+.outerAyaAndTip {
+    display: flex;
+    flex-direction: column;
+    width: 64%;
+    height: 67%;
+    text-align: center;
+    border: 2.3px solid #6775F4;
+    border-radius: 0.4rem;
+    row-gap: 1vh;
+    padding: 3%;
+    align-items: center;
+    justify-content: center;
+}
+
+.Aya {
+    font-weight: 600;
+    font-size: 1.3rem;
+    color: #6775F4;
+    display: flex;
+    flex-direction: row-reverse;
+    column-gap: 1vh;
+    width: 70%;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.Tip {
+    font-size: 1.1rem;
+}
+
+.outerOuter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
