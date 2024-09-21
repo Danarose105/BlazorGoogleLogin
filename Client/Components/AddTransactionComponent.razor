@@ -1897,7 +1897,7 @@
                                     var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
                                     if (transOverdraftRes.IsSuccessStatusCode)
                                     {
-
+                                         addTransactionToTotal.InvokeAsync(newTransaction.transValue);
                                         Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
 
                                     }
@@ -1951,12 +1951,13 @@
                             var transOverdraftRes = await Http.GetAsync("api/Transactions/updateOverDraftTrans/" + transIDtoEdit); //updates the transType to 3
                             if (transOverdraftRes.IsSuccessStatusCode)
                             {
-
+                                addTransactionToTotal.InvokeAsync(newTransaction.transValue);
                                 Console.WriteLine("ההזנה עודכנה לחורגת בהצלחה :)");
                             }
                         }
                     }
                     isTyped = false;
+                    addTransactionToTotal.InvokeAsync(newTransaction.transValue);
                     Console.WriteLine("ההזנה נשמרה בהצלחה :)");
                 }
                 if (newTransaction.transDate.Month == DateTime.Today.Month && newTransaction.transDate.Day >= userStartMonthDay)
@@ -1966,12 +1967,14 @@
 
                 }
 
-
+                addTransactionToTotal.InvokeAsync(newTransaction.transValue);
             }
             else
             {
                 Console.WriteLine("הזנה נכשלה");
             }
+
+             
         }
         if (!overdraftDetected && closeOverdraftOpts.Count < 1 || !overdraftDetected && closeOverdraftOpts.Count != 1 && closeOverdraftOpts[closeOverdraftOpts.Count - 1].id != subCategoryIDTOGet)
         {
@@ -2172,6 +2175,8 @@
             fixedTransChildrenToAdd = new List<TransactionToAdd>();
             reapeatedTransValuesList = new List<RepeatedTransToShow>();
         }
+          addTransactionToTotal.InvokeAsync(newTransaction.transValue);
+
     }
 
 

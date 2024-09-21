@@ -65,17 +65,37 @@
                 {
                     smallerFont = "";
                 }
-                <button class="budget-progress" style="@smallerFont" @onclick="goToTransactionsPage">
+                @if(isPlusClicked)
+                {
+                    <button class="budget-progress" style="@smallerFont" @onclick="goToTransactionsPage">
                     @Math.Round(budget.Value) /  @Math.Round(subCatTransTotal.Value) ₪
                 </button>
+                }
+                else
+                {
+                       <button class="budget-progress" style="@smallerFont" @onclick="goToTransactionsPage">
+                    @Math.Round(budget.Value) /  @Math.Round(totalSpendings) ₪
+                </button>
+                }
+             
 
 
             }
             else
             {
-                <button class="budget-progress" @onclick="goToTransactionsPage">
+                if (isPlusClicked)
+                {
+                     <button class="budget-progress" @onclick="goToTransactionsPage">
                     @Math.Round(subCatTransTotal.Value) ₪
                 </button>
+                }
+                else
+                {
+                     <button class="budget-progress" @onclick="goToTransactionsPage">
+                    @Math.Round(totalSpendings) ₪
+                </button>
+                }
+               
 
             }
         </div>
@@ -544,6 +564,9 @@
     [Parameter]
     public string? subCatColor { get; set; }
 
+    //[Parameter]
+    //public double? subCatTransTotal { get; set; }
+
     [Parameter]
     public bool overdraftNotTreated { get; set; }
 
@@ -574,6 +597,7 @@
     bool deleteBtnClicked = false;
     bool isOverdraft = false;
     bool isTyped = false;
+    bool isPlusClicked = false;
     string popupBodyText = "";
     string titleInput = "";
     string convertedColor = "";
@@ -730,6 +754,7 @@
 
     public void openAddTransOverlay()
     {
+        
         openTransOverlay = !openTransOverlay;
     }
 
@@ -861,18 +886,22 @@
     }
     public async Task deleteSubCat()
     {
+        isPlusClicked = false;
         subCatFullValue = subCatTransTotal.Value;
+
+
         var deleteRes = await Http.DeleteAsync("api/Present/deleteSubCategory/" + subCategoryIDToGet);
         if (deleteRes.IsSuccessStatusCode)
         {
             subCatDeletedFullValue.InvokeAsync(subCatFullValue);
             subCatDeleted.InvokeAsync(subCategoryIDToGet);
-            
+
         }
         else
         {
             Console.WriteLine(" בעיה במחיקת תת- קטגוריה");
         }
+
 
         deleteBtnClicked = !deleteBtnClicked;
     }
@@ -880,6 +909,7 @@
     public void addNewTransToTotalSpendings(double transactionValue)
     {
 
+        isPlusClicked = true;
         subCatTransTotal += transactionValue;
         subCatTransTotal = Math.Round(subCatTransTotal.Value, 2);
 
