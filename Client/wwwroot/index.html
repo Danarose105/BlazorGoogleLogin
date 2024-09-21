@@ -68,7 +68,11 @@
             document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
         }
     </script>
-    
+    <script>
+        function scrollDownBy(amount) {
+            window.scrollBy(0, amount);
+        }
+    </script>
 </head>
 
 <body style="font-family: 'Heebo', sans-serif; font-weight: 400; color: #030942; height: 100%; background-color: #EDEFF7; width: 100%; ">
@@ -146,6 +150,8 @@
     </script>
 
     <script>navigator.serviceWorker.register('service-worker.js');</script>
+
+    
 
 
 </body>

@@ -3,6 +3,7 @@
 @using BlazorGoogleLogin.Shared.Models.present.toEdit
 @using Microsoft.AspNetCore.Components.Web
 @inject HttpClient Http
+@inject IJSRuntime JSRuntime
 
 
 
@@ -73,8 +74,6 @@
         </div>
     </div>
     <div class="accordionAndSubCatsWrap">
-
-
         <div class="categoryAccordion" style="background: @categoryColor" @onclick="accordionControl">
             <button class="options">
                 <svg width="33" height="12" viewBox="0 0 33 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -588,6 +587,7 @@
         if (isAccordionClick)
         {
             await getSubCategories();
+            await JSRuntime.InvokeVoidAsync("scrollDownBy", 120);
         }
     }
 
