@@ -419,7 +419,7 @@ else
 
         @if (userIncomeCat != null && isChecked)
         {
-            <CategoryComponent Category="@userIncomeCat" categoryTitle="userIncomeCat.categroyTitle" icon="userIncomeCat.icon" categoryColor="@userIncomeCat.color" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryTypeIndicator="true" updateTransSum="refreshTransSumTotals" updateBudget="refreshBudgetsOfSubCats"></CategoryComponent>
+            <CategoryComponent Category="@userIncomeCat" categoryTitle="userIncomeCat.categroyTitle" icon="userIncomeCat.icon" categoryColor="@userIncomeCat.color" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryTypeIndicator="true" updateTransSum="refreshTransSumTotals" updateBudget="refreshBudgetsOfSubCats" updateSpendings="updateSpendingsSumAfterDelete"></CategoryComponent>
         }
         @if (!isChecked) // עובר להוצאות
         {
@@ -454,14 +454,14 @@ else
                         if (category.id == givingsubCatCategoryID)
                         {
                             <div class="fullCategory">
-                                <CategoryComponent Category=category categoryTitle="category.categroyTitle" icon="category.icon" categoryColor="@category.color" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" updateTransSum="refreshTransSumTotals" updateBudget="refreshBudgetsOfSubCats"></CategoryComponent>
+                                <CategoryComponent Category=category categoryTitle="category.categroyTitle" icon="category.icon" categoryColor="@category.color" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" updateTransSum="refreshTransSumTotals" updateBudget="refreshBudgetsOfSubCats" updateSpendings="updateSpendingsSumAfterDelete"></CategoryComponent>
                             </div>
 
                         }
                         else
                         {
                             <div class="fullCategory">
-                                <CategoryComponent Category=category categoryTitle="category.categroyTitle" icon="category.icon" categoryColor="@category.color" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" updateTransSum="refreshTransSumTotals" updateBudget="refreshBudgetsOfSubCats"></CategoryComponent>
+                                <CategoryComponent Category=category categoryTitle="category.categroyTitle" icon="category.icon" categoryColor="@category.color" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" updateTransSum="refreshTransSumTotals" updateBudget="refreshBudgetsOfSubCats" updateSpendings="updateSpendingsSumAfterDelete"></CategoryComponent>
                             </div>
 
                         }
@@ -494,14 +494,14 @@ else
                     if (category == currentUser.categoriesFullList[0]) //for onboarding purposes:
                     {
                         <div class="fullCategory">
-                            <CategoryComponent Category=category categoryTitle="category.categroyTitle" icon="category.icon" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryColor="@category.color" updateTransSum="refreshTransSumTotals" updateBudget="refreshBudgetsOfSubCats"></CategoryComponent>
+                            <CategoryComponent Category=category categoryTitle="category.categroyTitle" icon="category.icon" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryColor="@category.color" updateTransSum="refreshTransSumTotals" updateBudget="refreshBudgetsOfSubCats" updateSpendings="updateSpendingsSumAfterDelete"></CategoryComponent>
 
                         </div>
                     }
                     else
                     {
                         <div class="fullCategory">
-                            <CategoryComponent Category=category categoryTitle="category.categroyTitle" icon="category.icon" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryColor="@category.color" updateTransSum="refreshTransSumTotals" updateBudget="refreshBudgetsOfSubCats"></CategoryComponent>
+                            <CategoryComponent Category=category categoryTitle="category.categroyTitle" icon="category.icon" doRefresh="@doRefresh" userID="@userID" deleteCat="removeCat" subCatRefreshed="@accordionRefresh" givingSubCatBudget="changeGivingSubCatBudget" givingSubCat="givingSubCatToUpdate" closeOverlay="openEditCategoryOverlay" closeEdit="closeEdit" closeDelete="closeDelete" updatedStreakStat="updateStreak" categoryColor="@category.color" updateTransSum="refreshTransSumTotals" updateBudget="refreshBudgetsOfSubCats" updateSpendings="updateSpendingsSumAfterDelete"></CategoryComponent>
 
                         </div>
                     }
@@ -585,6 +585,7 @@ else
                            closeDelete="closeDelete"
                            updatedStreakStat="updateStreak"
                            updateTransSum="refreshTransSumTotals"
+                           updateSpendings="updateSpendingsSumAfterDelete"
                            updateBudget="refreshBudgetsOfSubCats">
                             </CategoryComponent>
                         </div>
@@ -1154,6 +1155,9 @@ else
     }
 
 
+
+
+
     public async Task removeCat(CategoryToShow catallToDelete)
     {
         catToDelete = catallToDelete;
@@ -1671,6 +1675,21 @@ else
             return input.Substring(index + 2);
         }
         return input; // If no number is found, return the original string
+    }
+
+
+    void updateSpendingsSumAfterDelete(double spendingsAmountToRemove)
+    {
+        if(isChecked)
+        {
+            currentUser.incomeValueFullList -=spendingsAmountToRemove;
+        }
+        else
+        {
+            currentUser.spendingValueFullList -= spendingsAmountToRemove;
+        }
+        
+
     }
 }
 

@@ -142,14 +142,14 @@
                         if (subCatIndex == 0)
                         {
                             <div id="@(isFirstItem ? "existingSubCat":"")" class="budget-card @(isFirstItem ? "first" : "")">
-                                <SubCategoryComponent subCategoryTitle="@subcategory.subCategoryTitle" totalSpendings="@subcategory.transactionsValue" budget="@subcategory.monthlyPlannedBudget" subCategoryIDToGet="@subcategory.id" userID="@userID" subCatTakenBudget="updateTakenSubCatBudget" refreshSubCats="getSubCategories" updateEditedSubCat="updateEditedSubCat" categoryID="@Category.id" subCatDeleted="deleteSubCat" categoryTitle="@Category.categroyTitle" categoryTypeIndicator="@categoryTypeIndicator" updatedStreakStat="updateStreak" subCatColor="@categoryColor" updateTransactionSum="updatePresentTable"></SubCategoryComponent>
+                                <SubCategoryComponent subCategoryTitle="@subcategory.subCategoryTitle" totalSpendings="@subcategory.transactionsValue" budget="@subcategory.monthlyPlannedBudget" subCategoryIDToGet="@subcategory.id" userID="@userID" subCatTakenBudget="updateTakenSubCatBudget" refreshSubCats="getSubCategories" updateEditedSubCat="updateEditedSubCat" categoryID="@Category.id" subCatDeleted="deleteSubCat" categoryTitle="@Category.categroyTitle" categoryTypeIndicator="@categoryTypeIndicator" updatedStreakStat="updateStreak" subCatColor="@categoryColor" updateTransactionSum="updatePresentTable" subCatDeletedFullValue="removeSpendingsAmount"></SubCategoryComponent>
                             </div>
                         }
                         else
                         {
 
                             <div id="@(isFirstItem ? "existingSubCat":"")" class="budget-card @(isFirstItem ? "first" : "")">
-                                <SubCategoryComponent subCategoryTitle="@subcategory.subCategoryTitle" totalSpendings="@subcategory.transactionsValue" budget="@subcategory.monthlyPlannedBudget" subCategoryIDToGet="@subcategory.id" userID="@userID" subCatTakenBudget="updateTakenSubCatBudget" refreshSubCats="getSubCategories" updateEditedSubCat="updateEditedSubCat" categoryID="@Category.id" subCatDeleted="deleteSubCat" categoryTitle="@Category.categroyTitle" categoryTypeIndicator="@categoryTypeIndicator" updatedStreakStat="updateStreak" subCatColor="@categoryColor" updateTransactionSum="updatePresentTable"></SubCategoryComponent>
+                                <SubCategoryComponent subCategoryTitle="@subcategory.subCategoryTitle" totalSpendings="@subcategory.transactionsValue" budget="@subcategory.monthlyPlannedBudget" subCategoryIDToGet="@subcategory.id" userID="@userID" subCatTakenBudget="updateTakenSubCatBudget" refreshSubCats="getSubCategories" updateEditedSubCat="updateEditedSubCat" categoryID="@Category.id" subCatDeleted="deleteSubCat" categoryTitle="@Category.categroyTitle" categoryTypeIndicator="@categoryTypeIndicator" updatedStreakStat="updateStreak" subCatColor="@categoryColor" updateTransactionSum="updatePresentTable" subCatDeletedFullValue="removeSpendingsAmount"></SubCategoryComponent>
                             </div>
                         }
 
@@ -274,7 +274,7 @@
                             <label class="titleName" for="description">מה התקציב החודשי שלך עבור @newSubCategory.subCategoryTitle? </label>
 
                             <div class="outerBudget">
-                                <input class="budgetBox" type="number" id="description" @bind="newSubCategory.monthlyPlannedBudget" @oninput="SubCatAmount"/>
+                                <input class="budgetBox" type="number" id="description" @bind="newSubCategory.monthlyPlannedBudget" @oninput="SubCatAmount" />
                                 <span class="currency-symbol">₪</span>
                                 <div class="lineBetween"></div>
                             </div>
@@ -518,6 +518,9 @@
 
     [Parameter]
     public EventCallback<double?> updateBudget { get; set; }
+
+    [Parameter]
+    public EventCallback<double> updateSpendings { get; set; }
 
     [Parameter]
     public EventCallback<double> updateTransSum { get; set; } //updates transaction sums in main status table
@@ -904,6 +907,11 @@
         }
     }
 
+    public void removeSpendingsAmount(double subCatAmountToDelete)
+    {
+        updateSpendings.InvokeAsync(subCatAmountToDelete);
+    }
+
     public void closeDeletePopUp()
     {
         deleteBtnClicked = !deleteBtnClicked;
@@ -990,7 +998,7 @@
         //    newSubCategory.monthlyPlannedBudget = Convert.ToDouble(sumInput.Substring(0, 6));
         //}
 
-        if(sumInput.Length == 0)
+        if (sumInput.Length == 0)
         {
             isSumTyped = true;
         }
@@ -1000,8 +1008,8 @@
         }
 
 
-       
-      
+
+
 
     }
     //--------------------//

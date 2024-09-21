@@ -533,6 +533,9 @@
     public EventCallback<int> subCatDeleted { get; set; }
 
     [Parameter]
+    public EventCallback<double> subCatDeletedFullValue { get; set; }
+
+    [Parameter]
     public bool categoryTypeIndicator { get; set; } //will indicate if this is an expense or income subcategory
 
     [Parameter]
@@ -586,6 +589,7 @@
     bool isSameName = false;
     string ogSubCatName = "";
     string isBudgetMsg = "";
+    double subCatFullValue = 0;
 
     private string _previousColor = "##INITIAL##";
 
@@ -857,10 +861,13 @@
     }
     public async Task deleteSubCat()
     {
+        subCatFullValue = subCatTransTotal.Value;
         var deleteRes = await Http.DeleteAsync("api/Present/deleteSubCategory/" + subCategoryIDToGet);
         if (deleteRes.IsSuccessStatusCode)
         {
+            subCatDeletedFullValue.InvokeAsync(subCatFullValue);
             subCatDeleted.InvokeAsync(subCategoryIDToGet);
+            
         }
         else
         {
