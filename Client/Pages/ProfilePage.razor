@@ -502,6 +502,14 @@
                                     </div>
                                 </div>
 
+
+                                
+
+
+
+
+
+
                                 <div>
                                     @if (currentTagName == null || currentTagName == "")
                                     {
@@ -531,7 +539,7 @@
                                     <div class="counter">
                                         @if (tagNameLength > 0 && tagNameLength < 9)
                                         {
-                                            <span>8/@tagNameLength</span>
+                                            <span>@tagNameLength/8</span>
                                         }
                                         else if (tagNameLength < 1)
                                         {

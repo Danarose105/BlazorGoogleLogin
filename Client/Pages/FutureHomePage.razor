@@ -188,7 +188,7 @@
                                         </div>
                                         <div class="input-containerToAdd">
 
-                                            <input class="catTitleToAdd" type="text" placeholder="שם היעד" maxlength="18" minlength="2" @oninput="titleLengthCounter" @bind="newGoal.goalTitle" />
+                                            <input class="catTitleToAdd" type="text" placeholder="שם היעד" maxlength="18" minlength="2" @oninput="titleLengthCounter" />
                                             <div class="counter">
                                                 @if (newGoal.goalTitle == null || newGoal.goalTitle == "")
                                                 {
@@ -1078,6 +1078,7 @@
         }
 
         titleInputLength = titleInput.Length;
+        newGoal.goalTitle = titleInput;
     }
 
     private void goalSumCounter(ChangeEventArgs e)

@@ -24,7 +24,7 @@
 
     <div class="outerOuter">
         <div class="outerAyaAndTip">
-           
+
             <div class="Aya">
                 <span>הטיפ של איה:</span>
                 <img src="./css/images/light.svg" />
@@ -282,16 +282,33 @@ else
                                 }
                                 else if (storyNav == 1 && subCatsTotalsStory.Count == 0)
                                 {
-                                    <div class="outerSecondStory" @onclick="NextStory">
+                                    if (isLoadingComplete)
+                                    {
+                                        <div class="outerSecondStory" @onclick="NextStory">
 
-                                        <h3 class="storyTitle">לא נמצאו הוצאות או הכנסות החודש</h3>
+                                            <h3 class="storyTitle">לא נמצאו הוצאות או הכנסות החודש</h3>
+                                            <div class="noTagsDiv">
+                                            </div>
+                                            <div class="imgWrapper">
+
+                                                <img class="storyImg" src="./css/images/calendar2.svg" />
+                                            </div>
+                                        </div>
+                                    }
+
+                                    else
+                                    {
+
+                                        <h3 class="storyTitle">רק רגע, הנתונים עולים 🤌🏼</h3>
                                         <div class="noTagsDiv">
                                         </div>
                                         <div class="imgWrapper">
 
                                             <img class="storyImg" src="./css/images/calendar2.svg" />
                                         </div>
-                                    </div>
+                                        
+                                    }
+
                                 }
                                 else if (storyNav == 2 && tagsSpendingsList.Count > 0)
                                 {
@@ -631,6 +648,7 @@ else
     string currentPresentNavPage = "font-weight:600; color:#6775F4;";
     string currentFuturetNavPage = "";
     bool isPastClick = false;
+    bool isLoadingComplete = false;
 
     private bool showAnimation = false;
 
@@ -1161,7 +1179,16 @@ else
     public async Task removeCat(CategoryToShow catallToDelete)
     {
         catToDelete = catallToDelete;
-        currentUser.categoriesFullList.Remove(catallToDelete);
+        //currentUser.categoriesFullList.Remove(catallToDelete);
+
+
+        for (int i = currentUser.categoriesFullList.Count - 1; i > -1; i--)
+        {
+            if (currentUser.categoriesFullList[i].id == catToDelete.id)
+            {
+                currentUser.categoriesFullList.Remove(currentUser.categoriesFullList[i]);
+            }
+        }
 
         for (int i = searchSubCats.Count - 1; i > -1; i--)
         {
@@ -1172,6 +1199,7 @@ else
         }
 
         await OnInitializedAsync();
+        StateHasChanged();
 
     }
 
@@ -1273,7 +1301,7 @@ else
 
     public async Task getSubCatTotalsForStory()
     {
-
+        storyPopUpWindow = true;
         List<SubCategoryToShow> subCategories = new List<SubCategoryToShow>();
         subCatsTotalsStory = new List<StorySubCategoryTotals>();
         //first story stuff:
@@ -1371,17 +1399,21 @@ else
             }
 
             storyNav = 1;
-            storyPopUpWindow = true;
+           
+
         }
         else
         {
             storyNav = 0;
             storyPopUpWindow = false;
         }
+
+        isLoadingComplete = true;
     }
 
     public void StoryWindowControl()
     {
+        isLoadingComplete = false;
         tagCounter = 0;
         storyPopUpWindow = !storyPopUpWindow;
     }
@@ -1662,7 +1694,7 @@ else
         " בדקו האם יש דברים מיוחדים החודש שחשוב להכניס לתקציב- יום הולדת, חתונה, חג, אירוח המשפחה ועוד.",
         "במהלך החודש, אם קורה שיש תת קטגוריה שלא נתנו לה תקציב, נוכל לבדוק איפה יש תקציב פנוי ולהשתמש בו עבורה.",
         "אל תמעיטו בערכו של כסף קטן- ביטול הוצאה קבועה של 10 שקלים, מצטברת בסופו של דבר למאות שקלים.",
-        "כדאי לשים לב- הוצאות תמיד יהיו קטנות מההכנסות.",
+        "כדאי לשים לב שההוצאות תמיד יהיו קטנות מההכנסות.",
         "טפלו בביטוחים, ודאו כי יש לכם ולכן ביטוח ואין כפל ביטוחים מיותר.",
         "צעדים קטנים עוזרים להסתגל לתקציב טוב יותר, לא לוותר על קטגוריות שלמות- בצעו התאמות קטנות במספר תחומים- זה מצטבר לסכומים גדולים ומשמעותיים."
     };
@@ -1680,15 +1712,15 @@ else
 
     void updateSpendingsSumAfterDelete(double spendingsAmountToRemove)
     {
-        if(isChecked)
+        if (isChecked)
         {
-            currentUser.incomeValueFullList -=spendingsAmountToRemove;
+            currentUser.incomeValueFullList -= spendingsAmountToRemove;
         }
         else
         {
             currentUser.spendingValueFullList -= spendingsAmountToRemove;
         }
-        
+
 
     }
 }

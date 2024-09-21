@@ -154,7 +154,7 @@
     font: inherit;
     cursor: pointer;
     outline: inherit;
-    padding-bottom: 8vh;
+    padding-bottom: 10vh;
 }
 .galleryArrow {
     background: none;
@@ -616,7 +616,7 @@
 
 .counter {
     position: absolute;
-    bottom: 0;
+    bottom: 0.19rem;
     left: 0;
     color: #666;
     font-size: 12px;

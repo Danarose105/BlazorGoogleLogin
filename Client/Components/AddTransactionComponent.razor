@@ -799,7 +799,7 @@
                     </div>
                     <div class="outerText">
 
-                        <div>נראה שהוצאת ב @subCategoryTitle @Math.Round(closeOverdraftOpts[closeOverdraftOpts.Count-1].remainingBudget)  ₪ </div>
+                        <div>-נראה שהוצאת ב @subCategoryTitle @Math.Round(closeOverdraftOpts[closeOverdraftOpts.Count-1].remainingBudget)  ₪ </div>
                         <div>שזה <span><b>@currentGap ₪</b></span> יותר </div>
                         <div>מהתקציב שהגדרת: @closeOverdraftOpts[closeOverdraftOpts.Count-1].monthlyPlannedBudget ₪ </div>
                         <div>כדאי להגדיל את התקציב.</div>
@@ -1799,6 +1799,8 @@
 
     public async Task saveAndEndTransactions()
     {
+
+        newTransaction.transValue = Math.Round(newTransaction.transValue);
         newTransaction.subCategoryID = subCategoryIDTOGet;
         newTransaction.tagID = null;
         if (!categoryTypeIndicator)
@@ -1982,6 +1984,7 @@
     public async Task saveAndRepeatTransactions()
     {
         Console.WriteLine("DateTime.Today.Month- " + DateTime.Today.Month);
+        newTransaction.transValue = Math.Round(newTransaction.transValue);
         newTransaction.subCategoryID = subCategoryIDTOGet;
         if (newTransaction.tagID <= 0)
         {
@@ -2175,6 +2178,7 @@
     public async Task updateExistingTrans()
     {
 
+        newTransaction.transValue = Math.Round(newTransaction.transValue);
         if (!categoryTypeIndicator)
         {
             newTransaction.transType = 1;
@@ -2625,7 +2629,7 @@
 
             //closeOverdraftOpts[closeOverdraftOpts.Count - 1] is the current subcategory
 
-            currentGap = (closeOverdraftOpts[closeOverdraftOpts.Count - 1].remainingBudget) - (closeOverdraftOpts[closeOverdraftOpts.Count - 1].monthlyPlannedBudget);
+            currentGap = Math.Round((closeOverdraftOpts[closeOverdraftOpts.Count - 1].remainingBudget) - (closeOverdraftOpts[closeOverdraftOpts.Count - 1].monthlyPlannedBudget),0);
             budgetSumToMove = currentGap;
 
             overDraftSubCategory.id = closeOverdraftOpts[closeOverdraftOpts.Count - 1].id;
