@@ -1405,7 +1405,7 @@ ol li::marker {
 .outerAyaAndTip {
     display: flex;
     flex-direction: column;
-    width: 64%;
+    width: 70%;
     height: 67%;
     text-align: center;
     border: 2.3px solid #6775F4;
@@ -1423,7 +1423,7 @@ ol li::marker {
     display: flex;
     flex-direction: row-reverse;
     column-gap: 1vh;
-    width: 70%;
+    width: 75%;
     align-items: flex-end;
     justify-content: center;
 }

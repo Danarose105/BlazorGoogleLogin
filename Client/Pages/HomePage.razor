@@ -152,7 +152,7 @@ else
                         <button class="profilePic">@currentUser.profilePicOrIcon</button>
                     </div>
                     <div id="topText">
-                        <p id="firstTitle">היי @currentUser.firstName 👋🏼</p>
+                        <p id="firstTitle">היי @currentUser.firstName 👋</p>
 
                         <p id="secondTitle">מבט על חודש @currentMonth </p>
 
@@ -185,7 +185,7 @@ else
                             <td id="leftTableRow">
                                 @if (currentUser.spendingValueFullList <= 0 && currentUser.budgetFullValue > 0)
                                 {
-                                    <span>0</span>
+                                    <span>0%</span>
                                 }
                                 else
                                 {
@@ -200,7 +200,7 @@ else
                     </tbody>
                 </table>
 
-                <button class="primery-button" @onclick="getSubCatTotalsForStory">מצב החודש כרגע</button>
+                <button class="primery-button" style="@stateOfTheMonthDis" @onclick="getSubCatTotalsForStory">מצב החודש כרגע</button>
 
 
 
@@ -306,7 +306,7 @@ else
 
                                             <img class="storyImg" src="./css/images/calendar2.svg" />
                                         </div>
-                                        
+
                                     }
 
                                 }
@@ -649,6 +649,8 @@ else
     string currentFuturetNavPage = "";
     bool isPastClick = false;
     bool isLoadingComplete = false;
+    bool isDelayNotNeeded = false;
+
 
     private bool showAnimation = false;
 
@@ -678,6 +680,7 @@ else
     int tagCounter = 0;
     int startMonthDate = 0;
     private int refreshKey;
+    string stateOfTheMonthDis = "";
 
     bool doRefresh = false;
     bool isOnInitializedOver = false;
@@ -739,7 +742,7 @@ else
     private Dictionary<string, List<string>> emojiCategories = new Dictionary<string, List<string>>
     {
     {"כללי", new List<string> {
-    "👩", "🧑️", "👩‍🦱", "👨", "👩‍🦰", "👨‍🦱️", "👱‍♀️", "👩‍🦳", "👵", "🧔‍♂️",
+    "👩", "🧑️", "👩‍🦱", "👨", "👩‍🦰", "👨‍🦰", "👱‍♀️", "👩‍🦳", "👵", "🧔‍♂️",
     "👴", "🧓", "👩‍🎓", "🧑‍🎓", "👩‍💼", "🧑‍💼", "👩‍💻", "🧑‍💻", "👩‍🌾", "🧑‍🌾",
     "🙋‍♀️️", "🙋‍♂️", "🧍‍♀️", "🧍"
     }},
@@ -784,16 +787,20 @@ else
 
         //await JSRuntime.InvokeVoidAsync("showAnimationForTwoSeconds");
         userID = user.Id;
-        showAnimation = true; // Show the animation before starting the delay
-        Random random = new Random();
-        int index = random.Next(budgetRules.Count);
-        string selectedRule = budgetRules[index];
+        if (!isDelayNotNeeded)
+        {
+            showAnimation = true; // Show the animation before starting the delay
+            Random random = new Random();
+            int index = random.Next(budgetRules.Count);
+            string selectedRule = budgetRules[index];
 
-        // Remove the number at the beginning of the string (assuming the format "number. ")
-        randomBudgetRule = RemoveLeadingNumber(selectedRule);
-        await Task.Delay(12000);
-        showAnimation = false; // Hide the animation after the delay is over
-        StateHasChanged();
+            // Remove the number at the beginning of the string (assuming the format "number. ")
+            randomBudgetRule = RemoveLeadingNumber(selectedRule);
+            await Task.Delay(12000);
+            showAnimation = false; // Hide the animation after the delay is over
+            StateHasChanged();
+        }
+
 
         int currentMonthNumber = DateTime.Now.Month; // Gets the current month number
         currentMonth = GetHebrewMonthName(currentMonthNumber);
@@ -866,6 +873,15 @@ else
 
                 isDisabled = true;
 
+            }
+
+            if(currentUser.categoriesFullList.Count == 0)
+            {
+                stateOfTheMonthDis = "opacity: 60%;cursor: not-allowed;";
+            }
+            else
+            {
+                stateOfTheMonthDis = "";
             }
         }
         else
@@ -1198,9 +1214,18 @@ else
             }
         }
 
+        if(currentUser.categoriesFullList.Count == 0)
+        {
+            stateOfTheMonthDis = "opacity: 60%;cursor: not-allowed;";
+        }
+        else
+        {
+            stateOfTheMonthDis = "";
+        }
+        isDelayNotNeeded = true;
         await OnInitializedAsync();
         StateHasChanged();
-
+        isDelayNotNeeded = false;
     }
 
     public async Task changeGivingSubCatBudget(OverDraftBudgetToEdit givingSubCat)
@@ -1243,6 +1268,11 @@ else
         if (newCategory != null)
         {
             currentUser.categoriesFullList.Add(newCategory);
+        }
+
+        if(currentUser.categoriesFullList.Count > 0)
+        {
+            stateOfTheMonthDis = "";
         }
     }
 
@@ -1301,6 +1331,7 @@ else
 
     public async Task getSubCatTotalsForStory()
     {
+        
         storyPopUpWindow = true;
         List<SubCategoryToShow> subCategories = new List<SubCategoryToShow>();
         subCatsTotalsStory = new List<StorySubCategoryTotals>();
@@ -1399,12 +1430,12 @@ else
             }
 
             storyNav = 1;
-           
+
 
         }
         else
         {
-            storyNav = 0;
+            storyNav = 0;           
             storyPopUpWindow = false;
         }
 
@@ -1690,7 +1721,7 @@ else
     {
         "התקציב יהיה בגובה ההכנסות או פחות מהן (כדי לחסוך), לעולם לא יותר מההכנסות (כי אז ניכנס למינוס).",
         "התקציב מסתכל קדימה- יש לתכנן אותו לחודש הקרוב, רצוי בסוף החודש שעבר.",
-        "שימוש בתקציב הוא ניסוי וטעיה, בדקו שתת קטגוריה מסויימת תוקצבנ מספיק ואם לא, בחודש הבא נסו אחרת עד שתגיעו לתקציב הרצוי.",
+        "שימוש בתקציב הוא ניסוי וטעיה, בדקו שתת קטגוריה מסויימת תוקצבה מספיק ואם לא, בחודש הבא נסו אחרת עד שתגיעו לתקציב הרצוי.",
         " בדקו האם יש דברים מיוחדים החודש שחשוב להכניס לתקציב- יום הולדת, חתונה, חג, אירוח המשפחה ועוד.",
         "במהלך החודש, אם קורה שיש תת קטגוריה שלא נתנו לה תקציב, נוכל לבדוק איפה יש תקציב פנוי ולהשתמש בו עבורה.",
         "אל תמעיטו בערכו של כסף קטן- ביטול הוצאה קבועה של 10 שקלים, מצטברת בסופו של דבר למאות שקלים.",

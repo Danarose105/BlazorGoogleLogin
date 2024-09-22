@@ -74,7 +74,7 @@
                 else
                 {
                        <button class="budget-progress" style="@smallerFont" @onclick="goToTransactionsPage">
-                    @Math.Round(budget.Value) /  @Math.Round(totalSpendings) ₪
+                        @Math.Round(budget.Value) /  @Math.Round(subCatTransTotal.Value) ₪
                 </button>
                 }
              
@@ -92,7 +92,7 @@
                 else
                 {
                      <button class="budget-progress" @onclick="goToTransactionsPage">
-                    @Math.Round(totalSpendings) ₪
+                        @Math.Round(subCatTransTotal.Value) ₪
                 </button>
                 }
                
@@ -911,7 +911,7 @@
 
         isPlusClicked = true;
         subCatTransTotal += transactionValue;
-        subCatTransTotal = Math.Round(subCatTransTotal.Value, 2);
+        //subCatTransTotal = Math.Round(subCatTransTotal.Value, 2);
 
         //await updateTotalsIndexTable(transactionValue);
 
